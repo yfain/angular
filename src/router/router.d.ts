@@ -53,7 +53,7 @@ export declare class Router {
      *
      * You probably don't need to use this unless you're writing a reusable component.
      */
-    registerPrimaryOutlet(outlet: RouterOutlet): Promise<boolean>;
+    registerPrimaryOutlet(outlet: RouterOutlet): Promise<any>;
     /**
      * Unregister an outlet (because it was destroyed, etc).
      *
@@ -65,7 +65,7 @@ export declare class Router {
      *
      * You probably don't need to use this unless you're writing a reusable component.
      */
-    registerAuxOutlet(outlet: RouterOutlet): Promise<boolean>;
+    registerAuxOutlet(outlet: RouterOutlet): Promise<any>;
     /**
      * Given an instruction, returns `true` if the instruction is currently active,
      * otherwise `false`.

@@ -270,6 +270,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
       return Reflect.metadata(k, v);
   };
   var lang_1 = require("angular2/src/facade/lang");
+  var __make_dart_analyzer_happy = null;
   var RouteConfig = (function() {
     function RouteConfig(configs) {
       this.configs = configs;
@@ -1249,6 +1250,27 @@ System.register("angular2/src/router/location/platform_location", [], true, func
   global.define = undefined;
   var PlatformLocation = (function() {
     function PlatformLocation() {}
+    Object.defineProperty(PlatformLocation.prototype, "pathname", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(PlatformLocation.prototype, "search", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(PlatformLocation.prototype, "hash", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
     return PlatformLocation;
   })();
   exports.PlatformLocation = PlatformLocation;
