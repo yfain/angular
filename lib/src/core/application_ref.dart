@@ -227,7 +227,7 @@ class PlatformRef_ extends PlatformRef {
       [List<
           dynamic /* Type | Provider | List < dynamic > */ > additionalProviders]) {
     var zone = createNgZone();
-    var completer = PromiseWrapper.completer /*< ApplicationRef >*/ ();
+    var completer = PromiseWrapper.completer/*< ApplicationRef >*/();
     if (identical(bindingFn, null)) {
       completer.resolve(this._initApp(zone, additionalProviders));
     } else {

@@ -29,6 +29,8 @@ PropDecorator propDecorator(value) {
 }
 
 class HasGetterAndSetterDecorators {
-  @PropDecorator("get") get a {}
-  @PropDecorator("set") set a(v) {}
+  @PropDecorator("get")
+  get a {}
+  @PropDecorator("set")
+  set a(v) {}
 }

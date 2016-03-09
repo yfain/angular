@@ -37,7 +37,7 @@ import "url_parser.dart"
     show parser, Url, convertUrlParamsToArray, pathSegmentsToUrl;
 import "rules/route_paths/route_path.dart" show GeneratedUrl;
 
-var _resolveToNull = PromiseWrapper.resolve /*< Instruction >*/ (null);
+var _resolveToNull = PromiseWrapper.resolve/*< Instruction >*/(null);
 // A LinkItemArray is an array, which describes a set of routes
 
 // The items in the array are found in groups:
@@ -221,7 +221,7 @@ class RouteRegistry {
       return PromiseWrapper.resolve(this.generateDefault(parentComponent));
     }
     return PromiseWrapper
-        .all /*< Instruction >*/ (matchPromises)
+        .all/*< Instruction >*/(matchPromises)
         .then(mostSpecific);
   }
 

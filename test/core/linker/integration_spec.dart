@@ -1407,10 +1407,7 @@ declareTests() {
           inject([TestComponentBuilder, AsyncTestCompleter],
               (TestComponentBuilder tcb, async) {
             tcb
-                .overrideView(
-                    MyComp,
-                    new ViewMetadata(
-                        template: '''
+                .overrideView(MyComp, new ViewMetadata(template: '''
             <script>alert("Ooops");</script>
             <div>before<script>alert("Ooops");</script><span>inside</span>after</div>'''))
                 .createAsync(MyComp)

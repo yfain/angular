@@ -424,7 +424,7 @@ List<List<String>> mapToKeyValueArray(Map<String, String> data) {
   // We need to sort to get a defined output order
 
   // for tests and for caching generated artifacts...
-  ListWrapper.sort /*< List < String > >*/ (
+  ListWrapper.sort/*< List < String > >*/(
       entryArray,
       (List<String> entry1, List<String> entry2) =>
           StringWrapper.compare(entry1[0], entry2[0]));

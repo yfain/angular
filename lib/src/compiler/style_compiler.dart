@@ -85,7 +85,7 @@ class StyleCompiler {
       return result;
     }).toList();
     return PromiseWrapper
-        .all /*< List < String > >*/ (promises)
+        .all/*< List < String > >*/(promises)
         .then((List<List<String>> nestedStyles) {
       List<dynamic /* String | List < dynamic > */ > result = plainStyles
           .map((plainStyle) => this._shimIfNeeded(plainStyle, encapsulate))
