@@ -35,9 +35,9 @@ class Animation {
 
   /**
    * Stores the start time and starts the animation
-   * @param element
-   * @param data
-   * @param browserDetails
+   * 
+   * 
+   * 
    */
   Animation(this.element, this.data, this.browserDetails) {
     this.startTime = DateWrapper.toMillis(DateWrapper.now());
@@ -90,7 +90,7 @@ class Animation {
 
   /**
    * Applies the provided styles to the element
-   * @param styles
+   * 
    */
   void applyStyles(Map<String, dynamic> styles) {
     StringMapWrapper.forEach(styles, (dynamic value, String key) {
@@ -106,7 +106,7 @@ class Animation {
 
   /**
    * Adds the provided classes to the element
-   * @param classes
+   * 
    */
   void addClasses(List<String> classes) {
     for (var i = 0, len = classes.length; i < len; i++)
@@ -115,7 +115,7 @@ class Animation {
 
   /**
    * Removes the provided classes from the element
-   * @param classes
+   * 
    */
   void removeClasses(List<String> classes) {
     for (var i = 0, len = classes.length; i < len; i++)
@@ -158,8 +158,8 @@ class Animation {
 
   /**
    * Adds animation callbacks to be called upon completion
-   * @param callback
-   * @returns {Animation}
+   * 
+   * 
    */
   Animation onComplete(Function callback) {
     if (this.completed) {
@@ -172,8 +172,8 @@ class Animation {
 
   /**
    * Converts the duration string to the number of milliseconds
-   * @param duration
-   * @returns {number}
+   * 
+   * 
    */
   num parseDurationString(String duration) {
     var maxValue = 0;
@@ -193,8 +193,8 @@ class Animation {
 
   /**
    * Strips the letters from the duration string
-   * @param str
-   * @returns {string}
+   * 
+   * 
    */
   String stripLetters(String str) {
     return StringWrapper.replaceAll(

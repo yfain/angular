@@ -1,6 +1,6 @@
 /**
  * See [bootstrap] for more information.
- * @deprecated
+ * 
  */
 library angular2.bootstrap_static;
 

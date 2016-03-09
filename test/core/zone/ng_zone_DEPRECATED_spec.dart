@@ -3,6 +3,7 @@
 // the old API is cleaned up.
 library angular2.test.core.zone.ng_zone_DEPRECATED_spec;
 
+import "dart:async";
 import "package:angular2/testing_internal.dart"
     show
         AsyncTestCompleter,
@@ -595,7 +596,7 @@ commonTests() {
     it(
         "should call onTurnStart and onTurnDone for promises created outside of run body",
         inject([AsyncTestCompleter], (async) {
-          var promise;
+          Future<dynamic> promise;
           macroTask(() {
             _zone.runOutsideAngular(() {
               promise = PromiseWrapper

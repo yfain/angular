@@ -125,7 +125,7 @@ class SomeDirectiveWithoutMetadata {}
 
 main() {
   describe("DirectiveResolver", () {
-    var resolver;
+    DirectiveResolver resolver;
     beforeEach(() {
       resolver = new DirectiveResolver();
     });

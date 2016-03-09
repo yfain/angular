@@ -6,15 +6,15 @@ import "route_handler.dart" show RouteHandler;
 import "../../instruction.dart" show RouteData, BLANK_ROUTE_DATA;
 
 class AsyncRouteHandler implements RouteHandler {
-  Function _loader;
+  dynamic /* () => Promise<Type> */ _loader;
   /** @internal */
-  Future<dynamic> _resolvedComponent = null;
+  Future<Type> _resolvedComponent = null;
   Type componentType;
   RouteData data;
   AsyncRouteHandler(this._loader, [Map<String, dynamic> data = null]) {
     this.data = isPresent(data) ? new RouteData(data) : BLANK_ROUTE_DATA;
   }
-  Future<dynamic> resolveComponentType() {
+  Future<Type> resolveComponentType() {
     if (isPresent(this._resolvedComponent)) {
       return this._resolvedComponent;
     }

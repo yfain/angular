@@ -113,10 +113,10 @@ class TestComponentBuilder {
    * Overrides only the html of a [ComponentMetadata].
    * All the other properties of the component's [ViewMetadata] are preserved.
    *
-   * @param {Type} component
-   * @param {string} html
+   * 
+   * 
    *
-   * @return {TestComponentBuilder}
+   * 
    */
   TestComponentBuilder overrideTemplate(Type componentType, String template) {
     var clone = this._clone();
@@ -127,10 +127,10 @@ class TestComponentBuilder {
   /**
    * Overrides a component's [ViewMetadata].
    *
-   * @param {Type} component
-   * @param {view} View
+   * 
+   * 
    *
-   * @return {TestComponentBuilder}
+   * 
    */
   TestComponentBuilder overrideView(Type componentType, ViewMetadata view) {
     var clone = this._clone();
@@ -141,11 +141,11 @@ class TestComponentBuilder {
   /**
    * Overrides the directives from the component [ViewMetadata].
    *
-   * @param {Type} component
-   * @param {Type} from
-   * @param {Type} to
+   * 
+   * 
+   * 
    *
-   * @return {TestComponentBuilder}
+   * 
    */
   TestComponentBuilder overrideDirective(
       Type componentType, Type from, Type to) {
@@ -169,10 +169,10 @@ class TestComponentBuilder {
    * duplicated providers to
    * be overridden.
    *
-   * @param {Type} component
-   * @param {any[]} providers
+   * 
+   * 
    *
-   * @return {TestComponentBuilder}
+   * 
    */
   TestComponentBuilder overrideProviders(Type type, List<dynamic> providers) {
     var clone = this._clone();
@@ -181,7 +181,7 @@ class TestComponentBuilder {
   }
 
   /**
-   * @deprecated
+   * 
    */
   TestComponentBuilder overrideBindings(Type type, List<dynamic> providers) {
     return this.overrideProviders(type, providers);
@@ -197,10 +197,10 @@ class TestComponentBuilder {
    * duplicated providers to
    * be overridden.
    *
-   * @param {Type} component
-   * @param {any[]} providers
+   * 
+   * 
    *
-   * @return {TestComponentBuilder}
+   * 
    */
   TestComponentBuilder overrideViewProviders(
       Type type, List<dynamic> providers) {
@@ -210,7 +210,7 @@ class TestComponentBuilder {
   }
 
   /**
-   * @deprecated
+   * 
    */
   TestComponentBuilder overrideViewBindings(
       Type type, List<dynamic> providers) {
@@ -220,7 +220,7 @@ class TestComponentBuilder {
   /**
    * Builds and returns a ComponentFixture.
    *
-   * @return {Promise<ComponentFixture>}
+   * 
    */
   Future<ComponentFixture> createAsync(Type rootComponentType) {
     var mockDirectiveResolver = this._injector.get(DirectiveResolver);
@@ -248,11 +248,11 @@ class TestComponentBuilder {
       DOM.remove(oldRoots[i]);
     }
     DOM.appendChild(doc.body, rootEl);
-    return this
+    Future<ComponentRef> promise = this
         ._injector
         .get(DynamicComponentLoader)
-        .loadAsRoot(rootComponentType, '''#${ rootElId}''', this._injector)
-        .then((componentRef) {
+        .loadAsRoot(rootComponentType, '''#${ rootElId}''', this._injector);
+    return promise.then((componentRef) {
       return new ComponentFixture_(componentRef);
     });
   }

@@ -88,7 +88,7 @@ class NgClass implements DoCheck, OnDestroy {
   IterableDiffer _iterableDiffer;
   KeyValueDiffer _keyValueDiffer;
   List<String> _initialClasses = [];
-  dynamic /* List < String > | Set < String > */ _rawClass;
+  dynamic /* List < String > | Set< String > */ _rawClass;
   NgClass(this._iterableDiffers, this._keyValueDiffers, this._ngEl,
       this._renderer) {}
   set initialClasses(String v) {
@@ -99,12 +99,12 @@ class NgClass implements DoCheck, OnDestroy {
   }
 
   set rawClass(
-      dynamic /* String | List < String > | Set < String > | Map < String , dynamic > */ v) {
+      dynamic /* String | List < String > | Set< String > | Map < String , dynamic > */ v) {
     this._cleanupClasses(this._rawClass);
     if (isString(v)) {
       v = ((v as String)).split(" ");
     }
-    this._rawClass = (v as dynamic /* List < String > | Set < String > */);
+    this._rawClass = (v as dynamic /* List < String > | Set< String > */);
     this._iterableDiffer = null;
     this._keyValueDiffer = null;
     if (isPresent(v)) {
@@ -136,7 +136,7 @@ class NgClass implements DoCheck, OnDestroy {
   }
 
   void _cleanupClasses(
-      dynamic /* List < String > | Set < String > | Map < String , dynamic > */ rawClassVal) {
+      dynamic /* List < String > | Set< String > | Map < String , dynamic > */ rawClassVal) {
     this._applyClasses(rawClassVal, true);
     this._applyInitialClasses(false);
   }
@@ -171,7 +171,7 @@ class NgClass implements DoCheck, OnDestroy {
   }
 
   _applyClasses(
-      dynamic /* List < String > | Set < String > | Map < String , dynamic > */ rawClassVal,
+      dynamic /* List < String > | Set< String > | Map < String , dynamic > */ rawClassVal,
       bool isCleanup) {
     if (isPresent(rawClassVal)) {
       if (isArray(rawClassVal)) {

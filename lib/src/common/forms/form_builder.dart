@@ -4,6 +4,7 @@ import "package:angular2/core.dart" show Injectable;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/facade/lang.dart" show isPresent, isArray, Type;
 import "model.dart" as modelModule;
+import "directives/validators.dart" show ValidatorFn, AsyncValidatorFn;
 
 /**
  * Creates a form object from a user-specified configuration.
@@ -57,11 +58,12 @@ class FormBuilder {
   modelModule.ControlGroup group(Map<String, dynamic> controlsConfig,
       [Map<String, dynamic> extra = null]) {
     var controls = this._reduceControls(controlsConfig);
-    var optionals =
-        isPresent(extra) ? StringMapWrapper.get(extra, "optionals") : null;
-    var validator =
+    var optionals = ((isPresent(extra)
+        ? StringMapWrapper.get(extra, "optionals")
+        : null) as Map<String, bool>);
+    ValidatorFn validator =
         isPresent(extra) ? StringMapWrapper.get(extra, "validator") : null;
-    var asyncValidator =
+    AsyncValidatorFn asyncValidator =
         isPresent(extra) ? StringMapWrapper.get(extra, "asyncValidator") : null;
     return new modelModule.ControlGroup(
         controls, optionals, validator, asyncValidator);
@@ -71,7 +73,7 @@ class FormBuilder {
    * Construct a new [Control] with the given `value`,`validator`, and `asyncValidator`.
    */
   modelModule.Control control(Object value,
-      [Function validator = null, Function asyncValidator = null]) {
+      [ValidatorFn validator = null, AsyncValidatorFn asyncValidator = null]) {
     return new modelModule.Control(value, validator, asyncValidator);
   }
 
@@ -80,7 +82,7 @@ class FormBuilder {
    * configuration, with the given optional `validator` and `asyncValidator`.
    */
   modelModule.ControlArray array(List<dynamic> controlsConfig,
-      [Function validator = null, Function asyncValidator = null]) {
+      [ValidatorFn validator = null, AsyncValidatorFn asyncValidator = null]) {
     var controls = controlsConfig.map((c) => this._createControl(c)).toList();
     return new modelModule.ControlArray(controls, validator, asyncValidator);
   }
@@ -104,8 +106,10 @@ class FormBuilder {
       return controlConfig;
     } else if (isArray(controlConfig)) {
       var value = controlConfig[0];
-      var validator = controlConfig.length > 1 ? controlConfig[1] : null;
-      var asyncValidator = controlConfig.length > 2 ? controlConfig[2] : null;
+      ValidatorFn validator =
+          controlConfig.length > 1 ? controlConfig[1] : null;
+      AsyncValidatorFn asyncValidator =
+          controlConfig.length > 2 ? controlConfig[2] : null;
       return this.control(value, validator, asyncValidator);
     } else {
       return this.control(controlConfig);

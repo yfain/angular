@@ -262,7 +262,7 @@ class DomRenderer implements Renderer {
 
   /**
    * Performs animations if necessary
-   * @param node
+   * 
    */
   animateNodeEnter(dynamic node) {
     if (DOM.isElementNode(node) && DOM.hasClass(node, "ng-animate")) {
@@ -282,7 +282,7 @@ class DomRenderer implements Renderer {
   /**
    * If animations are necessary, performs animations then removes the element; otherwise, it just
    * removes the element.
-   * @param node
+   * 
    */
   animateNodeLeave(dynamic node) {
     if (DOM.isElementNode(node) && DOM.hasClass(node, "ng-animate")) {

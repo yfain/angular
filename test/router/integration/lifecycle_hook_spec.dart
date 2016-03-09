@@ -41,9 +41,10 @@ main() {
   describe("Router lifecycle hooks", () {
     TestComponentBuilder tcb;
     ComponentFixture fixture;
-    var rtr;
+    Router rtr;
     beforeEachProviders(() => TEST_ROUTER_PROVIDERS);
-    beforeEach(inject([TestComponentBuilder, Router], (tcBuilder, router) {
+    beforeEach(inject([TestComponentBuilder, Router],
+        (TestComponentBuilder tcBuilder, Router router) {
       tcb = tcBuilder;
       rtr = router;
       cmpInstanceCount = 0;
@@ -78,7 +79,7 @@ main() {
               .then((_) => rtr
                   .config([new Route(path: "/...", component: LifecycleCmp)]))
               .then((_) {
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("parent activate")) {
                     completer.resolve(true);
                   }
@@ -125,7 +126,7 @@ main() {
               .then((_) =>
                   rtr.navigateByUrl("/parent-deactivate/child-deactivate"))
               .then((_) {
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("deactivate")) {
                     completer.resolve(true);
                     fixture.detectChanges();
@@ -208,7 +209,7 @@ main() {
               .then((_) => rtr
                   .config([new Route(path: "/...", component: LifecycleCmp)]))
               .then((_) {
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("routerCanActivate")) {
                     completer.resolve(true);
                   }
@@ -233,7 +234,7 @@ main() {
               .then((_) => rtr
                   .config([new Route(path: "/...", component: LifecycleCmp)]))
               .then((_) {
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("routerCanActivate")) {
                     completer.resolve(false);
                   }
@@ -262,7 +263,7 @@ main() {
                 expect(fixture.debugElement.nativeElement)
                     .toHaveText("routerCanDeactivate {A}");
                 expect(log).toEqual([]);
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("routerCanDeactivate")) {
                     completer.resolve(true);
                   }
@@ -291,7 +292,7 @@ main() {
                 expect(fixture.debugElement.nativeElement)
                     .toHaveText("routerCanDeactivate {A}");
                 expect(log).toEqual([]);
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("routerCanDeactivate")) {
                     completer.resolve(false);
                   }
@@ -351,7 +352,7 @@ main() {
                   "routerCanActivate: null -> /reuse-hooks/1",
                   "routerOnActivate: null -> /reuse-hooks/1"
                 ]);
-                ObservableWrapper.subscribe(eventBus, (ev) {
+                ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
                   if (ev.startsWith("routerCanReuse")) {
                     completer.resolve(true);
                   }
@@ -379,7 +380,7 @@ main() {
               "routerCanActivate: null -> /reuse-hooks/1",
               "routerOnActivate: null -> /reuse-hooks/1"
             ]);
-            ObservableWrapper.subscribe(eventBus, (ev) {
+            ObservableWrapper.subscribe /*< String >*/ (eventBus, (ev) {
               if (ev.startsWith("routerCanReuse")) {
                 completer.resolve(false);
               }

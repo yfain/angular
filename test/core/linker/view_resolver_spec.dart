@@ -44,7 +44,7 @@ class SimpleClass {}
 
 main() {
   describe("ViewResolver", () {
-    var resolver;
+    ViewResolver resolver;
     beforeEach(() {
       resolver = new ViewResolver();
     });

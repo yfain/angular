@@ -69,9 +69,10 @@ class StyleCompiler {
 
   Future<List<dynamic /* String | List < dynamic > */ >> _loadStyles(
       List<String> plainStyles, List<String> absUrls, bool encapsulate) {
-    var promises = absUrls.map((absUrl) {
+    List<Future<List<String>>> promises =
+        absUrls.map(/* Future< List < String > > */ (String absUrl) {
       var cacheKey = '''${ absUrl}${ encapsulate ? ".shim" : ""}''';
-      var result = this._styleCache[cacheKey];
+      Future<List<String>> result = this._styleCache[cacheKey];
       if (isBlank(result)) {
         result = this._xhr.get(absUrl).then((style) {
           var styleWithImports =
@@ -83,7 +84,9 @@ class StyleCompiler {
       }
       return result;
     }).toList();
-    return PromiseWrapper.all(promises).then((List<List<String>> nestedStyles) {
+    return PromiseWrapper
+        .all /*< List < String > >*/ (promises)
+        .then((List<List<String>> nestedStyles) {
       List<dynamic /* String | List < dynamic > */ > result = plainStyles
           .map((plainStyle) => this._shimIfNeeded(plainStyle, encapsulate))
           .toList();

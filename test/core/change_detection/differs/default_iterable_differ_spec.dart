@@ -180,7 +180,7 @@ main() {
       it("should detect [NaN] moves", () {
         var l = [NumberWrapper.NaN, NumberWrapper.NaN];
         differ.check(l);
-        ListWrapper.insert(l, 0, "foo");
+        ListWrapper.insert /*< dynamic >*/ (l, 0, "foo");
         differ.check(l);
         expect(differ.toString()).toEqual(iterableChangesAsString(
             collection: ["foo[null->0]", "NaN[0->1]", "NaN[1->2]"],

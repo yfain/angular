@@ -1,6 +1,6 @@
 /**
- * @module
- * @description
+ * 
+ * 
  * Maps application URLs into application states, to support deep-linking and navigation.
  */
 library angular2.router;
