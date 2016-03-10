@@ -258,6 +258,10 @@ class Router {
     ObservableWrapper.callEmit(this._subject, url);
   }
 
+  void _emitNavigationFail(url) {
+    ObservableWrapper.callError(this._subject, url);
+  }
+
   Future<dynamic> _afterPromiseFinishNavigating(Future<dynamic> promise) {
     return PromiseWrapper
         .catchError(promise.then((_) => this._finishNavigating()), (err) {
@@ -367,8 +371,9 @@ class Router {
   /**
    * Subscribe to URL updates from the router
    */
-  Object subscribe(dynamic /* (value: any) => void */ onNext) {
-    return ObservableWrapper.subscribe(this._subject, onNext);
+  Object subscribe(dynamic /* (value: any) => void */ onNext,
+      [dynamic /* (value: any) => void */ onError]) {
+    return ObservableWrapper.subscribe(this._subject, onNext, onError);
   }
 
   /**
@@ -445,35 +450,39 @@ class RootRouter extends Router {
     this._locationSub = this._location.subscribe((change) {
       // we call recognize ourselves
       this.recognize(change["url"]).then((instruction) {
-        this
-            .navigateByInstruction(instruction, isPresent(change["pop"]))
-            .then((_) {
-          // this is a popstate event; no need to change the URL
-          if (isPresent(change["pop"]) && change["type"] != "hashchange") {
-            return;
-          }
-          var emitPath = instruction.toUrlPath();
-          var emitQuery = instruction.toUrlQuery();
-          if (emitPath.length > 0 && emitPath[0] != "/") {
-            emitPath = "/" + emitPath;
-          }
-          // Because we've opted to use All hashchange events occur outside Angular.
-
-          // However, apps that are migrating might have hash links that operate outside
-
-          // angular to which routing must respond.
-
-          // To support these cases where we respond to hashchanges and redirect as a
-
-          // result, we need to replace the top item on the stack.
-          if (change["type"] == "hashchange") {
-            if (instruction.toRootUrl() != this._location.path()) {
-              this._location.replaceState(emitPath, emitQuery);
+        if (isPresent(instruction)) {
+          this
+              .navigateByInstruction(instruction, isPresent(change["pop"]))
+              .then((_) {
+            // this is a popstate event; no need to change the URL
+            if (isPresent(change["pop"]) && change["type"] != "hashchange") {
+              return;
             }
-          } else {
-            this._location.go(emitPath, emitQuery);
-          }
-        });
+            var emitPath = instruction.toUrlPath();
+            var emitQuery = instruction.toUrlQuery();
+            if (emitPath.length > 0 && emitPath[0] != "/") {
+              emitPath = "/" + emitPath;
+            }
+            // Because we've opted to use All hashchange events occur outside Angular.
+
+            // However, apps that are migrating might have hash links that operate outside
+
+            // angular to which routing must respond.
+
+            // To support these cases where we respond to hashchanges and redirect as a
+
+            // result, we need to replace the top item on the stack.
+            if (change["type"] == "hashchange") {
+              if (instruction.toRootUrl() != this._location.path()) {
+                this._location.replaceState(emitPath, emitQuery);
+              }
+            } else {
+              this._location.go(emitPath, emitQuery);
+            }
+          });
+        } else {
+          this._emitNavigationFail(change["url"]);
+        }
       });
     });
     this.registry.configFromComponent(primaryComponent);

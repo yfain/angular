@@ -149,6 +149,22 @@ main() {
           });
         }));
     it(
+        "should trigger the onError callback of a router change subscription if the URL does not match a route",
+        inject([AsyncTestCompleter], (async) {
+          var outlet = makeDummyOutlet();
+          router
+              .registerPrimaryOutlet(outlet)
+              .then((_) => router
+                  .config([new Route(path: "/a", component: DummyComponent)]))
+              .then((_) {
+            router.subscribe((_) {}, (url) {
+              expect(url).toEqual("b");
+              async.done();
+            });
+            ((location as SpyLocation)).simulateHashChange("b");
+          });
+        }));
+    it(
         "should navigate after being configured",
         inject([AsyncTestCompleter], (async) {
           var outlet = makeDummyOutlet();
