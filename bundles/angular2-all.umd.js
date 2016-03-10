@@ -1577,6 +1577,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return val;
 	}
 	exports.deserializeEnum = deserializeEnum;
+	function resolveEnumToken(enumValue, val) {
+	    return enumValue[val];
+	}
+	exports.resolveEnumToken = resolveEnumToken;
 	var StringWrapper = (function () {
 	    function StringWrapper() {
 	    }

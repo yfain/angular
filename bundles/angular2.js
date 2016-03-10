@@ -128,6 +128,10 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return val;
   }
   exports.deserializeEnum = deserializeEnum;
+  function resolveEnumToken(enumValue, val) {
+    return enumValue[val];
+  }
+  exports.resolveEnumToken = resolveEnumToken;
   var StringWrapper = (function() {
     function StringWrapper() {}
     StringWrapper.fromCharCode = function(code) {
