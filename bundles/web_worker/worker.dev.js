@@ -36509,6 +36509,9 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     Router.prototype._emitNavigationFinish = function(url) {
       async_1.ObservableWrapper.callEmit(this._subject, url);
     };
+    Router.prototype._emitNavigationFail = function(url) {
+      async_1.ObservableWrapper.callError(this._subject, url);
+    };
     Router.prototype._afterPromiseFinishNavigating = function(promise) {
       var _this = this;
       return async_1.PromiseWrapper.catchError(promise.then(function(_) {
@@ -36605,8 +36608,8 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     Router.prototype._finishNavigating = function() {
       this.navigating = false;
     };
-    Router.prototype.subscribe = function(onNext) {
-      return async_1.ObservableWrapper.subscribe(this._subject, onNext);
+    Router.prototype.subscribe = function(onNext, onError) {
+      return async_1.ObservableWrapper.subscribe(this._subject, onNext, onError);
     };
     Router.prototype.deactivate = function(instruction) {
       var _this = this;
@@ -36662,23 +36665,27 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
       this._location = location;
       this._locationSub = this._location.subscribe(function(change) {
         _this.recognize(change['url']).then(function(instruction) {
-          _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop'])).then(function(_) {
-            if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
-              return ;
-            }
-            var emitPath = instruction.toUrlPath();
-            var emitQuery = instruction.toUrlQuery();
-            if (emitPath.length > 0 && emitPath[0] != '/') {
-              emitPath = '/' + emitPath;
-            }
-            if (change['type'] == 'hashchange') {
-              if (instruction.toRootUrl() != _this._location.path()) {
-                _this._location.replaceState(emitPath, emitQuery);
+          if (lang_1.isPresent(instruction)) {
+            _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop'])).then(function(_) {
+              if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
+                return ;
               }
-            } else {
-              _this._location.go(emitPath, emitQuery);
-            }
-          });
+              var emitPath = instruction.toUrlPath();
+              var emitQuery = instruction.toUrlQuery();
+              if (emitPath.length > 0 && emitPath[0] != '/') {
+                emitPath = '/' + emitPath;
+              }
+              if (change['type'] == 'hashchange') {
+                if (instruction.toRootUrl() != _this._location.path()) {
+                  _this._location.replaceState(emitPath, emitQuery);
+                }
+              } else {
+                _this._location.go(emitPath, emitQuery);
+              }
+            });
+          } else {
+            _this._emitNavigationFail(change['url']);
+          }
         });
       });
       this.registry.configFromComponent(primaryComponent);

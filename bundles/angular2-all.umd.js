@@ -33146,6 +33146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    Router.prototype._emitNavigationFinish = function (url) { async_1.ObservableWrapper.callEmit(this._subject, url); };
+	    Router.prototype._emitNavigationFail = function (url) { async_1.ObservableWrapper.callError(this._subject, url); };
 	    Router.prototype._afterPromiseFinishNavigating = function (promise) {
 	        var _this = this;
 	        return async_1.PromiseWrapper.catchError(promise.then(function (_) { return _this._finishNavigating(); }), function (err) {
@@ -33247,8 +33248,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Subscribe to URL updates from the router
 	     */
-	    Router.prototype.subscribe = function (onNext) {
-	        return async_1.ObservableWrapper.subscribe(this._subject, onNext);
+	    Router.prototype.subscribe = function (onNext, onError) {
+	        return async_1.ObservableWrapper.subscribe(this._subject, onNext, onError);
 	    };
 	    /**
 	     * Removes the contents of this router's outlet and all descendant outlets
@@ -33321,31 +33322,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // we call recognize ourselves
 	            _this.recognize(change['url'])
 	                .then(function (instruction) {
-	                _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop']))
-	                    .then(function (_) {
-	                    // this is a popstate event; no need to change the URL
-	                    if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
-	                        return;
-	                    }
-	                    var emitPath = instruction.toUrlPath();
-	                    var emitQuery = instruction.toUrlQuery();
-	                    if (emitPath.length > 0 && emitPath[0] != '/') {
-	                        emitPath = '/' + emitPath;
-	                    }
-	                    // Because we've opted to use All hashchange events occur outside Angular.
-	                    // However, apps that are migrating might have hash links that operate outside
-	                    // angular to which routing must respond.
-	                    // To support these cases where we respond to hashchanges and redirect as a
-	                    // result, we need to replace the top item on the stack.
-	                    if (change['type'] == 'hashchange') {
-	                        if (instruction.toRootUrl() != _this._location.path()) {
-	                            _this._location.replaceState(emitPath, emitQuery);
+	                if (lang_1.isPresent(instruction)) {
+	                    _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop']))
+	                        .then(function (_) {
+	                        // this is a popstate event; no need to change the URL
+	                        if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
+	                            return;
 	                        }
-	                    }
-	                    else {
-	                        _this._location.go(emitPath, emitQuery);
-	                    }
-	                });
+	                        var emitPath = instruction.toUrlPath();
+	                        var emitQuery = instruction.toUrlQuery();
+	                        if (emitPath.length > 0 && emitPath[0] != '/') {
+	                            emitPath = '/' + emitPath;
+	                        }
+	                        // Because we've opted to use All hashchange events occur outside Angular.
+	                        // However, apps that are migrating might have hash links that operate outside
+	                        // angular to which routing must respond.
+	                        // To support these cases where we respond to hashchanges and redirect as a
+	                        // result, we need to replace the top item on the stack.
+	                        if (change['type'] == 'hashchange') {
+	                            if (instruction.toRootUrl() != _this._location.path()) {
+	                                _this._location.replaceState(emitPath, emitQuery);
+	                            }
+	                        }
+	                        else {
+	                            _this._location.go(emitPath, emitQuery);
+	                        }
+	                    });
+	                }
+	                else {
+	                    _this._emitNavigationFail(change['url']);
+	                }
 	            });
 	        });
 	        this.registry.configFromComponent(primaryComponent);
