@@ -99,19 +99,19 @@ class DebugElement extends DebugNode {
   }
 
   List<DebugElement> queryAll(Predicate<DebugElement> predicate) {
-    var matches = [];
+    List<DebugElement> matches = [];
     _queryElementChildren(this, predicate, matches);
     return matches;
   }
 
   List<DebugNode> queryAllNodes(Predicate<DebugNode> predicate) {
-    var matches = [];
+    List<DebugNode> matches = [];
     _queryNodeChildren(this, predicate, matches);
     return matches;
   }
 
   List<DebugElement> get children {
-    var children = [];
+    List<DebugElement> children = [];
     this.childNodes.forEach((node) {
       if (node is DebugElement) {
         children.add(node);

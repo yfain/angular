@@ -530,8 +530,8 @@ syncRoutesWithSyncChildrenWithDefaultRoutesWithoutParams() {
 }
 
 syncRoutesWithDynamicComponents() {
-  var fixture;
-  var tcb;
+  ComponentFixture fixture;
+  TestComponentBuilder tcb;
   Router rtr;
   beforeEachProviders(() => TEST_ROUTER_PROVIDERS);
   beforeEach(inject([TestComponentBuilder, Router], (tcBuilder, router) {

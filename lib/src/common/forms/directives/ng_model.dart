@@ -3,20 +3,12 @@ library angular2.src.common.forms.directives.ng_model;
 import "package:angular2/src/facade/async.dart"
     show EventEmitter, ObservableWrapper;
 import "package:angular2/core.dart"
-    show
-        OnChanges,
-        SimpleChange,
-        Query,
-        Directive,
-        Provider,
-        Inject,
-        Optional,
-        Self;
+    show OnChanges, SimpleChange, Directive, Provider, Inject, Optional, Self;
 import "control_value_accessor.dart"
     show ControlValueAccessor, NG_VALUE_ACCESSOR;
 import "ng_control.dart" show NgControl;
 import "../model.dart" show Control;
-import "../validators.dart" show Validators, NG_VALIDATORS, NG_ASYNC_VALIDATORS;
+import "../validators.dart" show NG_VALIDATORS, NG_ASYNC_VALIDATORS;
 import "shared.dart"
     show
         setUpControl,
@@ -24,6 +16,7 @@ import "shared.dart"
         selectValueAccessor,
         composeValidators,
         composeAsyncValidators;
+import "validators.dart" show ValidatorFn, AsyncValidatorFn;
 
 const formControlBinding = const Provider(NgControl, useExisting: NgModel);
 
@@ -101,11 +94,11 @@ class NgModel extends NgControl implements OnChanges {
     return [];
   }
 
-  Function get validator {
+  ValidatorFn get validator {
     return composeValidators(this._validators);
   }
 
-  Function get asyncValidator {
+  AsyncValidatorFn get asyncValidator {
     return composeAsyncValidators(this._asyncValidators);
   }
 

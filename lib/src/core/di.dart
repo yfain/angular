@@ -1,6 +1,6 @@
 /**
- * @module
- * @description
+ * 
+ * 
  * The `di` module provides dependency injection container services.
  */
 library angular2.src.core.di;
