@@ -27,8 +27,7 @@ import "shared.dart"
         isPropertyUpdated,
         selectValueAccessor;
 import "../model.dart" show Control;
-import "../validators.dart" show NG_VALIDATORS, NG_ASYNC_VALIDATORS;
-import "validators.dart" show ValidatorFn, AsyncValidatorFn;
+import "../validators.dart" show Validators, NG_VALIDATORS, NG_ASYNC_VALIDATORS;
 
 const controlNameBinding =
     const Provider(NgControl, useExisting: NgControlName);
@@ -150,11 +149,11 @@ class NgControlName extends NgControl implements OnChanges, OnDestroy {
     return this._parent.formDirective;
   }
 
-  ValidatorFn get validator {
+  Function get validator {
     return composeValidators(this._validators);
   }
 
-  AsyncValidatorFn get asyncValidator {
+  Function get asyncValidator {
     return composeAsyncValidators(this._asyncValidators);
   }
 

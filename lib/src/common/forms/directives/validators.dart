@@ -1,8 +1,9 @@
 library angular2.src.common.forms.directives.validators;
 
-import "package:angular2/core.dart" show Provider, Attribute, Directive;
+import "package:angular2/core.dart"
+    show Provider, OpaqueToken, Attribute, Directive;
 import "../validators.dart" show Validators, NG_VALIDATORS;
-import "../model.dart" show AbstractControl;
+import "../model.dart" show Control;
 import "../model.dart" as modelModule;
 import "package:angular2/src/facade/lang.dart" show NumberWrapper;
 
@@ -24,7 +25,7 @@ import "package:angular2/src/facade/lang.dart" show NumberWrapper;
  * ```
  */
 abstract class Validator {
-  Map<String, dynamic> validate(modelModule.AbstractControl c);
+  Map<String, dynamic> validate(modelModule.Control c);
 }
 
 const REQUIRED_VALIDATOR =
@@ -46,8 +47,6 @@ const REQUIRED_VALIDATOR =
     providers: const [REQUIRED_VALIDATOR])
 class RequiredValidator {}
 
-typedef Map<String, dynamic> ValidatorFn(AbstractControl c);
-typedef dynamic AsyncValidatorFn(AbstractControl c);
 /**
  * Provivder which adds [MinLengthValidator] to [NG_VALIDATORS].
  *
@@ -67,12 +66,12 @@ const MIN_LENGTH_VALIDATOR =
         "[minlength][ngControl],[minlength][ngFormControl],[minlength][ngModel]",
     providers: const [MIN_LENGTH_VALIDATOR])
 class MinLengthValidator implements Validator {
-  ValidatorFn _validator;
+  Function _validator;
   MinLengthValidator(@Attribute("minlength") String minLength) {
     this._validator =
         Validators.minLength(NumberWrapper.parseInt(minLength, 10));
   }
-  Map<String, dynamic> validate(AbstractControl c) {
+  Map<String, dynamic> validate(Control c) {
     return this._validator(c);
   }
 }
@@ -96,12 +95,12 @@ const MAX_LENGTH_VALIDATOR =
         "[maxlength][ngControl],[maxlength][ngFormControl],[maxlength][ngModel]",
     providers: const [MAX_LENGTH_VALIDATOR])
 class MaxLengthValidator implements Validator {
-  ValidatorFn _validator;
+  Function _validator;
   MaxLengthValidator(@Attribute("maxlength") String maxLength) {
     this._validator =
         Validators.maxLength(NumberWrapper.parseInt(maxLength, 10));
   }
-  Map<String, dynamic> validate(AbstractControl c) {
+  Map<String, dynamic> validate(Control c) {
     return this._validator(c);
   }
 }
@@ -126,11 +125,11 @@ const PATTERN_VALIDATOR =
         "[pattern][ngControl],[pattern][ngFormControl],[pattern][ngModel]",
     providers: const [PATTERN_VALIDATOR])
 class PatternValidator implements Validator {
-  ValidatorFn _validator;
+  Function _validator;
   PatternValidator(@Attribute("pattern") String pattern) {
     this._validator = Validators.pattern(pattern);
   }
-  Map<String, dynamic> validate(AbstractControl c) {
+  Map<String, dynamic> validate(Control c) {
     return this._validator(c);
   }
 }

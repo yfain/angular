@@ -276,8 +276,7 @@ class ProtoViewBuilderVisitor<APP_PROTO_VIEW, APP_PROTO_EL, STATEMENT>
       List<CompileDirectiveMetadata> directives, List<TemplateAst> attrAsts) {
     var attrs = visitAndReturnContext(this, attrAsts, {});
     directives.forEach((directiveMeta) {
-      StringMapWrapper.forEach(directiveMeta.hostAttributes,
-          (String value, String name) {
+      StringMapWrapper.forEach(directiveMeta.hostAttributes, (value, name) {
         var prevValue = attrs[name];
         attrs[name] = isPresent(prevValue)
             ? mergeAttributeValue(name, prevValue, value)
@@ -417,18 +416,16 @@ class ProtoViewBuilderVisitor<APP_PROTO_VIEW, APP_PROTO_EL, STATEMENT>
 }
 
 List<List<String>> mapToKeyValueArray(Map<String, String> data) {
-  List<List<String>> entryArray = [];
-  StringMapWrapper.forEach(data, (String value, String name) {
+  var entryArray = [];
+  StringMapWrapper.forEach(data, (value, name) {
     entryArray.add([name, value]);
   });
   // We need to sort to get a defined output order
 
   // for tests and for caching generated artifacts...
-  ListWrapper.sort/*< List < String > >*/(
-      entryArray,
-      (List<String> entry1, List<String> entry2) =>
-          StringWrapper.compare(entry1[0], entry2[0]));
-  List<List<String>> keyValueArray = [];
+  ListWrapper.sort(entryArray,
+      (entry1, entry2) => StringWrapper.compare(entry1[0], entry2[0]));
+  var keyValueArray = [];
   entryArray.forEach((entry) {
     keyValueArray.add([entry[0], entry[1]]);
   });

@@ -49,8 +49,7 @@ main() {
   describe("routerLink directive", () {
     TestComponentBuilder tcb;
     ComponentFixture fixture;
-    Router router;
-    Location location;
+    var router, location;
     beforeEachProviders(() => [
           RouteRegistry,
           DirectiveResolver,
@@ -60,8 +59,8 @@ main() {
           provide(TEMPLATE_TRANSFORMS,
               useClass: RouterLinkTransform, multi: true)
         ]);
-    beforeEach(inject([TestComponentBuilder, Router, Location],
-        (tcBuilder, Router rtr, Location loc) {
+    beforeEach(
+        inject([TestComponentBuilder, Router, Location], (tcBuilder, rtr, loc) {
       tcb = tcBuilder;
       router = rtr;
       location = loc;
@@ -81,7 +80,7 @@ main() {
     it(
         "should generate absolute hrefs that include the base href",
         inject([AsyncTestCompleter], (async) {
-          ((location as SpyLocation)).setBaseHref("/my/base");
+          location.setBaseHref("/my/base");
           compile("<a href=\"hello\" [routerLink]=\"['./User']\"></a>")
               .then((_) => router.config(
                   [new Route(path: "/user", component: UserCmp, name: "User")]))
@@ -373,8 +372,7 @@ main() {
               expect(DOM.isPrevented(dispatchedEvent)).toBe(true);
               // router navigation is async.
               router.subscribe((_) {
-                expect(((location as SpyLocation)).urlChanges)
-                    .toEqual(["/user"]);
+                expect(location.urlChanges).toEqual(["/user"]);
                 async.done();
               });
             });
@@ -382,7 +380,7 @@ main() {
       it(
           "should navigate to link hrefs in presence of base href",
           inject([AsyncTestCompleter], (async) {
-            ((location as SpyLocation)).setBaseHref("/base");
+            location.setBaseHref("/base");
             compile("<a href=\"hello\" [routerLink]=\"['./User']\"></a>")
                 .then((_) => router.config([
                       new Route(path: "/user", component: UserCmp, name: "User")
@@ -394,8 +392,7 @@ main() {
               expect(DOM.isPrevented(dispatchedEvent)).toBe(true);
               // router navigation is async.
               router.subscribe((_) {
-                expect(((location as SpyLocation)).urlChanges)
-                    .toEqual(["/base/user"]);
+                expect(location.urlChanges).toEqual(["/base/user"]);
                 async.done();
               });
             });

@@ -32,7 +32,7 @@ abstract class CompileMetadataWithIdentifier {
 
   Map<String, dynamic> toJson();
   CompileIdentifierMetadata get identifier {
-    return (unimplemented() as CompileIdentifierMetadata);
+    return unimplemented();
   }
 }
 
@@ -43,11 +43,11 @@ abstract class CompileMetadataWithType extends CompileMetadataWithIdentifier {
 
   Map<String, dynamic> toJson();
   CompileTypeMetadata get type {
-    return (unimplemented() as CompileTypeMetadata);
+    return unimplemented();
   }
 
   CompileIdentifierMetadata get identifier {
-    return (unimplemented() as CompileIdentifierMetadata);
+    return unimplemented();
   }
 }
 

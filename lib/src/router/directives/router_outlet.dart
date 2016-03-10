@@ -109,9 +109,9 @@ class RouterOutlet implements OnDestroy {
         isPresent(this._currentInstruction) &&
         hasLifecycleHook(hookMod.routerOnDeactivate,
             this._currentInstruction.componentType)) {
-      next = (PromiseWrapper.resolve(
-          ((this._componentRef.instance as OnDeactivate)).routerOnDeactivate(
-              nextInstruction, this._currentInstruction)) as Future<bool>);
+      next = PromiseWrapper.resolve(
+          ((this._componentRef.instance as OnDeactivate))
+              .routerOnDeactivate(nextInstruction, this._currentInstruction));
     }
     return next.then((_) {
       if (isPresent(this._componentRef)) {
@@ -135,9 +135,9 @@ class RouterOutlet implements OnDestroy {
     }
     if (hasLifecycleHook(
         hookMod.routerCanDeactivate, this._currentInstruction.componentType)) {
-      return (PromiseWrapper.resolve(
-          ((this._componentRef.instance as CanDeactivate)).routerCanDeactivate(
-              nextInstruction, this._currentInstruction)) as Future<bool>);
+      return PromiseWrapper.resolve(
+          ((this._componentRef.instance as CanDeactivate))
+              .routerCanDeactivate(nextInstruction, this._currentInstruction));
     }
     return _resolveToTrue;
   }
@@ -169,7 +169,7 @@ class RouterOutlet implements OnDestroy {
               StringMapWrapper.equals(
                   nextInstruction.params, this._currentInstruction.params));
     }
-    return (PromiseWrapper.resolve(result) as Future<bool>);
+    return PromiseWrapper.resolve(result);
   }
 
   void ngOnDestroy() {

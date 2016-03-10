@@ -9,12 +9,12 @@ class AnimationBuilder {
   BrowserDetails browserDetails;
   /**
    * Used for DI
-   * 
+   * @param browserDetails
    */
   AnimationBuilder(this.browserDetails) {}
   /**
    * Creates a new CSS Animation
-   * 
+   * @returns {CssAnimationBuilder}
    */
   CssAnimationBuilder css() {
     return new CssAnimationBuilder(this.browserDetails);

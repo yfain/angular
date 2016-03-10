@@ -9,11 +9,11 @@ abstract class ViewRef {
    * @internal
    */
   ChangeDetectorRef get changeDetectorRef {
-    return (unimplemented() as ChangeDetectorRef);
+    return unimplemented();
   }
 
   bool get destroyed {
-    return (unimplemented() as bool);
+    return unimplemented();
   }
 }
 
@@ -28,7 +28,7 @@ abstract class ViewRef {
  */
 abstract class HostViewRef extends ViewRef {
   List<dynamic> get rootNodes {
-    return (unimplemented() as List<dynamic>);
+    return unimplemented();
   }
 }
 
@@ -95,7 +95,7 @@ abstract class EmbeddedViewRef extends ViewRef {
    */
   bool hasLocal(String variableName);
   List<dynamic> get rootNodes {
-    return (unimplemented() as List<dynamic>);
+    return unimplemented();
   }
 }
 

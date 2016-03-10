@@ -42,7 +42,7 @@ abstract class ViewContainerRef {
    * <!-- TODO: rename to anchorElement -->
    */
   ElementRef get element {
-    return (unimplemented() as ElementRef);
+    return unimplemented();
   }
 
   /**
@@ -62,7 +62,7 @@ abstract class ViewContainerRef {
    * Returns the number of Views currently attached to this container.
    */
   num get length {
-    return (unimplemented() as num);
+    return unimplemented();
   }
 
   /**

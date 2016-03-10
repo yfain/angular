@@ -18,9 +18,7 @@ import "number_value_accessor.dart" show NumberValueAccessor;
 import "checkbox_value_accessor.dart" show CheckboxControlValueAccessor;
 import "select_control_value_accessor.dart" show SelectControlValueAccessor;
 import "radio_control_value_accessor.dart" show RadioControlValueAccessor;
-import "normalize_validator.dart"
-    show normalizeValidator, normalizeAsyncValidator;
-import "validators.dart" show ValidatorFn, AsyncValidatorFn;
+import "normalize_validator.dart" show normalizeValidator;
 
 List<String> controlPath(String name, ControlContainer parent) {
   var p = ListWrapper.clone(parent.path);
@@ -60,16 +58,15 @@ void _throwError(AbstractControlDirective dir, String message) {
   throw new BaseException('''${ message} \'${ path}\'''');
 }
 
-ValidatorFn composeValidators(List<dynamic> validators) {
+Function composeValidators(List<dynamic> validators) {
   return isPresent(validators)
       ? Validators.compose(validators.map(normalizeValidator).toList())
       : null;
 }
 
-AsyncValidatorFn composeAsyncValidators(List<dynamic> validators) {
+Function composeAsyncValidators(List<dynamic> validators) {
   return isPresent(validators)
-      ? Validators
-          .composeAsync(validators.map(normalizeAsyncValidator).toList())
+      ? Validators.composeAsync(validators.map(normalizeValidator).toList())
       : null;
 }
 

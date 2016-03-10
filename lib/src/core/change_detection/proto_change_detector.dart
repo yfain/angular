@@ -73,10 +73,8 @@ class DynamicProtoChangeDetector implements ProtoChangeDetector {
 
 List<ProtoRecord> createPropertyRecords(ChangeDetectorDefinition definition) {
   var recordBuilder = new ProtoRecordBuilder();
-  ListWrapper.forEachWithIndex(
-      definition.bindingRecords,
-      (BindingRecord b, num index) =>
-          recordBuilder.add(b, definition.variableNames, index));
+  ListWrapper.forEachWithIndex(definition.bindingRecords,
+      (b, index) => recordBuilder.add(b, definition.variableNames, index));
   return coalesce(recordBuilder.records);
 }
 

@@ -70,8 +70,35 @@ class SimpleChange {
   }
 }
 
+var _simpleChangesIndex = 0;
+var _simpleChanges = [
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null),
+  new SimpleChange(null, null)
+];
 SimpleChange _simpleChange(previousValue, currentValue) {
-  return new SimpleChange(previousValue, currentValue);
+  var index = _simpleChangesIndex++ % 20;
+  var s = _simpleChanges[index];
+  s.previousValue = previousValue;
+  s.currentValue = currentValue;
+  return s;
 }
 
 /* tslint:disable:requireParameterType */

@@ -76,7 +76,7 @@ class Router {
    *
    * You probably don't need to use this unless you're writing a reusable component.
    */
-  Future<dynamic> registerPrimaryOutlet(RouterOutlet outlet) {
+  Future<bool> registerPrimaryOutlet(RouterOutlet outlet) {
     if (isPresent(outlet.name)) {
       throw new BaseException(
           '''registerPrimaryOutlet expects to be called with an unnamed outlet.''');
@@ -109,7 +109,7 @@ class Router {
    *
    * You probably don't need to use this unless you're writing a reusable component.
    */
-  Future<dynamic> registerAuxOutlet(RouterOutlet outlet) {
+  Future<bool> registerAuxOutlet(RouterOutlet outlet) {
     var outletName = outlet.name;
     if (isBlank(outletName)) {
       throw new BaseException(
@@ -225,8 +225,7 @@ class Router {
       if (isPresent(instruction.child)) {
         unsettledInstructions.add(this._settleInstruction(instruction.child));
       }
-      StringMapWrapper.forEach(instruction.auxInstruction,
-          (Instruction instruction, _) {
+      StringMapWrapper.forEach(instruction.auxInstruction, (instruction, _) {
         unsettledInstructions.add(this._settleInstruction(instruction));
       });
       return PromiseWrapper.all(unsettledInstructions);
@@ -310,7 +309,7 @@ class Router {
       next = this._outlet.routerCanDeactivate(componentInstruction);
     }
     // TODO: aux route lifecycle hooks
-    return next.then(/* dynamic /* bool | Future< bool > */ */ (result) {
+    return next.then((result) {
       if (result == false) {
         return false;
       }
@@ -345,7 +344,7 @@ class Router {
         });
       }
     }
-    List<Future<dynamic>> promises = [];
+    var promises = [];
     this._auxRouters.forEach((name, router) {
       if (isPresent(instruction.auxInstruction[name])) {
         promises.add(router.commit(instruction.auxInstruction[name]));
@@ -401,7 +400,7 @@ class Router {
   }
 
   List<Instruction> _getAncestorInstructions() {
-    List<Instruction> ancestorInstructions = [this.currentInstruction];
+    var ancestorInstructions = [this.currentInstruction];
     Router ancestorRouter = this;
     while (isPresent(ancestorRouter = ancestorRouter.parent)) {
       (ancestorInstructions..insert(0, ancestorRouter.currentInstruction))
@@ -532,7 +531,7 @@ Future<bool> canActivateOne(
     next = canActivateOne(nextInstruction.child,
         isPresent(prevInstruction) ? prevInstruction.child : null);
   }
-  return next.then(/* bool */ (bool result) {
+  return next.then((result) {
     if (result == false) {
       return false;
     }

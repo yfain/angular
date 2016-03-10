@@ -29,13 +29,10 @@ import "package:angular2/src/router/route_config/route_config_decorator.dart"
 import "package:angular2/src/core/linker/directive_resolver.dart"
     show DirectiveResolver;
 import "package:angular2/core.dart" show provide;
-import "package:angular2/src/router/directives/router_outlet.dart"
-    show RouterOutlet;
 
 main() {
   describe("Router", () {
-    Router router;
-    Location location;
+    var router, location;
     beforeEachProviders(() => [
           RouteRegistry,
           DirectiveResolver,
@@ -43,7 +40,7 @@ main() {
           provide(ROUTER_PRIMARY_COMPONENT, useValue: AppCmp),
           provide(Router, useClass: RootRouter)
         ]);
-    beforeEach(inject([Router, Location], (Router rtr, Location loc) {
+    beforeEach(inject([Router, Location], (rtr, loc) {
       router = rtr;
       location = loc;
     }));
@@ -55,9 +52,8 @@ main() {
               .config([new Route(path: "/", component: DummyComponent)])
               .then((_) => router.registerPrimaryOutlet(outlet))
               .then((_) {
-                expect(((outlet as dynamic)).spy("activate"))
-                    .toHaveBeenCalled();
-                expect(((location as SpyLocation)).urlChanges).toEqual([]);
+                expect(outlet.spy("activate")).toHaveBeenCalled();
+                expect(location.urlChanges).toEqual([]);
                 async.done();
               });
         }));
@@ -71,8 +67,8 @@ main() {
                   .config([new Route(path: "/a", component: DummyComponent)]))
               .then((_) => router.navigateByUrl("/a"))
               .then((_) {
-            expect(((outlet as dynamic)).spy("activate")).toHaveBeenCalled();
-            expect(((location as SpyLocation)).urlChanges).toEqual(["/a"]);
+            expect(outlet.spy("activate")).toHaveBeenCalled();
+            expect(location.urlChanges).toEqual(["/a"]);
             async.done();
           });
         }));
@@ -87,8 +83,8 @@ main() {
                   ]))
               .then((_) => router.navigate(["/A"]))
               .then((_) {
-            expect(((outlet as dynamic)).spy("activate")).toHaveBeenCalled();
-            expect(((location as SpyLocation)).urlChanges).toEqual(["/a"]);
+            expect(outlet.spy("activate")).toHaveBeenCalled();
+            expect(location.urlChanges).toEqual(["/a"]);
             async.done();
           });
         }));
@@ -102,8 +98,8 @@ main() {
                   .config([new Route(path: "/b", component: DummyComponent)]))
               .then((_) => router.navigateByUrl("/b", true))
               .then((_) {
-            expect(((outlet as dynamic)).spy("activate")).toHaveBeenCalled();
-            expect(((location as SpyLocation)).urlChanges).toEqual([]);
+            expect(outlet.spy("activate")).toHaveBeenCalled();
+            expect(location.urlChanges).toEqual([]);
             async.done();
           });
         }));
@@ -124,11 +120,10 @@ main() {
                   ]))
               .then((_) {
             router.subscribe((_) {
-              expect(((location as SpyLocation)).urlChanges)
-                  .toEqual(["hash: a", "replace: /b"]);
+              expect(location.urlChanges).toEqual(["hash: a", "replace: /b"]);
               async.done();
             });
-            ((location as SpyLocation)).simulateHashChange("a");
+            location.simulateHashChange("a");
           });
         }));
     it(
@@ -141,11 +136,10 @@ main() {
                   .config([new Route(path: "/a", component: DummyComponent)]))
               .then((_) {
             router.subscribe((_) {
-              expect(((location as SpyLocation)).urlChanges)
-                  .toEqual(["hash: a"]);
+              expect(location.urlChanges).toEqual(["hash: a"]);
               async.done();
             });
-            ((location as SpyLocation)).simulateHashChange("a");
+            location.simulateHashChange("a");
           });
         }));
     it(
@@ -156,13 +150,11 @@ main() {
               .registerPrimaryOutlet(outlet)
               .then((_) => router.navigateByUrl("/a"))
               .then((_) {
-            expect(((outlet as dynamic)).spy("activate"))
-                .not
-                .toHaveBeenCalled();
+            expect(outlet.spy("activate")).not.toHaveBeenCalled();
             return router
                 .config([new Route(path: "/a", component: DummyComponent)]);
           }).then((_) {
-            expect(((outlet as dynamic)).spy("activate")).toHaveBeenCalled();
+            expect(outlet.spy("activate")).toHaveBeenCalled();
             async.done();
           });
         }));
@@ -199,7 +191,7 @@ main() {
           ]);
           var instruction = router.generate(["/FirstCmp"]);
           router.navigateByInstruction(instruction).then((_) {
-            expect(((outlet as dynamic)).spy("activate")).toHaveBeenCalled();
+            expect(outlet.spy("activate")).toHaveBeenCalled();
             async.done();
           });
         }));
@@ -338,7 +330,7 @@ class DummyComponent {}
 ])
 class DummyParentComp {}
 
-RouterOutlet makeDummyOutlet() {
+makeDummyOutlet() {
   var ref = new SpyRouterOutlet();
   ref.spy("canActivate").andCallFake((_) => PromiseWrapper.resolve(true));
   ref.spy("routerCanReuse").andCallFake((_) => PromiseWrapper.resolve(false));
@@ -346,7 +338,7 @@ RouterOutlet makeDummyOutlet() {
       .spy("routerCanDeactivate")
       .andCallFake((_) => PromiseWrapper.resolve(true));
   ref.spy("activate").andCallFake((_) => PromiseWrapper.resolve(true));
-  return (ref as dynamic);
+  return ref;
 }
 
 class AppCmp {}
