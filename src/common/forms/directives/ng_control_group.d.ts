@@ -2,7 +2,6 @@ import { OnInit, OnDestroy } from 'angular2/core';
 import { ControlContainer } from './control_container';
 import { ControlGroup } from '../model';
 import { Form } from './form_interface';
-import { AsyncValidatorFn, ValidatorFn } from './validators';
 /**
  * Creates and binds a control group to a DOM element.
  *
@@ -69,6 +68,6 @@ export declare class NgControlGroup extends ControlContainer implements OnInit, 
      * Get the {@link Form} to which this group belongs.
      */
     formDirective: Form;
-    validator: ValidatorFn;
-    asyncValidator: AsyncValidatorFn;
+    validator: Function;
+    asyncValidator: Function;
 }

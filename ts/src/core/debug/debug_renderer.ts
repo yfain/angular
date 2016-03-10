@@ -73,7 +73,7 @@ export class DebugDomRenderer implements Renderer {
     if (isPresent(debugNode)) {
       var debugParent = debugNode.parent;
       if (viewRootNodes.length > 0 && isPresent(debugParent)) {
-        var debugViewRootNodes: DebugNode[] = [];
+        var debugViewRootNodes = [];
         viewRootNodes.forEach((rootNode) => debugViewRootNodes.push(getDebugNode(rootNode)));
         debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
       }

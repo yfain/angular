@@ -270,7 +270,6 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
       return Reflect.metadata(k, v);
   };
   var lang_1 = require("angular2/src/facade/lang");
-  var __make_dart_analyzer_happy = null;
   var RouteConfig = (function() {
     function RouteConfig(configs) {
       this.configs = configs;
@@ -727,7 +726,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toNonRootUrl() : '');
     };
     Instruction.prototype.toLinkUrl = function() {
-      return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '') + this.toUrlQuery();
+      return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');
     };
     Instruction.prototype._toLinkUrl = function() {
       return this._stringifyPathMatrixAuxPrefixed() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');
@@ -1250,27 +1249,6 @@ System.register("angular2/src/router/location/platform_location", [], true, func
   global.define = undefined;
   var PlatformLocation = (function() {
     function PlatformLocation() {}
-    Object.defineProperty(PlatformLocation.prototype, "pathname", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "search", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "hash", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
     return PlatformLocation;
   })();
   exports.PlatformLocation = PlatformLocation;
@@ -3011,9 +2989,6 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     Router.prototype._emitNavigationFinish = function(url) {
       async_1.ObservableWrapper.callEmit(this._subject, url);
     };
-    Router.prototype._emitNavigationFail = function(url) {
-      async_1.ObservableWrapper.callError(this._subject, url);
-    };
     Router.prototype._afterPromiseFinishNavigating = function(promise) {
       var _this = this;
       return async_1.PromiseWrapper.catchError(promise.then(function(_) {
@@ -3110,8 +3085,8 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     Router.prototype._finishNavigating = function() {
       this.navigating = false;
     };
-    Router.prototype.subscribe = function(onNext, onError) {
-      return async_1.ObservableWrapper.subscribe(this._subject, onNext, onError);
+    Router.prototype.subscribe = function(onNext) {
+      return async_1.ObservableWrapper.subscribe(this._subject, onNext);
     };
     Router.prototype.deactivate = function(instruction) {
       var _this = this;
@@ -3167,27 +3142,23 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
       this._location = location;
       this._locationSub = this._location.subscribe(function(change) {
         _this.recognize(change['url']).then(function(instruction) {
-          if (lang_1.isPresent(instruction)) {
-            _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop'])).then(function(_) {
-              if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
-                return ;
+          _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop'])).then(function(_) {
+            if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
+              return ;
+            }
+            var emitPath = instruction.toUrlPath();
+            var emitQuery = instruction.toUrlQuery();
+            if (emitPath.length > 0 && emitPath[0] != '/') {
+              emitPath = '/' + emitPath;
+            }
+            if (change['type'] == 'hashchange') {
+              if (instruction.toRootUrl() != _this._location.path()) {
+                _this._location.replaceState(emitPath, emitQuery);
               }
-              var emitPath = instruction.toUrlPath();
-              var emitQuery = instruction.toUrlQuery();
-              if (emitPath.length > 0 && emitPath[0] != '/') {
-                emitPath = '/' + emitPath;
-              }
-              if (change['type'] == 'hashchange') {
-                if (instruction.toRootUrl() != _this._location.path()) {
-                  _this._location.replaceState(emitPath, emitQuery);
-                }
-              } else {
-                _this._location.go(emitPath, emitQuery);
-              }
-            });
-          } else {
-            _this._emitNavigationFail(change['url']);
-          }
+            } else {
+              _this._location.go(emitPath, emitQuery);
+            }
+          });
         });
       });
       this.registry.configFromComponent(primaryComponent);
