@@ -100,15 +100,14 @@ export class AbstractControl {
             this._parent.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
         }
     }
-    _runValidator() {
-        return isPresent(this.validator) ? this.validator(this) : null;
-    }
+    _runValidator() { return isPresent(this.validator) ? this.validator(this) : null; }
     _runAsyncValidator(emitEvent) {
         if (isPresent(this.asyncValidator)) {
             this._status = PENDING;
             this._cancelExistingSubscription();
             var obs = toObservable(this.asyncValidator(this));
-            this._asyncValidationSubscription = ObservableWrapper.subscribe(obs, (res) => this.setErrors(res, { emitEvent: emitEvent }));
+            this._asyncValidationSubscription =
+                ObservableWrapper.subscribe(obs, res => this.setErrors(res, { emitEvent: emitEvent }));
         }
     }
     _cancelExistingSubscription() {

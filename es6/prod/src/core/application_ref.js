@@ -113,7 +113,7 @@ export class PlatformRef {
      * Retrieve the platform {@link Injector}, which is the parent injector for
      * every Angular application on the page and provides singleton providers.
      */
-    get injector() { throw unimplemented(); }
+    get injector() { return unimplemented(); }
     ;
 }
 export class PlatformRef_ extends PlatformRef {
@@ -301,12 +301,12 @@ export class ApplicationRef_ extends ApplicationRef {
                 completer.reject(e, e.stack);
             }
         });
-        return completer.promise.then((ref) => {
+        return completer.promise.then(_ => {
             let c = this._injector.get(Console);
             if (assertionsEnabled()) {
                 c.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
             }
-            return ref;
+            return _;
         });
     }
     /** @internal */

@@ -845,8 +845,7 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
         dom_adapter_1.DOM.remove(oldRoots[i]);
       }
       dom_adapter_1.DOM.appendChild(doc.body, rootEl);
-      var promise = this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector);
-      return promise.then(function(componentRef) {
+      return this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector).then(function(componentRef) {
         return new ComponentFixture_(componentRef);
       });
     };
