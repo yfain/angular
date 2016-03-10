@@ -1,6 +1,5 @@
 library angular2.test.platform.browser.bootstrap_spec;
 
-import "dart:async";
 import "package:angular2/testing_internal.dart"
     show
         AsyncTestCompleter,
@@ -34,7 +33,7 @@ import "package:angular2/src/facade/exceptions.dart" show ExceptionHandler;
 import "package:angular2/src/core/testability/testability.dart"
     show Testability, TestabilityRegistry;
 import "package:angular2/src/core/linker/dynamic_component_loader.dart"
-    show ComponentRef_, ComponentRef;
+    show ComponentRef_;
 
 @Component(selector: "hello-app")
 @View(template: "{{greeting}} world!")
@@ -268,12 +267,10 @@ main() {
     it(
         "should register each application with the testability registry",
         inject([AsyncTestCompleter], (async) {
-          Future<ComponentRef> refPromise1 =
-              bootstrap(HelloRootCmp, testProviders);
-          Future<ComponentRef> refPromise2 =
-              bootstrap(HelloRootCmp2, testProviders);
-          PromiseWrapper
-              .all([refPromise1, refPromise2]).then((List<ComponentRef> refs) {
+          var refPromise1 = bootstrap(HelloRootCmp, testProviders);
+          var refPromise2 = bootstrap(HelloRootCmp2, testProviders);
+          PromiseWrapper.all([refPromise1, refPromise2]).then(
+              (List<ApplicationRef> refs) {
             var registry = refs[0].injector.get(TestabilityRegistry);
             var testabilities = [
               refs[0].injector.get(Testability),

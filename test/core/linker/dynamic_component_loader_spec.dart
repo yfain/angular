@@ -43,7 +43,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -67,7 +67,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -91,7 +91,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -135,7 +135,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -164,7 +164,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -180,7 +180,6 @@ main() {
                 expect(error.message).toContain("ThrownInConstructor");
                 expect(() => tc.detectChanges()).not.toThrow();
                 async.done();
-                return null;
               });
             });
           }));
@@ -190,7 +189,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -213,7 +212,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -237,7 +236,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -251,7 +250,6 @@ main() {
                 expect(e.message).toContain(
                     '''The component ${ stringify ( DynamicallyLoadedWithNgContent )} has 1 <ng-content> elements, but only 0 slots were provided''');
                 async.done();
-                return null;
               });
             });
           }));
@@ -263,7 +261,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -288,7 +286,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -324,7 +322,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(
                     MyComp,
@@ -353,7 +351,7 @@ main() {
             DynamicComponentLoader,
             TestComponentBuilder,
             AsyncTestCompleter
-          ], (DynamicComponentLoader loader, TestComponentBuilder tcb, async) {
+          ], (loader, TestComponentBuilder tcb, async) {
             tcb
                 .overrideView(MyComp,
                     new ViewMetadata(template: "", directives: [Location]))
@@ -377,8 +375,7 @@ main() {
           "should allow to create, update and destroy components",
           inject(
               [AsyncTestCompleter, DynamicComponentLoader, DOCUMENT, Injector],
-              (AsyncTestCompleter async, DynamicComponentLoader loader, doc,
-                  Injector injector) {
+              (async, loader, doc, injector) {
             var rootEl = createRootElement(doc, "child-cmp");
             DOM.appendChild(doc.body, rootEl);
             loader.loadAsRoot(ChildComp, null, injector).then((componentRef) {
@@ -398,8 +395,7 @@ main() {
           "should allow to pass projectable nodes",
           inject(
               [AsyncTestCompleter, DynamicComponentLoader, DOCUMENT, Injector],
-              (AsyncTestCompleter async, DynamicComponentLoader loader, doc,
-                  Injector injector) {
+              (async, loader, doc, injector) {
             var rootEl = createRootElement(doc, "dummy");
             DOM.appendChild(doc.body, rootEl);
             loader.loadAsRoot(

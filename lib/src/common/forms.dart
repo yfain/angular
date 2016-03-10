@@ -1,6 +1,6 @@
 /**
- * 
- * 
+ * @module
+ * @description
  * This module is used for handling user input, by defining and building a [ControlGroup] that
  * consists of
  * [Control] objects, and mapping them onto the DOM. [Control] objects can then be used
@@ -63,6 +63,6 @@ const List<Type> FORM_PROVIDERS = const [FormBuilder, RadioControlRegistry];
 /**
  * See [FORM_PROVIDERS] instead.
  *
- * 
+ * @deprecated
  */
 const FORM_BINDINGS = FORM_PROVIDERS;

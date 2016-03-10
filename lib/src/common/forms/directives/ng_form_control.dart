@@ -25,7 +25,6 @@ import "shared.dart"
         composeAsyncValidators,
         isPropertyUpdated,
         selectValueAccessor;
-import "validators.dart" show ValidatorFn, AsyncValidatorFn;
 
 const formControlBinding =
     const Provider(NgControl, useExisting: NgFormControl);
@@ -122,11 +121,11 @@ class NgFormControl extends NgControl implements OnChanges {
     return [];
   }
 
-  ValidatorFn get validator {
+  Function get validator {
     return composeValidators(this._validators);
   }
 
-  AsyncValidatorFn get asyncValidator {
+  Function get asyncValidator {
     return composeAsyncValidators(this._asyncValidators);
   }
 

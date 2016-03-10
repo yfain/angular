@@ -1,6 +1,5 @@
 library angular2.src.router.interfaces;
 
-import "dart:async";
 import "instruction.dart" show ComponentInstruction;
 import "package:angular2/src/facade/lang.dart" show global;
 // This is here only so that after TS transpilation the file is not empty.
@@ -9,7 +8,6 @@ import "package:angular2/src/facade/lang.dart" show global;
 
 // https://github.com/systemjs/systemjs/issues/487 gets closed.
 var ___ignore_me = global;
-Future<dynamic> ___make_dart_analyzer_happy = null;
 
 /**
  * Defines route lifecycle method `routerOnActivate`, which is called by the router at the end of a
@@ -30,8 +28,7 @@ Future<dynamic> ___make_dart_analyzer_happy = null;
  * {@example router/ts/on_activate/on_activate_example.ts region='routerOnActivate'}
  */
 abstract class OnActivate {
-  dynamic /* dynamic | Future< dynamic > */ routerOnActivate(
-      ComponentInstruction nextInstruction,
+  dynamic routerOnActivate(ComponentInstruction nextInstruction,
       ComponentInstruction prevInstruction);
 }
 
@@ -51,8 +48,7 @@ abstract class OnActivate {
  * {@example router/ts/reuse/reuse_example.ts region='reuseCmp'}
  */
 abstract class OnReuse {
-  dynamic /* dynamic | Future< dynamic > */ routerOnReuse(
-      ComponentInstruction nextInstruction,
+  dynamic routerOnReuse(ComponentInstruction nextInstruction,
       ComponentInstruction prevInstruction);
 }
 
@@ -72,8 +68,7 @@ abstract class OnReuse {
  * {@example router/ts/on_deactivate/on_deactivate_example.ts region='routerOnDeactivate'}
  */
 abstract class OnDeactivate {
-  dynamic /* dynamic | Future< dynamic > */ routerOnDeactivate(
-      ComponentInstruction nextInstruction,
+  dynamic routerOnDeactivate(ComponentInstruction nextInstruction,
       ComponentInstruction prevInstruction);
 }
 
@@ -98,8 +93,7 @@ abstract class OnDeactivate {
  * {@example router/ts/reuse/reuse_example.ts region='reuseCmp'}
  */
 abstract class CanReuse {
-  dynamic /* bool | Future< bool > */ routerCanReuse(
-      ComponentInstruction nextInstruction,
+  dynamic routerCanReuse(ComponentInstruction nextInstruction,
       ComponentInstruction prevInstruction);
 }
 
@@ -123,7 +117,6 @@ abstract class CanReuse {
  * {@example router/ts/can_deactivate/can_deactivate_example.ts region='routerCanDeactivate'}
  */
 abstract class CanDeactivate {
-  dynamic /* bool | Future< bool > */ routerCanDeactivate(
-      ComponentInstruction nextInstruction,
+  dynamic routerCanDeactivate(ComponentInstruction nextInstruction,
       ComponentInstruction prevInstruction);
 }

@@ -1,6 +1,6 @@
 /**
- * 
- * 
+ * @module
+ * @description
  * Change detection enables data binding in Angular.
  */
 library angular2.src.core.change_detection;

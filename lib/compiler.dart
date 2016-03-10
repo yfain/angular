@@ -1,6 +1,6 @@
 /**
- * 
- * 
+ * @module
+ * @description
  * Starting point to import all compiler APIs.
  */
 library angular2.compiler;

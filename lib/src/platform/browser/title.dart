@@ -13,7 +13,7 @@ import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 class Title {
   /**
    * Get the title of the current HTML document.
-   * 
+   * @returns {string}
    */
   String getTitle() {
     return DOM.getTitle();
@@ -21,7 +21,7 @@ class Title {
 
   /**
    * Set the title of the current HTML document.
-   * 
+   * @param newTitle
    */
   setTitle(String newTitle) {
     DOM.setTitle(newTitle);

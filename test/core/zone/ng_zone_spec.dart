@@ -1,6 +1,5 @@
 library angular2.test.core.zone.ng_zone_spec;
 
-import "dart:async";
 import "package:angular2/testing_internal.dart"
     show
         AsyncTestCompleter,
@@ -702,7 +701,7 @@ commonTests() {
         inject([AsyncTestCompleter], (async) {
           logOnTurnStart();
           logOnTurnDone();
-          Future<dynamic> promise;
+          var promise;
           macroTask(() {
             _zone.runOutsideAngular(() {
               promise = PromiseWrapper

@@ -20,7 +20,6 @@ import "package:angular2/core.dart" show WrappedValue;
 import "package:angular2/src/facade/async.dart"
     show EventEmitter, ObservableWrapper, PromiseWrapper, TimerWrapper;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
-import "package:angular2/src/facade/promise.dart" show PromiseCompleter;
 
 main() {
   describe("AsyncPipe", () {
@@ -103,15 +102,15 @@ main() {
     });
     describe("Promise", () {
       var message = new Object();
-      AsyncPipe pipe;
-      PromiseCompleter<dynamic> completer;
-      SpyChangeDetectorRef ref;
+      var pipe;
+      var completer;
+      var ref;
       // adds longer timers for passing tests in IE
       var timer = (!isBlank(DOM) && browserDetection.isIE) ? 50 : 0;
       beforeEach(() {
         completer = PromiseWrapper.completer();
         ref = new SpyChangeDetectorRef();
-        pipe = new AsyncPipe((ref as dynamic));
+        pipe = new AsyncPipe(ref);
       });
       describe("transform", () {
         it("should return null when subscribing to a promise", () {

@@ -313,8 +313,7 @@ main() {
     // which could skrew up text node indices.
     it(
         "should support text nodes after content tags",
-        inject([TestComponentBuilder, AsyncTestCompleter],
-            (TestComponentBuilder tcb, async) {
+        inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) {
           tcb
               .overrideView(
                   MainComp,
@@ -335,8 +334,7 @@ main() {
     // which could skrew up text node indices.
     it(
         "should support text nodes after style tags",
-        inject([TestComponentBuilder, AsyncTestCompleter],
-            (TestComponentBuilder tcb, async) {
+        inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) {
           tcb
               .overrideView(
                   MainComp,

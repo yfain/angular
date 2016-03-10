@@ -139,7 +139,7 @@ class UrlParser {
     }
     var path = matchUrlSegment(this._remaining);
     this.capture(path);
-    List<Url> aux = [];
+    var aux = [];
     if (this.peekStartsWith("(")) {
       aux = this.parseAuxiliaryRoutes();
     }
@@ -152,7 +152,7 @@ class UrlParser {
       this.capture("/");
       child = this.parseSegment();
     }
-    Map<String, dynamic> queryParams = null;
+    var queryParams = null;
     if (this.peekStartsWith("?")) {
       queryParams = this.parseQueryParams();
     }
@@ -169,15 +169,15 @@ class UrlParser {
     }
     var path = matchUrlSegment(this._remaining);
     this.capture(path);
-    Map<String, dynamic> matrixParams = null;
+    var matrixParams = null;
     if (this.peekStartsWith(";")) {
       matrixParams = this.parseMatrixParams();
     }
-    List<Url> aux = [];
+    var aux = [];
     if (this.peekStartsWith("(")) {
       aux = this.parseAuxiliaryRoutes();
     }
-    Url child = null;
+    var child = null;
     if (this.peekStartsWith("/") && !this.peekStartsWith("//")) {
       this.capture("/");
       child = this.parseSegment();
@@ -186,7 +186,7 @@ class UrlParser {
   }
 
   Map<String, dynamic> parseQueryParams() {
-    Map<String, dynamic> params = {};
+    var params = {};
     this.capture("?");
     this.parseParam(params);
     while (this._remaining.length > 0 && this.peekStartsWith("&")) {
@@ -197,7 +197,7 @@ class UrlParser {
   }
 
   Map<String, dynamic> parseMatrixParams() {
-    Map<String, dynamic> params = {};
+    var params = {};
     while (this._remaining.length > 0 && this.peekStartsWith(";")) {
       this.capture(";");
       this.parseParam(params);
@@ -224,7 +224,7 @@ class UrlParser {
   }
 
   List<Url> parseAuxiliaryRoutes() {
-    List<Url> routes = [];
+    var routes = [];
     this.capture("(");
     while (!this.peekStartsWith(")") && this._remaining.length > 0) {
       routes.add(this.parseSegment());

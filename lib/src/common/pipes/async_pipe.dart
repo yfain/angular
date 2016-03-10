@@ -32,8 +32,7 @@ class ObservableStrategy {
 }
 
 class PromiseStrategy {
-  dynamic createSubscription(
-      Future<dynamic> async, dynamic /* (v: any) => any */ updateLatestValue) {
+  dynamic createSubscription(dynamic async, dynamic updateLatestValue) {
     return async.then(updateLatestValue);
   }
 
@@ -73,7 +72,7 @@ class AsyncPipe implements PipeTransform, OnDestroy {
   /** @internal */
   Object _subscription = null;
   /** @internal */
-  dynamic /* Stream< dynamic > | Future< dynamic > | EventEmitter< dynamic > */ _obj =
+  dynamic /* Stream < dynamic > | Future < dynamic > | EventEmitter < dynamic > */ _obj =
       null;
   dynamic _strategy = null;
   /** @internal */
@@ -88,7 +87,7 @@ class AsyncPipe implements PipeTransform, OnDestroy {
   }
 
   dynamic transform(
-      dynamic /* Stream< dynamic > | Future< dynamic > | EventEmitter< dynamic > */ obj,
+      dynamic /* Stream < dynamic > | Future < dynamic > | EventEmitter < dynamic > */ obj,
       [List<dynamic> args]) {
     if (isBlank(this._obj)) {
       if (isPresent(obj)) {
@@ -111,7 +110,7 @@ class AsyncPipe implements PipeTransform, OnDestroy {
 
   /** @internal */
   void _subscribe(
-      dynamic /* Stream< dynamic > | Future< dynamic > | EventEmitter< dynamic > */ obj) {
+      dynamic /* Stream < dynamic > | Future < dynamic > | EventEmitter < dynamic > */ obj) {
     this._obj = obj;
     this._strategy = this._selectStrategy(obj);
     this._subscription = this._strategy.createSubscription(
@@ -120,7 +119,7 @@ class AsyncPipe implements PipeTransform, OnDestroy {
 
   /** @internal */
   dynamic _selectStrategy(
-      dynamic /* Stream< dynamic > | Future< dynamic > | EventEmitter< dynamic > */ obj) {
+      dynamic /* Stream < dynamic > | Future < dynamic > | EventEmitter < dynamic > */ obj) {
     if (isPromise(obj)) {
       return _promiseStrategy;
     } else if (ObservableWrapper.isObservable(obj)) {

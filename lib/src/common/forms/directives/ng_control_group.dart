@@ -16,8 +16,7 @@ import "shared.dart"
     show controlPath, composeValidators, composeAsyncValidators;
 import "../model.dart" show ControlGroup;
 import "form_interface.dart" show Form;
-import "../validators.dart" show NG_VALIDATORS, NG_ASYNC_VALIDATORS;
-import "validators.dart" show AsyncValidatorFn, ValidatorFn;
+import "../validators.dart" show Validators, NG_VALIDATORS, NG_ASYNC_VALIDATORS;
 
 const controlGroupProvider =
     const Provider(ControlContainer, useExisting: NgControlGroup);
@@ -117,11 +116,11 @@ class NgControlGroup extends ControlContainer implements OnInit, OnDestroy {
     return this._parent.formDirective;
   }
 
-  ValidatorFn get validator {
+  Function get validator {
     return composeValidators(this._validators);
   }
 
-  AsyncValidatorFn get asyncValidator {
+  Function get asyncValidator {
     return composeAsyncValidators(this._asyncValidators);
   }
 }

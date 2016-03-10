@@ -1,13 +1,12 @@
 library angular2.src.common.forms.model;
 
 import "package:angular2/src/facade/lang.dart"
-    show isPresent, isBlank, normalizeBool;
+    show StringWrapper, isPresent, isBlank, normalizeBool;
 import "package:angular2/src/facade/async.dart"
     show Stream, EventEmitter, ObservableWrapper;
 import "package:angular2/src/facade/promise.dart" show PromiseWrapper;
 import "package:angular2/src/facade/collection.dart"
     show StringMapWrapper, ListWrapper;
-import "directives/validators.dart" show ValidatorFn, AsyncValidatorFn;
 
 /**
  * Indicates that a Control is valid, i.e. that no errors exist in the input value.
@@ -27,7 +26,7 @@ bool isControl(Object control) {
 }
 
 _find(AbstractControl control,
-    dynamic /* List< dynamic /* String | num */ > | String */ path) {
+    dynamic /* List < dynamic /* String | num */ > | String */ path) {
   if (isBlank(path)) return null;
   if (!(path is List)) {
     path = ((path as String)).split("/");
@@ -53,8 +52,8 @@ Stream<dynamic> toObservable(dynamic r) {
  *
  */
 abstract class AbstractControl {
-  ValidatorFn validator;
-  AsyncValidatorFn asyncValidator;
+  Function validator;
+  Function asyncValidator;
   /** @internal */
   dynamic _value;
   EventEmitter<dynamic> _valueChanges;
@@ -157,7 +156,7 @@ abstract class AbstractControl {
     }
   }
 
-  Map<String, dynamic> _runValidator() {
+  _runValidator() {
     return isPresent(this.validator) ? this.validator(this) : null;
   }
 
@@ -167,9 +166,7 @@ abstract class AbstractControl {
       this._cancelExistingSubscription();
       var obs = toObservable(this.asyncValidator(this));
       this._asyncValidationSubscription = ObservableWrapper.subscribe(
-          obs,
-          (Map<String, dynamic> res) =>
-              this.setErrors(res, emitEvent: emitEvent));
+          obs, (res) => this.setErrors(res, emitEvent: emitEvent));
     }
   }
 
@@ -215,7 +212,7 @@ abstract class AbstractControl {
   }
 
   AbstractControl find(
-      dynamic /* List< dynamic /* String | num */ > | String */ path) {
+      dynamic /* List < dynamic /* String | num */ > | String */ path) {
     return _find(this, path);
   }
 
@@ -289,8 +286,8 @@ class Control extends AbstractControl {
   Function _onChange;
   Control(
       [dynamic value = null,
-      ValidatorFn validator = null,
-      AsyncValidatorFn asyncValidator = null])
+      Function validator = null,
+      Function asyncValidator = null])
       : super(validator, asyncValidator) {
     /* super call moved to initializer */;
     this._value = value;
@@ -356,8 +353,8 @@ class ControlGroup extends AbstractControl {
   Map<String, bool> _optionals;
   ControlGroup(this.controls,
       [Map<String, bool> optionals = null,
-      ValidatorFn validator = null,
-      AsyncValidatorFn asyncValidator = null])
+      Function validator = null,
+      Function asyncValidator = null])
       : super(validator, asyncValidator) {
     /* super call moved to initializer */;
     this._optionals = isPresent(optionals) ? optionals : {};
@@ -479,7 +476,7 @@ class ControlGroup extends AbstractControl {
 class ControlArray extends AbstractControl {
   List<AbstractControl> controls;
   ControlArray(this.controls,
-      [ValidatorFn validator = null, AsyncValidatorFn asyncValidator = null])
+      [Function validator = null, Function asyncValidator = null])
       : super(validator, asyncValidator) {
     /* super call moved to initializer */;
     this._initObservables();

@@ -1,6 +1,5 @@
 library angular2.test.common.forms.validators_spec;
 
-import "dart:async";
 import "package:angular2/testing_internal.dart"
     show
         ddescribe,
@@ -146,7 +145,7 @@ main() {
           asyncValidator("expected", {"two": true})
         ]);
         var value = null;
-        ((c(new Control("invalid")) as Future<dynamic>)).then((v) => value = v);
+        c(new Control("invalid")).then((v) => value = v);
         tick(1);
         expect(value).toEqual({"one": true, "two": true});
       }));
@@ -155,8 +154,7 @@ main() {
           asyncValidator("expected", {"one": true})
         ]);
         var value = null;
-        ((c(new Control("expected")) as Future<dynamic>))
-            .then((v) => value = v);
+        c(new Control("expected")).then((v) => value = v);
         tick(1);
         expect(value).toEqual(null);
       }));
@@ -166,7 +164,7 @@ main() {
           null
         ]);
         var value = null;
-        ((c(new Control("invalid")) as Future<dynamic>)).then((v) => value = v);
+        c(new Control("invalid")).then((v) => value = v);
         tick(1);
         expect(value).toEqual({"one": true});
       }));
