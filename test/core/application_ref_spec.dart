@@ -72,7 +72,7 @@ main() {
               async.done();
             });
           }));
-      mockAsyncAppInitializer(PromiseCompleter<dynamic> completer,
+      mockAsyncAppInitializer(completer,
           [List<dynamic> providers = null, Injector injector]) {
         return () {
           if (providers != null) {
@@ -82,11 +82,23 @@ main() {
           return completer.promise;
         };
       }
+      SpyObject createSpyPromiseCompleter() {
+        var completer = PromiseWrapper.completer();
+        var completerSpy = (new SpyObject() as dynamic);
+        // Note that in TypeScript we need to provide a value for the promise attribute
+
+        // whereas in dart we need to override the promise getter
+        completerSpy.promise = completer.promise;
+        completerSpy.spy("get:promise").andReturn(completer.promise);
+        completerSpy.spy("resolve").andCallFake(completer.resolve);
+        completerSpy.spy("reject").andCallFake(completer.reject);
+        return completerSpy;
+      }
       it(
           "should wait for asyncronous app initializers",
           inject([AsyncTestCompleter, Injector], (async, injector) {
             var ref = new PlatformRef_(injector, null);
-            PromiseCompleter<dynamic> completer = PromiseWrapper.completer();
+            var completer = createSpyPromiseCompleter();
             var SYNC_PROVIDERS = [
               new Provider(Bar, useValue: new Bar()),
               new Provider(APP_INITIALIZER,
@@ -97,7 +109,8 @@ main() {
                   appRef.injector,
                   ListWrapper.slice(
                       SYNC_PROVIDERS, 0, SYNC_PROVIDERS.length - 1));
-              completer.promise.then((_) => async.done());
+              expect(completer.spy("resolve")).toHaveBeenCalled();
+              async.done();
             });
           }));
       it(
@@ -105,12 +118,12 @@ main() {
           inject([AsyncTestCompleter, Injector], (async, injector) {
             var ref = new PlatformRef_(injector, null);
             var ASYNC_PROVIDERS = [new Provider(Foo, useValue: new Foo())];
-            PromiseCompleter<dynamic> completer = PromiseWrapper.completer();
+            var completer = createSpyPromiseCompleter();
             var SYNC_PROVIDERS = [
               new Provider(Bar, useValue: new Bar()),
               new Provider(APP_INITIALIZER,
                   useFactory: (injector) => mockAsyncAppInitializer(
-                      (completer as dynamic), ASYNC_PROVIDERS, injector),
+                      completer, ASYNC_PROVIDERS, injector),
                   multi: true,
                   deps: [Injector])
             ];
@@ -123,7 +136,8 @@ main() {
                   appRef.injector,
                   ListWrapper.slice(
                       SYNC_PROVIDERS, 0, SYNC_PROVIDERS.length - 1));
-              completer.promise.then((_) => async.done());
+              expect(completer.spy("resolve")).toHaveBeenCalled();
+              async.done();
             });
           }));
     });

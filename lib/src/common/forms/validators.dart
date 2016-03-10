@@ -8,7 +8,6 @@ import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper;
 import "package:angular2/core.dart" show OpaqueToken;
 import "model.dart" as modelModule;
-import "directives/validators.dart" show ValidatorFn, AsyncValidatorFn;
 
 /**
  * Providers for validators to be used for [Control]s in a form.
@@ -46,7 +45,7 @@ class Validators {
   /**
    * Validator that requires controls to have a non-empty value.
    */
-  static Map<String, bool> required(modelModule.AbstractControl control) {
+  static Map<String, bool> required(modelModule.Control control) {
     return isBlank(control.value) ||
             (isString(control.value) && control.value == "")
         ? {"required": true}
@@ -56,9 +55,8 @@ class Validators {
   /**
    * Validator that requires controls to have a value of a minimum length.
    */
-  static ValidatorFn minLength(num minLength) {
-    return /* Map < String , dynamic > */ (modelModule
-        .AbstractControl control) {
+  static Function minLength(num minLength) {
+    return /* Map < String , dynamic > */ (modelModule.Control control) {
       if (isPresent(Validators.required(control))) return null;
       String v = control.value;
       return v.length < minLength
@@ -75,9 +73,8 @@ class Validators {
   /**
    * Validator that requires controls to have a value of a maximum length.
    */
-  static ValidatorFn maxLength(num maxLength) {
-    return /* Map < String , dynamic > */ (modelModule
-        .AbstractControl control) {
+  static Function maxLength(num maxLength) {
+    return /* Map < String , dynamic > */ (modelModule.Control control) {
       if (isPresent(Validators.required(control))) return null;
       String v = control.value;
       return v.length > maxLength
@@ -94,9 +91,8 @@ class Validators {
   /**
    * Validator that requires a control to match a regex to its value.
    */
-  static ValidatorFn pattern(String pattern) {
-    return /* Map < String , dynamic > */ (modelModule
-        .AbstractControl control) {
+  static Function pattern(String pattern) {
+    return /* Map < String , dynamic > */ (modelModule.Control control) {
       if (isPresent(Validators.required(control))) return null;
       var regex = new RegExp('''^${ pattern}\$''');
       String v = control.value;
@@ -114,7 +110,7 @@ class Validators {
   /**
    * No-op validator.
    */
-  static Map<String, bool> nullValidator(modelModule.AbstractControl c) {
+  static Map<String, bool> nullValidator(dynamic c) {
     return null;
   }
 
@@ -122,7 +118,7 @@ class Validators {
    * Compose multiple validators into a single function that returns the union
    * of the individual error maps.
    */
-  static ValidatorFn compose(List<ValidatorFn> validators) {
+  static Function compose(List<Function> validators) {
     if (isBlank(validators)) return null;
     var presentValidators = validators.where(isPresent).toList();
     if (presentValidators.length == 0) return null;
@@ -131,12 +127,12 @@ class Validators {
     };
   }
 
-  static AsyncValidatorFn composeAsync(List<AsyncValidatorFn> validators) {
+  static Function composeAsync(List<Function> validators) {
     if (isBlank(validators)) return null;
     var presentValidators = validators.where(isPresent).toList();
     if (presentValidators.length == 0) return null;
     return (modelModule.AbstractControl control) {
-      var promises = _executeAsyncValidators(control, presentValidators)
+      var promises = _executeValidators(control, presentValidators)
           .map(_convertToPromise)
           .toList();
       return PromiseWrapper.all(promises).then(_mergeErrors);
@@ -149,19 +145,15 @@ dynamic _convertToPromise(dynamic obj) {
 }
 
 List<dynamic> _executeValidators(
-    modelModule.AbstractControl control, List<ValidatorFn> validators) {
-  return validators.map((v) => v(control)).toList();
-}
-
-List<dynamic> _executeAsyncValidators(
-    modelModule.AbstractControl control, List<AsyncValidatorFn> validators) {
+    modelModule.AbstractControl control, List<Function> validators) {
   return validators.map((v) => v(control)).toList();
 }
 
 Map<String, dynamic> _mergeErrors(List<dynamic> arrayOfErrors) {
-  Map<String, dynamic> res = arrayOfErrors.fold({},
-      (Map<String, dynamic> res, Map<String, dynamic> errors) {
-    return isPresent(errors) ? StringMapWrapper.merge(res, errors) : res;
+  var res = arrayOfErrors.fold({}, (res, errors) {
+    return isPresent(errors)
+        ? StringMapWrapper.merge((res as dynamic), (errors as dynamic))
+        : res;
   });
   return StringMapWrapper.isEmpty(res) ? null : res;
 }

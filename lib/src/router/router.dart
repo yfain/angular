@@ -76,7 +76,7 @@ class Router {
    *
    * You probably don't need to use this unless you're writing a reusable component.
    */
-  Future<dynamic> registerPrimaryOutlet(RouterOutlet outlet) {
+  Future<bool> registerPrimaryOutlet(RouterOutlet outlet) {
     if (isPresent(outlet.name)) {
       throw new BaseException(
           '''registerPrimaryOutlet expects to be called with an unnamed outlet.''');
@@ -109,7 +109,7 @@ class Router {
    *
    * You probably don't need to use this unless you're writing a reusable component.
    */
-  Future<dynamic> registerAuxOutlet(RouterOutlet outlet) {
+  Future<bool> registerAuxOutlet(RouterOutlet outlet) {
     var outletName = outlet.name;
     if (isBlank(outletName)) {
       throw new BaseException(
@@ -225,8 +225,7 @@ class Router {
       if (isPresent(instruction.child)) {
         unsettledInstructions.add(this._settleInstruction(instruction.child));
       }
-      StringMapWrapper.forEach(instruction.auxInstruction,
-          (Instruction instruction, _) {
+      StringMapWrapper.forEach(instruction.auxInstruction, (instruction, _) {
         unsettledInstructions.add(this._settleInstruction(instruction));
       });
       return PromiseWrapper.all(unsettledInstructions);
@@ -256,10 +255,6 @@ class Router {
 
   void _emitNavigationFinish(url) {
     ObservableWrapper.callEmit(this._subject, url);
-  }
-
-  void _emitNavigationFail(url) {
-    ObservableWrapper.callError(this._subject, url);
   }
 
   Future<dynamic> _afterPromiseFinishNavigating(Future<dynamic> promise) {
@@ -314,7 +309,7 @@ class Router {
       next = this._outlet.routerCanDeactivate(componentInstruction);
     }
     // TODO: aux route lifecycle hooks
-    return next.then(/* dynamic /* bool | Future< bool > */ */ (result) {
+    return next.then((result) {
       if (result == false) {
         return false;
       }
@@ -349,7 +344,7 @@ class Router {
         });
       }
     }
-    List<Future<dynamic>> promises = [];
+    var promises = [];
     this._auxRouters.forEach((name, router) {
       if (isPresent(instruction.auxInstruction[name])) {
         promises.add(router.commit(instruction.auxInstruction[name]));
@@ -371,9 +366,8 @@ class Router {
   /**
    * Subscribe to URL updates from the router
    */
-  Object subscribe(dynamic /* (value: any) => void */ onNext,
-      [dynamic /* (value: any) => void */ onError]) {
-    return ObservableWrapper.subscribe(this._subject, onNext, onError);
+  Object subscribe(dynamic /* (value: any) => void */ onNext) {
+    return ObservableWrapper.subscribe(this._subject, onNext);
   }
 
   /**
@@ -406,7 +400,7 @@ class Router {
   }
 
   List<Instruction> _getAncestorInstructions() {
-    List<Instruction> ancestorInstructions = [this.currentInstruction];
+    var ancestorInstructions = [this.currentInstruction];
     Router ancestorRouter = this;
     while (isPresent(ancestorRouter = ancestorRouter.parent)) {
       (ancestorInstructions..insert(0, ancestorRouter.currentInstruction))
@@ -450,39 +444,35 @@ class RootRouter extends Router {
     this._locationSub = this._location.subscribe((change) {
       // we call recognize ourselves
       this.recognize(change["url"]).then((instruction) {
-        if (isPresent(instruction)) {
-          this
-              .navigateByInstruction(instruction, isPresent(change["pop"]))
-              .then((_) {
-            // this is a popstate event; no need to change the URL
-            if (isPresent(change["pop"]) && change["type"] != "hashchange") {
-              return;
+        this
+            .navigateByInstruction(instruction, isPresent(change["pop"]))
+            .then((_) {
+          // this is a popstate event; no need to change the URL
+          if (isPresent(change["pop"]) && change["type"] != "hashchange") {
+            return;
+          }
+          var emitPath = instruction.toUrlPath();
+          var emitQuery = instruction.toUrlQuery();
+          if (emitPath.length > 0 && emitPath[0] != "/") {
+            emitPath = "/" + emitPath;
+          }
+          // Because we've opted to use All hashchange events occur outside Angular.
+
+          // However, apps that are migrating might have hash links that operate outside
+
+          // angular to which routing must respond.
+
+          // To support these cases where we respond to hashchanges and redirect as a
+
+          // result, we need to replace the top item on the stack.
+          if (change["type"] == "hashchange") {
+            if (instruction.toRootUrl() != this._location.path()) {
+              this._location.replaceState(emitPath, emitQuery);
             }
-            var emitPath = instruction.toUrlPath();
-            var emitQuery = instruction.toUrlQuery();
-            if (emitPath.length > 0 && emitPath[0] != "/") {
-              emitPath = "/" + emitPath;
-            }
-            // Because we've opted to use All hashchange events occur outside Angular.
-
-            // However, apps that are migrating might have hash links that operate outside
-
-            // angular to which routing must respond.
-
-            // To support these cases where we respond to hashchanges and redirect as a
-
-            // result, we need to replace the top item on the stack.
-            if (change["type"] == "hashchange") {
-              if (instruction.toRootUrl() != this._location.path()) {
-                this._location.replaceState(emitPath, emitQuery);
-              }
-            } else {
-              this._location.go(emitPath, emitQuery);
-            }
-          });
-        } else {
-          this._emitNavigationFail(change["url"]);
-        }
+          } else {
+            this._location.go(emitPath, emitQuery);
+          }
+        });
       });
     });
     this.registry.configFromComponent(primaryComponent);
@@ -541,7 +531,7 @@ Future<bool> canActivateOne(
     next = canActivateOne(nextInstruction.child,
         isPresent(prevInstruction) ? prevInstruction.child : null);
   }
-  return next.then(/* bool */ (bool result) {
+  return next.then((result) {
     if (result == false) {
       return false;
     }

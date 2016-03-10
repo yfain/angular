@@ -887,8 +887,7 @@ declareTests() {
                   fixture = root;
                 });
                 tick();
-                PushCmpWithAsyncPipe cmp =
-                    fixture.debugElement.children[0].getLocal("cmp");
+                var cmp = fixture.debugElement.children[0].getLocal("cmp");
                 fixture.detectChanges();
                 expect(cmp.numberOfChecks).toEqual(1);
                 fixture.detectChanges();
@@ -1223,7 +1222,7 @@ declareTests() {
                   .createAsync(MyComp)
                   .then((fixture) {
                 var tc = fixture.debugElement.children[0].children[0];
-                DynamicViewport dynamicVp = tc.inject(DynamicViewport);
+                var dynamicVp = tc.inject(DynamicViewport);
                 dynamicVp.done.then((_) {
                   fixture.detectChanges();
                   expect(fixture
@@ -1646,7 +1645,7 @@ declareTests() {
     it(
         "should support moving embedded views around",
         inject([TestComponentBuilder, AsyncTestCompleter, ANCHOR_ELEMENT],
-            (TestComponentBuilder tcb, async, anchorElement) {
+            (tcb, async, anchorElement) {
           tcb
               .overrideView(
                   MyComp,
@@ -2081,7 +2080,7 @@ class SimpleImperativeViewComponent {
 @Directive(selector: "dynamic-vp")
 @Injectable()
 class DynamicViewport {
-  Future<dynamic> done;
+  var done;
   DynamicViewport(ViewContainerRef vc, Compiler compiler) {
     var myService = new MyService();
     myService.greeting = "dynamic greet";

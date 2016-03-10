@@ -71,13 +71,12 @@ main() {
       runtimeMetadataResolver = _runtimeMetadataResolver;
     }));
     describe("compile templates", () {
-      runTests(dynamic /* (components: Type[]) => Promise<any[]> */ compile) {
+      runTests(compile) {
         it(
             "should throw for non components",
             inject([AsyncTestCompleter], (async) {
               PromiseWrapper.catchError(
-                  PromiseWrapper.wrap(
-                      () => compile([NonComponent])), /* dynamic */ (error) {
+                  PromiseWrapper.wrap(() => compile([NonComponent])), (error) {
                 expect(error.message).toEqual(
                     '''Could not compile \'${ stringify ( NonComponent )}\' because it is not a component.''');
                 async.done();

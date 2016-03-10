@@ -65,13 +65,6 @@ main() {
         expect(el).not.toHaveCssClass("fatias");
       });
     });
-    describe("toMatchPAttern", () {
-      it("should assert that a string matches a given pattern", () {
-        expect("matias").toMatchPattern(new RegExp(r'ias$'));
-        expect("tobias").toMatchPattern(new RegExp(r'ias$'));
-        expect("joonas").not.toMatchPattern(new RegExp(r'ias$'));
-      });
-    });
     describe("toEqual for Maps", () {
       it("should detect equality for same reference", () {
         var m1 = MapWrapper.createFromStringMap({"a": 1});

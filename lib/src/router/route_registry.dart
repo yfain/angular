@@ -35,9 +35,8 @@ import "route_config/route_config_normalizer.dart"
     show normalizeRouteConfig, assertComponentExists;
 import "url_parser.dart"
     show parser, Url, convertUrlParamsToArray, pathSegmentsToUrl;
-import "rules/route_paths/route_path.dart" show GeneratedUrl;
 
-var _resolveToNull = PromiseWrapper.resolve/*< Instruction >*/(null);
+var _resolveToNull = PromiseWrapper.resolve(null);
 // A LinkItemArray is an array, which describes a set of routes
 
 // The items in the array are found in groups:
@@ -176,10 +175,9 @@ class RouteRegistry {
         .map((Future<RouteMatch> candidate) =>
             candidate.then((RouteMatch candidate) {
               if (candidate is PathMatch) {
-                List<Instruction> auxParentInstructions =
-                    ancestorInstructions.length > 0
-                        ? [ListWrapper.last(ancestorInstructions)]
-                        : [];
+                var auxParentInstructions = ancestorInstructions.length > 0
+                    ? [ListWrapper.last(ancestorInstructions)]
+                    : [];
                 var auxInstructions = this._auxRoutesToUnresolved(
                     candidate.remainingAux, auxParentInstructions);
                 var instruction = new ResolvedInstruction(
@@ -188,7 +186,7 @@ class RouteRegistry {
                     candidate.instruction.terminal) {
                   return instruction;
                 }
-                List<Instruction> newAncestorInstructions =
+                var newAncestorInstructions =
                     (new List.from(ancestorInstructions)
                       ..addAll([instruction]));
                 return this
@@ -220,9 +218,7 @@ class RouteRegistry {
         possibleMatches.length == 0) {
       return PromiseWrapper.resolve(this.generateDefault(parentComponent));
     }
-    return PromiseWrapper
-        .all/*< Instruction >*/(matchPromises)
-        .then(mostSpecific);
+    return PromiseWrapper.all(matchPromises).then(mostSpecific);
   }
 
   Map<String, Instruction> _auxRoutesToUnresolved(
@@ -397,7 +393,7 @@ class RouteRegistry {
 
       // perform a navigation
       if (isBlank(routeRecognizer.handler.componentType)) {
-        GeneratedUrl generatedUrl =
+        var generatedUrl =
             routeRecognizer.generateComponentPathValues(routeParams);
         return new UnresolvedInstruction(() {
           return routeRecognizer.handler.resolveComponentType().then((_) {
@@ -416,7 +412,7 @@ class RouteRegistry {
     // If we have an ancestor instruction, we preserve whatever aux routes are active from it.
     while (linkParamIndex < linkParams.length &&
         isArray(linkParams[linkParamIndex])) {
-      List<Instruction> auxParentInstruction = [parentInstruction];
+      var auxParentInstruction = [parentInstruction];
       var auxInstruction = this._generate(linkParams[linkParamIndex],
           auxParentInstruction, null, true, _originalLink);
       // TODO: this will not work for aux routes with parameters or multiple segments
@@ -434,7 +430,7 @@ class RouteRegistry {
       if (componentInstruction.terminal) {
         if (linkParamIndex >= linkParams.length) {}
       } else {
-        List<Instruction> childAncestorComponents =
+        var childAncestorComponents =
             (new List.from(ancestorInstructions)..addAll([instruction]));
         var remainingLinkParams = ListWrapper.slice(linkParams, linkParamIndex);
         childInstruction = this._generate(remainingLinkParams,

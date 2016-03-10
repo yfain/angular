@@ -11,7 +11,7 @@ import "package:angular2/src/facade/lang.dart" show isBlank;
 
 main() {
   describe("MockViewResolver", () {
-    MockViewResolver viewResolver;
+    var viewResolver;
     beforeEach(() {
       viewResolver = new MockViewResolver();
     });

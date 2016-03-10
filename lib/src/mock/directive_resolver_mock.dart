@@ -54,14 +54,14 @@ class MockDirectiveResolver extends DirectiveResolver {
   }
 
   /**
-   * 
+   * @deprecated
    */
   void setBindingsOverride(Type type, List<dynamic> bindings) {
     this._providerOverrides[type] = bindings;
   }
 
   /**
-   * 
+   * @deprecated
    */
   void setViewBindingsOverride(Type type, List<dynamic> viewBindings) {
     this.viewProviderOverrides[type] = viewBindings;

@@ -20,8 +20,6 @@ import "package:angular2/src/core/reflection/reflection.dart"
     show reflector, ReflectionInfo;
 import "package:angular2/src/core/linker/compiler.dart" show Compiler_;
 import "package:angular2/src/core/linker/view.dart" show HostViewFactory;
-import "package:angular2/src/core/linker/view_ref.dart"
-    show HostViewFactoryRef_;
 
 main() {
   describe("Compiler", () {
@@ -34,14 +32,11 @@ main() {
     }));
     it(
         "should read the template from an annotation",
-        inject([AsyncTestCompleter, Compiler], (async, Compiler compiler) {
-          compiler
-              .compileInHost(SomeComponent)
-              .then((HostViewFactoryRef_ hostViewFactoryRef) {
+        inject([AsyncTestCompleter, Compiler], (async, compiler) {
+          compiler.compileInHost(SomeComponent).then((hostViewFactoryRef) {
             expect(hostViewFactoryRef.internalHostViewFactory)
                 .toBe(someHostViewFactory);
             async.done();
-            return null;
           });
         }));
     it(

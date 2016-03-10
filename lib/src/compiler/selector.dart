@@ -180,8 +180,8 @@ class SelectorMatcher {
 
   /**
    * Add an object that can be found later on by calling `match`.
-   * 
-   * 
+   * @param cssSelector A css selector
+   * @param callbackCtxt An opaque object that will be given to the callback of the `match` function
    */
   _addSelectable(CssSelector cssSelector, dynamic callbackCtxt,
       SelectorListContext listContext) {
@@ -260,9 +260,9 @@ class SelectorMatcher {
   /**
    * Find the objects that have been added via `addSelectable`
    * whose css selector is contained in the given css selector.
-   * 
-   * 
-   * 
+   * @param cssSelector A css selector
+   * @param matchedCallback This callback will be called with the object handed into `addSelectable`
+   * @return boolean true if a match was found
   */
   bool match(CssSelector cssSelector,
       dynamic /* (c: CssSelector, a: any) => void */ matchedCallback) {

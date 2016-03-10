@@ -282,13 +282,13 @@ class _Scanner {
   /**
    * Tokenize a 2/3 char long operator
    *
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
+   * @param start start index in the expression
+   * @param one first symbol (always part of the operator)
+   * @param twoCode code point for the second symbol
+   * @param two second symbol (part of the operator when the second code point matches)
+   * @param threeCode code point for the third symbol
+   * @param three third symbol (part of the operator when provided and matches source expression)
+   * @returns {Token}
    */
   Token scanComplexOperator(num start, String one, num twoCode, String two,
       [num threeCode, String three]) {

@@ -28,18 +28,9 @@ abstract class PlatformLocation {
   String getBaseHrefFromDOM();
   void onPopState(UrlChangeListener fn);
   void onHashChange(UrlChangeListener fn);
-  /* abstract */ String get pathname {
-    return null;
-  }
-
-  /* abstract */ String get search {
-    return null;
-  }
-
-  /* abstract */ String get hash {
-    return null;
-  }
-
+  String pathname;
+  String search;
+  String hash;
   void replaceState(dynamic state, String title, String url);
   void pushState(dynamic state, String title, String url);
   void forward();

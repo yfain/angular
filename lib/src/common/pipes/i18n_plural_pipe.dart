@@ -44,7 +44,7 @@ class I18nPluralPipe implements PipeTransform {
   String transform(num value, [List<dynamic> args = null]) {
     String key;
     String valueStr;
-    Map<String, String> pluralMap = ((args[0]) as Map<String, String>);
+    Map<String, String> pluralMap = args[0];
     if (!isStringMap(pluralMap)) {
       throw new InvalidPipeArgumentException(I18nPluralPipe, pluralMap);
     }

@@ -237,7 +237,7 @@ class Provider {
 /**
  * See [Provider] instead.
  *
- * 
+ * @deprecated
  */
 class Binding extends Provider {
   const Binding(token, {toClass, toValue, toAlias, toFactory, deps, multi})
@@ -249,28 +249,28 @@ class Binding extends Provider {
             deps: deps,
             multi: multi);
   /**
-   * 
+   * @deprecated
    */
   get toClass {
     return this.useClass;
   }
 
   /**
-   * 
+   * @deprecated
    */
   get toAlias {
     return this.useExisting;
   }
 
   /**
-   * 
+   * @deprecated
    */
   get toFactory {
     return this.useFactory;
   }
 
   /**
-   * 
+   * @deprecated
    */
   get toValue {
     return this.useValue;
@@ -311,7 +311,7 @@ abstract class ResolvedProvider {
 /**
  * See [ResolvedProvider] instead.
  *
- * 
+ * @deprecated
  */
 abstract class ResolvedBinding implements ResolvedProvider {}
 
@@ -352,7 +352,7 @@ class ResolvedFactory {
  *
  * The `token` is most commonly a class or [angular2/di/OpaqueToken].
  *
- * 
+ * @deprecated
  */
 ProviderBuilder bind(token) {
   return new ProviderBuilder(token);
@@ -505,7 +505,7 @@ class ProviderBuilder {
  */
 ResolvedFactory resolveFactory(Provider provider) {
   Function factoryFn;
-  List<Dependency> resolvedDeps;
+  var resolvedDeps;
   if (isPresent(provider.useClass)) {
     var useClass = resolveForwardRef(provider.useClass);
     factoryFn = reflector.factory(useClass);
@@ -618,7 +618,7 @@ List<Dependency> _constructDependencies(
 }
 
 List<Dependency> _dependenciesFor(typeOrFunc) {
-  List<List<dynamic>> params = reflector.parameters(typeOrFunc);
+  var params = reflector.parameters(typeOrFunc);
   if (isBlank(params)) return [];
   if (params.any(isBlank)) {
     throw new NoAnnotationError(typeOrFunc, params);

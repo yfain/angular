@@ -36,6 +36,6 @@ const List<dynamic> ROUTER_PROVIDERS = const [
 /**
  * Use [ROUTER_PROVIDERS] instead.
  *
- * 
+ * @deprecated
  */
 const ROUTER_BINDINGS = ROUTER_PROVIDERS;
