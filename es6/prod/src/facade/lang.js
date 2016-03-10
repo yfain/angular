@@ -115,6 +115,9 @@ export function serializeEnum(val) {
 export function deserializeEnum(val, values) {
     return val;
 }
+export function resolveEnumToken(enumValue, val) {
+    return enumValue[val];
+}
 export class StringWrapper {
     static fromCharCode(code) { return String.fromCharCode(code); }
     static charCodeAt(s, index) { return s.charCodeAt(index); }

@@ -845,7 +845,8 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
         dom_adapter_1.DOM.remove(oldRoots[i]);
       }
       dom_adapter_1.DOM.appendChild(doc.body, rootEl);
-      return this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector).then(function(componentRef) {
+      var promise = this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector);
+      return promise.then(function(componentRef) {
         return new ComponentFixture_(componentRef);
       });
     };
@@ -1673,6 +1674,22 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
               };
             }
           }};
+      },
+      toMatchPattern: function() {
+        return {
+          compare: buildError(false),
+          negativeCompare: buildError(true)
+        };
+        function buildError(isNot) {
+          return function(actual, regex) {
+            return {
+              pass: regex.test(actual) == !isNot,
+              get message() {
+                return "Expected " + actual + " " + (isNot ? 'not ' : '') + "to match " + regex.toString();
+              }
+            };
+          };
+        }
       },
       toImplement: function() {
         return {compare: function(actualObject, expectedInterface) {
