@@ -1577,10 +1577,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return val;
 	}
 	exports.deserializeEnum = deserializeEnum;
-	function resolveEnumToken(enumValue, val) {
-	    return enumValue[val];
-	}
-	exports.resolveEnumToken = resolveEnumToken;
 	var StringWrapper = (function () {
 	    function StringWrapper() {
 	    }
@@ -2421,13 +2417,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.Class = Class;
 	var Reflect = lang_1.global.Reflect;
-	// Throw statement at top-level is disallowed by closure compiler in ES6 input.
-	// Wrap in an IIFE as a work-around.
-	(function checkReflect() {
-	    if (!(Reflect && Reflect.getMetadata)) {
-	        throw 'reflect-metadata shim is required when using class decorators';
-	    }
-	})();
+	if (!(Reflect && Reflect.getMetadata)) {
+	    throw 'reflect-metadata shim is required when using class decorators';
+	}
 	function makeDecorator(annotationCls, chainFn) {
 	    if (chainFn === void 0) { chainFn = null; }
 	    function DecoratorFactory(objOrType) {
@@ -9959,8 +9951,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return SimpleChange;
 	})();
 	exports.SimpleChange = SimpleChange;
+	var _simpleChangesIndex = 0;
+	var _simpleChanges = [
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null),
+	    new SimpleChange(null, null)
+	];
 	function _simpleChange(previousValue, currentValue) {
-	    return new SimpleChange(previousValue, currentValue);
+	    var index = _simpleChangesIndex++ % 20;
+	    var s = _simpleChanges[index];
+	    s.previousValue = previousValue;
+	    s.currentValue = currentValue;
+	    return s;
 	}
 	/* tslint:disable:requireParameterType */
 	var ChangeDetectionUtil = (function () {
@@ -11093,7 +11112,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var promise_1 = __webpack_require__(48);
 	exports.PromiseWrapper = promise_1.PromiseWrapper;
-	exports.PromiseCompleter = promise_1.PromiseCompleter;
 	var Subject_1 = __webpack_require__(49);
 	var PromiseObservable_1 = __webpack_require__(50);
 	var toPromise_1 = __webpack_require__(65);
@@ -11239,17 +11257,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 48 */
 /***/ function(module, exports) {
 
-	var PromiseCompleter = (function () {
-	    function PromiseCompleter() {
-	        var _this = this;
-	        this.promise = new Promise(function (res, rej) {
-	            _this.resolve = res;
-	            _this.reject = rej;
-	        });
-	    }
-	    return PromiseCompleter;
-	})();
-	exports.PromiseCompleter = PromiseCompleter;
 	var PromiseWrapper = (function () {
 	    function PromiseWrapper() {
 	    }
@@ -11282,7 +11289,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        PromiseWrapper.then(PromiseWrapper.resolve(null), computation, function (_) { });
 	    };
 	    PromiseWrapper.isPromise = function (obj) { return obj instanceof Promise; };
-	    PromiseWrapper.completer = function () { return new PromiseCompleter(); };
+	    PromiseWrapper.completer = function () {
+	        var resolve;
+	        var reject;
+	        var p = new Promise(function (res, rej) {
+	            resolve = res;
+	            reject = rej;
+	        });
+	        return { promise: p, resolve: resolve, reject: reject };
+	    };
 	    return PromiseWrapper;
 	})();
 	exports.PromiseWrapper = PromiseWrapper;
@@ -13340,7 +13355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Retrieve the platform {@link Injector}, which is the parent injector for
 	         * every Angular application on the page and provides singleton providers.
 	         */
-	        get: function () { throw exceptions_1.unimplemented(); },
+	        get: function () { return exceptions_1.unimplemented(); },
 	        enumerable: true,
 	        configurable: true
 	    });
@@ -13561,12 +13576,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                completer.reject(e, e.stack);
 	            }
 	        });
-	        return completer.promise.then(function (ref) {
+	        return completer.promise.then(function (_) {
 	            var c = _this._injector.get(console_1.Console);
 	            if (lang_1.assertionsEnabled()) {
 	                c.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
 	            }
-	            return ref;
+	            return _;
 	        });
 	    };
 	    /** @internal */
@@ -18290,7 +18305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (args === void 0) { args = null; }
 	        var key;
 	        var valueStr;
-	        var pluralMap = (args[0]);
+	        var pluralMap = args[0];
 	        if (!lang_1.isStringMap(pluralMap)) {
 	            throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nPluralPipe, pluralMap);
 	        }
@@ -18360,7 +18375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    I18nSelectPipe.prototype.transform = function (value, args) {
 	        if (args === void 0) { args = null; }
-	        var mapping = (args[0]);
+	        var mapping = args[0];
 	        if (!lang_1.isStringMap(mapping)) {
 	            throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nSelectPipe, mapping);
 	        }
@@ -19535,16 +19550,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._parent.updateValueAndValidity({ onlySelf: onlySelf, emitEvent: emitEvent });
 	        }
 	    };
-	    AbstractControl.prototype._runValidator = function () {
-	        return lang_1.isPresent(this.validator) ? this.validator(this) : null;
-	    };
+	    AbstractControl.prototype._runValidator = function () { return lang_1.isPresent(this.validator) ? this.validator(this) : null; };
 	    AbstractControl.prototype._runAsyncValidator = function (emitEvent) {
 	        var _this = this;
 	        if (lang_1.isPresent(this.asyncValidator)) {
 	            this._status = exports.PENDING;
 	            this._cancelExistingSubscription();
 	            var obs = toObservable(this.asyncValidator(this));
-	            this._asyncValidationSubscription = async_1.ObservableWrapper.subscribe(obs, function (res) { return _this.setErrors(res, { emitEvent: emitEvent }); });
+	            this._asyncValidationSubscription =
+	                async_1.ObservableWrapper.subscribe(obs, function (res) { return _this.setErrors(res, { emitEvent: emitEvent }); });
 	        }
 	    };
 	    AbstractControl.prototype._cancelExistingSubscription = function () {
@@ -20261,8 +20275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.composeValidators = composeValidators;
 	function composeAsyncValidators(validators) {
-	    return lang_1.isPresent(validators) ? validators_1.Validators.composeAsync(validators.map(normalize_validator_1.normalizeAsyncValidator)) :
-	        null;
+	    return lang_1.isPresent(validators) ? validators_1.Validators.composeAsync(validators.map(normalize_validator_1.normalizeValidator)) : null;
 	}
 	exports.composeAsyncValidators = composeAsyncValidators;
 	function isPropertyUpdated(changes, viewModel) {
@@ -20426,7 +20439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (presentValidators.length == 0)
 	            return null;
 	        return function (control) {
-	            var promises = _executeAsyncValidators(control, presentValidators).map(_convertToPromise);
+	            var promises = _executeValidators(control, presentValidators).map(_convertToPromise);
 	            return promise_1.PromiseWrapper.all(promises).then(_mergeErrors);
 	        };
 	    };
@@ -20437,9 +20450,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return promise_1.PromiseWrapper.isPromise(obj) ? obj : async_1.ObservableWrapper.toPromise(obj);
 	}
 	function _executeValidators(control, validators) {
-	    return validators.map(function (v) { return v(control); });
-	}
-	function _executeAsyncValidators(control, validators) {
 	    return validators.map(function (v) { return v(control); });
 	}
 	function _mergeErrors(arrayOfErrors) {
@@ -20830,15 +20840,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}
 	exports.normalizeValidator = normalizeValidator;
-	function normalizeAsyncValidator(validator) {
-	    if (validator.validate !== undefined) {
-	        return function (c) { return Promise.resolve(validator.validate(c)); };
-	    }
-	    else {
-	        return validator;
-	    }
-	}
-	exports.normalizeAsyncValidator = normalizeAsyncValidator;
 
 
 /***/ },
@@ -22020,7 +22021,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    FormBuilder.prototype.group = function (controlsConfig, extra) {
 	        if (extra === void 0) { extra = null; }
 	        var controls = this._reduceControls(controlsConfig);
-	        var optionals = (lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "optionals") : null);
+	        var optionals = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "optionals") : null;
 	        var validator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "validator") : null;
 	        var asyncValidator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "asyncValidator") : null;
 	        return new modelModule.ControlGroup(controls, optionals, validator, asyncValidator);
@@ -25967,9 +25968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    collection_1.StringMapWrapper.forEach(data, function (value, name) { entryArray.push([name, value]); });
 	    // We need to sort to get a defined output order
 	    // for tests and for caching generated artifacts...
-	    collection_1.ListWrapper.sort(entryArray, function (entry1, entry2) {
-	        return lang_1.StringWrapper.compare(entry1[0], entry2[0]);
-	    });
+	    collection_1.ListWrapper.sort(entryArray, function (entry1, entry2) { return lang_1.StringWrapper.compare(entry1[0], entry2[0]); });
 	    var keyValueArray = [];
 	    entryArray.forEach(function (entry) { keyValueArray.push([entry[0], entry[1]]); });
 	    return keyValueArray;
@@ -27959,8 +27958,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	// see http://www.w3.org/TR/html51/syntax.html#optional-tags
 	// This implementation does not fully conform to the HTML5 spec.
 	var TAG_DEFINITIONS = {
-	    'base': new HtmlTagDefinition({ isVoid: true }),
-	    'meta': new HtmlTagDefinition({ isVoid: true }),
 	    'area': new HtmlTagDefinition({ isVoid: true }),
 	    'embed': new HtmlTagDefinition({ isVoid: true }),
 	    'link': new HtmlTagDefinition({ isVoid: true }),
@@ -29114,9 +29111,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var mc = new Hammer(element);
 	            mc.get('pinch').set({ enable: true });
 	            mc.get('rotate').set({ enable: true });
-	            var callback = function (eventObj) { zone.run(function () { handler(eventObj); }); };
-	            mc.on(eventName, callback);
-	            return function () { mc.off(eventName, callback); };
+	            var handler = function (eventObj) { zone.run(function () { handler(eventObj); }); };
+	            mc.on(eventName, handler);
+	            return function () { mc.off(eventName, handler); };
 	        });
 	    };
 	    HammerGesturesPlugin = __decorate([
@@ -33150,7 +33147,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    Router.prototype._emitNavigationFinish = function (url) { async_1.ObservableWrapper.callEmit(this._subject, url); };
-	    Router.prototype._emitNavigationFail = function (url) { async_1.ObservableWrapper.callError(this._subject, url); };
 	    Router.prototype._afterPromiseFinishNavigating = function (promise) {
 	        var _this = this;
 	        return async_1.PromiseWrapper.catchError(promise.then(function (_) { return _this._finishNavigating(); }), function (err) {
@@ -33252,8 +33248,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Subscribe to URL updates from the router
 	     */
-	    Router.prototype.subscribe = function (onNext, onError) {
-	        return async_1.ObservableWrapper.subscribe(this._subject, onNext, onError);
+	    Router.prototype.subscribe = function (onNext) {
+	        return async_1.ObservableWrapper.subscribe(this._subject, onNext);
 	    };
 	    /**
 	     * Removes the contents of this router's outlet and all descendant outlets
@@ -33326,36 +33322,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // we call recognize ourselves
 	            _this.recognize(change['url'])
 	                .then(function (instruction) {
-	                if (lang_1.isPresent(instruction)) {
-	                    _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop']))
-	                        .then(function (_) {
-	                        // this is a popstate event; no need to change the URL
-	                        if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
-	                            return;
+	                _this.navigateByInstruction(instruction, lang_1.isPresent(change['pop']))
+	                    .then(function (_) {
+	                    // this is a popstate event; no need to change the URL
+	                    if (lang_1.isPresent(change['pop']) && change['type'] != 'hashchange') {
+	                        return;
+	                    }
+	                    var emitPath = instruction.toUrlPath();
+	                    var emitQuery = instruction.toUrlQuery();
+	                    if (emitPath.length > 0 && emitPath[0] != '/') {
+	                        emitPath = '/' + emitPath;
+	                    }
+	                    // Because we've opted to use All hashchange events occur outside Angular.
+	                    // However, apps that are migrating might have hash links that operate outside
+	                    // angular to which routing must respond.
+	                    // To support these cases where we respond to hashchanges and redirect as a
+	                    // result, we need to replace the top item on the stack.
+	                    if (change['type'] == 'hashchange') {
+	                        if (instruction.toRootUrl() != _this._location.path()) {
+	                            _this._location.replaceState(emitPath, emitQuery);
 	                        }
-	                        var emitPath = instruction.toUrlPath();
-	                        var emitQuery = instruction.toUrlQuery();
-	                        if (emitPath.length > 0 && emitPath[0] != '/') {
-	                            emitPath = '/' + emitPath;
-	                        }
-	                        // Because we've opted to use All hashchange events occur outside Angular.
-	                        // However, apps that are migrating might have hash links that operate outside
-	                        // angular to which routing must respond.
-	                        // To support these cases where we respond to hashchanges and redirect as a
-	                        // result, we need to replace the top item on the stack.
-	                        if (change['type'] == 'hashchange') {
-	                            if (instruction.toRootUrl() != _this._location.path()) {
-	                                _this._location.replaceState(emitPath, emitQuery);
-	                            }
-	                        }
-	                        else {
-	                            _this._location.go(emitPath, emitQuery);
-	                        }
-	                    });
-	                }
-	                else {
-	                    _this._emitNavigationFail(change['url']);
-	                }
+	                    }
+	                    else {
+	                        _this._location.go(emitPath, emitQuery);
+	                    }
+	                });
 	            });
 	        });
 	        this.registry.configFromComponent(primaryComponent);
@@ -33920,7 +33911,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var lang_1 = __webpack_require__(5);
-	var __make_dart_analyzer_happy = null;
 	/**
 	 * The `RouteConfig` decorator defines routes for a given component.
 	 *
@@ -34648,7 +34638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // default instructions override these
 	    Instruction.prototype.toLinkUrl = function () {
 	        return this.urlPath + this._stringifyAux() +
-	            (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '') + this.toUrlQuery();
+	            (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');
 	    };
 	    // this is the non-root version (called recursively)
 	    /** @internal */
@@ -36133,21 +36123,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var PlatformLocation = (function () {
 	    function PlatformLocation() {
 	    }
-	    Object.defineProperty(PlatformLocation.prototype, "pathname", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(PlatformLocation.prototype, "search", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(PlatformLocation.prototype, "hash", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
 	    return PlatformLocation;
 	})();
 	exports.PlatformLocation = PlatformLocation;
