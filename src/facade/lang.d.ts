@@ -77,6 +77,7 @@ export declare function noop(): void;
 export declare function stringify(token: any): string;
 export declare function serializeEnum(val: any): number;
 export declare function deserializeEnum(val: any, values: Map<number, any>): any;
+export declare function resolveEnumToken(enumValue: any, val: any): string;
 export declare class StringWrapper {
     static fromCharCode(code: number): string;
     static charCodeAt(s: string, index: number): number;
