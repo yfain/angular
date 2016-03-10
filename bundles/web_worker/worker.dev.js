@@ -20921,7 +20921,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toNonRootUrl() : '');
     };
     Instruction.prototype.toLinkUrl = function() {
-      return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');
+      return this.urlPath + this._stringifyAux() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '') + this.toUrlQuery();
     };
     Instruction.prototype._toLinkUrl = function() {
       return this._stringifyPathMatrixAuxPrefixed() + (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');

@@ -34661,7 +34661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // default instructions override these
 	    Instruction.prototype.toLinkUrl = function () {
 	        return this.urlPath + this._stringifyAux() +
-	            (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '');
+	            (lang_1.isPresent(this.child) ? this.child._toLinkUrl() : '') + this.toUrlQuery();
 	    };
 	    // this is the non-root version (called recursively)
 	    /** @internal */

@@ -149,7 +149,7 @@ export class Instruction {
     // default instructions override these
     toLinkUrl() {
         return this.urlPath + this._stringifyAux() +
-            (isPresent(this.child) ? this.child._toLinkUrl() : '');
+            (isPresent(this.child) ? this.child._toLinkUrl() : '') + this.toUrlQuery();
     }
     // this is the non-root version (called recursively)
     /** @internal */
