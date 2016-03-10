@@ -8,7 +8,10 @@ import "package:angular2/src/facade/lang.dart"
         RegExpWrapper,
         RegExpMatcherWrapper,
         StringWrapper,
-        hasConstructor;
+        hasConstructor,
+        resolveEnumToken;
+
+enum UsefulEnum { MyToken, MyOtherToken }
 
 class MySuperclass {}
 
@@ -113,6 +116,14 @@ main() {
           () {
         expect(StringWrapper.stripRight("", "S")).toEqual("");
         expect(StringWrapper.stripRight(null, "S")).toEqual(null);
+      });
+    });
+    describe("resolveEnumToken", () {
+      it("should resolve a token given an enum and index values", () {
+        var token = UsefulEnum.MyToken;
+        expect(resolveEnumToken(UsefulEnum, token)).toEqual("MyToken");
+        token = UsefulEnum.MyOtherToken;
+        expect(resolveEnumToken(UsefulEnum, token)).toEqual("MyOtherToken");
       });
     });
     describe("hasConstructor", () {
