@@ -12095,14 +12095,8 @@ System.register("angular2/src/core/change_detection/change_detection_util", ["an
     return SimpleChange;
   })();
   exports.SimpleChange = SimpleChange;
-  var _simpleChangesIndex = 0;
-  var _simpleChanges = [new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null)];
   function _simpleChange(previousValue, currentValue) {
-    var index = _simpleChangesIndex++ % 20;
-    var s = _simpleChanges[index];
-    s.previousValue = previousValue;
-    s.currentValue = currentValue;
-    return s;
+    return new SimpleChange(previousValue, currentValue);
   }
   var ChangeDetectionUtil = (function() {
     function ChangeDetectionUtil() {}
