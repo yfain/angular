@@ -14,7 +14,7 @@ class CssAnimationBuilder {
   CssAnimationBuilder(this.browserDetails) {}
   /**
    * Adds a temporary class that will be removed at the end of the animation
-   * @param className
+   * 
    */
   CssAnimationBuilder addAnimationClass(String className) {
     this.data.animationClasses.add(className);
@@ -23,7 +23,7 @@ class CssAnimationBuilder {
 
   /**
    * Adds a class that will remain on the element after the animation has finished
-   * @param className
+   * 
    */
   CssAnimationBuilder addClass(String className) {
     this.data.classesToAdd.add(className);
@@ -32,7 +32,7 @@ class CssAnimationBuilder {
 
   /**
    * Removes a class from the element
-   * @param className
+   * 
    */
   CssAnimationBuilder removeClass(String className) {
     this.data.classesToRemove.add(className);
@@ -41,7 +41,7 @@ class CssAnimationBuilder {
 
   /**
    * Sets the animation duration (and overrides any defined through CSS)
-   * @param duration
+   * 
    */
   CssAnimationBuilder setDuration(num duration) {
     this.data.duration = duration;
@@ -50,7 +50,7 @@ class CssAnimationBuilder {
 
   /**
    * Sets the animation delay (and overrides any defined through CSS)
-   * @param delay
+   * 
    */
   CssAnimationBuilder setDelay(num delay) {
     this.data.delay = delay;
@@ -59,8 +59,8 @@ class CssAnimationBuilder {
 
   /**
    * Sets styles for both the initial state and the destination state
-   * @param from
-   * @param to
+   * 
+   * 
    */
   CssAnimationBuilder setStyles(
       Map<String, dynamic> from, Map<String, dynamic> to) {
@@ -69,7 +69,7 @@ class CssAnimationBuilder {
 
   /**
    * Sets the initial styles for the animation
-   * @param from
+   * 
    */
   CssAnimationBuilder setFromStyles(Map<String, dynamic> from) {
     this.data.fromStyles = from;
@@ -78,7 +78,7 @@ class CssAnimationBuilder {
 
   /**
    * Sets the destination styles for the animation
-   * @param to
+   * 
    */
   CssAnimationBuilder setToStyles(Map<String, dynamic> to) {
     this.data.toStyles = to;
@@ -87,7 +87,7 @@ class CssAnimationBuilder {
 
   /**
    * Starts the animation and returns a promise
-   * @param element
+   * 
    */
   Animation start(dynamic element) {
     return new Animation(element, this.data, this.browserDetails);

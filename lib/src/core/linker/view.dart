@@ -114,7 +114,7 @@ class AppView implements ChangeDispatcher {
     this.appElements = appElements;
     var localsMap = new Map<String, dynamic>();
     StringMapWrapper.forEach(this.proto.templateVariableBindings,
-        (templateName, _) {
+        (String templateName, String _) {
       localsMap[templateName] = null;
     });
     for (var i = 0; i < appElements.length; i++) {
@@ -127,7 +127,7 @@ class AppView implements ChangeDispatcher {
         }
       }
       StringMapWrapper.forEach(appEl.proto.directiveVariableBindings,
-          (directiveIndex, name) {
+          (num directiveIndex, String name) {
         if (isBlank(directiveIndex)) {
           localsMap[name] = appEl.nativeElement;
         } else {
@@ -288,10 +288,10 @@ class AppView implements ChangeDispatcher {
    *
    * This method is intended to be called from directive EventEmitters.
    *
-   * @param {string} eventName
-   * @param {*} eventObj
-   * @param {number} boundElementIndex
-   * @return false if preventDefault must be applied to the DOM event
+   * 
+   * 
+   * 
+   * 
    */
   bool triggerEventHandlers(
       String eventName, dynamic eventObj, num boundElementIndex) {

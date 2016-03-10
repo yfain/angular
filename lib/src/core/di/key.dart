@@ -44,7 +44,7 @@ class Key {
   }
 
   /**
-   * @returns the number of keys registered in the system.
+   * 
    */
   static num get numberOfKeys {
     return _globalKeyRegistry.numberOfKeys;

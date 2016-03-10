@@ -3,6 +3,7 @@ library angular2.src.common.forms.directives.ng_control;
 import "control_value_accessor.dart" show ControlValueAccessor;
 import "abstract_control_directive.dart" show AbstractControlDirective;
 import "package:angular2/src/facade/exceptions.dart" show unimplemented;
+import "validators.dart" show AsyncValidatorFn, ValidatorFn;
 
 /**
  * A base class that all control directive extend.
@@ -13,12 +14,12 @@ import "package:angular2/src/facade/exceptions.dart" show unimplemented;
 abstract class NgControl extends AbstractControlDirective {
   String name = null;
   ControlValueAccessor valueAccessor = null;
-  Function get validator {
-    return unimplemented();
+  ValidatorFn get validator {
+    return (unimplemented() as ValidatorFn);
   }
 
-  Function get asyncValidator {
-    return unimplemented();
+  AsyncValidatorFn get asyncValidator {
+    return (unimplemented() as AsyncValidatorFn);
   }
 
   void viewToModelUpdate(dynamic newValue);

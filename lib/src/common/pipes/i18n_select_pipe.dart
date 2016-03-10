@@ -38,7 +38,7 @@ import "invalid_pipe_argument_exception.dart" show InvalidPipeArgumentException;
 @Injectable()
 class I18nSelectPipe implements PipeTransform {
   String transform(String value, [List<dynamic> args = null]) {
-    Map<String, String> mapping = args[0];
+    Map<String, String> mapping = ((args[0]) as Map<String, String>);
     if (!isStringMap(mapping)) {
       throw new InvalidPipeArgumentException(I18nSelectPipe, mapping);
     }

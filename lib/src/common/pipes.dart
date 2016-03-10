@@ -1,6 +1,6 @@
 /**
- * @module
- * @description
+ * 
+ * 
  * This module provides a set of common Pipes.
  */
 library angular2.src.common.pipes;

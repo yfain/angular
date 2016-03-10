@@ -122,9 +122,9 @@ resetBaseTestProviders() {
  * eventually
  *   becomes `it('...', @Inject (object: AClass, async: AsyncTestCompleter) => { ... });`
  *
- * @param {Array} tokens
- * @param {Function} fn
- * @return {FunctionWithParamTokens}
+ * 
+ * 
+ * 
  */
 FunctionWithParamTokens inject(List<dynamic> tokens, Function fn) {
   return new FunctionWithParamTokens(tokens, fn, false);
@@ -160,9 +160,9 @@ withProviders(dynamic /* () => any */ providers) {
  * })
  * ```
  *
- * @param {Array} tokens
- * @param {Function} fn
- * @return {FunctionWithParamTokens}
+ * 
+ * 
+ * 
  */
 FunctionWithParamTokens injectAsync(List<dynamic> tokens, Function fn) {
   return new FunctionWithParamTokens(tokens, fn, true);

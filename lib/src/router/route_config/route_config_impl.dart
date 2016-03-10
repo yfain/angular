@@ -1,9 +1,12 @@
 library angular2.src.router.route_config.route_config_impl;
 
+import "dart:async";
 import "package:angular2/src/facade/lang.dart" show Type, isPresent;
 import "../route_definition.dart" show RouteDefinition;
 import "../rules/route_paths/regex_route_path.dart" show RegexSerializer;
 export "../route_definition.dart" show RouteDefinition;
+
+Future<dynamic> ___make_dart_analyzer_happy = null;
 
 /**
  * The `RouteConfig` decorator defines routes for a given component.
@@ -125,7 +128,7 @@ class AuxRoute extends AbstractRoute {
  * ```
  */
 class AsyncRoute extends AbstractRoute {
-  final Function loader;
+  final dynamic /* () => Promise<Type> */ loader;
   final String aux = null;
   const AsyncRoute({name, useAsDefault, path, regex, serializer, data, loader})
       : loader = loader,

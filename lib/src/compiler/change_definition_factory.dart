@@ -165,8 +165,10 @@ class ProtoViewVisitor implements TemplateAstVisitor {
         new DirectiveIndex(this.boundElementCount - 1, directiveIndexAsNumber);
     var directiveMetadata = ast.directive;
     var outputsArray = [];
-    StringMapWrapper.forEach(ast.directive.outputs,
-        (eventName, dirProperty) => outputsArray.add([dirProperty, eventName]));
+    StringMapWrapper.forEach(
+        ast.directive.outputs,
+        (String eventName, String dirProperty) =>
+            outputsArray.add([dirProperty, eventName]));
     var directiveRecord = new DirectiveRecord(
         directiveIndex: directiveIndex,
         callAfterContentInit: !identical(

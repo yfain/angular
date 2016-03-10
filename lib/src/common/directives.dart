@@ -1,6 +1,6 @@
 /**
- * @module
- * @description
+ * 
+ * 
  * Common directives shipped with Angular.
  */
 library angular2.src.common.directives;
