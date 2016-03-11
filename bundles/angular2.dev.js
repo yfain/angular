@@ -463,6 +463,18 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return value.constructor === type;
   }
   exports.hasConstructor = hasConstructor;
+  function bitWiseOr(values) {
+    return values.reduce(function(a, b) {
+      return a | b;
+    });
+  }
+  exports.bitWiseOr = bitWiseOr;
+  function bitWiseAnd(values) {
+    return values.reduce(function(a, b) {
+      return a & b;
+    });
+  }
+  exports.bitWiseAnd = bitWiseAnd;
   global.define = __define;
   return module.exports;
 });
