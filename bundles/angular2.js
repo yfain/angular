@@ -19106,12 +19106,13 @@ System.register("angular2/src/compiler/shadow_css", ["angular2/src/facade/collec
       var r = [],
           parts = selector.split(',');
       for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        p = p.trim();
-        if (this._selectorNeedsScoping(p, scopeSelector)) {
-          p = strict && !lang_1.StringWrapper.contains(p, _polyfillHostNoCombinator) ? this._applyStrictSelectorScope(p, scopeSelector) : this._applySelectorScope(p, scopeSelector, hostSelector);
+        var p = parts[i].trim();
+        var deepParts = lang_1.StringWrapper.split(p, _shadowDeepSelectors);
+        var shallowPart = deepParts[0];
+        if (this._selectorNeedsScoping(shallowPart, scopeSelector)) {
+          deepParts[0] = strict && !lang_1.StringWrapper.contains(shallowPart, _polyfillHostNoCombinator) ? this._applyStrictSelectorScope(shallowPart, scopeSelector) : this._applySelectorScope(shallowPart, scopeSelector, hostSelector);
         }
-        r.push(p);
+        r.push(deepParts.join(' '));
       }
       return r.join(', ');
     };
@@ -19180,7 +19181,8 @@ System.register("angular2/src/compiler/shadow_css", ["angular2/src/facade/collec
   var _cssColonHostRe = lang_1.RegExpWrapper.create('(' + _polyfillHost + _parenSuffix, 'im');
   var _cssColonHostContextRe = lang_1.RegExpWrapper.create('(' + _polyfillHostContext + _parenSuffix, 'im');
   var _polyfillHostNoCombinator = _polyfillHost + '-no-combinator';
-  var _shadowDOMSelectorsRe = [/>>>/g, /::shadow/g, /::content/g, /\/deep\//g, /\/shadow-deep\//g, /\/shadow\//g];
+  var _shadowDOMSelectorsRe = [/::shadow/g, /::content/g, /\/shadow-deep\//g, /\/shadow\//g];
+  var _shadowDeepSelectors = /(?:>>>)|(?:\/deep\/)/g;
   var _selectorReSuffix = '([>\\s~+\[.,{:][\\s\\S]*)?$';
   var _polyfillHostRe = lang_1.RegExpWrapper.create(_polyfillHost, 'im');
   var _colonHostRe = /:host/gim;
