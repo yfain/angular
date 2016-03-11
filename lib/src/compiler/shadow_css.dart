@@ -351,14 +351,18 @@ class ShadowCss {
       String selector, String scopeSelector, String hostSelector, bool strict) {
     var r = [], parts = selector.split(",");
     for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
-      p = p.trim();
-      if (this._selectorNeedsScoping(p, scopeSelector)) {
-        p = strict && !StringWrapper.contains(p, _polyfillHostNoCombinator)
-            ? this._applyStrictSelectorScope(p, scopeSelector)
-            : this._applySelectorScope(p, scopeSelector, hostSelector);
+      var p = parts[i].trim();
+      var deepParts = StringWrapper.split(p, _shadowDeepSelectors);
+      var shallowPart = deepParts[0];
+      if (this._selectorNeedsScoping(shallowPart, scopeSelector)) {
+        deepParts[0] = strict &&
+                !StringWrapper.contains(shallowPart, _polyfillHostNoCombinator)
+            ? this._applyStrictSelectorScope(shallowPart, scopeSelector)
+            : this
+                ._applySelectorScope(shallowPart, scopeSelector, hostSelector);
       }
-      r.add(p);
+      // replace /deep/ with a space for child selectors
+      r.add(deepParts.join(" "));
     }
     return r.join(", ");
   }
@@ -474,15 +478,15 @@ var _cssColonHostContextRe =
     RegExpWrapper.create("(" + _polyfillHostContext + _parenSuffix, "im");
 var _polyfillHostNoCombinator = _polyfillHost + "-no-combinator";
 var _shadowDOMSelectorsRe = [
-  new RegExp(r'>>>'), new RegExp(r'::shadow'), new RegExp(r'::content'),
+  new RegExp(r'::shadow'), new RegExp(r'::content'),
   // Deprecated selectors
 
   // TODO(vicb): see https://github.com/angular/clang-format/issues/16
 
   // clang-format off
-  new RegExp(r'\/deep\/'), new RegExp(r'\/shadow-deep\/'),
-  new RegExp(r'\/shadow\/')
+  new RegExp(r'\/shadow-deep\/'), new RegExp(r'\/shadow\/')
 ];
+var _shadowDeepSelectors = new RegExp(r'(?:>>>)|(?:\/deep\/)');
 var _selectorReSuffix = "([>\\s~+[.,{:][\\s\\S]*)?\$";
 var _polyfillHostRe = RegExpWrapper.create(_polyfillHost, "im");
 var _colonHostRe = new RegExp(r':host', multiLine: true, caseSensitive: false);
