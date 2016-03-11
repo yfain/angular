@@ -128,6 +128,10 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return val;
   }
   exports.deserializeEnum = deserializeEnum;
+  function resolveEnumToken(enumValue, val) {
+    return enumValue[val];
+  }
+  exports.resolveEnumToken = resolveEnumToken;
   var StringWrapper = (function() {
     function StringWrapper() {}
     StringWrapper.fromCharCode = function(code) {
@@ -459,6 +463,18 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return value.constructor === type;
   }
   exports.hasConstructor = hasConstructor;
+  function bitWiseOr(values) {
+    return values.reduce(function(a, b) {
+      return a | b;
+    });
+  }
+  exports.bitWiseOr = bitWiseOr;
+  function bitWiseAnd(values) {
+    return values.reduce(function(a, b) {
+      return a & b;
+    });
+  }
+  exports.bitWiseAnd = bitWiseAnd;
   global.define = __define;
   return module.exports;
 });
@@ -629,9 +645,11 @@ System.register("angular2/src/core/util/decorators", ["angular2/src/facade/lang"
   }
   exports.Class = Class;
   var Reflect = lang_1.global.Reflect;
-  if (!(Reflect && Reflect.getMetadata)) {
-    throw 'reflect-metadata shim is required when using class decorators';
-  }
+  (function checkReflect() {
+    if (!(Reflect && Reflect.getMetadata)) {
+      throw 'reflect-metadata shim is required when using class decorators';
+    }
+  })();
   function makeDecorator(annotationCls, chainFn) {
     if (chainFn === void 0) {
       chainFn = null;
@@ -2078,6 +2096,17 @@ System.register("angular2/src/facade/promise", [], true, function(require, expor
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  var PromiseCompleter = (function() {
+    function PromiseCompleter() {
+      var _this = this;
+      this.promise = new Promise(function(res, rej) {
+        _this.resolve = res;
+        _this.reject = rej;
+      });
+    }
+    return PromiseCompleter;
+  })();
+  exports.PromiseCompleter = PromiseCompleter;
   var PromiseWrapper = (function() {
     function PromiseWrapper() {}
     PromiseWrapper.resolve = function(obj) {
@@ -2113,17 +2142,7 @@ System.register("angular2/src/facade/promise", [], true, function(require, expor
       return obj instanceof Promise;
     };
     PromiseWrapper.completer = function() {
-      var resolve;
-      var reject;
-      var p = new Promise(function(res, rej) {
-        resolve = res;
-        reject = rej;
-      });
-      return {
-        promise: p,
-        resolve: resolve,
-        reject: reject
-      };
+      return new PromiseCompleter();
     };
     return PromiseWrapper;
   })();
@@ -7853,14 +7872,8 @@ System.register("angular2/src/core/change_detection/change_detection_util", ["an
     return SimpleChange;
   })();
   exports.SimpleChange = SimpleChange;
-  var _simpleChangesIndex = 0;
-  var _simpleChanges = [new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null), new SimpleChange(null, null)];
   function _simpleChange(previousValue, currentValue) {
-    var index = _simpleChangesIndex++ % 20;
-    var s = _simpleChanges[index];
-    s.previousValue = previousValue;
-    s.currentValue = currentValue;
-    return s;
+    return new SimpleChange(previousValue, currentValue);
   }
   var ChangeDetectionUtil = (function() {
     function ChangeDetectionUtil() {}
@@ -12503,7 +12516,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
     function PlatformRef() {}
     Object.defineProperty(PlatformRef.prototype, "injector", {
       get: function() {
-        return exceptions_1.unimplemented();
+        throw exceptions_1.unimplemented();
       },
       enumerable: true,
       configurable: true
@@ -12720,12 +12733,12 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
           completer.reject(e, e.stack);
         }
       });
-      return completer.promise.then(function(_) {
+      return completer.promise.then(function(ref) {
         var c = _this._injector.get(console_1.Console);
         if (lang_1.assertionsEnabled()) {
           c.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
         }
-        return _;
+        return ref;
       });
     };
     ApplicationRef_.prototype._loadComponent = function(componentRef) {
@@ -13091,6 +13104,7 @@ System.register("angular2/src/facade/async", ["angular2/src/facade/lang", "angul
   var lang_1 = require("angular2/src/facade/lang");
   var promise_1 = require("angular2/src/facade/promise");
   exports.PromiseWrapper = promise_1.PromiseWrapper;
+  exports.PromiseCompleter = promise_1.PromiseCompleter;
   var Subject_1 = require("rxjs/Subject");
   var PromiseObservable_1 = require("rxjs/observable/PromiseObservable");
   var toPromise_1 = require("rxjs/operator/toPromise");
@@ -14625,7 +14639,7 @@ System.register("angular2/src/common/pipes/i18n_plural_pipe", ["angular2/src/fac
       }
       var key;
       var valueStr;
-      var pluralMap = args[0];
+      var pluralMap = (args[0]);
       if (!lang_1.isStringMap(pluralMap)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nPluralPipe, pluralMap);
       }
@@ -14674,7 +14688,7 @@ System.register("angular2/src/common/pipes/i18n_select_pipe", ["angular2/src/fac
       if (args === void 0) {
         args = null;
       }
-      var mapping = args[0];
+      var mapping = (args[0]);
       if (!lang_1.isStringMap(mapping)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nSelectPipe, mapping);
       }
@@ -15289,6 +15303,112 @@ System.register("angular2/src/common/directives/ng_switch", ["angular2/core", "a
   return module.exports;
 });
 
+System.register("angular2/src/common/directives/ng_plural", ["angular2/core", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/common/directives/ng_switch"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var core_1 = require("angular2/core");
+  var lang_1 = require("angular2/src/facade/lang");
+  var collection_1 = require("angular2/src/facade/collection");
+  var ng_switch_1 = require("angular2/src/common/directives/ng_switch");
+  var _CATEGORY_DEFAULT = 'other';
+  var NgLocalization = (function() {
+    function NgLocalization() {}
+    return NgLocalization;
+  })();
+  exports.NgLocalization = NgLocalization;
+  var NgPluralCase = (function() {
+    function NgPluralCase(value, template, viewContainer) {
+      this.value = value;
+      this._view = new ng_switch_1.SwitchView(viewContainer, template);
+    }
+    NgPluralCase = __decorate([core_1.Directive({selector: '[ngPluralCase]'}), __param(0, core_1.Attribute('ngPluralCase')), __metadata('design:paramtypes', [String, core_1.TemplateRef, core_1.ViewContainerRef])], NgPluralCase);
+    return NgPluralCase;
+  })();
+  exports.NgPluralCase = NgPluralCase;
+  var NgPlural = (function() {
+    function NgPlural(_localization) {
+      this._localization = _localization;
+      this._caseViews = new collection_1.Map();
+      this.cases = null;
+    }
+    Object.defineProperty(NgPlural.prototype, "ngPlural", {
+      set: function(value) {
+        this._switchValue = value;
+        this._updateView();
+      },
+      enumerable: true,
+      configurable: true
+    });
+    NgPlural.prototype.ngAfterContentInit = function() {
+      var _this = this;
+      this.cases.forEach(function(pluralCase) {
+        _this._caseViews.set(_this._formatValue(pluralCase), pluralCase._view);
+      });
+      this._updateView();
+    };
+    NgPlural.prototype._updateView = function() {
+      this._clearViews();
+      var view = this._caseViews.get(this._switchValue);
+      if (!lang_1.isPresent(view))
+        view = this._getCategoryView(this._switchValue);
+      this._activateView(view);
+    };
+    NgPlural.prototype._clearViews = function() {
+      if (lang_1.isPresent(this._activeView))
+        this._activeView.destroy();
+    };
+    NgPlural.prototype._activateView = function(view) {
+      if (!lang_1.isPresent(view))
+        return ;
+      this._activeView = view;
+      this._activeView.create();
+    };
+    NgPlural.prototype._getCategoryView = function(value) {
+      var category = this._localization.getPluralCategory(value);
+      var categoryView = this._caseViews.get(category);
+      return lang_1.isPresent(categoryView) ? categoryView : this._caseViews.get(_CATEGORY_DEFAULT);
+    };
+    NgPlural.prototype._isValueView = function(pluralCase) {
+      return pluralCase.value[0] === "=";
+    };
+    NgPlural.prototype._formatValue = function(pluralCase) {
+      return this._isValueView(pluralCase) ? this._stripValue(pluralCase.value) : pluralCase.value;
+    };
+    NgPlural.prototype._stripValue = function(value) {
+      return lang_1.NumberWrapper.parseInt(value.substring(1), 10);
+    };
+    __decorate([core_1.ContentChildren(NgPluralCase), __metadata('design:type', core_1.QueryList)], NgPlural.prototype, "cases", void 0);
+    __decorate([core_1.Input(), __metadata('design:type', Number), __metadata('design:paramtypes', [Number])], NgPlural.prototype, "ngPlural", null);
+    NgPlural = __decorate([core_1.Directive({selector: '[ngPlural]'}), __metadata('design:paramtypes', [NgLocalization])], NgPlural);
+    return NgPlural;
+  })();
+  exports.NgPlural = NgPlural;
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("angular2/src/common/directives/observable_list_diff", [], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -15297,7 +15417,7 @@ System.register("angular2/src/common/directives/observable_list_diff", [], true,
   return module.exports;
 });
 
-System.register("angular2/src/common/directives/core_directives", ["angular2/src/facade/lang", "angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch"], true, function(require, exports, module) {
+System.register("angular2/src/common/directives/core_directives", ["angular2/src/facade/lang", "angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -15307,7 +15427,8 @@ System.register("angular2/src/common/directives/core_directives", ["angular2/src
   var ng_if_1 = require("angular2/src/common/directives/ng_if");
   var ng_style_1 = require("angular2/src/common/directives/ng_style");
   var ng_switch_1 = require("angular2/src/common/directives/ng_switch");
-  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_style_1.NgStyle, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault]);
+  var ng_plural_1 = require("angular2/src/common/directives/ng_plural");
+  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_style_1.NgStyle, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault, ng_plural_1.NgPlural, ng_plural_1.NgPluralCase]);
   global.define = __define;
   return module.exports;
 });
@@ -16003,7 +16124,7 @@ System.register("angular2/src/common/forms/validators", ["angular2/src/facade/la
       if (presentValidators.length == 0)
         return null;
       return function(control) {
-        var promises = _executeValidators(control, presentValidators).map(_convertToPromise);
+        var promises = _executeAsyncValidators(control, presentValidators).map(_convertToPromise);
         return promise_1.PromiseWrapper.all(promises).then(_mergeErrors);
       };
     };
@@ -16014,6 +16135,11 @@ System.register("angular2/src/common/forms/validators", ["angular2/src/facade/la
     return promise_1.PromiseWrapper.isPromise(obj) ? obj : async_1.ObservableWrapper.toPromise(obj);
   }
   function _executeValidators(control, validators) {
+    return validators.map(function(v) {
+      return v(control);
+    });
+  }
+  function _executeAsyncValidators(control, validators) {
     return validators.map(function(v) {
       return v(control);
     });
@@ -16424,6 +16550,16 @@ System.register("angular2/src/common/forms/directives/normalize_validator", [], 
     }
   }
   exports.normalizeValidator = normalizeValidator;
+  function normalizeAsyncValidator(validator) {
+    if (validator.validate !== undefined) {
+      return function(c) {
+        return Promise.resolve(validator.validate(c));
+      };
+    } else {
+      return validator;
+    }
+  }
+  exports.normalizeAsyncValidator = normalizeAsyncValidator;
   global.define = __define;
   return module.exports;
 });
@@ -17281,7 +17417,7 @@ System.register("angular2/src/common/forms/form_builder", ["angular2/core", "ang
         extra = null;
       }
       var controls = this._reduceControls(controlsConfig);
-      var optionals = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "optionals") : null;
+      var optionals = (lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "optionals") : null);
       var validator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "validator") : null;
       var asyncValidator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "asyncValidator") : null;
       return new modelModule.ControlGroup(controls, optionals, validator, asyncValidator);
@@ -19969,6 +20105,8 @@ System.register("angular2/src/compiler/html_tags", ["angular2/src/facade/lang"],
   })();
   exports.HtmlTagDefinition = HtmlTagDefinition;
   var TAG_DEFINITIONS = {
+    'base': new HtmlTagDefinition({isVoid: true}),
+    'meta': new HtmlTagDefinition({isVoid: true}),
     'area': new HtmlTagDefinition({isVoid: true}),
     'embed': new HtmlTagDefinition({isVoid: true}),
     'link': new HtmlTagDefinition({isVoid: true}),
@@ -20652,7 +20790,7 @@ System.register("angular2/src/common/pipes/date_pipe", ["angular2/src/facade/lan
   return module.exports;
 });
 
-System.register("angular2/src/common/directives", ["angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/observable_list_diff", "angular2/src/common/directives/core_directives"], true, function(require, exports, module) {
+System.register("angular2/src/common/directives", ["angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural", "angular2/src/common/directives/observable_list_diff", "angular2/src/common/directives/core_directives"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -20673,6 +20811,10 @@ System.register("angular2/src/common/directives", ["angular2/src/common/directiv
   exports.NgSwitch = ng_switch_1.NgSwitch;
   exports.NgSwitchWhen = ng_switch_1.NgSwitchWhen;
   exports.NgSwitchDefault = ng_switch_1.NgSwitchDefault;
+  var ng_plural_1 = require("angular2/src/common/directives/ng_plural");
+  exports.NgPlural = ng_plural_1.NgPlural;
+  exports.NgPluralCase = ng_plural_1.NgPluralCase;
+  exports.NgLocalization = ng_plural_1.NgLocalization;
   __export(require("angular2/src/common/directives/observable_list_diff"));
   var core_directives_1 = require("angular2/src/common/directives/core_directives");
   exports.CORE_DIRECTIVES = core_directives_1.CORE_DIRECTIVES;
@@ -20737,7 +20879,7 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
   }
   exports.composeValidators = composeValidators;
   function composeAsyncValidators(validators) {
-    return lang_1.isPresent(validators) ? validators_1.Validators.composeAsync(validators.map(normalize_validator_1.normalizeValidator)) : null;
+    return lang_1.isPresent(validators) ? validators_1.Validators.composeAsync(validators.map(normalize_validator_1.normalizeAsyncValidator)) : null;
   }
   exports.composeAsyncValidators = composeAsyncValidators;
   function isPropertyUpdated(changes, viewModel) {
@@ -20891,14 +21033,14 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
         var mc = new Hammer(element);
         mc.get('pinch').set({enable: true});
         mc.get('rotate').set({enable: true});
-        var handler = function(eventObj) {
+        var callback = function(eventObj) {
           zone.run(function() {
             handler(eventObj);
           });
         };
-        mc.on(eventName, handler);
+        mc.on(eventName, callback);
         return function() {
-          mc.off(eventName, handler);
+          mc.off(eventName, callback);
         };
       });
     };

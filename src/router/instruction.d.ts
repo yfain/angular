@@ -190,7 +190,7 @@ export declare class ComponentInstruction {
     terminal: boolean;
     specificity: string;
     params: {
-        [key: string]: any;
+        [key: string]: string;
     };
     reuse: boolean;
     routeData: RouteData;

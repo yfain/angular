@@ -195,6 +195,10 @@ export function deserializeEnum(val, values: Map<number, any>): any {
   return val;
 }
 
+export function resolveEnumToken(enumValue, val): string {
+  return enumValue[val];
+}
+
 export class StringWrapper {
   static fromCharCode(code: number): string { return String.fromCharCode(code); }
 
@@ -468,4 +472,12 @@ export function isPrimitive(obj: any): boolean {
 
 export function hasConstructor(value: Object, type: Type): boolean {
   return value.constructor === type;
+}
+
+export function bitWiseOr(values: number[]): number {
+  return values.reduce((a, b) => { return a | b; });
+}
+
+export function bitWiseAnd(values: number[]): number {
+  return values.reduce((a, b) => { return a & b; });
 }

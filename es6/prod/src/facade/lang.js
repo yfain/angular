@@ -115,6 +115,9 @@ export function serializeEnum(val) {
 export function deserializeEnum(val, values) {
     return val;
 }
+export function resolveEnumToken(enumValue, val) {
+    return enumValue[val];
+}
 export class StringWrapper {
     static fromCharCode(code) { return String.fromCharCode(code); }
     static charCodeAt(s, index) { return s.charCodeAt(index); }
@@ -346,4 +349,10 @@ export function isPrimitive(obj) {
 }
 export function hasConstructor(value, type) {
     return value.constructor === type;
+}
+export function bitWiseOr(values) {
+    return values.reduce((a, b) => { return a | b; });
+}
+export function bitWiseAnd(values) {
+    return values.reduce((a, b) => { return a & b; });
 }
