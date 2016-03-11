@@ -5,13 +5,8 @@ import {
   ParseError
 } from "angular2/src/compiler/parse_util";
 
-import {
-  bitWiseOr,
-  bitWiseAnd,
-  NumberWrapper,
-  StringWrapper,
-  isPresent
-} from "angular2/src/facade/lang";
+import {NumberWrapper, StringWrapper, isPresent} from "angular2/src/facade/lang";
+import {BaseException} from 'angular2/src/facade/exceptions';
 
 import {
   CssLexerMode,
@@ -34,7 +29,9 @@ import {
   isNewline
 } from "angular2/src/compiler/css/lexer";
 
-export {CssToken} from "angular2/src/compiler/css/lexer";
+export {
+  CssToken
+} from "angular2/src/compiler/css/lexer";
 
 export enum BlockType {
   Import,
@@ -96,7 +93,7 @@ function getDelimFromCharacter(code: number): number {
 }
 
 function characterContainsDelimiter(code: number, delimiters: number) {
-  return bitWiseAnd([getDelimFromCharacter(code), delimiters]) > 0;
+  return (getDelimFromCharacter(code) & delimiters) > 0;
 }
 
 export class CssAST {
@@ -220,26 +217,26 @@ export class CssParser {
         return new CssBlockRuleAST(type, block);
 
       case BlockType.Keyframes:
-        var tokens = this._collectUntilDelim(bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]));
+        var tokens = this._collectUntilDelim(delimiters | RBRACE_DELIM | LBRACE_DELIM);
         // keyframes only have one identifier name
         var name = tokens[0];
         return new CssKeyframeRuleAST(name, this._parseKeyframeBlock(delimiters));
 
       case BlockType.MediaQuery:
         this._scanner.setMode(CssLexerMode.MEDIA_QUERY);
-        var tokens = this._collectUntilDelim(bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]));
+        var tokens = this._collectUntilDelim(delimiters | RBRACE_DELIM | LBRACE_DELIM);
         return new CssMediaQueryRuleAST(tokens, this._parseBlock(delimiters));
 
       case BlockType.Document:
       case BlockType.Supports:
       case BlockType.Page:
         this._scanner.setMode(CssLexerMode.AT_RULE_QUERY);
-        var tokens = this._collectUntilDelim(bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]));
+        var tokens = this._collectUntilDelim(delimiters | RBRACE_DELIM | LBRACE_DELIM);
         return new CssBlockDefinitionRuleAST(type, tokens, this._parseBlock(delimiters));
 
       // if a custom @rule { ... } is used it should still tokenize the insides
       default:
-        var listOfTokens = [];
+        var listOfTokens = [token];
         this._scanner.setMode(CssLexerMode.ALL);
         this._error(generateErrorMessage(
                         this._scanner.input,
@@ -247,15 +244,15 @@ export class CssParser {
                         token.strValue, token.index, token.line, token.column),
                     token);
 
-        this._collectUntilDelim(bitWiseOr([delimiters, LBRACE_DELIM, SEMICOLON_DELIM]))
+        this._collectUntilDelim(delimiters | LBRACE_DELIM | SEMICOLON_DELIM)
             .forEach((token) => { listOfTokens.push(token); });
         if (this._scanner.peek == $LBRACE) {
           this._consume(CssTokenType.Character, '{');
-          this._collectUntilDelim(bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]))
+          this._collectUntilDelim(delimiters | RBRACE_DELIM | LBRACE_DELIM)
               .forEach((token) => { listOfTokens.push(token); });
           this._consume(CssTokenType.Character, '}');
         }
-        return new CssUnknownTokenListAST(token, listOfTokens);
+        return new CssUnknownTokenListAST(listOfTokens);
     }
   }
 
@@ -268,7 +265,7 @@ export class CssParser {
   }
 
   _parseSelectors(delimiters: number): CssSelectorAST[] {
-    delimiters = bitWiseOr([delimiters, LBRACE_DELIM]);
+    delimiters |= LBRACE_DELIM;
 
     var selectors = [];
     var isParsingSelectors = true;
@@ -307,7 +304,7 @@ export class CssParser {
   }
 
   _parseKeyframeBlock(delimiters: number): CssBlockAST {
-    delimiters = bitWiseOr([delimiters, RBRACE_DELIM]);
+    delimiters |= RBRACE_DELIM;
     this._scanner.setMode(CssLexerMode.KEYFRAME_BLOCK);
 
     this._consume(CssTokenType.Character, '{');
@@ -324,14 +321,14 @@ export class CssParser {
 
   _parseKeyframeDefinition(delimiters: number): CssKeyframeDefinitionAST {
     var stepTokens = [];
-    delimiters = bitWiseOr([delimiters, LBRACE_DELIM]);
+    delimiters |= LBRACE_DELIM;
     while (!characterContainsDelimiter(this._scanner.peek, delimiters)) {
-      stepTokens.push(this._parseKeyframeLabel(bitWiseOr([delimiters, COMMA_DELIM])));
+      stepTokens.push(this._parseKeyframeLabel(delimiters | COMMA_DELIM));
       if (this._scanner.peek != $LBRACE) {
         this._consume(CssTokenType.Character, ',');
       }
     }
-    var styles = this._parseStyleBlock(bitWiseOr([delimiters, RBRACE_DELIM]));
+    var styles = this._parseStyleBlock(delimiters | RBRACE_DELIM);
     this._scanner.setMode(CssLexerMode.BLOCK);
     return new CssKeyframeDefinitionAST(stepTokens, styles);
   }
@@ -342,7 +339,7 @@ export class CssParser {
   }
 
   _parseSelector(delimiters: number): CssSelectorAST {
-    delimiters = bitWiseOr([delimiters, COMMA_DELIM, LBRACE_DELIM]);
+    delimiters |= COMMA_DELIM | LBRACE_DELIM;
     this._scanner.setMode(CssLexerMode.SELECTOR);
 
     var selectorCssTokens = [];
@@ -367,6 +364,7 @@ export class CssParser {
           previousToken = this._consume(CssTokenType.Character, ':');
           selectorCssTokens.push(previousToken);
           continue;
+          break;
 
         case $LBRACKET:
           // if we are already inside an attribute selector then we can't
@@ -383,6 +381,7 @@ export class CssParser {
           selectorCssTokens.push(this._consume(CssTokenType.Character, ']'));
           this._scanner.setMode(CssLexerMode.SELECTOR);
           continue;
+          break;
       }
 
       var token = this._scan();
@@ -393,15 +392,15 @@ export class CssParser {
       if (this._scanner.getMode() == CssLexerMode.PSEUDO_SELECTOR && isPresent(previousToken) &&
           previousToken.numValue == $COLON && token.strValue == "not" &&
           this._scanner.peek == $LPAREN) {
+
         selectorCssTokens.push(token);
         selectorCssTokens.push(this._consume(CssTokenType.Character, '('));
 
         // the inner selector inside of :not(...) can only be one
         // CSS selector (no commas allowed) therefore we parse only
         // one selector by calling the method below
-        this._parseSelector(bitWiseOr([delimiters, RPAREN_DELIM]))
-            .tokens.forEach(
-                (innerSelectorToken) => { selectorCssTokens.push(innerSelectorToken); });
+        this._parseSelector(delimiters | RPAREN_DELIM).tokens.forEach(
+            (innerSelectorToken) => { selectorCssTokens.push(innerSelectorToken); });
 
         selectorCssTokens.push(this._consume(CssTokenType.Character, ')'));
 
@@ -423,20 +422,20 @@ export class CssParser {
     }
 
     if (this._scanner.getMode() == CssLexerMode.ATTRIBUTE_SELECTOR) {
-      this._error(
-          `Unbalanced CSS attribute selector at column ${previousToken.line}:${previousToken.column}`,
-          previousToken);
+      this._error("Unbalanced CSS attribute selector at column " + previousToken.line + ":" +
+                      previousToken.column,
+                  previousToken);
     } else if (parenCount > 0) {
-      this._error(
-          `Unbalanced pseudo selector function value at column ${previousToken.line}:${previousToken.column}`,
-          previousToken);
+      this._error("Unbalanced pseudo selector function value at column " + previousToken.line +
+                      ":" + previousToken.column,
+                  previousToken);
     }
 
     return new CssSelectorAST(selectorCssTokens, isComplex);
   }
 
   _parseValue(delimiters: number): CssStyleValueAST {
-    delimiters = bitWiseOr([delimiters, RBRACE_DELIM, SEMICOLON_DELIM, NEWLINE_DELIM]);
+    delimiters |= RBRACE_DELIM | SEMICOLON_DELIM | NEWLINE_DELIM;
 
     this._scanner.setMode(CssLexerMode.STYLE_VALUE);
 
@@ -444,8 +443,7 @@ export class CssParser {
     var previous: CssToken;
     while (!characterContainsDelimiter(this._scanner.peek, delimiters)) {
       var token;
-      if (isPresent(previous) && previous.type == CssTokenType.Identifier &&
-          this._scanner.peek == $LPAREN) {
+      if (isPresent(previous) && previous.type == CssTokenType.Identifier && this._scanner.peek == $LPAREN) {
         tokens.push(this._consume(CssTokenType.Character, '('));
 
         this._scanner.setMode(CssLexerMode.STYLE_VALUE_FUNCTION);
@@ -490,7 +488,7 @@ export class CssParser {
   }
 
   _parseBlock(delimiters: number): CssBlockAST {
-    delimiters = bitWiseOr([delimiters, RBRACE_DELIM]);
+    delimiters |= RBRACE_DELIM;
 
     this._scanner.setMode(CssLexerMode.BLOCK);
 
@@ -511,7 +509,7 @@ export class CssParser {
   }
 
   _parseStyleBlock(delimiters: number): CssBlockAST {
-    delimiters = bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]);
+    delimiters |= RBRACE_DELIM | LBRACE_DELIM;
 
     this._scanner.setMode(CssLexerMode.STYLE_BLOCK);
 
@@ -560,8 +558,8 @@ export class CssParser {
           var nextValue = this._consume(CssTokenType.Character, ':');
           propStr.push(nextValue.strValue);
 
-          var remainingTokens = this._collectUntilDelim(
-              bitWiseOr([delimiters, COLON_DELIM, SEMICOLON_DELIM]), CssTokenType.Identifier);
+          var remainingTokens = this._collectUntilDelim(delimiters | COLON_DELIM | SEMICOLON_DELIM,
+                                                        CssTokenType.Identifier);
           if (remainingTokens.length > 0) {
             remainingTokens.forEach((token) => { propStr.push(token.strValue); });
           }
@@ -580,7 +578,7 @@ export class CssParser {
     }
 
     if (parseValue) {
-      value = this._parseValue(delimiters);
+      value = <CssStyleValueAST>this._parseValue(delimiters);
     } else {
       this._error(generateErrorMessage(this._scanner.input,
                                        `The CSS property was not paired with a style value`,
@@ -601,8 +599,8 @@ export class CssParser {
 
   _error(message: string, problemToken: CssToken) {
     var length = problemToken.strValue.length;
-    var error = CssParseError.create(this._file, 0, problemToken.line, problemToken.column, length,
-                                     message);
+    var error =
+        new CssParseError(this._file, 0, problemToken.line, problemToken.column, length, message);
     this._errors.push(error);
   }
 }
@@ -627,14 +625,8 @@ export class CssKeyframeRuleAST extends CssBlockRuleAST {
 }
 
 export class CssKeyframeDefinitionAST extends CssBlockRuleAST {
-  public steps;
-  constructor(_steps: CssToken[], block: CssBlockAST) {
-    super(BlockType.Keyframes, block, mergeTokens(_steps, ","));
-    this.steps = _steps;
-  }
-  visit(visitor: CssASTVisitor, context?: any) {
-    visitor.visitCssKeyframeDefinition(this, context);
-  }
+  constructor(public steps: CssToken[], block: CssBlockAST) { super(BlockType.Keyframes, block, mergeTokens(steps, ",")); }
+  visit(visitor: CssASTVisitor, context?: any) { visitor.visitCssKeyframeDefinition(this, context); }
 }
 
 export class CssBlockDefinitionRuleAST extends CssBlockRuleAST {
@@ -695,18 +687,16 @@ export class CssStyleSheetAST extends CssAST {
 }
 
 export class CssParseError extends ParseError {
-  static create(file: ParseSourceFile, offset: number, line: number, col: number, length: number,
-                errMsg: string): CssParseError {
+  constructor(file: ParseSourceFile, offset: number, line: number, col: number, length: number,
+              errMsg: string) {
     var start = new ParseLocation(file, offset, line, col);
     var end = new ParseLocation(file, offset, line, col + length);
     var span = new ParseSourceSpan(start, end);
-    return new CssParseError(span, "CSS Parse Error: " + errMsg);
+    super(span, "CSS Parse Error: " + errMsg);
   }
-
-  constructor(span: ParseSourceSpan, message: string) { super(span, message); }
 }
 
-export class CssUnknownTokenListAST extends CssRuleAST {
-  constructor(public name, public tokens: CssToken[]) { super(); }
+export class CssUnknownTokenListAST extends CssAST {
+  constructor(public tokens: CssToken[]) { super(); }
   visit(visitor: CssASTVisitor, context?: any) { visitor.visitUnkownRule(this, context); }
 }

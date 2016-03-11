@@ -1,4 +1,4 @@
-import {NumberWrapper, StringWrapper, isPresent, resolveEnumToken} from "angular2/src/facade/lang";
+import {NumberWrapper, StringWrapper, isPresent} from "angular2/src/facade/lang";
 import {BaseException} from 'angular2/src/facade/exceptions';
 
 import {
@@ -149,10 +149,8 @@ function _trackWhitespace(mode: CssLexerMode) {
     case CssLexerMode.ALL_TRACK_WS:
     case CssLexerMode.STYLE_VALUE:
       return true;
-
-    default:
-      return false;
   }
+  return false;
 }
 
 export class CssScanner {
@@ -261,8 +259,8 @@ export class CssScanner {
 
     var error = null;
     if (!isMatchingType || (isPresent(value) && value != next.strValue)) {
-      var errorMessage = resolveEnumToken(CssTokenType, next.type) + " does not match expected " +
-                         resolveEnumToken(CssTokenType, type) + " value";
+      var errorMessage =
+        CssTokenType[next.type] + " does not match expected " + CssTokenType[type] + " value";
 
       if (isPresent(value)) {
         errorMessage += ' ("' + next.strValue + '" should match "' + value + '")';
@@ -288,7 +286,6 @@ export class CssScanner {
 
     var error = this._currentError;
     this._currentError = null;
-
     if (!trackWS) {
       this.consumeWhitespace();
     }
@@ -349,8 +346,7 @@ export class CssScanner {
   }
 
   scanComment() {
-    if (this.assertCondition(isCommentStart(this.peek, this.peekPeek),
-                             "Expected comment start value")) {
+    if (this.assertCondition(isCommentStart(this.peek, this.peekPeek), "Expected comment start value")) {
       return null;
     }
 
@@ -387,8 +383,7 @@ export class CssScanner {
   }
 
   scanString() {
-    if (this.assertCondition(isStringStart(this.peek, this.peekPeek),
-                             "Unexpected non-string starting value")) {
+    if (this.assertCondition(isStringStart(this.peek, this.peekPeek), "Unexpected non-string starting value")) {
       return null;
     }
 
@@ -437,8 +432,7 @@ export class CssScanner {
   }
 
   scanIdentifier() {
-    if (this.assertCondition(isIdentifierStart(this.peek, this.peekPeek),
-                             'Expected identifier starting value')) {
+    if (this.assertCondition(isIdentifierStart(this.peek, this.peekPeek), 'Expected identifier starting value')) {
       return null;
     }
 
@@ -464,8 +458,7 @@ export class CssScanner {
   scanCharacter() {
     var start = this.index;
     var startingColumn = this.column;
-    if (this.assertCondition(isValidCssCharacter(this.peek, this._currentMode),
-                             charStr(this.peek) + ' is not a valid CSS character')) {
+    if (this.assertCondition(isValidCssCharacter(this.peek, this._currentMode), charStr(this.peek) + ' is not a valid CSS character')) {
       return null;
     }
 
@@ -565,13 +558,16 @@ function isValidPseudoSelectorCharacter(code: number) {
     case $LPAREN:
     case $RPAREN:
       return true;
-    default:
-      return false;
   }
+  return false;
 }
 
 function isValidKeyframeBlockCharacter(code: number) {
-  return code == $PERCENT;
+  switch (code) {
+    case $PERCENT:
+      return true;
+  }
+  return false;
 }
 
 function isValidAttributeSelectorCharacter(code: number) {
@@ -584,9 +580,8 @@ function isValidAttributeSelectorCharacter(code: number) {
     case $STAR:
     case $EQ:
       return true;
-    default:
-      return false;
   }
+  return false;
 }
 
 function isValidSelectorCharacter(code: number) {
@@ -605,8 +600,6 @@ function isValidSelectorCharacter(code: number) {
     case $PIPE:
     case $COMMA:
       return true;
-    default:
-      return false;
   }
 }
 
@@ -625,8 +618,6 @@ function isValidStyleBlockCharacter(code: number) {
     case $LPAREN:
     case $RPAREN:
       return true;
-    default:
-      return false;
   }
 }
 
@@ -639,8 +630,6 @@ function isValidMediaQueryRuleCharacter(code: number) {
     case $PERCENT:
     case $PERIOD:
       return true;
-    default:
-      return false;
   }
 }
 
@@ -663,9 +652,8 @@ function isValidAtRuleCharacter(code: number) {
     case $MINUS:
     case $PLUS:
       return true;
-    default:
-      return false;
   }
+  return false;
 }
 
 function isValidStyleFunctionCharacter(code: number) {
@@ -679,8 +667,6 @@ function isValidStyleFunctionCharacter(code: number) {
     case $RPAREN:
     case $COMMA:
       return true;
-    default:
-      return false;
   }
 }
 
@@ -690,7 +676,7 @@ function isValidBlockCharacter(code: number) {
   return code == $AT;
 }
 
-function isValidCssCharacter(code: number, mode: CssLexerMode): boolean {
+function isValidCssCharacter(code: number, mode: CssLexerMode) {
   switch (mode) {
     case CssLexerMode.ALL:
     case CssLexerMode.ALL_TRACK_WS:
@@ -723,10 +709,8 @@ function isValidCssCharacter(code: number, mode: CssLexerMode): boolean {
 
     case CssLexerMode.BLOCK:
       return isValidBlockCharacter(code);
-
-    default:
-      return false;
   }
+  return false;
 }
 
 function charCode(input, index): number {
@@ -749,3 +733,4 @@ export function isNewline(code): boolean {
       return false;
   }
 }
+

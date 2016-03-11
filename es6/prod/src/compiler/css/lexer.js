@@ -1,4 +1,4 @@
-import { StringWrapper, isPresent, resolveEnumToken } from "angular2/src/facade/lang";
+import { StringWrapper, isPresent } from "angular2/src/facade/lang";
 import { BaseException } from 'angular2/src/facade/exceptions';
 import { isWhitespace, $EOF, $HASH, $TILDA, $CARET, $PERCENT, $$, $_, $COLON, $SQ, $DQ, $EQ, $SLASH, $BACKSLASH, $PERIOD, $STAR, $PLUS, $LPAREN, $RPAREN, $PIPE, $COMMA, $SEMICOLON, $MINUS, $BANG, $QUESTION, $AT, $AMPERSAND, $GT, $a, $A, $z, $Z, $0, $9, $FF, $CR, $LF, $VTAB } from "angular2/src/compiler/chars";
 export { $EOF, $AT, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isWhitespace } from "angular2/src/compiler/chars";
@@ -87,9 +87,8 @@ function _trackWhitespace(mode) {
         case CssLexerMode.ALL_TRACK_WS:
         case CssLexerMode.STYLE_VALUE:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 export class CssScanner {
     constructor(input, _trackComments = false) {
@@ -182,8 +181,7 @@ export class CssScanner {
         this.setMode(mode);
         var error = null;
         if (!isMatchingType || (isPresent(value) && value != next.strValue)) {
-            var errorMessage = resolveEnumToken(CssTokenType, next.type) + " does not match expected " +
-                resolveEnumToken(CssTokenType, type) + " value";
+            var errorMessage = CssTokenType[next.type] + " does not match expected " + CssTokenType[type] + " value";
             if (isPresent(value)) {
                 errorMessage += ' ("' + next.strValue + '" should match "' + value + '")';
             }
@@ -431,12 +429,15 @@ function isValidPseudoSelectorCharacter(code) {
         case $LPAREN:
         case $RPAREN:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 function isValidKeyframeBlockCharacter(code) {
-    return code == $PERCENT;
+    switch (code) {
+        case $PERCENT:
+            return true;
+    }
+    return false;
 }
 function isValidAttributeSelectorCharacter(code) {
     // value^*|$~=something
@@ -448,9 +449,8 @@ function isValidAttributeSelectorCharacter(code) {
         case $STAR:
         case $EQ:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 function isValidSelectorCharacter(code) {
     // selector [ key   = value ]
@@ -468,8 +468,6 @@ function isValidSelectorCharacter(code) {
         case $PIPE:
         case $COMMA:
             return true;
-        default:
-            return false;
     }
 }
 function isValidStyleBlockCharacter(code) {
@@ -487,8 +485,6 @@ function isValidStyleBlockCharacter(code) {
         case $LPAREN:
         case $RPAREN:
             return true;
-        default:
-            return false;
     }
 }
 function isValidMediaQueryRuleCharacter(code) {
@@ -500,8 +496,6 @@ function isValidMediaQueryRuleCharacter(code) {
         case $PERCENT:
         case $PERIOD:
             return true;
-        default:
-            return false;
     }
 }
 function isValidAtRuleCharacter(code) {
@@ -523,9 +517,8 @@ function isValidAtRuleCharacter(code) {
         case $MINUS:
         case $PLUS:
             return true;
-        default:
-            return false;
     }
+    return false;
 }
 function isValidStyleFunctionCharacter(code) {
     switch (code) {
@@ -538,8 +531,6 @@ function isValidStyleFunctionCharacter(code) {
         case $RPAREN:
         case $COMMA:
             return true;
-        default:
-            return false;
     }
 }
 function isValidBlockCharacter(code) {
@@ -571,9 +562,8 @@ function isValidCssCharacter(code, mode) {
             return isValidStyleFunctionCharacter(code);
         case CssLexerMode.BLOCK:
             return isValidBlockCharacter(code);
-        default:
-            return false;
     }
+    return false;
 }
 function charCode(input, index) {
     return index >= input.length ? $EOF : StringWrapper.charCodeAt(input, index);

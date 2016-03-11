@@ -378,7 +378,7 @@ class _Scanner {
   }
 }
 
-function isWhitespace(code: number): boolean {
+export function isWhitespace(code: number): boolean {
   return (code >= $TAB && code <= $SPACE) || (code == $NBSP);
 }
 

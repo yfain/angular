@@ -1875,14 +1875,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return value.constructor === type;
 	}
 	exports.hasConstructor = hasConstructor;
-	function bitWiseOr(values) {
-	    return values.reduce(function (a, b) { return a | b; });
-	}
-	exports.bitWiseOr = bitWiseOr;
-	function bitWiseAnd(values) {
-	    return values.reduce(function (a, b) { return a & b; });
-	}
-	exports.bitWiseAnd = bitWiseAnd;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
@@ -8484,6 +8476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function isWhitespace(code) {
 	    return (code >= exports.$TAB && code <= exports.$SPACE) || (code == $NBSP);
 	}
+	exports.isWhitespace = isWhitespace;
 	function isIdentifierStart(code) {
 	    return ($a <= code && code <= $z) || ($A <= code && code <= $Z) || (code == $_) || (code == exports.$$);
 	}

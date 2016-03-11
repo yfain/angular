@@ -463,18 +463,6 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return value.constructor === type;
   }
   exports.hasConstructor = hasConstructor;
-  function bitWiseOr(values) {
-    return values.reduce(function(a, b) {
-      return a | b;
-    });
-  }
-  exports.bitWiseOr = bitWiseOr;
-  function bitWiseAnd(values) {
-    return values.reduce(function(a, b) {
-      return a & b;
-    });
-  }
-  exports.bitWiseAnd = bitWiseAnd;
   global.define = __define;
   return module.exports;
 });
@@ -4177,6 +4165,7 @@ System.register("angular2/src/core/change_detection/parser/lexer", ["angular2/sr
   function isWhitespace(code) {
     return (code >= exports.$TAB && code <= exports.$SPACE) || (code == $NBSP);
   }
+  exports.isWhitespace = isWhitespace;
   function isIdentifierStart(code) {
     return ($a <= code && code <= $z) || ($A <= code && code <= $Z) || (code == $_) || (code == exports.$$);
   }

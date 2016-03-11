@@ -1,4 +1,4 @@
-import { ParseSourceSpan, ParseSourceFile, ParseError } from "angular2/src/compiler/parse_util";
+import { ParseSourceFile, ParseError } from "angular2/src/compiler/parse_util";
 import { CssToken, CssTokenType, CssScanner } from "angular2/src/compiler/css/lexer";
 export { CssToken } from "angular2/src/compiler/css/lexer";
 export declare enum BlockType {
@@ -82,8 +82,8 @@ export declare class CssKeyframeRuleAST extends CssBlockRuleAST {
     visit(visitor: CssASTVisitor, context?: any): void;
 }
 export declare class CssKeyframeDefinitionAST extends CssBlockRuleAST {
-    steps: any;
-    constructor(_steps: CssToken[], block: CssBlockAST);
+    steps: CssToken[];
+    constructor(steps: CssToken[], block: CssBlockAST);
     visit(visitor: CssASTVisitor, context?: any): void;
 }
 export declare class CssBlockDefinitionRuleAST extends CssBlockRuleAST {
@@ -132,12 +132,10 @@ export declare class CssStyleSheetAST extends CssAST {
     visit(visitor: CssASTVisitor, context?: any): void;
 }
 export declare class CssParseError extends ParseError {
-    static create(file: ParseSourceFile, offset: number, line: number, col: number, length: number, errMsg: string): CssParseError;
-    constructor(span: ParseSourceSpan, message: string);
+    constructor(file: ParseSourceFile, offset: number, line: number, col: number, length: number, errMsg: string);
 }
-export declare class CssUnknownTokenListAST extends CssRuleAST {
-    name: any;
+export declare class CssUnknownTokenListAST extends CssAST {
     tokens: CssToken[];
-    constructor(name: any, tokens: CssToken[]);
+    constructor(tokens: CssToken[]);
     visit(visitor: CssASTVisitor, context?: any): void;
 }

@@ -354,7 +354,7 @@ class _Scanner {
         throw new ScannerError(`Lexer Error: ${message} at column ${position} in expression [${this.input}]`);
     }
 }
-function isWhitespace(code) {
+export function isWhitespace(code) {
     return (code >= $TAB && code <= $SPACE) || (code == $NBSP);
 }
 function isIdentifierStart(code) {
