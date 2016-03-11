@@ -996,7 +996,7 @@ class InputMetadata {
   const InputMetadata(
       [
       /**
-       * Name used when instantiating a component in the temlate.
+       * Name used when instantiating a component in the template.
        */
       this.bindingPropertyName]);
 }
