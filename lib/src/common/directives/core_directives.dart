@@ -6,6 +6,7 @@ import "ng_for.dart" show NgFor;
 import "ng_if.dart" show NgIf;
 import "ng_style.dart" show NgStyle;
 import "ng_switch.dart" show NgSwitch, NgSwitchWhen, NgSwitchDefault;
+import "ng_plural.dart" show NgPlural, NgPluralCase;
 
 /**
  * A collection of Angular core directives that are likely to be used in each and every Angular
@@ -54,5 +55,7 @@ const List<Type> CORE_DIRECTIVES = const [
   NgStyle,
   NgSwitch,
   NgSwitchWhen,
-  NgSwitchDefault
+  NgSwitchDefault,
+  NgPlural,
+  NgPluralCase
 ];

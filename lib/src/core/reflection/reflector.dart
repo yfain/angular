@@ -105,7 +105,7 @@ class Reflector {
     }
   }
 
-  List<dynamic> parameters(dynamic typeOrFunc) {
+  List<List<dynamic>> parameters(dynamic typeOrFunc) {
     if (this._injectableInfo.containsKey(typeOrFunc)) {
       var res = this._getReflectionInfo(typeOrFunc).parameters;
       return isPresent(res) ? res : [];
@@ -166,7 +166,7 @@ class Reflector {
   }
 
   /** @internal */
-  _getReflectionInfo(dynamic typeOrFunc) {
+  ReflectionInfo _getReflectionInfo(dynamic typeOrFunc) {
     if (isPresent(this._usedKeys)) {
       this._usedKeys.add(typeOrFunc);
     }

@@ -177,7 +177,8 @@ abstract class Instruction {
   String toLinkUrl() {
     return this.urlPath +
         this._stringifyAux() +
-        (isPresent(this.child) ? this.child._toLinkUrl() : "");
+        (isPresent(this.child) ? this.child._toLinkUrl() : "") +
+        this.toUrlQuery();
   }
   // this is the non-root version (called recursively)
 
@@ -212,7 +213,8 @@ abstract class Instruction {
   /** @internal */
   String _stringifyAux() {
     var routes = [];
-    StringMapWrapper.forEach(this.auxInstruction, (auxInstruction, _) {
+    StringMapWrapper.forEach(this.auxInstruction,
+        (Instruction auxInstruction, String _) {
       routes.add(auxInstruction._stringifyPathMatrixAux());
     });
     if (routes.length > 0) {
@@ -327,7 +329,7 @@ class ComponentInstruction {
   var componentType;
   bool terminal;
   String specificity;
-  Map<String, dynamic> params;
+  Map<String, String> params;
   bool reuse = false;
   RouteData routeData;
   /**

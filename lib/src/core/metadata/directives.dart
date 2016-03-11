@@ -677,7 +677,7 @@ class DirectiveMetadata extends InjectableMetadata {
         : this._providers;
   }
 
-  /** @deprecated */
+  /**  */
   List<dynamic> get bindings {
     return this.providers;
   }

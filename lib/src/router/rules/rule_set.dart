@@ -37,7 +37,7 @@ class RuleSet {
   RouteRule defaultRule = null;
   /**
    * Configure additional rules in this rule set from a route definition
-   * @returns {boolean} true if the config is terminal
+   * 
    */
   bool config(RouteDefinition config) {
     var handler;

@@ -319,6 +319,8 @@ class HtmlTagDefinition {
 
 // This implementation does not fully conform to the HTML5 spec.
 Map<String, HtmlTagDefinition> TAG_DEFINITIONS = {
+  "base": new HtmlTagDefinition(isVoid: true),
+  "meta": new HtmlTagDefinition(isVoid: true),
   "area": new HtmlTagDefinition(isVoid: true),
   "embed": new HtmlTagDefinition(isVoid: true),
   "link": new HtmlTagDefinition(isVoid: true),

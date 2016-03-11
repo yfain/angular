@@ -91,7 +91,7 @@ main() {
       });
       it(
           "should contain a default value of \"/packages\" when nothing is provided for DART",
-          inject([UrlResolver], (resolver) {
+          inject([UrlResolver], (UrlResolver resolver) {
             if (IS_DART) {
               expect(resolver.resolve(null, "package:file"))
                   .toEqual("/packages/file");
@@ -99,7 +99,7 @@ main() {
           }));
       it(
           "should contain a default value of \"/\" when nothing is provided for TS/ESM",
-          inject([UrlResolver], (resolver) {
+          inject([UrlResolver], (UrlResolver resolver) {
             if (!IS_DART) {
               expect(resolver.resolve(null, "package:file")).toEqual("/file");
             }

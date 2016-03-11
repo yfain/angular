@@ -519,7 +519,7 @@ class Injector {
   }
 
   /**
-   * @deprecated
+   * 
    */
   static Injector fromResolvedBindings(List<ResolvedProvider> providers) {
     return Injector.fromResolvedProviders(providers);
