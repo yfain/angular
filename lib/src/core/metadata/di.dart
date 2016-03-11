@@ -76,7 +76,7 @@ class AttributeMetadata extends DependencyMetadata {
  *    <ul>
  *      <li *ngFor="#pane of panes">{{pane.title}}</li>
  *    </ul>
- *    <content></content>
+ *    <ng-content></ng-content>
  *  `
  * })
  * class Tabs {
