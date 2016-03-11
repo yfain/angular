@@ -6205,7 +6205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var InputMetadata = (function () {
 	    function InputMetadata(
 	        /**
-	         * Name used when instantiating a component in the temlate.
+	         * Name used when instantiating a component in the template.
 	         */
 	        bindingPropertyName) {
 	        this.bindingPropertyName = bindingPropertyName;
