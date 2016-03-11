@@ -1,5 +1,4 @@
 import { Observable } from 'angular2/src/facade/async';
-import { ValidatorFn, AsyncValidatorFn } from './directives/validators';
 /**
  * Indicates that a Control is valid, i.e. that no errors exist in the input value.
  */
@@ -18,8 +17,8 @@ export declare function isControl(control: Object): boolean;
  *
  */
 export declare abstract class AbstractControl {
-    validator: ValidatorFn;
-    asyncValidator: AsyncValidatorFn;
+    validator: Function;
+    asyncValidator: Function;
     private _valueChanges;
     private _statusChanges;
     private _status;
@@ -28,7 +27,7 @@ export declare abstract class AbstractControl {
     private _touched;
     private _parent;
     private _asyncValidationSubscription;
-    constructor(validator: ValidatorFn, asyncValidator: AsyncValidatorFn);
+    constructor(validator: Function, asyncValidator: Function);
     value: any;
     status: string;
     valid: boolean;
@@ -111,7 +110,7 @@ export declare abstract class AbstractControl {
  * ### Example ([live demo](http://plnkr.co/edit/23DESOpbNnBpBHZt1BR4?p=preview))
  */
 export declare class Control extends AbstractControl {
-    constructor(value?: any, validator?: ValidatorFn, asyncValidator?: AsyncValidatorFn);
+    constructor(value?: any, validator?: Function, asyncValidator?: Function);
     /**
      * Set the value of the control to `value`.
      *
@@ -156,7 +155,7 @@ export declare class ControlGroup extends AbstractControl {
         [key: string]: AbstractControl;
     }, optionals?: {
         [key: string]: boolean;
-    }, validator?: ValidatorFn, asyncValidator?: AsyncValidatorFn);
+    }, validator?: Function, asyncValidator?: Function);
     /**
      * Add a control to this group.
      */
@@ -201,7 +200,7 @@ export declare class ControlGroup extends AbstractControl {
  */
 export declare class ControlArray extends AbstractControl {
     controls: AbstractControl[];
-    constructor(controls: AbstractControl[], validator?: ValidatorFn, asyncValidator?: AsyncValidatorFn);
+    constructor(controls: AbstractControl[], validator?: Function, asyncValidator?: Function);
     /**
      * Get the {@link AbstractControl} at the given `index` in the array.
      */
