@@ -4165,7 +4165,6 @@ System.register("angular2/src/core/change_detection/parser/lexer", ["angular2/sr
   function isWhitespace(code) {
     return (code >= exports.$TAB && code <= exports.$SPACE) || (code == $NBSP);
   }
-  exports.isWhitespace = isWhitespace;
   function isIdentifierStart(code) {
     return ($a <= code && code <= $z) || ($A <= code && code <= $Z) || (code == $_) || (code == exports.$$);
   }

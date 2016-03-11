@@ -8476,7 +8476,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function isWhitespace(code) {
 	    return (code >= exports.$TAB && code <= exports.$SPACE) || (code == $NBSP);
 	}
-	exports.isWhitespace = isWhitespace;
 	function isIdentifierStart(code) {
 	    return ($a <= code && code <= $z) || ($A <= code && code <= $Z) || (code == $_) || (code == exports.$$);
 	}
