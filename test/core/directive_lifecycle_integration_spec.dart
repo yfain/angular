@@ -24,7 +24,7 @@ import "package:angular2/core.dart"
         AfterViewInit,
         AfterViewChecked;
 import "package:angular2/src/core/metadata.dart"
-    show Directive, Component, View, ViewMetadata;
+    show Directive, Component, ViewMetadata;
 
 main() {
   describe("directive lifecycle integration spec", () {
@@ -63,9 +63,11 @@ class LifecycleDir implements DoCheck {
   }
 }
 
-@Component(selector: "[lifecycle]", inputs: const ["field"])
-@View(
-    template: '''<div lifecycle-dir></div>''', directives: const [LifecycleDir])
+@Component(
+    selector: "[lifecycle]",
+    inputs: const ["field"],
+    template: '''<div lifecycle-dir></div>''',
+    directives: const [LifecycleDir])
 class LifecycleCmp
     implements
         OnChanges,
@@ -107,6 +109,5 @@ class LifecycleCmp
   }
 }
 
-@Component(selector: "my-comp")
-@View(directives: const [])
+@Component(selector: "my-comp", directives: const [])
 class MyComp {}

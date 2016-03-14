@@ -24,7 +24,6 @@ import "package:angular2/core.dart"
         TemplateRef,
         Query,
         QueryList,
-        View,
         ViewQuery,
         ContentChildren,
         ViewChildren,
@@ -669,8 +668,7 @@ class TextDirective {
   TextDirective() {}
 }
 
-@Component(selector: "needs-content-children")
-@View(template: "")
+@Component(selector: "needs-content-children", template: "")
 class NeedsContentChildren implements AfterContentInit {
   @ContentChildren(TextDirective)
   QueryList<TextDirective> textDirChildren;
@@ -680,8 +678,10 @@ class NeedsContentChildren implements AfterContentInit {
   }
 }
 
-@Component(selector: "needs-view-children")
-@View(template: "<div text></div>", directives: const [TextDirective])
+@Component(
+    selector: "needs-view-children",
+    template: "<div text></div>",
+    directives: const [TextDirective])
 class NeedsViewChildren implements AfterViewInit {
   @ViewChildren(TextDirective)
   QueryList<TextDirective> textDirChildren;
@@ -691,8 +691,7 @@ class NeedsViewChildren implements AfterViewInit {
   }
 }
 
-@Component(selector: "needs-content-child")
-@View(template: "")
+@Component(selector: "needs-content-child", template: "")
 class NeedsContentChild implements AfterContentInit, AfterContentChecked {
   TextDirective _child;
   @ContentChild(TextDirective)
@@ -715,8 +714,8 @@ class NeedsContentChild implements AfterContentInit, AfterContentChecked {
   }
 }
 
-@Component(selector: "needs-view-child")
-@View(
+@Component(
+    selector: "needs-view-child",
     template: '''
     <div *ngIf="shouldShow" text="foo"></div>
   ''',
@@ -750,8 +749,8 @@ class InertDirective {
   InertDirective() {}
 }
 
-@Component(selector: "needs-query")
-@View(
+@Component(
+    selector: "needs-query",
     directives: const [NgFor, TextDirective],
     template:
         "<div text=\"ignoreme\"></div><b *ngFor=\"var dir of query\">{{dir.text}}|</b>")
@@ -763,8 +762,7 @@ class NeedsQuery {
   }
 }
 
-@Component(selector: "needs-four-queries")
-@View(template: "")
+@Component(selector: "needs-four-queries", template: "")
 class NeedsFourQueries {
   @ContentChild(TextDirective)
   TextDirective query1;
@@ -776,8 +774,8 @@ class NeedsFourQueries {
   TextDirective query4;
 }
 
-@Component(selector: "needs-query-desc")
-@View(
+@Component(
+    selector: "needs-query-desc",
     directives: const [NgFor],
     template: "<div *ngFor=\"var dir of query\">{{dir.text}}|</div>")
 @Injectable()
@@ -789,8 +787,10 @@ class NeedsQueryDesc {
   }
 }
 
-@Component(selector: "needs-query-by-var-binding")
-@View(directives: const [], template: "<ng-content>")
+@Component(
+    selector: "needs-query-by-var-binding",
+    directives: const [],
+    template: "<ng-content>")
 @Injectable()
 class NeedsQueryByLabel {
   QueryList<dynamic> query;
@@ -800,8 +800,10 @@ class NeedsQueryByLabel {
   }
 }
 
-@Component(selector: "needs-view-query-by-var-binding")
-@View(directives: const [], template: "<div #textLabel>text</div>")
+@Component(
+    selector: "needs-view-query-by-var-binding",
+    directives: const [],
+    template: "<div #textLabel>text</div>")
 @Injectable()
 class NeedsViewQueryByLabel {
   QueryList<dynamic> query;
@@ -810,8 +812,10 @@ class NeedsViewQueryByLabel {
   }
 }
 
-@Component(selector: "needs-query-by-var-bindings")
-@View(directives: const [], template: "<ng-content>")
+@Component(
+    selector: "needs-query-by-var-bindings",
+    directives: const [],
+    template: "<ng-content>")
 @Injectable()
 class NeedsQueryByTwoLabels {
   QueryList<dynamic> query;
@@ -822,8 +826,8 @@ class NeedsQueryByTwoLabels {
   }
 }
 
-@Component(selector: "needs-query-and-project")
-@View(
+@Component(
+    selector: "needs-query-and-project",
     directives: const [NgFor],
     template:
         "<div *ngFor=\"var dir of query\">{{dir.text}}|</div><ng-content></ng-content>")
@@ -835,8 +839,8 @@ class NeedsQueryAndProject {
   }
 }
 
-@Component(selector: "needs-view-query")
-@View(
+@Component(
+    selector: "needs-view-query",
     directives: const [TextDirective],
     template: "<div text=\"1\"><div text=\"2\"></div></div>" +
         "<div text=\"3\"></div><div text=\"4\"></div>")
@@ -848,8 +852,8 @@ class NeedsViewQuery {
   }
 }
 
-@Component(selector: "needs-view-query-if")
-@View(
+@Component(
+    selector: "needs-view-query-if",
     directives: const [NgIf, TextDirective],
     template: "<div *ngIf=\"show\" text=\"1\"></div>")
 @Injectable()
@@ -862,8 +866,8 @@ class NeedsViewQueryIf {
   }
 }
 
-@Component(selector: "needs-view-query-nested-if")
-@View(
+@Component(
+    selector: "needs-view-query-nested-if",
     directives: const [NgIf, InertDirective, TextDirective],
     template: "<div text=\"1\"><div *ngIf=\"show\"><div dir></div></div></div>")
 @Injectable()
@@ -877,8 +881,8 @@ class NeedsViewQueryNestedIf {
   }
 }
 
-@Component(selector: "needs-view-query-order")
-@View(
+@Component(
+    selector: "needs-view-query-order",
     directives: const [NgFor, TextDirective, InertDirective],
     template: "<div text=\"1\"></div>" +
         "<div *ngFor=\"var i of list\" [text]=\"i\"></div>" +
@@ -894,8 +898,8 @@ class NeedsViewQueryOrder {
   }
 }
 
-@Component(selector: "needs-view-query-order-with-p")
-@View(
+@Component(
+    selector: "needs-view-query-order-with-p",
     directives: const [NgFor, TextDirective, InertDirective],
     template: "<div dir><div text=\"1\"></div>" +
         "<div *ngFor=\"var i of list\" [text]=\"i\"></div>" +
@@ -911,8 +915,8 @@ class NeedsViewQueryOrderWithParent {
   }
 }
 
-@Component(selector: "needs-tpl")
-@View(template: "<template var-x=\"shadow\"></template>")
+@Component(
+    selector: "needs-tpl", template: "<template var-x=\"shadow\"></template>")
 class NeedsTpl {
   ViewContainerRef vc;
   QueryList<TemplateRef> viewQuery;
@@ -924,30 +928,32 @@ class NeedsTpl {
   }
 }
 
-@Component(selector: "my-comp")
-@View(directives: const [
-  NeedsQuery,
-  NeedsQueryDesc,
-  NeedsQueryByLabel,
-  NeedsQueryByTwoLabels,
-  NeedsQueryAndProject,
-  NeedsViewQuery,
-  NeedsViewQueryIf,
-  NeedsViewQueryNestedIf,
-  NeedsViewQueryOrder,
-  NeedsViewQueryByLabel,
-  NeedsViewQueryOrderWithParent,
-  NeedsContentChildren,
-  NeedsViewChildren,
-  NeedsViewChild,
-  NeedsContentChild,
-  NeedsTpl,
-  TextDirective,
-  InertDirective,
-  NgIf,
-  NgFor,
-  NeedsFourQueries
-])
+@Component(
+    selector: "my-comp",
+    directives: const [
+      NeedsQuery,
+      NeedsQueryDesc,
+      NeedsQueryByLabel,
+      NeedsQueryByTwoLabels,
+      NeedsQueryAndProject,
+      NeedsViewQuery,
+      NeedsViewQueryIf,
+      NeedsViewQueryNestedIf,
+      NeedsViewQueryOrder,
+      NeedsViewQueryByLabel,
+      NeedsViewQueryOrderWithParent,
+      NeedsContentChildren,
+      NeedsViewChildren,
+      NeedsViewChild,
+      NeedsContentChild,
+      NeedsTpl,
+      TextDirective,
+      InertDirective,
+      NgIf,
+      NgFor,
+      NeedsFourQueries
+    ],
+    template: "")
 @Injectable()
 class MyComp {
   bool shouldShow;

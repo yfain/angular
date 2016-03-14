@@ -22,7 +22,7 @@ import "package:angular2/core.dart" show Injectable;
 import "package:angular2/common.dart" show NgFor, NgIf;
 import "package:angular2/platform/common_dom.dart" show By;
 import "package:angular2/src/core/metadata.dart"
-    show Directive, Component, View, Input;
+    show Directive, Component, Input;
 
 @Injectable()
 class Logger {
@@ -47,8 +47,8 @@ class MessageDir {
   }
 }
 
-@Component(selector: "child-comp")
-@View(
+@Component(
+    selector: "child-comp",
     template: '''<div class="child" message="child">
                <span class="childnested" message="nestedchild">Child</span>
              </div>
@@ -62,8 +62,9 @@ class ChildComp {
   }
 }
 
-@Component(selector: "parent-comp", viewProviders: const [Logger])
-@View(
+@Component(
+    selector: "parent-comp",
+    viewProviders: const [Logger],
     template: '''<div class="parent" message="parent">
                <span class="parentnested" message="nestedparent">Parent</span>
              </div>
@@ -87,8 +88,8 @@ class CustomEmitter {
   }
 }
 
-@Component(selector: "events-comp")
-@View(
+@Component(
+    selector: "events-comp",
     template: '''<button (click)="handleClick()"></button>
              <custom-emitter (myevent)="handleCustom()"></custom-emitter>''',
     directives: const [CustomEmitter])
@@ -109,8 +110,9 @@ class EventsComp {
   }
 }
 
-@Component(selector: "cond-content-comp", viewProviders: const [Logger])
-@View(
+@Component(
+    selector: "cond-content-comp",
+    viewProviders: const [Logger],
     template:
         '''<div class="child" message="child" *ngIf="myBool"><ng-content></ng-content></div>''',
     directives: const [NgIf, MessageDir])
@@ -119,8 +121,9 @@ class ConditionalContentComp {
   bool myBool = false;
 }
 
-@Component(selector: "conditional-parent-comp", viewProviders: const [Logger])
-@View(
+@Component(
+    selector: "conditional-parent-comp",
+    viewProviders: const [Logger],
     template: '''<span class="parent" [innerHtml]="parentBinding"></span>
             <cond-content-comp class="cond-content-comp-class">
               <span class="from-parent"></span>
@@ -134,8 +137,9 @@ class ConditionalParentComp {
   }
 }
 
-@Component(selector: "using-for", viewProviders: const [Logger])
-@View(
+@Component(
+    selector: "using-for",
+    viewProviders: const [Logger],
     template: '''<span *ngFor="#thing of stuff" [innerHtml]="thing"></span>
             <ul message="list">
               <li *ngFor="#item of stuff" [innerHtml]="item"></li>

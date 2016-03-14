@@ -1,7 +1,7 @@
 library angular2.test.common.forms.integration_spec;
 
 import "package:angular2/core.dart"
-    show Component, Directive, View, Output, EventEmitter;
+    show Component, Directive, Output, EventEmitter;
 import "package:angular2/testing_internal.dart"
     show
         ComponentFixture,

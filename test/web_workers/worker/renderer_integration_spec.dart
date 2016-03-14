@@ -23,7 +23,6 @@ import "package:angular2/core.dart"
         Injector,
         ViewMetadata,
         Component,
-        View,
         Injectable,
         ElementRef;
 import "package:angular2/common.dart" show NgIf;
@@ -274,8 +273,7 @@ main() {
   });
 }
 
-@Component(selector: "my-comp")
-@View(directives: const [])
+@Component(selector: "my-comp", directives: const [])
 @Injectable()
 class MyComp {
   String ctxProp;

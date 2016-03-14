@@ -13,7 +13,7 @@ import "ng_plural.dart" show NgPlural, NgPluralCase;
  * application.
  *
  * This collection can be used to quickly enumerate all the built-in directives in the `directives`
- * property of the `@View` annotation.
+ * property of the `@Component` annotation.
  *
  * ### Example ([live demo](http://plnkr.co/edit/yakGwpCdUkg0qfzX5m8g?p=preview))
  *

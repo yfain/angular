@@ -22,8 +22,7 @@ import "package:angular2/platform/common_dom.dart" show By;
 import "package:angular2/src/facade/lang.dart" show NumberWrapper;
 import "package:angular2/src/facade/async.dart" show PromiseWrapper;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
-import "package:angular2/core.dart"
-    show provide, Component, View, DirectiveResolver;
+import "package:angular2/core.dart" show provide, Component, DirectiveResolver;
 import "package:angular2/src/mock/location_mock.dart" show SpyLocation;
 import "package:angular2/router.dart"
     show
@@ -68,11 +67,7 @@ main() {
     }));
     compile([String template = "<router-outlet></router-outlet>"]) {
       return tcb
-          .overrideView(
-              MyComp,
-              new View(
-                  template: ("<div>" + template + "</div>"),
-                  directives: [RouterOutlet, RouterLink]))
+          .overrideTemplate(MyComp, ("<div>" + template + "</div>"))
           .createAsync(MyComp)
           .then((tc) {
         fixture = tc;
@@ -409,7 +404,8 @@ getHref(ComponentFixture tc) {
       tc.debugElement.query(By.css("a")).nativeElement, "href");
 }
 
-@Component(selector: "my-comp")
+@Component(
+    selector: "my-comp", template: "", directives: const [ROUTER_DIRECTIVES])
 class MyComp {
   var name;
 }

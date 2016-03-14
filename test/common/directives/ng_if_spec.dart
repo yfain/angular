@@ -14,7 +14,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
-import "package:angular2/core.dart" show Component, View;
+import "package:angular2/core.dart" show Component;
 import "package:angular2/common.dart" show NgIf;
 import "package:angular2/src/facade/lang.dart" show IS_DART;
 
@@ -275,8 +275,7 @@ main() {
   });
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgIf])
+@Component(selector: "test-cmp", directives: const [NgIf], template: "")
 class TestComponent {
   bool booleanCondition;
   bool nestedBooleanCondition;

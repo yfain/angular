@@ -5,8 +5,7 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/src/facade/lang.dart" show stringify;
 import "package:angular2/src/mock/view_resolver_mock.dart"
     show MockViewResolver;
-import "package:angular2/src/core/metadata.dart"
-    show Component, View, ViewMetadata;
+import "package:angular2/src/core/metadata.dart" show Component, ViewMetadata;
 import "package:angular2/src/facade/lang.dart" show isBlank;
 
 main() {
@@ -101,8 +100,8 @@ main() {
 
 class SomeDirective {}
 
-@Component(selector: "cmp")
-@View(template: "template", directives: const [SomeDirective])
+@Component(
+    selector: "cmp", template: "template", directives: const [SomeDirective])
 class SomeComponent {}
 
 class SomeOtherDirective {}

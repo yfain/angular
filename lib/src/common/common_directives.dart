@@ -10,7 +10,7 @@ import "directives.dart" show CORE_DIRECTIVES;
  * NgModel).
  *
  * This collection can be used to quickly enumerate all the built-in directives in the `directives`
- * property of the `@Component` or `@View` decorators.
+ * property of the `@Component` decorator.
  *
  * ### Example
  *

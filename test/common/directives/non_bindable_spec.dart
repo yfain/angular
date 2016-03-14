@@ -14,7 +14,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
-import "package:angular2/core.dart" show Component, Directive, View;
+import "package:angular2/core.dart" show Component, Directive;
 import "package:angular2/src/core/linker/element_ref.dart" show ElementRef;
 
 main() {
@@ -82,8 +82,8 @@ class TestDirective {
   }
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [TestDirective])
+@Component(
+    selector: "test-cmp", directives: const [TestDirective], template: "")
 class TestComponent {
   String text;
   TestComponent() {

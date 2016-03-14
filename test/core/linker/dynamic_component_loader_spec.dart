@@ -20,8 +20,7 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/core.dart" show OnDestroy;
 import "package:angular2/core.dart" show Injector;
 import "package:angular2/common.dart" show NgIf;
-import "package:angular2/src/core/metadata.dart"
-    show Component, View, ViewMetadata;
+import "package:angular2/src/core/metadata.dart" show Component, ViewMetadata;
 import "package:angular2/src/core/linker/dynamic_component_loader.dart"
     show DynamicComponentLoader;
 import "package:angular2/src/core/linker/element_ref.dart"
@@ -424,8 +423,7 @@ dynamic createRootElement(dynamic doc, String name) {
   return rootEl;
 }
 
-@Component(selector: "child-cmp")
-@View(template: "{{ctxProp}}")
+@Component(selector: "child-cmp", template: "{{ctxProp}}")
 class ChildComp {
   String ctxProp;
   ChildComp() {
@@ -437,8 +435,8 @@ class DynamicallyCreatedComponentService {}
 
 @Component(
     selector: "hello-cmp",
-    viewProviders: const [DynamicallyCreatedComponentService])
-@View(template: "{{greeting}}")
+    viewProviders: const [DynamicallyCreatedComponentService],
+    template: "{{greeting}}")
 class DynamicallyCreatedCmp implements OnDestroy {
   String greeting;
   DynamicallyCreatedComponentService dynamicallyCreatedComponentService;
@@ -452,24 +450,23 @@ class DynamicallyCreatedCmp implements OnDestroy {
   }
 }
 
-@Component(selector: "dummy")
-@View(template: "DynamicallyLoaded;")
+@Component(selector: "dummy", template: "DynamicallyLoaded;")
 class DynamicallyLoaded {}
 
-@Component(selector: "dummy")
-@View(template: "DynamicallyLoaded;")
+@Component(selector: "dummy", template: "DynamicallyLoaded;")
 class DynamicallyLoadedThrows {
   DynamicallyLoadedThrows() {
     throw new BaseException("ThrownInConstructor");
   }
 }
 
-@Component(selector: "dummy")
-@View(template: "DynamicallyLoaded2;")
+@Component(selector: "dummy", template: "DynamicallyLoaded2;")
 class DynamicallyLoaded2 {}
 
-@Component(selector: "dummy", host: const {"[id]": "id"})
-@View(template: "DynamicallyLoadedWithHostProps;")
+@Component(
+    selector: "dummy",
+    host: const {"[id]": "id"},
+    template: "DynamicallyLoadedWithHostProps;")
 class DynamicallyLoadedWithHostProps {
   String id;
   DynamicallyLoadedWithHostProps() {
@@ -477,8 +474,7 @@ class DynamicallyLoadedWithHostProps {
   }
 }
 
-@Component(selector: "dummy")
-@View(template: "dynamic(<ng-content></ng-content>)")
+@Component(selector: "dummy", template: "dynamic(<ng-content></ng-content>)")
 class DynamicallyLoadedWithNgContent {
   String id;
   DynamicallyLoadedWithNgContent() {
@@ -486,8 +482,7 @@ class DynamicallyLoadedWithNgContent {
   }
 }
 
-@Component(selector: "location")
-@View(template: "Location;")
+@Component(selector: "location", template: "Location;")
 class Location {
   ElementRef elementRef;
   Location(ElementRef elementRef) {
@@ -495,8 +490,7 @@ class Location {
   }
 }
 
-@Component(selector: "my-comp")
-@View(directives: const [])
+@Component(selector: "my-comp", directives: const [])
 class MyComp {
   bool ctxBoolProp;
   MyComp() {

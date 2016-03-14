@@ -1,6 +1,6 @@
 library angular2.test.router.integration.util;
 
-import "package:angular2/core.dart" show provide, Provider, Component, View;
+import "package:angular2/core.dart" show provide, Provider, Component;
 import "package:angular2/src/facade/lang.dart" show Type, isBlank;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "package:angular2/testing_internal.dart"

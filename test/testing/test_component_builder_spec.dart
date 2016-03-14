@@ -18,10 +18,10 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/core.dart" show Injectable, provide;
 import "package:angular2/common.dart" show NgIf;
 import "package:angular2/src/core/metadata.dart"
-    show Directive, Component, View, ViewMetadata;
+    show Directive, Component, ViewMetadata;
 
-@Component(selector: "child-comp")
-@View(
+@Component(
+    selector: "child-comp",
     template: '''<span>Original {{childBinding}}</span>''',
     directives: const [])
 @Injectable()
@@ -32,20 +32,19 @@ class ChildComp {
   }
 }
 
-@Component(selector: "child-comp")
-@View(template: '''<span>Mock</span>''')
+@Component(selector: "child-comp", template: '''<span>Mock</span>''')
 @Injectable()
 class MockChildComp {}
 
-@Component(selector: "parent-comp")
-@View(
+@Component(
+    selector: "parent-comp",
     template: '''Parent(<child-comp></child-comp>)''',
     directives: const [ChildComp])
 @Injectable()
 class ParentComp {}
 
-@Component(selector: "my-if-comp")
-@View(
+@Component(
+    selector: "my-if-comp",
     template: '''MyIf(<span *ngIf="showMore">More</span>)''',
     directives: const [NgIf])
 @Injectable()
@@ -53,13 +52,13 @@ class MyIfComp {
   bool showMore = false;
 }
 
-@Component(selector: "child-child-comp")
-@View(template: '''<span>ChildChild</span>''')
+@Component(
+    selector: "child-child-comp", template: '''<span>ChildChild</span>''')
 @Injectable()
 class ChildChildComp {}
 
-@Component(selector: "child-comp")
-@View(
+@Component(
+    selector: "child-comp",
     template:
         '''<span>Original {{childBinding}}(<child-child-comp></child-child-comp>)</span>''',
     directives: const [ChildChildComp])
@@ -71,8 +70,8 @@ class ChildWithChildComp {
   }
 }
 
-@Component(selector: "child-child-comp")
-@View(template: '''<span>ChildChild Mock</span>''')
+@Component(
+    selector: "child-child-comp", template: '''<span>ChildChild Mock</span>''')
 @Injectable()
 class MockChildChildComp {}
 
@@ -84,15 +83,19 @@ class MockFancyService extends FancyService {
   String value = "mocked out value";
 }
 
-@Component(selector: "my-service-comp", bindings: const [FancyService])
-@View(template: '''injected value: {{fancyService.value}}''')
+@Component(
+    selector: "my-service-comp",
+    bindings: const [FancyService],
+    template: '''injected value: {{fancyService.value}}''')
 class TestBindingsComp {
   FancyService fancyService;
   TestBindingsComp(this.fancyService) {}
 }
 
-@Component(selector: "my-service-comp", viewProviders: const [FancyService])
-@View(template: '''injected value: {{fancyService.value}}''')
+@Component(
+    selector: "my-service-comp",
+    viewProviders: const [FancyService],
+    template: '''injected value: {{fancyService.value}}''')
 class TestViewBindingsComp {
   FancyService fancyService;
   TestViewBindingsComp(this.fancyService) {}

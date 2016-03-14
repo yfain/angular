@@ -22,7 +22,6 @@ import "package:angular2/src/core/linker/interfaces.dart"
 import "package:angular2/core.dart"
     show
         Component,
-        View,
         Directive,
         ViewEncapsulation,
         ChangeDetectionStrategy,
@@ -135,8 +134,7 @@ class ComponentWithoutModuleId {}
     },
     exportAs: "someExportAs",
     moduleId: "someModuleId",
-    changeDetection: ChangeDetectionStrategy.CheckAlways)
-@View(
+    changeDetection: ChangeDetectionStrategy.CheckAlways,
     template: "someTemplate",
     templateUrl: "someTemplateUrl",
     encapsulation: ViewEncapsulation.Emulated,

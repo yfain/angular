@@ -64,8 +64,10 @@ class RouteParams {
  * ])
  * class AppCmp {}
  *
- * @Component({...})
- * @View({ template: 'user: {{isAdmin}}' })
+ * @Component({
+ *   ...,
+ *   template: 'user: {{isAdmin}}'
+ * })
  * class UserCmp {
  *   string: isAdmin;
  *   constructor(data: RouteData) {

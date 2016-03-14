@@ -14,7 +14,7 @@ import "package:angular2/testing_internal.dart"
         AsyncTestCompleter,
         inject,
         beforeEachProviders;
-import "package:angular2/core.dart" show Component, View, provide;
+import "package:angular2/core.dart" show Component, provide;
 import "package:angular2/src/facade/async.dart" show PromiseWrapper;
 import "spies.dart" show SpyTemplateCompiler;
 import "package:angular2/src/compiler/compiler.dart" show TemplateCompiler;
@@ -54,6 +54,5 @@ main() {
   });
 }
 
-@Component(selector: "some-comp")
-@View(template: "")
+@Component(selector: "some-comp", template: "")
 class SomeComponent {}

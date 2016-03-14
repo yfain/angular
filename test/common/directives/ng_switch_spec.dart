@@ -13,7 +13,7 @@ import "package:angular2/testing_internal.dart"
         inject,
         it,
         xit;
-import "package:angular2/core.dart" show Component, View;
+import "package:angular2/core.dart" show Component;
 import "package:angular2/src/common/directives/ng_switch.dart"
     show NgSwitch, NgSwitchWhen, NgSwitchDefault;
 
@@ -143,8 +143,10 @@ main() {
   });
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgSwitch, NgSwitchWhen, NgSwitchDefault])
+@Component(
+    selector: "test-cmp",
+    directives: const [NgSwitch, NgSwitchWhen, NgSwitchDefault],
+    template: "")
 class TestComponent {
   dynamic switchValue;
   dynamic when1;

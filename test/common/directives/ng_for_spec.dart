@@ -15,8 +15,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
-import "package:angular2/core.dart"
-    show Component, View, TemplateRef, ContentChild;
+import "package:angular2/core.dart" show Component, TemplateRef, ContentChild;
 import "package:angular2/src/common/directives/ng_for.dart" show NgFor;
 import "package:angular2/src/common/directives/ng_if.dart" show NgIf;
 import "package:angular2/platform/common_dom.dart" show By;
@@ -566,8 +565,7 @@ class Foo {
   }
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgFor, NgIf])
+@Component(selector: "test-cmp", directives: const [NgFor, NgIf], template: "")
 class TestComponent {
   @ContentChild(TemplateRef)
   TemplateRef contentTpl;
@@ -584,8 +582,8 @@ class TestComponent {
   }
 }
 
-@Component(selector: "outer-cmp")
-@View(directives: const [TestComponent])
+@Component(
+    selector: "outer-cmp", directives: const [TestComponent], template: "")
 class ComponentUsingTestComponent {
   dynamic items;
   ComponentUsingTestComponent() {

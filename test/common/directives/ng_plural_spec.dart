@@ -14,7 +14,7 @@ import "package:angular2/testing_internal.dart"
         inject,
         it,
         xit;
-import "package:angular2/core.dart" show Component, View, Injectable, provide;
+import "package:angular2/core.dart" show Component, Injectable, provide;
 import "package:angular2/common.dart"
     show NgPlural, NgPluralCase, NgLocalization;
 
@@ -130,8 +130,10 @@ class TestLocalizationMap extends NgLocalization {
   }
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgPlural, NgPluralCase])
+@Component(
+    selector: "test-cmp",
+    directives: const [NgPlural, NgPluralCase],
+    template: "")
 class TestComponent {
   num switchValue;
   TestComponent() {

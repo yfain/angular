@@ -21,7 +21,7 @@ import "i18n_select_pipe.dart" show I18nSelectPipe;
  * application.
  *
  * This collection can be used to quickly enumerate all the built-in pipes in the `pipes`
- * property of the `@Component` or `@View` decorators.
+ * property of the `@Component` decorator.
  */
 const COMMON_PIPES = const [
   AsyncPipe,

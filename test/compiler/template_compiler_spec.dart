@@ -39,7 +39,7 @@ import "package:angular2/src/core/linker/element.dart" show AppElement;
 import "package:angular2/src/core/change_detection/change_detection.dart"
     show Locals, ChangeDetectorGenConfig;
 import "package:angular2/core.dart"
-    show Component, View, Directive, provide, RenderComponentType;
+    show Component, Directive, provide, RenderComponentType;
 import "test_bindings.dart" show TEST_PROVIDERS;
 import "package:angular2/src/compiler/util.dart"
     show codeGenValueFn, codeGenFnHeader, codeGenExportVariable, MODULE_SUFFIX;
@@ -356,55 +356,64 @@ class UpperCasePipe implements PipeTransform {
     selector: "comp-a",
     host: const {"[title]": "'someHostValue'"},
     moduleId: THIS_MODULE_ID,
-    exportAs: "someExportAs")
-@View(
+    exportAs: "someExportAs",
     template: "<a [href]=\"'someCtxValue' | uppercase\"></a>",
     styles: const ["div {color: red}"],
     encapsulation: ViewEncapsulation.None,
     pipes: const [UpperCasePipe])
 class CompWithBindingsAndStylesAndPipes {}
 
-@Component(selector: "tree", moduleId: THIS_MODULE_ID)
-@View(
+@Component(
+    selector: "tree",
+    moduleId: THIS_MODULE_ID,
     template: "<template><tree></tree></template>",
     directives: const [TreeComp],
     encapsulation: ViewEncapsulation.None)
 class TreeComp {}
 
-@Component(selector: "comp-wit-dup-tpl", moduleId: THIS_MODULE_ID)
-@View(
+@Component(
+    selector: "comp-wit-dup-tpl",
+    moduleId: THIS_MODULE_ID,
     template: "<tree></tree>",
     directives: const [TreeComp, TreeComp],
     encapsulation: ViewEncapsulation.None)
 class CompWithDupDirectives {}
 
-@Component(selector: "comp-url", moduleId: THIS_MODULE_ID)
-@View(templateUrl: "compUrl.html", encapsulation: ViewEncapsulation.None)
+@Component(
+    selector: "comp-url",
+    moduleId: THIS_MODULE_ID,
+    templateUrl: "compUrl.html",
+    encapsulation: ViewEncapsulation.None)
 class CompWithTemplateUrl {}
 
-@Component(selector: "comp-tpl", moduleId: THIS_MODULE_ID)
-@View(
+@Component(
+    selector: "comp-tpl",
+    moduleId: THIS_MODULE_ID,
     template: "<template><a [href]=\"'someEmbeddedValue'\"></a></template>",
     encapsulation: ViewEncapsulation.None)
 class CompWithEmbeddedTemplate {}
 
 @Directive(selector: "plain")
-@View(template: "")
 class NonComponent {}
 
-@Component(selector: "comp2", moduleId: THIS_MODULE_ID)
-@View(template: "<b></b>", encapsulation: ViewEncapsulation.None)
+@Component(
+    selector: "comp2",
+    moduleId: THIS_MODULE_ID,
+    template: "<b></b>",
+    encapsulation: ViewEncapsulation.None)
 class Comp2 {}
 
-@Component(selector: "comp1", moduleId: THIS_MODULE_ID)
-@View(
+@Component(
+    selector: "comp1",
+    moduleId: THIS_MODULE_ID,
     template: "<a></a>, <comp2></comp2>",
     encapsulation: ViewEncapsulation.None,
     directives: const [Comp2])
 class Comp1 {}
 
-@Component(selector: "comp-with-2nested", moduleId: THIS_MODULE_ID)
-@View(
+@Component(
+    selector: "comp-with-2nested",
+    moduleId: THIS_MODULE_ID,
     template: "<comp1></comp1>, <comp2></comp2>",
     encapsulation: ViewEncapsulation.None,
     directives: const [Comp1, Comp2])

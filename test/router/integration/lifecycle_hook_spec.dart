@@ -17,8 +17,7 @@ import "package:angular2/testing_internal.dart"
         beforeEachProviders,
         it,
         xit;
-import "package:angular2/core.dart"
-    show provide, Component, Injector, Inject, View;
+import "package:angular2/core.dart" show provide, Component, Injector, Inject;
 import "package:angular2/src/facade/lang.dart" show isPresent;
 import "package:angular2/src/facade/async.dart"
     show PromiseWrapper, PromiseCompleter, EventEmitter, ObservableWrapper;

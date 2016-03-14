@@ -48,7 +48,7 @@ export "directives/control_value_accessor.dart" show ControlValueAccessor;
 
 /**
  *
- * A list of all the form directives used as part of a `@View` annotation.
+ * A list of all the form directives used as part of a `@Component` annotation.
  *
  *  This is a shorthand for importing them each individually.
  *

@@ -42,7 +42,7 @@ class ViewResolver {
           isBlank(compMeta.templateUrl) &&
           isBlank(viewMeta)) {
         throw new BaseException(
-            '''Component \'${ stringify ( component )}\' must have either \'template\', \'templateUrl\', or \'@View\' set.''');
+            '''Component \'${ stringify ( component )}\' must have either \'template\' or \'templateUrl\' set.''');
       } else if (isPresent(compMeta.template) && isPresent(viewMeta)) {
         this._throwMixingViewAndComponent("template", component);
       } else if (isPresent(compMeta.templateUrl) && isPresent(viewMeta)) {
@@ -72,7 +72,7 @@ class ViewResolver {
     } else {
       if (isBlank(viewMeta)) {
         throw new BaseException(
-            '''No View decorator found on component \'${ stringify ( component )}\'''');
+            '''Could not compile \'${ stringify ( component )}\' because it is not a component.''');
       } else {
         return viewMeta;
       }

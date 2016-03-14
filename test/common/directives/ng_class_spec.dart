@@ -18,7 +18,7 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper, SetWrapper;
-import "package:angular2/core.dart" show Component, View, provide;
+import "package:angular2/core.dart" show Component, provide;
 import "package:angular2/common.dart" show NgFor;
 import "package:angular2/src/common/directives/ng_class.dart" show NgClass;
 
@@ -525,8 +525,8 @@ main() {
   });
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgClass, NgFor])
+@Component(
+    selector: "test-cmp", directives: const [NgClass, NgFor], template: "")
 class TestComponent {
   bool condition = true;
   List<dynamic> items;

@@ -16,7 +16,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
-import "package:angular2/core.dart" show Component, View;
+import "package:angular2/core.dart" show Component;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/common/directives/ng_style.dart" show NgStyle;
 
@@ -149,8 +149,7 @@ main() {
   });
 }
 
-@Component(selector: "test-cmp")
-@View(directives: const [NgStyle])
+@Component(selector: "test-cmp", directives: const [NgStyle], template: "")
 class TestComponent {
   var expr;
 }

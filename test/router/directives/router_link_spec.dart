@@ -16,7 +16,7 @@ import "package:angular2/testing_internal.dart"
         xit,
         TestComponentBuilder;
 import "../spies.dart" show SpyRouter, SpyLocation;
-import "package:angular2/core.dart" show provide, Component, View;
+import "package:angular2/core.dart" show provide, Component;
 import "package:angular2/platform/common_dom.dart" show By;
 import "package:angular2/router.dart"
     show
@@ -97,8 +97,7 @@ main() {
   });
 }
 
-@Component(selector: "user-cmp")
-@View(template: "hello {{user}}")
+@Component(selector: "user-cmp", template: "hello {{user}}")
 class UserCmp {
   String user;
   UserCmp(RouteParams params) {
@@ -106,8 +105,8 @@ class UserCmp {
   }
 }
 
-@Component(selector: "test-component")
-@View(
+@Component(
+    selector: "test-component",
     template: '''
     <div>
       <a [routerLink]="[\'/Detail\']"

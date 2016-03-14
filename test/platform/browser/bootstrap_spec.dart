@@ -21,7 +21,7 @@ import "package:angular2/platform/browser.dart" show bootstrap;
 import "package:angular2/src/core/application_ref.dart" show ApplicationRef;
 import "package:angular2/src/core/console.dart" show Console;
 import "package:angular2/core.dart"
-    show Component, Directive, View, OnDestroy, platform;
+    show Component, Directive, OnDestroy, platform;
 import "package:angular2/platform/browser.dart"
     show BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
@@ -36,8 +36,7 @@ import "package:angular2/src/core/testability/testability.dart"
 import "package:angular2/src/core/linker/dynamic_component_loader.dart"
     show ComponentRef_, ComponentRef;
 
-@Component(selector: "hello-app")
-@View(template: "{{greeting}} world!")
+@Component(selector: "hello-app", template: "{{greeting}} world!")
 class HelloRootCmp {
   String greeting;
   HelloRootCmp() {
@@ -45,14 +44,14 @@ class HelloRootCmp {
   }
 }
 
-@Component(selector: "hello-app")
-@View(template: "before: <ng-content></ng-content> after: done")
+@Component(
+    selector: "hello-app",
+    template: "before: <ng-content></ng-content> after: done")
 class HelloRootCmpContent {
   HelloRootCmpContent() {}
 }
 
-@Component(selector: "hello-app-2")
-@View(template: "{{greeting}} world, again!")
+@Component(selector: "hello-app-2", template: "{{greeting}} world, again!")
 class HelloRootCmp2 {
   String greeting;
   HelloRootCmp2() {
@@ -60,8 +59,7 @@ class HelloRootCmp2 {
   }
 }
 
-@Component(selector: "hello-app")
-@View(template: "")
+@Component(selector: "hello-app", template: "")
 class HelloRootCmp3 {
   var appBinding;
   HelloRootCmp3(@Inject("appBinding") appBinding) {
@@ -69,8 +67,7 @@ class HelloRootCmp3 {
   }
 }
 
-@Component(selector: "hello-app")
-@View(template: "")
+@Component(selector: "hello-app", template: "")
 class HelloRootCmp4 {
   var appRef;
   HelloRootCmp4(@Inject(ApplicationRef) appRef) {
@@ -84,8 +81,7 @@ class HelloRootMissingTemplate {}
 @Directive(selector: "hello-app")
 class HelloRootDirectiveIsNotCmp {}
 
-@Component(selector: "hello-app")
-@View(template: "")
+@Component(selector: "hello-app", template: "")
 class HelloOnDestroyTickCmp implements OnDestroy {
   ApplicationRef appRef;
   HelloOnDestroyTickCmp(@Inject(ApplicationRef) appRef) {
