@@ -18,8 +18,8 @@ import { ViewContainerRef, TemplateRef } from 'angular2/core';
  * ### Example ([live demo](http://plnkr.co/edit/DQMTII95CbuqWrl3lYAs?p=preview))
  *
  * ```typescript
- * @Component({selector: 'app'})
- * @View({
+ * @Component({
+ *   selector: 'app',
  *   template: `
  *     <p>Value = {{value}}</p>
  *     <button (click)="inc()">Increment</button>

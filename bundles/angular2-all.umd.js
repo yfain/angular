@@ -155,8 +155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Declare reusable UI building blocks for an application.
 	 *
-	 * Each Angular component requires a single `@Component` and at least one `@View` annotation. The
-	 * `@Component`
+	 * Each Angular component requires a single `@Component` annotation. The `@Component`
 	 * annotation specifies when a component is instantiated, and which properties and hostListeners it
 	 * binds to.
 	 *
@@ -167,8 +166,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * All template expressions and statements are then evaluated against the component instance.
 	 *
-	 * For details on the `@View` annotation, see {@link ViewMetadata}.
-	 *
 	 * ## Lifecycle hooks
 	 *
 	 * When the component class implements some {@link angular2/lifecycle_hooks} the callbacks are
@@ -178,7 +175,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * {@example core/ts/metadata/metadata.ts region='component'}
 	 */
-	exports.Component = decorators_1.makeDecorator(directives_2.ComponentMetadata, function (fn) { return fn.View = exports.View; });
+	exports.Component = decorators_1.makeDecorator(directives_2.ComponentMetadata, function (fn) { return fn.View = View; });
 	// TODO(alexeagle): remove the duplication of this doc. It is copied from DirectiveMetadata.
 	/**
 	 * Directives allow you to attach behavior to elements in the DOM.
@@ -589,7 +586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * }
 	 * ```
 	 */
-	exports.View = decorators_1.makeDecorator(view_2.ViewMetadata, function (fn) { return fn.View = exports.View; });
+	var View = decorators_1.makeDecorator(view_2.ViewMetadata, function (fn) { return fn.View = View; });
 	/**
 	 * Specifies that a constant attribute value should be injected.
 	 *
@@ -817,8 +814,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ### Example ([live demo](http://plnkr.co/edit/eNsFHDf7YjyM6IzKxM1j?p=preview))
 	 *
 	 * ```javascript
-	 * @Component({...})
-	 * @View({
+	 * @Component({
+	 *   ...,
 	 *   template: `
 	 *     <item> a </item>
 	 *     <item> b </item>
@@ -1311,8 +1308,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ### Example ([live demo](http://plnkr.co/edit/eNsFHDf7YjyM6IzKxM1j?p=preview))
 	 *
 	 * ```javascript
-	 * @Component({...})
-	 * @View({
+	 * @Component({
+	 *   ...,
 	 *   template: `
 	 *     <item> a </item>
 	 *     <item> b </item>
@@ -16843,7 +16840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        if (lang_1.isPresent(compMeta)) {
 	            if (lang_1.isBlank(compMeta.template) && lang_1.isBlank(compMeta.templateUrl) && lang_1.isBlank(viewMeta)) {
-	                throw new exceptions_1.BaseException("Component '" + lang_1.stringify(component) + "' must have either 'template', 'templateUrl', or '@View' set.");
+	                throw new exceptions_1.BaseException("Component '" + lang_1.stringify(component) + "' must have either 'template' or 'templateUrl' set.");
 	            }
 	            else if (lang_1.isPresent(compMeta.template) && lang_1.isPresent(viewMeta)) {
 	                this._throwMixingViewAndComponent("template", component);
@@ -16883,7 +16880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        else {
 	            if (lang_1.isBlank(viewMeta)) {
-	                throw new exceptions_1.BaseException("No View decorator found on component '" + lang_1.stringify(component) + "'");
+	                throw new exceptions_1.BaseException("Could not compile '" + lang_1.stringify(component) + "' because it is not a component.");
 	            }
 	            else {
 	                return viewMeta;
@@ -18416,7 +18413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * application.
 	 *
 	 * This collection can be used to quickly enumerate all the built-in pipes in the `pipes`
-	 * property of the `@Component` or `@View` decorators.
+	 * property of the `@Component` decorator.
 	 */
 	exports.COMMON_PIPES = lang_1.CONST_EXPR([
 	    async_pipe_1.AsyncPipe,
@@ -19067,8 +19064,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ### Example ([live demo](http://plnkr.co/edit/DQMTII95CbuqWrl3lYAs?p=preview))
 	 *
 	 * ```typescript
-	 * @Component({selector: 'app'})
-	 * @View({
+	 * @Component({
+	 *   selector: 'app',
 	 *   template: `
 	 *     <p>Value = {{value}}</p>
 	 *     <button (click)="inc()">Increment</button>
@@ -19439,7 +19436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * application.
 	 *
 	 * This collection can be used to quickly enumerate all the built-in directives in the `directives`
-	 * property of the `@View` annotation.
+	 * property of the `@Component` annotation.
 	 *
 	 * ### Example ([live demo](http://plnkr.co/edit/yakGwpCdUkg0qfzX5m8g?p=preview))
 	 *
@@ -21346,8 +21343,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @Component({
 	 *   selector: 'my-app',
 	 *   directives: [FORM_DIRECTIVES],
-	 * })
-	 * @View({
 	 *   template: `
 	 *     <div>
 	 *       <h2>Angular2 Control &amp; ControlGroup Example</h2>
@@ -21981,7 +21976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.NgControl = ng_control_1.NgControl;
 	/**
 	 *
-	 * A list of all the form directives used as part of a `@View` annotation.
+	 * A list of all the form directives used as part of a `@Component` annotation.
 	 *
 	 *  This is a shorthand for importing them each individually.
 	 *
@@ -22289,7 +22284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * NgModel).
 	 *
 	 * This collection can be used to quickly enumerate all the built-in directives in the `directives`
-	 * property of the `@Component` or `@View` decorators.
+	 * property of the `@Component` decorator.
 	 *
 	 * ### Example
 	 *
@@ -34753,8 +34748,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ])
 	 * class AppCmp {}
 	 *
-	 * @Component({...})
-	 * @View({ template: 'user: {{isAdmin}}' })
+	 * @Component({
+	 *   ...,
+	 *   template: 'user: {{isAdmin}}'
+	 * })
 	 * class UserCmp {
 	 *   string: isAdmin;
 	 *   constructor(data: RouteData) {

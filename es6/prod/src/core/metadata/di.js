@@ -250,8 +250,8 @@ ContentChildMetadata = __decorate([
  * ### Example ([live demo](http://plnkr.co/edit/eNsFHDf7YjyM6IzKxM1j?p=preview))
  *
  * ```javascript
- * @Component({...})
- * @View({
+ * @Component({
+ *   ...,
  *   template: `
  *     <item> a </item>
  *     <item> b </item>

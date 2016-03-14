@@ -7096,7 +7096,7 @@ System.register("angular2/src/core/linker/view_resolver", ["angular2/src/core/di
       });
       if (lang_1.isPresent(compMeta)) {
         if (lang_1.isBlank(compMeta.template) && lang_1.isBlank(compMeta.templateUrl) && lang_1.isBlank(viewMeta)) {
-          throw new exceptions_1.BaseException("Component '" + lang_1.stringify(component) + "' must have either 'template', 'templateUrl', or '@View' set.");
+          throw new exceptions_1.BaseException("Component '" + lang_1.stringify(component) + "' must have either 'template' or 'templateUrl' set.");
         } else if (lang_1.isPresent(compMeta.template) && lang_1.isPresent(viewMeta)) {
           this._throwMixingViewAndComponent("template", component);
         } else if (lang_1.isPresent(compMeta.templateUrl) && lang_1.isPresent(viewMeta)) {
@@ -7126,7 +7126,7 @@ System.register("angular2/src/core/linker/view_resolver", ["angular2/src/core/di
         }
       } else {
         if (lang_1.isBlank(viewMeta)) {
-          throw new exceptions_1.BaseException("No View decorator found on component '" + lang_1.stringify(component) + "'");
+          throw new exceptions_1.BaseException("Could not compile '" + lang_1.stringify(component) + "' because it is not a component.");
         } else {
           return viewMeta;
         }
@@ -13075,11 +13075,11 @@ System.register("angular2/src/core/metadata", ["angular2/src/core/metadata/di", 
   var view_2 = require("angular2/src/core/metadata/view");
   var decorators_1 = require("angular2/src/core/util/decorators");
   exports.Component = decorators_1.makeDecorator(directives_2.ComponentMetadata, function(fn) {
-    return fn.View = exports.View;
+    return fn.View = View;
   });
   exports.Directive = decorators_1.makeDecorator(directives_2.DirectiveMetadata);
-  exports.View = decorators_1.makeDecorator(view_2.ViewMetadata, function(fn) {
-    return fn.View = exports.View;
+  var View = decorators_1.makeDecorator(view_2.ViewMetadata, function(fn) {
+    return fn.View = View;
   });
   exports.Attribute = decorators_1.makeParamDecorator(di_2.AttributeMetadata);
   exports.Query = decorators_1.makeParamDecorator(di_2.QueryMetadata);
