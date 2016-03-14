@@ -181,6 +181,7 @@ class TemplateParseVisitor {
     visitAttr(ast, contex) {
         return new AttrAst(ast.name, ast.value, ast.sourceSpan);
     }
+    visitComment(ast, context) { return null; }
     visitElement(element, component) {
         var nodeName = element.name;
         var preparsedElement = preparseElement(element);
@@ -552,6 +553,7 @@ class NonBindableVisitor {
         var children = htmlVisitAll(this, ast.children, EMPTY_COMPONENT);
         return new ElementAst(ast.name, htmlVisitAll(this, ast.attrs), [], [], [], [], children, ngContentIndex, ast.sourceSpan);
     }
+    visitComment(ast, context) { return null; }
     visitAttr(ast, context) {
         return new AttrAst(ast.name, ast.value, ast.sourceSpan);
     }

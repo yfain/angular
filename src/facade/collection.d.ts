@@ -33,6 +33,9 @@ export declare class StringMapWrapper {
     static keys(map: {
         [key: string]: any;
     }): string[];
+    static values<T>(map: {
+        [key: string]: T;
+    }): T[];
     static isEmpty(map: {
         [key: string]: any;
     }): boolean;

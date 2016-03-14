@@ -3648,6 +3648,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    StringMapWrapper.set = function (map, key, value) { map[key] = value; };
 	    StringMapWrapper.keys = function (map) { return Object.keys(map); };
+	    StringMapWrapper.values = function (map) {
+	        return Object.keys(map).reduce(function (r, a) {
+	            r.push(map[a]);
+	            return r;
+	        }, []);
+	    };
 	    StringMapWrapper.isEmpty = function (map) {
 	        for (var prop in map) {
 	            return false;
@@ -26424,6 +26430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    TemplateParseVisitor.prototype.visitAttr = function (ast, contex) {
 	        return new template_ast_1.AttrAst(ast.name, ast.value, ast.sourceSpan);
 	    };
+	    TemplateParseVisitor.prototype.visitComment = function (ast, context) { return null; };
 	    TemplateParseVisitor.prototype.visitElement = function (element, component) {
 	        var _this = this;
 	        var nodeName = element.name;
@@ -26806,6 +26813,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var children = html_ast_1.htmlVisitAll(this, ast.children, EMPTY_COMPONENT);
 	        return new template_ast_1.ElementAst(ast.name, html_ast_1.htmlVisitAll(this, ast.attrs), [], [], [], [], children, ngContentIndex, ast.sourceSpan);
 	    };
+	    NonBindableVisitor.prototype.visitComment = function (ast, context) { return null; };
 	    NonBindableVisitor.prototype.visitAttr = function (ast, context) {
 	        return new template_ast_1.AttrAst(ast.name, ast.value, ast.sourceSpan);
 	    };
@@ -27015,9 +27023,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._consumeText(this._advance());
 	        this._advanceIf(html_lexer_1.HtmlTokenType.CDATA_END);
 	    };
-	    TreeBuilder.prototype._consumeComment = function (startToken) {
-	        this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
+	    TreeBuilder.prototype._consumeComment = function (token) {
+	        var text = this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
 	        this._advanceIf(html_lexer_1.HtmlTokenType.COMMENT_END);
+	        var value = lang_1.isPresent(text) ? text.parts[0].trim() : null;
+	        this._addToParent(new html_ast_1.HtmlCommentAst(value, token.sourceSpan));
 	    };
 	    TreeBuilder.prototype._consumeText = function (token) {
 	        var text = token.parts[0];
@@ -27182,6 +27192,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return HtmlElementAst;
 	})();
 	exports.HtmlElementAst = HtmlElementAst;
+	var HtmlCommentAst = (function () {
+	    function HtmlCommentAst(value, sourceSpan) {
+	        this.value = value;
+	        this.sourceSpan = sourceSpan;
+	    }
+	    HtmlCommentAst.prototype.visit = function (visitor, context) { return visitor.visitComment(this, context); };
+	    return HtmlCommentAst;
+	})();
+	exports.HtmlCommentAst = HtmlCommentAst;
 	function htmlVisitAll(visitor, asts, context) {
 	    if (context === void 0) { context = null; }
 	    var result = [];
@@ -28468,6 +28487,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return null;
 	    };
+	    TemplatePreparseVisitor.prototype.visitComment = function (ast, context) { return null; };
 	    TemplatePreparseVisitor.prototype.visitAttr = function (ast, context) { return null; };
 	    TemplatePreparseVisitor.prototype.visitText = function (ast, context) { return null; };
 	    return TemplatePreparseVisitor;

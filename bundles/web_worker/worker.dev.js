@@ -1356,6 +1356,12 @@ System.register("angular2/src/facade/collection", ["angular2/src/facade/lang"], 
     StringMapWrapper.keys = function(map) {
       return Object.keys(map);
     };
+    StringMapWrapper.values = function(map) {
+      return Object.keys(map).reduce(function(r, a) {
+        r.push(map[a]);
+        return r;
+      }, []);
+    };
     StringMapWrapper.isEmpty = function(map) {
       for (var prop in map) {
         return false;
@@ -19337,6 +19343,17 @@ System.register("angular2/src/compiler/html_ast", ["angular2/src/facade/lang"], 
     return HtmlElementAst;
   })();
   exports.HtmlElementAst = HtmlElementAst;
+  var HtmlCommentAst = (function() {
+    function HtmlCommentAst(value, sourceSpan) {
+      this.value = value;
+      this.sourceSpan = sourceSpan;
+    }
+    HtmlCommentAst.prototype.visit = function(visitor, context) {
+      return visitor.visitComment(this, context);
+    };
+    return HtmlCommentAst;
+  })();
+  exports.HtmlCommentAst = HtmlCommentAst;
   function htmlVisitAll(visitor, asts, context) {
     if (context === void 0) {
       context = null;
@@ -20084,6 +20101,9 @@ System.register("angular2/src/compiler/template_normalizer", ["angular2/src/comp
       if (preparsedElement.nonBindable) {
         this.ngNonBindableStackCount--;
       }
+      return null;
+    };
+    TemplatePreparseVisitor.prototype.visitComment = function(ast, context) {
       return null;
     };
     TemplatePreparseVisitor.prototype.visitAttr = function(ast, context) {
@@ -30334,9 +30354,11 @@ System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang"
       this._consumeText(this._advance());
       this._advanceIf(html_lexer_1.HtmlTokenType.CDATA_END);
     };
-    TreeBuilder.prototype._consumeComment = function(startToken) {
-      this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
+    TreeBuilder.prototype._consumeComment = function(token) {
+      var text = this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
       this._advanceIf(html_lexer_1.HtmlTokenType.COMMENT_END);
+      var value = lang_1.isPresent(text) ? text.parts[0].trim() : null;
+      this._addToParent(new html_ast_1.HtmlCommentAst(value, token.sourceSpan));
     };
     TreeBuilder.prototype._consumeText = function(token) {
       var text = token.parts[0];
@@ -34252,6 +34274,9 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
     TemplateParseVisitor.prototype.visitAttr = function(ast, contex) {
       return new template_ast_1.AttrAst(ast.name, ast.value, ast.sourceSpan);
     };
+    TemplateParseVisitor.prototype.visitComment = function(ast, context) {
+      return null;
+    };
     TemplateParseVisitor.prototype.visitElement = function(element, component) {
       var _this = this;
       var nodeName = element.name;
@@ -34598,6 +34623,9 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
       var ngContentIndex = component.findNgContentIndex(selector);
       var children = html_ast_1.htmlVisitAll(this, ast.children, EMPTY_COMPONENT);
       return new template_ast_1.ElementAst(ast.name, html_ast_1.htmlVisitAll(this, ast.attrs), [], [], [], [], children, ngContentIndex, ast.sourceSpan);
+    };
+    NonBindableVisitor.prototype.visitComment = function(ast, context) {
+      return null;
     };
     NonBindableVisitor.prototype.visitAttr = function(ast, context) {
       return new template_ast_1.AttrAst(ast.name, ast.value, ast.sourceSpan);

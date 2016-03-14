@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { ListWrapper } from 'angular2/src/facade/collection';
-import { HtmlAttrAst, HtmlTextAst, HtmlElementAst } from './html_ast';
+import { HtmlAttrAst, HtmlTextAst, HtmlCommentAst, HtmlElementAst } from './html_ast';
 import { Injectable } from 'angular2/src/core/di';
 import { HtmlTokenType, tokenizeHtml } from './html_lexer';
 import { ParseError, ParseSourceSpan } from './parse_util';
@@ -98,9 +98,11 @@ class TreeBuilder {
         this._consumeText(this._advance());
         this._advanceIf(HtmlTokenType.CDATA_END);
     }
-    _consumeComment(startToken) {
-        this._advanceIf(HtmlTokenType.RAW_TEXT);
+    _consumeComment(token) {
+        var text = this._advanceIf(HtmlTokenType.RAW_TEXT);
         this._advanceIf(HtmlTokenType.COMMENT_END);
+        var value = isPresent(text) ? text.parts[0].trim() : null;
+        this._addToParent(new HtmlCommentAst(value, token.sourceSpan));
     }
     _consumeText(token) {
         let text = token.parts[0];

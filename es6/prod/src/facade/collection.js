@@ -109,6 +109,12 @@ export class StringMapWrapper {
     }
     static set(map, key, value) { map[key] = value; }
     static keys(map) { return Object.keys(map); }
+    static values(map) {
+        return Object.keys(map).reduce((r, a) => {
+            r.push(map[a]);
+            return r;
+        }, []);
+    }
     static isEmpty(map) {
         for (var prop in map) {
             return false;
