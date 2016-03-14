@@ -10,7 +10,8 @@ import "package:angular2/src/facade/lang.dart"
         StringJoiner,
         serializeEnum;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
-import "html_ast.dart" show HtmlAst, HtmlAttrAst, HtmlTextAst, HtmlElementAst;
+import "html_ast.dart"
+    show HtmlAst, HtmlAttrAst, HtmlTextAst, HtmlCommentAst, HtmlElementAst;
 import "package:angular2/src/core/di.dart" show Injectable;
 import "html_lexer.dart" show HtmlToken, HtmlTokenType, tokenizeHtml;
 import "parse_util.dart" show ParseError, ParseLocation, ParseSourceSpan;
@@ -105,9 +106,11 @@ class TreeBuilder {
     this._advanceIf(HtmlTokenType.CDATA_END);
   }
 
-  _consumeComment(HtmlToken startToken) {
-    this._advanceIf(HtmlTokenType.RAW_TEXT);
+  _consumeComment(HtmlToken token) {
+    var text = this._advanceIf(HtmlTokenType.RAW_TEXT);
     this._advanceIf(HtmlTokenType.COMMENT_END);
+    var value = isPresent(text) ? text.parts[0].trim() : null;
+    this._addToParent(new HtmlCommentAst(value, token.sourceSpan));
   }
 
   _consumeText(HtmlToken token) {

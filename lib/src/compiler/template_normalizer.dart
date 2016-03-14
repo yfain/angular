@@ -18,6 +18,7 @@ import "html_ast.dart"
         HtmlTextAst,
         HtmlAttrAst,
         HtmlAst,
+        HtmlCommentAst,
         htmlVisitAll;
 import "html_parser.dart" show HtmlParser;
 import "template_preparser.dart"
@@ -134,6 +135,10 @@ class TemplatePreparseVisitor implements HtmlAstVisitor {
     if (preparsedElement.nonBindable) {
       this.ngNonBindableStackCount--;
     }
+    return null;
+  }
+
+  dynamic visitComment(HtmlCommentAst ast, dynamic context) {
     return null;
   }
 

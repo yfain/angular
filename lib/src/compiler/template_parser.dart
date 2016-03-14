@@ -49,6 +49,7 @@ import "html_ast.dart"
         HtmlElementAst,
         HtmlAttrAst,
         HtmlTextAst,
+        HtmlCommentAst,
         htmlVisitAll;
 import "util.dart" show splitAtColon;
 // Group 1 = "bind-"
@@ -229,6 +230,10 @@ class TemplateParseVisitor implements HtmlAstVisitor {
 
   dynamic visitAttr(HtmlAttrAst ast, dynamic contex) {
     return new AttrAst(ast.name, ast.value, ast.sourceSpan);
+  }
+
+  dynamic visitComment(HtmlCommentAst ast, dynamic context) {
+    return null;
   }
 
   dynamic visitElement(HtmlElementAst element, Component component) {
@@ -767,6 +772,10 @@ class NonBindableVisitor implements HtmlAstVisitor {
     var children = htmlVisitAll(this, ast.children, EMPTY_COMPONENT);
     return new ElementAst(ast.name, htmlVisitAll(this, ast.attrs), [], [], [],
         [], children, ngContentIndex, ast.sourceSpan);
+  }
+
+  dynamic visitComment(HtmlCommentAst ast, dynamic context) {
+    return null;
   }
 
   AttrAst visitAttr(HtmlAttrAst ast, dynamic context) {

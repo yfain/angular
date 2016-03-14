@@ -38,10 +38,20 @@ class HtmlElementAst implements HtmlAst {
   }
 }
 
+class HtmlCommentAst implements HtmlAst {
+  String value;
+  ParseSourceSpan sourceSpan;
+  HtmlCommentAst(this.value, this.sourceSpan) {}
+  dynamic visit(HtmlAstVisitor visitor, dynamic context) {
+    return visitor.visitComment(this, context);
+  }
+}
+
 abstract class HtmlAstVisitor {
   dynamic visitElement(HtmlElementAst ast, dynamic context);
   dynamic visitAttr(HtmlAttrAst ast, dynamic context);
   dynamic visitText(HtmlTextAst ast, dynamic context);
+  dynamic visitComment(HtmlCommentAst ast, dynamic context);
 }
 
 List<dynamic> htmlVisitAll(HtmlAstVisitor visitor, List<HtmlAst> asts,

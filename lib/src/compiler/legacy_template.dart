@@ -4,7 +4,13 @@ import "package:angular2/src/core/di.dart" show Injectable, Provider, provide;
 import "package:angular2/src/facade/lang.dart"
     show StringWrapper, RegExpWrapper, isBlank, isPresent;
 import "html_ast.dart"
-    show HtmlAstVisitor, HtmlAttrAst, HtmlElementAst, HtmlTextAst, HtmlAst;
+    show
+        HtmlAstVisitor,
+        HtmlAttrAst,
+        HtmlElementAst,
+        HtmlTextAst,
+        HtmlCommentAst,
+        HtmlAst;
 import "html_parser.dart" show HtmlParser, HtmlParseTreeResult;
 import "util.dart" show dashCaseToCamelCase, camelCaseToDashCase;
 
@@ -36,6 +42,10 @@ class LegacyHtmlAstTransformer implements HtmlAstVisitor {
   List<HtmlAst> rewrittenAst = [];
   bool visitingTemplateEl = false;
   LegacyHtmlAstTransformer([this.dashCaseSelectors]) {}
+  dynamic visitComment(HtmlCommentAst ast, dynamic context) {
+    return ast;
+  }
+
   HtmlElementAst visitElement(HtmlElementAst ast, dynamic context) {
     this.visitingTemplateEl = ast.name.toLowerCase() == "template";
     var attrs = ast.attrs.map((attr) => attr.visit(this, null)).toList();

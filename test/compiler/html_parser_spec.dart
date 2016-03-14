@@ -12,6 +12,7 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlElementAst,
         HtmlAttrAst,
         HtmlTextAst,
+        HtmlCommentAst,
         htmlVisitAll;
 import "package:angular2/src/compiler/parse_util.dart"
     show ParseError, ParseLocation, ParseSourceSpan;
@@ -253,10 +254,11 @@ main() {
         });
       });
       describe("comments", () {
-        it("should ignore comments", () {
+        it("should preserve comments", () {
           expect(humanizeDom(
                   parser.parse("<!-- comment --><div></div>", "TestComp")))
               .toEqual([
+            [HtmlCommentAst, "comment", 0],
             [HtmlElementAst, "div", 0]
           ]);
         });
@@ -399,6 +401,13 @@ class Humanizer implements HtmlAstVisitor {
 
   dynamic visitText(HtmlTextAst ast, dynamic context) {
     var res = this._appendContext(ast, [HtmlTextAst, ast.value, this.elDepth]);
+    this.result.add(res);
+    return null;
+  }
+
+  dynamic visitComment(HtmlCommentAst ast, dynamic context) {
+    var res =
+        this._appendContext(ast, [HtmlCommentAst, ast.value, this.elDepth]);
     this.result.add(res);
     return null;
   }
