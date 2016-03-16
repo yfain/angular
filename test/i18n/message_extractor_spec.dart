@@ -14,8 +14,7 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/compiler/html_parser.dart" show HtmlParser;
 import "package:angular2/src/i18n/message_extractor.dart"
-    show MessageExtractor, removeDuplicates;
-import "package:angular2/src/i18n/message.dart" show Message;
+    show MessageExtractor, Message, removeDuplicates;
 import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
 import "package:angular2/src/core/change_detection/parser/lexer.dart"

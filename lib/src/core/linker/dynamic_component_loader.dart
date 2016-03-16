@@ -62,7 +62,7 @@ abstract class ComponentRef {
    *
    * TODO(i): rename to destroy to be consistent with AppViewManager and ViewContainerRef
    */
-  dispose();
+  void dispose();
 }
 
 class ComponentRef_ extends ComponentRef {
@@ -90,7 +90,7 @@ class ComponentRef_ extends ComponentRef {
     return this.componentType;
   }
 
-  dispose() {
+  void dispose() {
     this._dispose();
   }
 }
