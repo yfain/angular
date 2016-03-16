@@ -1,6 +1,6 @@
 library angular.core.facade.lang;
 
-export 'dart:core' show Type, RegExp, print, DateTime, Uri;
+export 'dart:core' show Type, RegExp, print, DateTime;
 import 'dart:math' as math;
 import 'dart:convert' as convert;
 import 'dart:async' show Future, Zone;
@@ -375,8 +375,4 @@ num bitWiseOr(List values) {
 num bitWiseAnd(List values) {
   var val = values.reduce((num a, num b) => (a as int) & (b as int));
   return val as num;
-}
-
-String escape(String s) {
-  return Uri.encodeComponent(s);
 }
