@@ -1,12 +1,3 @@
-export interface ZoneLike {
-    fork(locals?: any): ZoneLike;
-    run(fn: any, applyTo?: any, applyWith?: any): any;
-}
-export interface ZoneLikeConstructor {
-    longStackTraceZone: {
-        [key: string]: any;
-    };
-}
 export interface BrowserNodeGlobal {
     Object: typeof Object;
     Array: typeof Array;
@@ -18,8 +9,7 @@ export interface BrowserNodeGlobal {
     Math: any;
     assert(condition: any): void;
     Reflect: any;
-    zone: ZoneLike;
-    Zone: ZoneLikeConstructor;
+    Zone: typeof Zone;
     getAngularTestability: Function;
     getAllAngularTestabilities: Function;
     getAllAngularRootElements: Function;
@@ -29,6 +19,7 @@ export interface BrowserNodeGlobal {
     setInterval: Function;
     clearInterval: Function;
 }
+export declare function scheduleMicroTask(fn: Function): void;
 export declare const IS_DART: boolean;
 declare var _global: BrowserNodeGlobal;
 export { _global as global };

@@ -11,6 +11,9 @@ if (typeof window === 'undefined') {
 else {
     globalScope = window;
 }
+export function scheduleMicroTask(fn) {
+    Zone.current.scheduleMicroTask('scheduleMicrotask', fn);
+}
 export const IS_DART = false;
 // Need to declare a new variable for global here since TypeScript
 // exports the original value of the symbol.

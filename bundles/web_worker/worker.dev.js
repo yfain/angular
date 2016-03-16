@@ -22,6 +22,10 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
   } else {
     globalScope = window;
   }
+  function scheduleMicroTask(fn) {
+    Zone.current.scheduleMicroTask('scheduleMicrotask', fn);
+  }
+  exports.scheduleMicroTask = scheduleMicroTask;
   exports.IS_DART = false;
   var _global = globalScope;
   exports.global = _global;
@@ -5876,14 +5880,11 @@ System.register("angular2/src/facade/facade", ["angular2/src/facade/lang", "angu
   return module.exports;
 });
 
-System.register("angular2/src/core/zone/ng_zone", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/core/profile/profile"], true, function(require, exports, module) {
+System.register("angular2/src/core/zone/ng_zone_impl", ["angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
-  var async_1 = require("angular2/src/facade/async");
-  var profile_1 = require("angular2/src/core/profile/profile");
   var NgZoneError = (function() {
     function NgZoneError(error, stackTrace) {
       this.error = error;
@@ -5892,253 +5893,80 @@ System.register("angular2/src/core/zone/ng_zone", ["angular2/src/facade/collecti
     return NgZoneError;
   })();
   exports.NgZoneError = NgZoneError;
-  var NgZone = (function() {
-    function NgZone(_a) {
-      var enableLongStackTrace = _a.enableLongStackTrace;
-      this._runScope = profile_1.wtfCreateScope("NgZone#run()");
-      this._microtaskScope = profile_1.wtfCreateScope("NgZone#microtask()");
-      this._pendingMicrotasks = 0;
-      this._hasExecutedCodeInInnerZone = false;
-      this._nestedRun = 0;
-      this._inVmTurnDone = false;
-      this._pendingTimeouts = [];
-      if (lang_1.global.zone) {
-        this._disabled = false;
-        this._mountZone = lang_1.global.zone;
-        this._innerZone = this._createInnerZone(this._mountZone, enableLongStackTrace);
+  var NgZoneImpl = (function() {
+    function NgZoneImpl(_a) {
+      var trace = _a.trace,
+          onEnter = _a.onEnter,
+          onLeave = _a.onLeave,
+          setMicrotask = _a.setMicrotask,
+          setMacrotask = _a.setMacrotask,
+          onError = _a.onError;
+      this.name = 'angular';
+      this.properties = {'isAngularZone': true};
+      this.onEnter = onEnter;
+      this.onLeave = onLeave;
+      this.setMicrotask = setMicrotask;
+      this.setMacrotask = setMacrotask;
+      this.onError = onError;
+      if (lang_1.global.Zone) {
+        this.outer = this.inner = Zone.current;
+        if (Zone['wtfZoneSpec']) {
+          this.inner = this.inner.fork(Zone['wtfZoneSpec']);
+        }
+        if (trace) {
+          this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
+        }
+        this.inner = this.inner.fork(this);
       } else {
-        this._disabled = true;
-        this._mountZone = null;
+        throw new Error('Angular2 needs to be run with Zone.js polyfill.');
       }
-      this._onTurnStartEvents = new async_1.EventEmitter(false);
-      this._onTurnDoneEvents = new async_1.EventEmitter(false);
-      this._onEventDoneEvents = new async_1.EventEmitter(false);
-      this._onErrorEvents = new async_1.EventEmitter(false);
     }
-    NgZone.prototype.overrideOnTurnStart = function(onTurnStartHook) {
-      this._onTurnStart = lang_1.normalizeBlank(onTurnStartHook);
+    NgZoneImpl.isInAngularZone = function() {
+      return Zone.current.get('isAngularZone') === true;
     };
-    Object.defineProperty(NgZone.prototype, "onTurnStart", {
-      get: function() {
-        return this._onTurnStartEvents;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgZone.prototype._notifyOnTurnStart = function(parentRun) {
-      var _this = this;
-      parentRun.call(this._innerZone, function() {
-        _this._onTurnStartEvents.emit(null);
-      });
-    };
-    NgZone.prototype.overrideOnTurnDone = function(onTurnDoneHook) {
-      this._onTurnDone = lang_1.normalizeBlank(onTurnDoneHook);
-    };
-    Object.defineProperty(NgZone.prototype, "onTurnDone", {
-      get: function() {
-        return this._onTurnDoneEvents;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgZone.prototype._notifyOnTurnDone = function(parentRun) {
-      var _this = this;
-      parentRun.call(this._innerZone, function() {
-        _this._onTurnDoneEvents.emit(null);
-      });
-    };
-    NgZone.prototype.overrideOnEventDone = function(onEventDoneFn, opt_waitForAsync) {
-      var _this = this;
-      if (opt_waitForAsync === void 0) {
-        opt_waitForAsync = false;
-      }
-      var normalizedOnEventDone = lang_1.normalizeBlank(onEventDoneFn);
-      if (opt_waitForAsync) {
-        this._onEventDone = function() {
-          if (!_this._pendingTimeouts.length) {
-            normalizedOnEventDone();
-          }
-        };
-      } else {
-        this._onEventDone = normalizedOnEventDone;
+    NgZoneImpl.prototype.onInvokeTask = function(delegate, current, target, task, applyThis, applyArgs) {
+      try {
+        this.onEnter();
+        return delegate.invokeTask(target, task, applyThis, applyArgs);
+      } finally {
+        this.onLeave();
       }
     };
-    Object.defineProperty(NgZone.prototype, "onEventDone", {
-      get: function() {
-        return this._onEventDoneEvents;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgZone.prototype._notifyOnEventDone = function() {
-      var _this = this;
-      this.runOutsideAngular(function() {
-        _this._onEventDoneEvents.emit(null);
-      });
+    ;
+    NgZoneImpl.prototype.onInvoke = function(delegate, current, target, callback, applyThis, applyArgs, source) {
+      try {
+        this.onEnter();
+        return delegate.invoke(target, callback, applyThis, applyArgs, source);
+      } finally {
+        this.onLeave();
+      }
     };
-    Object.defineProperty(NgZone.prototype, "hasPendingMicrotasks", {
-      get: function() {
-        return this._pendingMicrotasks > 0;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(NgZone.prototype, "hasPendingTimers", {
-      get: function() {
-        return this._pendingTimeouts.length > 0;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(NgZone.prototype, "hasPendingAsyncTasks", {
-      get: function() {
-        return this.hasPendingMicrotasks || this.hasPendingTimers;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgZone.prototype.overrideOnErrorHandler = function(errorHandler) {
-      this._onErrorHandler = lang_1.normalizeBlank(errorHandler);
-    };
-    Object.defineProperty(NgZone.prototype, "onError", {
-      get: function() {
-        return this._onErrorEvents;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgZone.prototype.run = function(fn) {
-      if (this._disabled) {
-        return fn();
-      } else {
-        var s = this._runScope();
-        try {
-          return this._innerZone.run(fn);
-        } finally {
-          profile_1.wtfLeave(s);
+    NgZoneImpl.prototype.onHasTask = function(delegate, current, target, hasTaskState) {
+      delegate.hasTask(target, hasTaskState);
+      if (current == target) {
+        if (hasTaskState.change == 'microTask') {
+          this.setMicrotask(hasTaskState.microTask);
+        } else if (hasTaskState.change == 'macroTask') {
+          this.setMacrotask(hasTaskState.macroTask);
         }
       }
     };
-    NgZone.prototype.runOutsideAngular = function(fn) {
-      if (this._disabled) {
-        return fn();
-      } else {
-        return this._mountZone.run(fn);
-      }
+    NgZoneImpl.prototype.onHandleError = function(delegate, current, target, error) {
+      delegate.handleError(target, error);
+      this.onError(new NgZoneError(error, error.stack));
+      return false;
     };
-    NgZone.prototype._createInnerZone = function(zone, enableLongStackTrace) {
-      var microtaskScope = this._microtaskScope;
-      var ngZone = this;
-      var errorHandling;
-      if (enableLongStackTrace) {
-        errorHandling = collection_1.StringMapWrapper.merge(lang_1.global.Zone.longStackTraceZone, {onError: function(e) {
-            ngZone._notifyOnError(this, e);
-          }});
-      } else {
-        errorHandling = {onError: function(e) {
-            ngZone._notifyOnError(this, e);
-          }};
-      }
-      return zone.fork(errorHandling).fork({
-        '$run': function(parentRun) {
-          return function() {
-            try {
-              ngZone._nestedRun++;
-              if (!ngZone._hasExecutedCodeInInnerZone) {
-                ngZone._hasExecutedCodeInInnerZone = true;
-                ngZone._notifyOnTurnStart(parentRun);
-                if (ngZone._onTurnStart) {
-                  parentRun.call(ngZone._innerZone, ngZone._onTurnStart);
-                }
-              }
-              return parentRun.apply(this, arguments);
-            } finally {
-              ngZone._nestedRun--;
-              if (ngZone._pendingMicrotasks == 0 && ngZone._nestedRun == 0 && !this._inVmTurnDone) {
-                if (ngZone._hasExecutedCodeInInnerZone) {
-                  try {
-                    this._inVmTurnDone = true;
-                    ngZone._notifyOnTurnDone(parentRun);
-                    if (ngZone._onTurnDone) {
-                      parentRun.call(ngZone._innerZone, ngZone._onTurnDone);
-                    }
-                  } finally {
-                    this._inVmTurnDone = false;
-                    ngZone._hasExecutedCodeInInnerZone = false;
-                  }
-                }
-                if (ngZone._pendingMicrotasks === 0) {
-                  ngZone._notifyOnEventDone();
-                  if (lang_1.isPresent(ngZone._onEventDone)) {
-                    ngZone.runOutsideAngular(ngZone._onEventDone);
-                  }
-                }
-              }
-            }
-          };
-        },
-        '$scheduleMicrotask': function(parentScheduleMicrotask) {
-          return function(fn) {
-            ngZone._pendingMicrotasks++;
-            var microtask = function() {
-              var s = microtaskScope();
-              try {
-                fn();
-              } finally {
-                ngZone._pendingMicrotasks--;
-                profile_1.wtfLeave(s);
-              }
-            };
-            parentScheduleMicrotask.call(this, microtask);
-          };
-        },
-        '$setTimeout': function(parentSetTimeout) {
-          return function(fn, delay) {
-            var args = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-              args[_i - 2] = arguments[_i];
-            }
-            var id;
-            var cb = function() {
-              fn();
-              collection_1.ListWrapper.remove(ngZone._pendingTimeouts, id);
-            };
-            id = parentSetTimeout.call(this, cb, delay, args);
-            ngZone._pendingTimeouts.push(id);
-            return id;
-          };
-        },
-        '$clearTimeout': function(parentClearTimeout) {
-          return function(id) {
-            parentClearTimeout.call(this, id);
-            collection_1.ListWrapper.remove(ngZone._pendingTimeouts, id);
-          };
-        },
-        _innerZone: true
-      });
+    NgZoneImpl.prototype.runInner = function(fn) {
+      return this.inner.runGuarded(fn);
     };
-    NgZone.prototype._notifyOnError = function(zone, e) {
-      if (lang_1.isPresent(this._onErrorHandler) || async_1.ObservableWrapper.hasSubscribers(this._onErrorEvents)) {
-        var trace = [lang_1.normalizeBlank(e.stack)];
-        while (zone && zone.constructedAtException) {
-          trace.push(zone.constructedAtException.get());
-          zone = zone.parent;
-        }
-        if (async_1.ObservableWrapper.hasSubscribers(this._onErrorEvents)) {
-          async_1.ObservableWrapper.callEmit(this._onErrorEvents, new NgZoneError(e, trace));
-        }
-        if (lang_1.isPresent(this._onErrorHandler)) {
-          this._onErrorHandler(e, trace);
-        }
-      } else {
-        console.log('## _notifyOnError ##');
-        console.log(e.stack);
-        throw e;
-      }
+    ;
+    NgZoneImpl.prototype.runOuter = function(fn) {
+      return this.outer.run(fn);
     };
-    return NgZone;
+    ;
+    return NgZoneImpl;
   })();
-  exports.NgZone = NgZone;
+  exports.NgZoneImpl = NgZoneImpl;
   global.define = __define;
   return module.exports;
 });
@@ -6197,24 +6025,26 @@ System.register("angular2/src/core/testability/testability", ["angular2/src/core
   var async_1 = require("angular2/src/facade/async");
   var Testability = (function() {
     function Testability(_ngZone) {
+      this._ngZone = _ngZone;
       this._pendingCount = 0;
+      this._isZoneStable = true;
       this._didWork = false;
       this._callbacks = [];
-      this._isAngularEventPending = false;
-      this._watchAngularEvents(_ngZone);
+      this._watchAngularEvents();
     }
-    Testability.prototype._watchAngularEvents = function(_ngZone) {
+    Testability.prototype._watchAngularEvents = function() {
       var _this = this;
-      async_1.ObservableWrapper.subscribe(_ngZone.onTurnStart, function(_) {
+      async_1.ObservableWrapper.subscribe(this._ngZone.onUnstable, function(_) {
         _this._didWork = true;
-        _this._isAngularEventPending = true;
+        _this._isZoneStable = false;
       });
-      _ngZone.runOutsideAngular(function() {
-        async_1.ObservableWrapper.subscribe(_ngZone.onEventDone, function(_) {
-          if (!_ngZone.hasPendingTimers) {
-            _this._isAngularEventPending = false;
+      this._ngZone.runOutsideAngular(function() {
+        async_1.ObservableWrapper.subscribe(_this._ngZone.onStable, function(_) {
+          ng_zone_1.NgZone.assertNotInAngularZone();
+          lang_1.scheduleMicroTask(function() {
+            _this._isZoneStable = true;
             _this._runCallbacksIfReady();
-          }
+          });
         });
       });
     };
@@ -6232,20 +6062,20 @@ System.register("angular2/src/core/testability/testability", ["angular2/src/core
       return this._pendingCount;
     };
     Testability.prototype.isStable = function() {
-      return this._pendingCount == 0 && !this._isAngularEventPending;
+      return this._isZoneStable && this._pendingCount == 0 && !this._ngZone.hasPendingMacrotasks;
     };
     Testability.prototype._runCallbacksIfReady = function() {
       var _this = this;
-      if (!this.isStable()) {
+      if (this.isStable()) {
+        lang_1.scheduleMicroTask(function() {
+          while (_this._callbacks.length !== 0) {
+            (_this._callbacks.pop())(_this._didWork);
+          }
+          _this._didWork = false;
+        });
+      } else {
         this._didWork = true;
-        return ;
       }
-      async_1.PromiseWrapper.resolve(null).then(function(_) {
-        while (_this._callbacks.length !== 0) {
-          (_this._callbacks.pop())(_this._didWork);
-        }
-        _this._didWork = false;
-      });
     };
     Testability.prototype.whenStable = function(callback) {
       this._callbacks.push(callback);
@@ -6253,9 +6083,6 @@ System.register("angular2/src/core/testability/testability", ["angular2/src/core
     };
     Testability.prototype.getPendingRequestCount = function() {
       return this._pendingCount;
-    };
-    Testability.prototype.isAngularEventPending = function() {
-      return this._isAngularEventPending;
     };
     Testability.prototype.findBindings = function(using, provider, exactMatch) {
       return [];
@@ -17669,7 +17496,7 @@ System.register("angular2/src/web_workers/shared/post_message_bus", ["angular2/s
       var _this = this;
       this._zone = zone;
       this._zone.runOutsideAngular(function() {
-        async_1.ObservableWrapper.subscribe(_this._zone.onEventDone, function(_) {
+        async_1.ObservableWrapper.subscribe(_this._zone.onStable, function(_) {
           _this._handleOnEventDone();
         });
       });
@@ -21172,9 +20999,9 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       if (lang_1.isPresent(this.component)) {
         return async_1.PromiseWrapper.resolve(this.component);
       }
-      return this._resolver().then(function(resolution) {
-        _this.child = resolution.child;
-        return _this.component = resolution.component;
+      return this._resolver().then(function(instruction) {
+        _this.child = lang_1.isPresent(instruction) ? instruction.child : null;
+        return _this.component = lang_1.isPresent(instruction) ? instruction.component : null;
       });
     };
     return UnresolvedInstruction;
@@ -22192,6 +22019,144 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
     return CodegenLogicUtil;
   })();
   exports.CodegenLogicUtil = CodegenLogicUtil;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/core/zone/ng_zone", ["angular2/src/facade/async", "angular2/src/core/zone/ng_zone_impl", "angular2/src/facade/exceptions", "angular2/src/core/zone/ng_zone_impl"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var async_1 = require("angular2/src/facade/async");
+  var ng_zone_impl_1 = require("angular2/src/core/zone/ng_zone_impl");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
+  var ng_zone_impl_2 = require("angular2/src/core/zone/ng_zone_impl");
+  exports.NgZoneError = ng_zone_impl_2.NgZoneError;
+  var NgZone = (function() {
+    function NgZone(_a) {
+      var _this = this;
+      var _b = _a.enableLongStackTrace,
+          enableLongStackTrace = _b === void 0 ? false : _b;
+      this._hasPendingMicrotasks = false;
+      this._hasPendingMacrotasks = false;
+      this._isStable = true;
+      this._nesting = 0;
+      this._onUnstable = new async_1.EventEmitter(false);
+      this._onMicrotaskEmpty = new async_1.EventEmitter(false);
+      this._onStable = new async_1.EventEmitter(false);
+      this._onErrorEvents = new async_1.EventEmitter(false);
+      this._zoneImpl = new ng_zone_impl_1.NgZoneImpl({
+        trace: enableLongStackTrace,
+        onEnter: function() {
+          _this._nesting++;
+          if (_this._isStable) {
+            _this._isStable = false;
+            _this._onUnstable.emit(null);
+          }
+        },
+        onLeave: function() {
+          _this._nesting--;
+          _this._checkStable();
+        },
+        setMicrotask: function(hasMicrotasks) {
+          _this._hasPendingMicrotasks = hasMicrotasks;
+          _this._checkStable();
+        },
+        setMacrotask: function(hasMacrotasks) {
+          _this._hasPendingMacrotasks = hasMacrotasks;
+        },
+        onError: function(error) {
+          return _this._onErrorEvents.emit(error);
+        }
+      });
+    }
+    NgZone.isInAngularZone = function() {
+      return ng_zone_impl_1.NgZoneImpl.isInAngularZone();
+    };
+    NgZone.assertInAngularZone = function() {
+      if (!ng_zone_impl_1.NgZoneImpl.isInAngularZone()) {
+        throw new exceptions_1.BaseException('Expected to be in Angular Zone, but it is not!');
+      }
+    };
+    NgZone.assertNotInAngularZone = function() {
+      if (ng_zone_impl_1.NgZoneImpl.isInAngularZone()) {
+        throw new exceptions_1.BaseException('Expected to not be in Angular Zone, but it is!');
+      }
+    };
+    NgZone.prototype._checkStable = function() {
+      var _this = this;
+      if (this._nesting == 0) {
+        if (!this._hasPendingMicrotasks && !this._isStable) {
+          try {
+            this._nesting++;
+            this._onMicrotaskEmpty.emit(null);
+          } finally {
+            this._nesting--;
+            if (!this._hasPendingMicrotasks) {
+              try {
+                this.runOutsideAngular(function() {
+                  return _this._onStable.emit(null);
+                });
+              } finally {
+                this._isStable = true;
+              }
+            }
+          }
+        }
+      }
+    };
+    ;
+    Object.defineProperty(NgZone.prototype, "onUnstable", {
+      get: function() {
+        return this._onUnstable;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgZone.prototype, "onMicrotaskEmpty", {
+      get: function() {
+        return this._onMicrotaskEmpty;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgZone.prototype, "onStable", {
+      get: function() {
+        return this._onStable;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgZone.prototype, "onError", {
+      get: function() {
+        return this._onErrorEvents;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgZone.prototype, "hasPendingMicrotasks", {
+      get: function() {
+        return this._hasPendingMicrotasks;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgZone.prototype, "hasPendingMacrotasks", {
+      get: function() {
+        return this._hasPendingMacrotasks;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    NgZone.prototype.run = function(fn) {
+      return this._zoneImpl.runInner(fn);
+    };
+    NgZone.prototype.runOutsideAngular = function(fn) {
+      return this._zoneImpl.runOuter(fn);
+    };
+    return NgZone;
+  })();
+  exports.NgZone = NgZone;
   global.define = __define;
   return module.exports;
 });
@@ -37407,8 +37372,8 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
         try {
           injector = _this.injector.resolveAndCreateChild(providers);
           exceptionHandler = injector.get(exceptions_1.ExceptionHandler);
-          zone.overrideOnErrorHandler(function(e, s) {
-            return exceptionHandler.call(e, s);
+          async_1.ObservableWrapper.subscribe(zone.onError, function(error) {
+            exceptionHandler.call(error.error, error.stackTrace);
           });
         } catch (e) {
           if (lang_1.isPresent(exceptionHandler)) {
@@ -37506,7 +37471,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
       this._runningTick = false;
       this._enforceNoNewChanges = false;
       if (lang_1.isPresent(this._zone)) {
-        async_1.ObservableWrapper.subscribe(this._zone.onTurnDone, function(_) {
+        async_1.ObservableWrapper.subscribe(this._zone.onMicrotaskEmpty, function(_) {
           _this._zone.run(function() {
             _this.tick();
           });
@@ -37544,11 +37509,9 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
             completer.resolve(componentRef);
           };
           var tickResult = async_1.PromiseWrapper.then(compRefToken, tick);
-          if (lang_1.IS_DART) {
-            async_1.PromiseWrapper.then(tickResult, function(_) {});
-          }
           async_1.PromiseWrapper.then(tickResult, null, function(err, stackTrace) {
-            return completer.reject(err, stackTrace);
+            completer.reject(err, stackTrace);
+            exceptionHandler.call(err, stackTrace);
           });
         } catch (e) {
           exceptionHandler.call(e, e.stack);

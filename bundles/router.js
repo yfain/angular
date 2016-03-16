@@ -831,9 +831,9 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       if (lang_1.isPresent(this.component)) {
         return async_1.PromiseWrapper.resolve(this.component);
       }
-      return this._resolver().then(function(resolution) {
-        _this.child = resolution.child;
-        return _this.component = resolution.component;
+      return this._resolver().then(function(instruction) {
+        _this.child = lang_1.isPresent(instruction) ? instruction.child : null;
+        return _this.component = lang_1.isPresent(instruction) ? instruction.component : null;
       });
     };
     return UnresolvedInstruction;
