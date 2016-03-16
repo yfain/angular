@@ -18,23 +18,10 @@ import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
 import "package:angular2/src/core/change_detection/parser/ast.dart"
     show Interpolation;
+import "message.dart" show Message, id;
 
 const I18N_ATTR = "i18n";
 const I18N_ATTR_PREFIX = "i18n-";
-
-/**
- * A message extracted from a template.
- *
- * The identity of a message is comprised of `content` and `meaning`.
- *
- * `description` is additional information provided to the translator.
- */
-class Message {
-  String content;
-  String meaning;
-  String description;
-  Message(this.content, this.meaning, this.description) {}
-}
 
 /**
  * All messages extracted from a template.
@@ -68,9 +55,8 @@ class I18nExtractionError extends ParseError {
 List<Message> removeDuplicates(List<Message> messages) {
   Map<String, Message> uniq = {};
   messages.forEach((m) {
-    var key = '''\$ng__${ m . meaning}__|${ m . content}''';
-    if (!StringMapWrapper.contains(uniq, key)) {
-      uniq[key] = m;
+    if (!StringMapWrapper.contains(uniq, id(m))) {
+      uniq[id(m)] = m;
     }
   });
   return StringMapWrapper.values(uniq);
