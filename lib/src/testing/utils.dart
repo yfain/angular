@@ -9,13 +9,12 @@ import "package:angular2/src/facade/lang.dart"
 
 @Injectable()
 class Log {
-  /** @internal */
-  List<dynamic> _result;
+  List<dynamic> logItems;
   Log() {
-    this._result = [];
+    this.logItems = [];
   }
   void add(value) {
-    this._result.add(value);
+    this.logItems.add(value);
   }
 
   fn(value) {
@@ -25,16 +24,16 @@ class Log {
         dynamic a3 = null,
         dynamic a4 = null,
         dynamic a5 = null]) {
-      this._result.add(value);
+      this.logItems.add(value);
     };
   }
 
   void clear() {
-    this._result = [];
+    this.logItems = [];
   }
 
   String result() {
-    return this._result.join("; ");
+    return this.logItems.join("; ");
   }
 }
 

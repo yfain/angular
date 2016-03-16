@@ -17,45 +17,52 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/src/core/testability/testability.dart"
     show Testability;
 import "package:angular2/src/core/zone/ng_zone.dart" show NgZone;
+import "package:angular2/src/facade/lang.dart" show scheduleMicroTask;
 import "package:angular2/src/facade/async.dart"
     show PromiseWrapper, EventEmitter, ObservableWrapper;
 
 // Schedules a microtasks (using a resolved promise .then())
 void microTask(Function fn) {
-  PromiseWrapper.resolve(null).then((_) {
-    fn();
+  scheduleMicroTask(() {
+    // We do double dispatch so that we  can wait for scheduleMicrotas in the Testability when
+
+    // NgZone becomes stable.
+    scheduleMicroTask(fn);
   });
 }
 
 @Injectable()
 class MockNgZone extends NgZone {
-  EventEmitter<dynamic> _onTurnStartStream;
-  get onTurnStart {
-    return this._onTurnStartStream;
+  EventEmitter<dynamic> _onUnstableStream;
+  get onUnstable {
+    return this._onUnstableStream;
   }
 
-  EventEmitter<dynamic> _onEventDoneStream;
-  get onEventDone {
-    return this._onEventDoneStream;
+  EventEmitter<dynamic> _onStableStream;
+  get onStable {
+    return this._onStableStream;
   }
 
   MockNgZone() : super(enableLongStackTrace: false) {
     /* super call moved to initializer */;
-    this._onTurnStartStream = new EventEmitter(false);
-    this._onEventDoneStream = new EventEmitter(false);
+    this._onUnstableStream = new EventEmitter(false);
+    this._onStableStream = new EventEmitter(false);
   }
-  void start() {
-    ObservableWrapper.callEmit(this._onTurnStartStream, null);
+  void unstable() {
+    ObservableWrapper.callEmit(this._onUnstableStream, null);
   }
 
-  void finish() {
-    ObservableWrapper.callEmit(this._onEventDoneStream, null);
+  void stable() {
+    ObservableWrapper.callEmit(this._onStableStream, null);
   }
 }
 
 main() {
   describe("Testability", () {
-    var testability, execute, execute2, ngZone;
+    Testability testability;
+    dynamic execute;
+    dynamic execute2;
+    MockNgZone ngZone;
     beforeEach(() {
       ngZone = new MockNgZone();
       testability = new Testability(ngZone);
@@ -144,14 +151,11 @@ main() {
           }));
     });
     describe("NgZone callback logic", () {
-      it("should start being ready", () {
-        expect(testability.isAngularEventPending()).toEqual(false);
-      });
       it(
           "should fire whenstable callback if event is already finished",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
-            ngZone.finish();
+            ngZone.unstable();
+            ngZone.stable();
             testability.whenStable(execute);
             microTask(() {
               expect(execute).toHaveBeenCalled();
@@ -160,19 +164,19 @@ main() {
           }));
       it("should not fire whenstable callbacks synchronously if event is already finished",
           () {
-        ngZone.start();
-        ngZone.finish();
+        ngZone.unstable();
+        ngZone.stable();
         testability.whenStable(execute);
         expect(execute).not.toHaveBeenCalled();
       });
       it(
           "should fire whenstable callback when event finishes",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
+            ngZone.unstable();
             testability.whenStable(execute);
             microTask(() {
               expect(execute).not.toHaveBeenCalled();
-              ngZone.finish();
+              ngZone.stable();
               microTask(() {
                 expect(execute).toHaveBeenCalled();
                 async.done();
@@ -181,15 +185,15 @@ main() {
           }));
       it("should not fire whenstable callbacks synchronously when event finishes",
           () {
-        ngZone.start();
+        ngZone.unstable();
         testability.whenStable(execute);
-        ngZone.finish();
+        ngZone.stable();
         expect(execute).not.toHaveBeenCalled();
       });
       it(
           "should not fire whenstable callback when event did not finish",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
+            ngZone.unstable();
             testability.increasePendingRequestCount();
             testability.whenStable(execute);
             microTask(() {
@@ -197,7 +201,7 @@ main() {
               testability.decreasePendingRequestCount();
               microTask(() {
                 expect(execute).not.toHaveBeenCalled();
-                ngZone.finish();
+                ngZone.stable();
                 microTask(() {
                   expect(execute).toHaveBeenCalled();
                   async.done();
@@ -208,13 +212,13 @@ main() {
       it(
           "should not fire whenstable callback when there are pending counts",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
+            ngZone.unstable();
             testability.increasePendingRequestCount();
             testability.increasePendingRequestCount();
             testability.whenStable(execute);
             microTask(() {
               expect(execute).not.toHaveBeenCalled();
-              ngZone.finish();
+              ngZone.stable();
               microTask(() {
                 expect(execute).not.toHaveBeenCalled();
                 testability.decreasePendingRequestCount();
@@ -232,8 +236,8 @@ main() {
       it(
           "should fire whenstable callback with didWork if event is already finished",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
-            ngZone.finish();
+            ngZone.unstable();
+            ngZone.stable();
             testability.whenStable(execute);
             microTask(() {
               expect(execute).toHaveBeenCalledWith(true);
@@ -247,10 +251,10 @@ main() {
       it(
           "should fire whenstable callback with didwork when event finishes",
           inject([AsyncTestCompleter], (async) {
-            ngZone.start();
+            ngZone.unstable();
             testability.whenStable(execute);
             microTask(() {
-              ngZone.finish();
+              ngZone.stable();
               microTask(() {
                 expect(execute).toHaveBeenCalledWith(true);
                 testability.whenStable(execute2);

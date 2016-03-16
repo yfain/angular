@@ -25,6 +25,9 @@ import "package:angular2/src/core/change_detection/change_detector_ref.dart"
 import "package:angular2/src/facade/async.dart"
     show PromiseWrapper, PromiseCompleter, TimerWrapper;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
+import "package:angular2/src/facade/exception_handler.dart"
+    show ExceptionHandler;
+import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 
 main() {
   describe("ApplicationRef", () {
@@ -38,6 +41,8 @@ main() {
     });
   });
   describe("PlatformRef", () {
+    var exceptionHandler = new Provider(ExceptionHandler,
+        useValue: new ExceptionHandler(DOM, true));
     describe("asyncApplication", () {
       void expectProviders(Injector injector, List<dynamic> providers) {
         for (var i = 0; i < providers.length; i++) {
@@ -49,7 +54,10 @@ main() {
           "should merge syncronous and asyncronous providers",
           inject([AsyncTestCompleter, Injector], (async, injector) {
             var ref = new PlatformRef_(injector, null);
-            var ASYNC_PROVIDERS = [new Provider(Foo, useValue: new Foo())];
+            var ASYNC_PROVIDERS = [
+              new Provider(Foo, useValue: new Foo()),
+              exceptionHandler
+            ];
             var SYNC_PROVIDERS = [new Provider(Bar, useValue: new Bar())];
             ref
                 .asyncApplication(
@@ -66,7 +74,10 @@ main() {
           "should allow function to be null",
           inject([AsyncTestCompleter, Injector], (async, injector) {
             var ref = new PlatformRef_(injector, null);
-            var SYNC_PROVIDERS = [new Provider(Bar, useValue: new Bar())];
+            var SYNC_PROVIDERS = [
+              new Provider(Bar, useValue: new Bar()),
+              exceptionHandler
+            ];
             ref.asyncApplication(null, SYNC_PROVIDERS).then((appRef) {
               expectProviders(appRef.injector, SYNC_PROVIDERS);
               async.done();
@@ -92,7 +103,8 @@ main() {
               new Provider(APP_INITIALIZER,
                   useValue: mockAsyncAppInitializer(completer), multi: true)
             ];
-            ref.asyncApplication(null, SYNC_PROVIDERS).then((appRef) {
+            ref.asyncApplication(null, [SYNC_PROVIDERS, exceptionHandler]).then(
+                (appRef) {
               expectProviders(
                   appRef.injector,
                   ListWrapper.slice(
@@ -114,11 +126,9 @@ main() {
                   multi: true,
                   deps: [Injector])
             ];
-            ref
-                .asyncApplication(
-                    (zone) => PromiseWrapper.resolve(ASYNC_PROVIDERS),
-                    SYNC_PROVIDERS)
-                .then((appRef) {
+            ref.asyncApplication(
+                (zone) => PromiseWrapper.resolve(ASYNC_PROVIDERS),
+                [SYNC_PROVIDERS, exceptionHandler]).then((appRef) {
               expectProviders(
                   appRef.injector,
                   ListWrapper.slice(
@@ -134,7 +144,9 @@ main() {
             var ref = new PlatformRef_(injector, null);
             var appInitializer = new Provider(APP_INITIALIZER,
                 useValue: () => PromiseWrapper.resolve([]), multi: true);
-            expect(() => ref.application([appInitializer])).toThrowError(
+            expect(() => ref
+                .application(
+                    [appInitializer, exceptionHandler])).toThrowError(
                 "Cannot use asyncronous app initializers with application. Use asyncApplication instead.");
           }));
     });

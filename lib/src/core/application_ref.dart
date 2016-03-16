@@ -1,7 +1,7 @@
 library angular2.src.core.application_ref;
 
 import "dart:async";
-import "package:angular2/src/core/zone/ng_zone.dart" show NgZone;
+import "package:angular2/src/core/zone/ng_zone.dart" show NgZone, NgZoneError;
 import "package:angular2/src/facade/lang.dart"
     show Type, isBlank, isPresent, assertionsEnabled, print, IS_DART;
 import "package:angular2/src/core/di.dart"
@@ -258,7 +258,9 @@ class PlatformRef_ extends PlatformRef {
       try {
         injector = this.injector.resolveAndCreateChild(providers);
         exceptionHandler = injector.get(ExceptionHandler);
-        zone.overrideOnErrorHandler((e, s) => exceptionHandler.call(e, s));
+        ObservableWrapper.subscribe(zone.onError, (NgZoneError error) {
+          exceptionHandler.call(error.error, error.stackTrace);
+        });
       } catch (e, e_stack) {
         if (isPresent(exceptionHandler)) {
           exceptionHandler.call(e, e_stack);
@@ -403,7 +405,7 @@ class ApplicationRef_ extends ApplicationRef {
   ApplicationRef_(this._platform, this._zone, this._injector) : super() {
     /* super call moved to initializer */;
     if (isPresent(this._zone)) {
-      ObservableWrapper.subscribe(this._zone.onTurnDone, (_) {
+      ObservableWrapper.subscribe(this._zone.onMicrotaskEmpty, (_) {
         this._zone.run(() {
           this.tick();
         });
@@ -448,18 +450,10 @@ class ApplicationRef_ extends ApplicationRef {
           completer.resolve(componentRef);
         };
         var tickResult = PromiseWrapper.then(compRefToken, tick);
-        // THIS MUST ONLY RUN IN DART.
-
-        // This is required to report an error when no components with a matching selector found.
-
-        // Otherwise the promise will never be completed.
-
-        // Doing this in JS causes an extra error message to appear.
-        if (IS_DART) {
-          PromiseWrapper.then(tickResult, (_) {});
-        }
-        PromiseWrapper.then(tickResult, null,
-            (err, stackTrace) => completer.reject(err, stackTrace));
+        PromiseWrapper.then(tickResult, null, (err, stackTrace) {
+          completer.reject(err, stackTrace);
+          exceptionHandler.call(err, stackTrace);
+        });
       } catch (e, e_stack) {
         exceptionHandler.call(e, e_stack);
         completer.reject(e, e_stack);

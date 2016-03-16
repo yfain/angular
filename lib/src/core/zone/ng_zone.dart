@@ -1,394 +1,237 @@
-library angular.zone;
+library angular2.src.core.zone.ng_zone;
 
-import 'dart:async';
-import 'package:stack_trace/stack_trace.dart' show Chain;
-
-typedef void ZeroArgFunction();
-typedef void ErrorHandlingFn(error, stackTrace);
-
-/**
- * A `Timer` wrapper that lets you specify additional functions to call when it
- * is cancelled.
- */
-class WrappedTimer implements Timer {
-  Timer _timer;
-  ZeroArgFunction _onCancelCb;
-
-  WrappedTimer(Timer timer) {
-    _timer = timer;
-  }
-
-  void addOnCancelCb(ZeroArgFunction onCancelCb) {
-    if (this._onCancelCb != null) {
-      throw "On cancel cb already registered";
-    }
-    this._onCancelCb = onCancelCb;
-  }
-
-  void cancel() {
-    if (this._onCancelCb != null) {
-      this._onCancelCb();
-    }
-    _timer.cancel();
-  }
-
-  bool get isActive => _timer.isActive;
-}
+import "package:angular2/src/facade/async.dart" show EventEmitter;
+import "ng_zone_impl.dart" show NgZoneImpl, NgZoneError;
+import "../../facade/exceptions.dart" show BaseException;
+export "ng_zone_impl.dart" show NgZoneError;
 
 /**
- * Stores error information; delivered via [NgZone.onError] stream.
- */
-class NgZoneError {
-  /// Error object thrown.
-  final error;
-
-  /// Either long or short chain of stack traces.
-  final List stackTrace;
-  NgZoneError(this.error, this.stackTrace);
-}
-
-/**
- * A `Zone` wrapper that lets you schedule tasks after its private microtask queue is exhausted but
- * before the next "VM turn", i.e. event loop iteration.
+ * An injectable service for executing work inside or outside of the Angular zone.
  *
- * This lets you freely schedule microtasks that prepare data, and set an {@link onTurnDone} handler that
- * will consume that data after it's ready but before the browser has a chance to re-render.
+ * The most common use of this service is to optimize performance when starting a work consisting of
+ * one or more asynchronous tasks that don't require UI updates or error handling to be handled by
+ * Angular. Such tasks can be kicked off via [#runOutsideAngular] and if needed, these tasks
+ * can reenter the Angular zone via [#run].
  *
- * A VM turn consist of a single macrotask followed 0 to many microtasks.
+ * <!-- TODO: add/fix links to:
+ *   - docs explaining zones and the use of zones in Angular and change-detection
+ *   - link to runOutsideAngular/run (throughout this file!)
+ *   -->
  *
- * The wrapper maintains an "inner" and "mount" `Zone`. The application code will executes
- * in the "inner" zone unless `runOutsideAngular` is explicitely called.
+ * ### Example ([live demo](http://plnkr.co/edit/lY9m8HLy7z06vDoUaSN2?p=preview))
+ * ```
+ * import {Component, View, NgZone} from 'angular2/core';
+ * import {NgIf} from 'angular2/common';
  *
- * A typical application will create a singleton `NgZone`. The mount zone is the `Zone` where the singleton has been
- * instantiated. The default `onTurnDone` runs the Angular change detection.
+ * @Component({
+ *   selector: 'ng-zone-demo'.
+ *   template: `
+ *     <h2>Demo: NgZone</h2>
+ *
+ *     <p>Progress: {{progress}}%</p>
+ *     <p *ngIf="progress >= 100">Done processing {{label}} of Angular zone!</p>
+ *
+ *     <button (click)="processWithinAngularZone()">Process within Angular zone</button>
+ *     <button (click)="processOutsideOfAngularZone()">Process outside of Angular zone</button>
+ *   `,
+ *   directives: [NgIf]
+ * })
+ * export class NgZoneDemo {
+ *   progress: number = 0;
+ *   label: string;
+ *
+ *   constructor(private _ngZone: NgZone) {}
+ *
+ *   // Loop inside the Angular zone
+ *   // so the UI DOES refresh after each setTimeout cycle
+ *   processWithinAngularZone() {
+ *     this.label = 'inside';
+ *     this.progress = 0;
+ *     this._increaseProgress(() => console.log('Inside Done!'));
+ *   }
+ *
+ *   // Loop outside of the Angular zone
+ *   // so the UI DOES NOT refresh after each setTimeout cycle
+ *   processOutsideOfAngularZone() {
+ *     this.label = 'outside';
+ *     this.progress = 0;
+ *     this._ngZone.runOutsideAngular(() => {
+ *       this._increaseProgress(() => {
+ *       // reenter the Angular zone and display done
+ *       this._ngZone.run(() => {console.log('Outside Done!') });
+ *     }}));
+ *   }
+ *
+ *
+ *   _increaseProgress(doneCallback: () => void) {
+ *     this.progress += 1;
+ *     console.log(`Current progress: ${this.progress}%`);
+ *
+ *     if (this.progress < 100) {
+ *       window.setTimeout(() => this._increaseProgress(doneCallback)), 10)
+ *     } else {
+ *       doneCallback();
+ *     }
+ *   }
+ * }
+ * ```
  */
 class NgZone {
-  ZeroArgFunction _onTurnStart;
-  ZeroArgFunction _onTurnDone;
-  ZeroArgFunction _onEventDone;
-  ErrorHandlingFn _onErrorHandler;
+  static bool isInAngularZone() {
+    return NgZoneImpl.isInAngularZone();
+  }
 
-  final _onTurnStartCtrl = new StreamController.broadcast(sync: true);
-  final _onTurnDoneCtrl = new StreamController.broadcast(sync: true);
-  final _onEventDoneCtrl = new StreamController.broadcast(sync: true);
-  final _onErrorCtrl = new StreamController<NgZoneError>.broadcast(sync: true);
+  static void assertInAngularZone() {
+    if (!NgZoneImpl.isInAngularZone()) {
+      throw new BaseException("Expected to be in Angular Zone, but it is not!");
+    }
+  }
 
-  // Code executed in _mountZone does not trigger the onTurnDone.
-  Zone _mountZone;
-  // _innerZone is the child of _mountZone. Any code executed in this zone will trigger the
-  // onTurnDone hook at the end of the current VM turn.
-  Zone _innerZone;
+  static void assertNotInAngularZone() {
+    if (NgZoneImpl.isInAngularZone()) {
+      throw new BaseException("Expected to not be in Angular Zone, but it is!");
+    }
+  }
 
-  // Number of microtasks pending from _innerZone (& descendants)
-  int _pendingMicrotasks = 0;
-  // Whether some code has been executed in the _innerZone (& descendants) in the current turn
-  bool _hasExecutedCodeInInnerZone = false;
-  // _outerRun() call depth. 0 at the end of a macrotask
-  // zone.run(() => {         // top-level call
-  //   zone.run(() => {});    // nested call -> in-turn
-  // });                      // we should only check for the end of a turn once the top-level run ends
-  int _nestedRun = 0;
-
-  bool _inVmTurnDone = false;
-
-  List<Timer> _pendingTimers = [];
-
+  NgZoneImpl _zoneImpl;
+  bool _hasPendingMicrotasks = false;
+  bool _hasPendingMacrotasks = false;
+  /** @internal */
+  var _isStable = true;
+  /** @internal */
+  var _nesting = 0;
+  /** @internal */
+  EventEmitter<dynamic> _onUnstable = new EventEmitter(false);
+  /** @internal */
+  EventEmitter<dynamic> _onMicrotaskEmpty = new EventEmitter(false);
+  /** @internal */
+  EventEmitter<dynamic> _onStable = new EventEmitter(false);
+  /** @internal */
+  EventEmitter<dynamic> _onErrorEvents = new EventEmitter(false);
   /**
-   * Associates with this
-   *
-   * - a "mount" [Zone], which is a the one that instantiated this.
-   * - an "inner" [Zone], which is a child of the mount [Zone].
-   *
-   * @param {bool} enableLongStackTrace whether to enable long stack trace. They should only be
+   * 
    *               enabled in development mode as they significantly impact perf.
    */
-  NgZone({bool enableLongStackTrace}) {
-    _mountZone = Zone.current;
-
-    if (enableLongStackTrace) {
-      _innerZone = Chain.capture(() => _createInnerZone(Zone.current),
-          onError: _onErrorWithLongStackTrace);
-    } else {
-      _innerZone = _createInnerZone(Zone.current,
-          handleUncaughtError: (Zone self, ZoneDelegate parent, Zone zone,
-                  error, StackTrace trace) =>
-              _onErrorWithoutLongStackTrace(error, trace));
-    }
+  NgZone({enableLongStackTrace: false}) {
+    this._zoneImpl = new NgZoneImpl(
+        trace: enableLongStackTrace,
+        onEnter: () {
+          // console.log('ZONE.enter', this._nesting, this._isStable);
+          this._nesting++;
+          if (this._isStable) {
+            this._isStable = false;
+            this._onUnstable.emit(null);
+          }
+        },
+        onLeave: () {
+          this._nesting--;
+          // console.log('ZONE.leave', this._nesting, this._isStable);
+          this._checkStable();
+        },
+        setMicrotask: (bool hasMicrotasks) {
+          this._hasPendingMicrotasks = hasMicrotasks;
+          this._checkStable();
+        },
+        setMacrotask: (bool hasMacrotasks) {
+          this._hasPendingMacrotasks = hasMacrotasks;
+        },
+        onError: (NgZoneError error) => this._onErrorEvents.emit(error));
   }
-
-  /**
-   * Sets the zone hook that is called just before Angular event turn starts.
-   * It is called once per browser event.
-   */
-  @Deprecated('Use onTurnStart Stream instead')
-  void overrideOnTurnStart(ZeroArgFunction onTurnStartFn) {
-    _onTurnStart = onTurnStartFn;
-  }
-
-  void _notifyOnTurnStart() {
-    this._onTurnStartCtrl.add(null);
-  }
-
-  /**
-   * Notifies subscribers just before Angular event turn starts.
-   *
-   * Emits an event once per browser task that is handled by Angular.
-   */
-  Stream get onTurnStart => _onTurnStartCtrl.stream;
-
-  /**
-   * Sets the zone hook that is called immediately after Angular processes
-   * all pending microtasks.
-   */
-  @Deprecated('Use onTurnDone Stream instead')
-  void overrideOnTurnDone(ZeroArgFunction onTurnDoneFn) {
-    _onTurnDone = onTurnDoneFn;
-  }
-
-  /**
-   * Notifies subscribers immediately after the Angular zone is done processing
-   * the current turn and any microtasks scheduled from that turn.
-   *
-   * Used by Angular as a signal to kick off change-detection.
-   */
-  Stream get onTurnDone => _onTurnDoneCtrl.stream;
-
-  void _notifyOnTurnDone() {
-    this._onTurnDoneCtrl.add(null);
-  }
-
-  /**
-   * Sets the zone hook that is called immediately after the last turn in
-   * an event completes. At this point Angular will no longer attempt to
-   * sync the UI. Any changes to the data model will not be reflected in the
-   * DOM. `onEventDoneFn` is executed outside Angular zone.
-   *
-   * This hook is useful for validating application state (e.g. in a test).
-   */
-  @Deprecated('Use onEventDone Stream instead')
-  void overrideOnEventDone(ZeroArgFunction onEventDoneFn,
-      [bool waitForAsync = false]) {
-    _onEventDone = onEventDoneFn;
-
-    if (waitForAsync) {
-      _onEventDone = () {
-        if (_pendingTimers.length == 0) {
-          onEventDoneFn();
+  _checkStable() {
+    if (this._nesting == 0) {
+      if (!this._hasPendingMicrotasks && !this._isStable) {
+        try {
+          // console.log('ZONE.microtaskEmpty');
+          this._nesting++;
+          this._onMicrotaskEmpty.emit(null);
+        } finally {
+          this._nesting--;
+          if (!this._hasPendingMicrotasks) {
+            try {
+              // console.log('ZONE.stable', this._nesting, this._isStable);
+              this.runOutsideAngular(() => this._onStable.emit(null));
+            } finally {
+              this._isStable = true;
+            }
+          }
         }
-      };
+      }
     }
   }
 
   /**
-   * Notifies subscribers immediately after the final `onTurnDone` callback
-   * before ending VM event.
-   *
-   * This event is useful for validating application state (e.g. in a test).
+   * Notifies when code enters Angular Zone. This gets fired first on VM Turn.
    */
-  Stream get onEventDone => _onEventDoneCtrl.stream;
+  EventEmitter<dynamic> get onUnstable {
+    return this._onUnstable;
+  }
 
-  void _notifyOnEventDone() {
-    this._onEventDoneCtrl.add(null);
+  /**
+   * Notifies when there is no more microtasks enqueue in the current VM Turn.
+   * This is a hint for Angular to do change detection, which may enqueue more microtasks.
+   * For this reason this event can fire multiple times per VM Turn.
+   */
+  EventEmitter<dynamic> get onMicrotaskEmpty {
+    return this._onMicrotaskEmpty;
+  }
+
+  /**
+   * Notifies when the last `onMicrotaskEmpty` has run and there are no more microtasks, which
+   * implies we are about to relinquish VM turn.
+   * This event gets called just once.
+   */
+  EventEmitter<dynamic> get onStable {
+    return this._onStable;
+  }
+
+  /**
+   * Notify that an error has been delivered.
+   */
+  EventEmitter<dynamic> get onError {
+    return this._onErrorEvents;
   }
 
   /**
    * Whether there are any outstanding microtasks.
    */
-  bool get hasPendingMicrotasks => _pendingMicrotasks > 0;
-
-  /**
-   * Whether there are any outstanding timers.
-   */
-  bool get hasPendingTimers => _pendingTimers.isNotEmpty;
-
-  /**
-   * Whether there are any outstanding asychnronous tasks of any kind that are
-   * scheduled to run within Angular zone.
-   *
-   * Useful as a signal of UI stability. For example, when a test reaches a
-   * point when [hasPendingAsyncTasks] is `false` it might be a good time to run
-   * test expectations.
-   */
-  bool get hasPendingAsyncTasks => hasPendingMicrotasks || hasPendingTimers;
-
-  /**
-   * Sets the zone hook that is called when an error is uncaught in the
-   * Angular zone. The first argument is the error. The second argument is
-   * the stack trace.
-   */
-  @Deprecated('Use onError Stream instead')
-  void overrideOnErrorHandler(ErrorHandlingFn errorHandlingFn) {
-    _onErrorHandler = errorHandlingFn;
+  bool get hasPendingMicrotasks {
+    return this._hasPendingMicrotasks;
   }
 
   /**
-   * Notifies subscribers whenever an error happens within the zone.
-   *
-   * Useful for logging.
+   * Whether there are any outstanding microtasks.
    */
-  Stream get onError => _onErrorCtrl.stream;
-
-  /**
-   * Runs `fn` in the inner zone and returns whatever it returns.
-   *
-   * In a typical app where the inner zone is the Angular zone, this allows one to make use of the
-   * Angular's auto digest mechanism.
-   *
-   * ```
-   * NgZone zone = <ref to the application zone>;
-   *
-   * void functionCalledFromJS() {
-   *   zone.run(() {
-   *     // auto-digest will run after this function is called from JS
-   *   });
-   * }
-   * ```
-   */
-  dynamic run(fn()) {
-    // Using runGuarded() is required when executing sync code with Dart otherwise handleUncaughtError()
-    // would not be called on exceptions.
-    // see https://code.google.com/p/dart/issues/detail?id=19566 for details.
-    return _innerZone.runGuarded(fn);
+  bool get hasPendingMacrotasks {
+    return this._hasPendingMacrotasks;
   }
 
   /**
-   * Runs `fn` in the mount zone and returns whatever it returns.
+   * Executes the `fn` function synchronously within the Angular zone and returns value returned by
+   * the function.
    *
-   * In a typical app where the inner zone is the Angular zone, this allows one to escape Angular's
-   * auto-digest mechanism.
+   * Running functions via `run` allows you to reenter Angular zone from a task that was executed
+   * outside of the Angular zone (typically started via [#runOutsideAngular]).
    *
-   * ```
-   * void myFunction(NgZone zone, Element element) {
-   *   element.onClick.listen(() {
-   *     // auto-digest will run after element click.
-   *   });
-   *   zone.runOutsideAngular(() {
-   *     element.onMouseMove.listen(() {
-   *       // auto-digest will NOT run after mouse move
-   *     });
-   *   });
-   * }
-   * ```
+   * Any future tasks or microtasks scheduled from within this function will continue executing from
+   * within the Angular zone.
    */
-  dynamic runOutsideAngular(fn()) {
-    return _mountZone.run(fn);
+  dynamic run(dynamic /* () => any */ fn) {
+    return this._zoneImpl.runInner(fn);
   }
 
-  void _maybeStartVmTurn(ZoneDelegate parent) {
-    if (!_hasExecutedCodeInInnerZone) {
-      _hasExecutedCodeInInnerZone = true;
-      parent.run(_innerZone, _notifyOnTurnStart);
-      if (_onTurnStart != null) {
-        parent.run(_innerZone, _onTurnStart);
-      }
-    }
-  }
-
-  dynamic _run(Zone self, ZoneDelegate parent, Zone zone, fn()) {
-    try {
-      _nestedRun++;
-      _maybeStartVmTurn(parent);
-      return parent.run(zone, fn);
-    } finally {
-      _nestedRun--;
-      // If there are no more pending microtasks and we are not in a recursive call, this is the end of a turn
-      if (_pendingMicrotasks == 0 && _nestedRun == 0 && !_inVmTurnDone) {
-        if (_hasExecutedCodeInInnerZone) {
-          // Trigger onTurnDone at the end of a turn if _innerZone has executed some code
-          try {
-            _inVmTurnDone = true;
-            _notifyOnTurnDone();
-            if (_onTurnDone != null) {
-              parent.run(_innerZone, _onTurnDone);
-            }
-          } finally {
-            _inVmTurnDone = false;
-            _hasExecutedCodeInInnerZone = false;
-          }
-        }
-
-        if (_pendingMicrotasks == 0) {
-          _notifyOnEventDone();
-          if (_onEventDone != null) {
-            runOutsideAngular(_onEventDone);
-          }
-        }
-      }
-    }
-  }
-
-  dynamic _runUnary(Zone self, ZoneDelegate parent, Zone zone, fn(arg), arg) =>
-      _run(self, parent, zone, () => fn(arg));
-
-  dynamic _runBinary(Zone self, ZoneDelegate parent, Zone zone, fn(arg1, arg2),
-          arg1, arg2) =>
-      _run(self, parent, zone, () => fn(arg1, arg2));
-
-  void _scheduleMicrotask(Zone self, ZoneDelegate parent, Zone zone, fn) {
-    _pendingMicrotasks++;
-    var microtask = () {
-      try {
-        fn();
-      } finally {
-        _pendingMicrotasks--;
-      }
-    };
-    parent.scheduleMicrotask(zone, microtask);
-  }
-
-  // Called by Chain.capture() on errors when long stack traces are enabled
-  void _onErrorWithLongStackTrace(error, Chain chain) {
-    if (_onErrorHandler != null || _onErrorCtrl.hasListener) {
-      final traces = chain.terse.traces.map((t) => t.toString()).toList();
-      if (_onErrorCtrl.hasListener) {
-        _onErrorCtrl.add(new NgZoneError(error, traces));
-      }
-      if (_onErrorHandler != null) {
-        _onErrorHandler(error, traces);
-      }
-    } else {
-      throw error;
-    }
-  }
-
-  // Outer zone handleUnchaughtError when long stack traces are not used
-  void _onErrorWithoutLongStackTrace(error, StackTrace trace) {
-    if (_onErrorHandler != null || _onErrorCtrl.hasListener) {
-      if (_onErrorHandler != null) {
-        _onErrorHandler(error, [trace.toString()]);
-      }
-      if (_onErrorCtrl.hasListener) {
-        _onErrorCtrl.add(new NgZoneError(error, [trace.toString()]));
-      }
-    } else {
-      throw error;
-    }
-  }
-
-  Timer _createTimer(
-      Zone self, ZoneDelegate parent, Zone zone, Duration duration, fn()) {
-    WrappedTimer wrappedTimer;
-    var cb = () {
-      fn();
-      _pendingTimers.remove(wrappedTimer);
-    };
-    Timer timer = parent.createTimer(zone, duration, cb);
-    wrappedTimer = new WrappedTimer(timer);
-    wrappedTimer.addOnCancelCb(() => _pendingTimers.remove(wrappedTimer));
-
-    _pendingTimers.add(wrappedTimer);
-    return wrappedTimer;
-  }
-
-  Zone _createInnerZone(Zone zone, {handleUncaughtError}) {
-    return zone.fork(
-        specification: new ZoneSpecification(
-            scheduleMicrotask: _scheduleMicrotask,
-            run: _run,
-            runUnary: _runUnary,
-            runBinary: _runBinary,
-            handleUncaughtError: handleUncaughtError,
-            createTimer: _createTimer),
-        zoneValues: {'_innerZone': true});
+  /**
+   * Executes the `fn` function synchronously in Angular's parent zone and returns value returned by
+   * the function.
+   *
+   * Running functions via `runOutsideAngular` allows you to escape Angular's zone and do work that
+   * doesn't trigger Angular change-detection or is subject to Angular's error handling.
+   *
+   * Any future tasks or microtasks scheduled from within this function will continue executing from
+   * outside of the Angular zone.
+   *
+   * Use [#run] to reenter the Angular zone and do work that updates the application model.
+   */
+  dynamic runOutsideAngular(dynamic /* () => any */ fn) {
+    return this._zoneImpl.runOuter(fn);
   }
 }

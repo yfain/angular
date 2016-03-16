@@ -11,13 +11,12 @@ import "package:angular2/src/facade/async.dart"
 @Injectable()
 class MockNgZone extends NgZone {
   /** @internal */
-  EventEmitter<dynamic> _mockOnEventDone;
+  EventEmitter<dynamic> _mockOnStable = new EventEmitter(false);
   MockNgZone() : super(enableLongStackTrace: false) {
     /* super call moved to initializer */;
-    this._mockOnEventDone = new EventEmitter<dynamic>(false);
   }
-  get onEventDone {
-    return this._mockOnEventDone;
+  get onStable {
+    return this._mockOnStable;
   }
 
   dynamic run(Function fn) {
@@ -29,6 +28,6 @@ class MockNgZone extends NgZone {
   }
 
   void simulateZoneExit() {
-    ObservableWrapper.callNext(this.onEventDone, null);
+    ObservableWrapper.callNext(this.onStable, null);
   }
 }

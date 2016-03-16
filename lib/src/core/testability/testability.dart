@@ -3,11 +3,10 @@ library angular2.src.core.testability.testability;
 import "package:angular2/src/core/di.dart" show Injectable;
 import "package:angular2/src/facade/collection.dart"
     show Map, MapWrapper, ListWrapper;
-import "package:angular2/src/facade/exceptions.dart"
-    show BaseException, WrappedException;
+import "package:angular2/src/facade/lang.dart" show scheduleMicroTask;
+import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "../zone/ng_zone.dart" show NgZone;
-import "package:angular2/src/facade/async.dart"
-    show PromiseWrapper, ObservableWrapper;
+import "package:angular2/src/facade/async.dart" show ObservableWrapper;
 
 /**
  * The Testability service provides testing hooks that can be accessed from
@@ -16,8 +15,10 @@ import "package:angular2/src/facade/async.dart"
  */
 @Injectable()
 class Testability {
+  NgZone _ngZone;
   /** @internal */
   num _pendingCount = 0;
+  bool _isZoneStable = true;
   /**
    * Whether any work was done since the last 'whenStable' callback. This is
    * useful to detect if this could have potentially destabilized another
@@ -27,23 +28,22 @@ class Testability {
   bool _didWork = false;
   /** @internal */
   List<Function> _callbacks = [];
-  /** @internal */
-  bool _isAngularEventPending = false;
-  Testability(NgZone _ngZone) {
-    this._watchAngularEvents(_ngZone);
+  Testability(this._ngZone) {
+    this._watchAngularEvents();
   }
   /** @internal */
-  void _watchAngularEvents(NgZone _ngZone) {
-    ObservableWrapper.subscribe(_ngZone.onTurnStart, (_) {
+  void _watchAngularEvents() {
+    ObservableWrapper.subscribe(this._ngZone.onUnstable, (_) {
       this._didWork = true;
-      this._isAngularEventPending = true;
+      this._isZoneStable = false;
     });
-    _ngZone.runOutsideAngular(() {
-      ObservableWrapper.subscribe(_ngZone.onEventDone, (_) {
-        if (!_ngZone.hasPendingTimers) {
-          this._isAngularEventPending = false;
+    this._ngZone.runOutsideAngular(() {
+      ObservableWrapper.subscribe(this._ngZone.onStable, (_) {
+        NgZone.assertNotInAngularZone();
+        scheduleMicroTask(() {
+          this._isZoneStable = true;
           this._runCallbacksIfReady();
-        }
+        });
       });
     });
   }
@@ -64,22 +64,25 @@ class Testability {
   }
 
   bool isStable() {
-    return this._pendingCount == 0 && !this._isAngularEventPending;
+    return this._isZoneStable &&
+        this._pendingCount == 0 &&
+        !this._ngZone.hasPendingMacrotasks;
   }
 
   /** @internal */
   void _runCallbacksIfReady() {
-    if (!this.isStable()) {
+    if (this.isStable()) {
+      // Schedules the call backs in a new frame so that it is always async.
+      scheduleMicroTask(() {
+        while (!identical(this._callbacks.length, 0)) {
+          (this._callbacks.removeLast())(this._didWork);
+        }
+        this._didWork = false;
+      });
+    } else {
+      // Not Ready
       this._didWork = true;
-      return;
     }
-    // Schedules the call backs in a new frame so that it is always async.
-    PromiseWrapper.resolve(null).then((_) {
-      while (!identical(this._callbacks.length, 0)) {
-        (this._callbacks.removeLast())(this._didWork);
-      }
-      this._didWork = false;
-    });
   }
 
   void whenStable(Function callback) {
@@ -89,12 +92,6 @@ class Testability {
 
   num getPendingRequestCount() {
     return this._pendingCount;
-  }
-  // This only accounts for ngZone, and not pending counts. Use `whenStable` to
-
-  // check for stability.
-  bool isAngularEventPending() {
-    return this._isAngularEventPending;
   }
 
   List<dynamic> findBindings(dynamic using, String provider, bool exactMatch) {

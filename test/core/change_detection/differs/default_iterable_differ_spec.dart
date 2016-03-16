@@ -103,7 +103,7 @@ main() {
             previous: ["1[0->1]", "2[1->0]"],
             moves: ["2[1->0]", "1[0->1]"]));
       });
-      it("should handle swapping element", () {
+      it("should handle incremental swapping element", () {
         var l = ["a", "b", "c"];
         differ.check(l);
         ListWrapper.removeAt(l, 1);
