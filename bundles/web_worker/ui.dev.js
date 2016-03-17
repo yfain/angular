@@ -479,6 +479,10 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     });
   }
   exports.bitWiseAnd = bitWiseAnd;
+  function escape(s) {
+    return _global.encodeURI(s);
+  }
+  exports.escape = escape;
   global.define = __define;
   return module.exports;
 });

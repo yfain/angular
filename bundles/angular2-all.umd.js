@@ -1884,6 +1884,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return values.reduce(function (a, b) { return a & b; });
 	}
 	exports.bitWiseAnd = bitWiseAnd;
+	function escape(s) {
+	    return _global.encodeURI(s);
+	}
+	exports.escape = escape;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
