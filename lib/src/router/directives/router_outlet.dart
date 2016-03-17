@@ -39,7 +39,7 @@ class RouterOutlet implements OnDestroy {
   DynamicComponentLoader _loader;
   routerMod.Router _parentRouter;
   String name = null;
-  Future<ComponentRef> _componentRef = null;
+  ComponentRef _componentRef = null;
   ComponentInstruction _currentInstruction = null;
   RouterOutlet(this._elementRef, this._loader, this._parentRouter,
       @Attribute("name") String nameAttr) {
@@ -64,16 +64,14 @@ class RouterOutlet implements OnDestroy {
       provide(RouteParams, useValue: new RouteParams(nextInstruction.params)),
       provide(routerMod.Router, useValue: childRouter)
     ]);
-    this._componentRef = this
+    return this
         ._loader
-        .loadNextToLocation(componentType, this._elementRef, providers);
-    return this._componentRef.then((componentRef) {
+        .loadNextToLocation(componentType, this._elementRef, providers)
+        .then((componentRef) {
+      this._componentRef = componentRef;
       if (hasLifecycleHook(hookMod.routerOnActivate, componentType)) {
-        return this._componentRef.then((ComponentRef ref) =>
-            ((ref.instance as OnActivate))
-                .routerOnActivate(nextInstruction, previousInstruction));
-      } else {
-        return componentRef;
+        return ((this._componentRef.instance as OnActivate))
+            .routerOnActivate(nextInstruction, previousInstruction);
       }
     });
   }
@@ -93,14 +91,12 @@ class RouterOutlet implements OnDestroy {
     // a new one.
     if (isBlank(this._componentRef)) {
       return this.activate(nextInstruction);
-    } else {
-      return PromiseWrapper.resolve(hasLifecycleHook(
-              hookMod.routerOnReuse, this._currentInstruction.componentType)
-          ? this._componentRef.then((ComponentRef ref) =>
-              ((ref.instance as OnReuse))
-                  .routerOnReuse(nextInstruction, previousInstruction))
-          : true);
     }
+    return PromiseWrapper.resolve(hasLifecycleHook(
+            hookMod.routerOnReuse, this._currentInstruction.componentType)
+        ? ((this._componentRef.instance as OnReuse))
+            .routerOnReuse(nextInstruction, previousInstruction)
+        : true);
   }
 
   /**
@@ -113,16 +109,14 @@ class RouterOutlet implements OnDestroy {
         isPresent(this._currentInstruction) &&
         hasLifecycleHook(hookMod.routerOnDeactivate,
             this._currentInstruction.componentType)) {
-      next = this._componentRef.then((ComponentRef ref) =>
-          ((ref.instance as OnDeactivate))
-              .routerOnDeactivate(nextInstruction, this._currentInstruction));
+      next = (PromiseWrapper.resolve(
+          ((this._componentRef.instance as OnDeactivate)).routerOnDeactivate(
+              nextInstruction, this._currentInstruction)) as Future<bool>);
     }
     return next.then((_) {
       if (isPresent(this._componentRef)) {
-        var onDispose =
-            this._componentRef.then((ComponentRef ref) => ref.dispose());
+        this._componentRef.dispose();
         this._componentRef = null;
-        return onDispose;
       }
     });
   }
@@ -141,12 +135,11 @@ class RouterOutlet implements OnDestroy {
     }
     if (hasLifecycleHook(
         hookMod.routerCanDeactivate, this._currentInstruction.componentType)) {
-      return this._componentRef.then((ComponentRef ref) =>
-          ((ref.instance as CanDeactivate))
-              .routerCanDeactivate(nextInstruction, this._currentInstruction));
-    } else {
-      return _resolveToTrue;
+      return (PromiseWrapper.resolve(
+          ((this._componentRef.instance as CanDeactivate)).routerCanDeactivate(
+              nextInstruction, this._currentInstruction)) as Future<bool>);
     }
+    return _resolveToTrue;
   }
 
   /**
@@ -167,9 +160,8 @@ class RouterOutlet implements OnDestroy {
       result = false;
     } else if (hasLifecycleHook(
         hookMod.routerCanReuse, this._currentInstruction.componentType)) {
-      result = this._componentRef.then((ComponentRef ref) =>
-          ((ref.instance as CanReuse))
-              .routerCanReuse(nextInstruction, this._currentInstruction));
+      result = ((this._componentRef.instance as CanReuse))
+          .routerCanReuse(nextInstruction, this._currentInstruction);
     } else {
       result = nextInstruction == this._currentInstruction ||
           (isPresent(nextInstruction.params) &&
