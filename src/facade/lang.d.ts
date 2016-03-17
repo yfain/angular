@@ -18,7 +18,6 @@ export interface BrowserNodeGlobal {
     clearTimeout: Function;
     setInterval: Function;
     clearInterval: Function;
-    encodeURI: Function;
 }
 export declare function scheduleMicroTask(fn: Function): void;
 export declare const IS_DART: boolean;
@@ -152,4 +151,3 @@ export declare function isPrimitive(obj: any): boolean;
 export declare function hasConstructor(value: Object, type: Type): boolean;
 export declare function bitWiseOr(values: number[]): number;
 export declare function bitWiseAnd(values: number[]): number;
-export declare function escape(s: string): string;

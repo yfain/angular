@@ -359,6 +359,3 @@ export function bitWiseOr(values) {
 export function bitWiseAnd(values) {
     return values.reduce((a, b) => { return a & b; });
 }
-export function escape(s) {
-    return _global.encodeURI(s);
-}
