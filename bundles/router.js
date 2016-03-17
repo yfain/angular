@@ -2132,14 +2132,10 @@ System.register("angular2/src/router/directives/router_outlet", ["angular2/src/f
       var componentType = nextInstruction.componentType;
       var childRouter = this._parentRouter.childRouter(componentType);
       var providers = core_1.Injector.resolve([core_1.provide(instruction_1.RouteData, {useValue: nextInstruction.routeData}), core_1.provide(instruction_1.RouteParams, {useValue: new instruction_1.RouteParams(nextInstruction.params)}), core_1.provide(routerMod.Router, {useValue: childRouter})]);
-      this._componentRef = this._loader.loadNextToLocation(componentType, this._elementRef, providers);
-      return this._componentRef.then(function(componentRef) {
+      return this._loader.loadNextToLocation(componentType, this._elementRef, providers).then(function(componentRef) {
+        _this._componentRef = componentRef;
         if (route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerOnActivate, componentType)) {
-          return _this._componentRef.then(function(ref) {
-            return ref.instance.routerOnActivate(nextInstruction, previousInstruction);
-          });
-        } else {
-          return componentRef;
+          return _this._componentRef.instance.routerOnActivate(nextInstruction, previousInstruction);
         }
       });
     };
@@ -2148,52 +2144,37 @@ System.register("angular2/src/router/directives/router_outlet", ["angular2/src/f
       this._currentInstruction = nextInstruction;
       if (lang_1.isBlank(this._componentRef)) {
         return this.activate(nextInstruction);
-      } else {
-        return async_1.PromiseWrapper.resolve(route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerOnReuse, this._currentInstruction.componentType) ? this._componentRef.then(function(ref) {
-          return ref.instance.routerOnReuse(nextInstruction, previousInstruction);
-        }) : true);
       }
+      return async_1.PromiseWrapper.resolve(route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerOnReuse, this._currentInstruction.componentType) ? this._componentRef.instance.routerOnReuse(nextInstruction, previousInstruction) : true);
     };
     RouterOutlet.prototype.deactivate = function(nextInstruction) {
       var _this = this;
       var next = _resolveToTrue;
       if (lang_1.isPresent(this._componentRef) && lang_1.isPresent(this._currentInstruction) && route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerOnDeactivate, this._currentInstruction.componentType)) {
-        next = this._componentRef.then(function(ref) {
-          return ref.instance.routerOnDeactivate(nextInstruction, _this._currentInstruction);
-        });
+        next = async_1.PromiseWrapper.resolve(this._componentRef.instance.routerOnDeactivate(nextInstruction, this._currentInstruction));
       }
       return next.then(function(_) {
         if (lang_1.isPresent(_this._componentRef)) {
-          var onDispose = _this._componentRef.then(function(ref) {
-            return ref.dispose();
-          });
+          _this._componentRef.dispose();
           _this._componentRef = null;
-          return onDispose;
         }
       });
     };
     RouterOutlet.prototype.routerCanDeactivate = function(nextInstruction) {
-      var _this = this;
       if (lang_1.isBlank(this._currentInstruction)) {
         return _resolveToTrue;
       }
       if (route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerCanDeactivate, this._currentInstruction.componentType)) {
-        return this._componentRef.then(function(ref) {
-          return ref.instance.routerCanDeactivate(nextInstruction, _this._currentInstruction);
-        });
-      } else {
-        return _resolveToTrue;
+        return async_1.PromiseWrapper.resolve(this._componentRef.instance.routerCanDeactivate(nextInstruction, this._currentInstruction));
       }
+      return _resolveToTrue;
     };
     RouterOutlet.prototype.routerCanReuse = function(nextInstruction) {
-      var _this = this;
       var result;
       if (lang_1.isBlank(this._currentInstruction) || this._currentInstruction.componentType != nextInstruction.componentType) {
         result = false;
       } else if (route_lifecycle_reflector_1.hasLifecycleHook(hookMod.routerCanReuse, this._currentInstruction.componentType)) {
-        result = this._componentRef.then(function(ref) {
-          return ref.instance.routerCanReuse(nextInstruction, _this._currentInstruction);
-        });
+        result = this._componentRef.instance.routerCanReuse(nextInstruction, this._currentInstruction);
       } else {
         result = nextInstruction == this._currentInstruction || (lang_1.isPresent(nextInstruction.params) && lang_1.isPresent(this._currentInstruction.params) && collection_1.StringMapWrapper.equals(nextInstruction.params, this._currentInstruction.params));
       }
