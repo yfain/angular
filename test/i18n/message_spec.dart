@@ -15,7 +15,7 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/src/i18n/message.dart" show Message, id;
 
 main() {
-  ddescribe("Message", () {
+  describe("Message", () {
     describe("id", () {
       it("should return a different id for messages with and without the meaning",
           () {
