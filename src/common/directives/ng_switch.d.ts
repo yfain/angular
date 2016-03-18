@@ -1,4 +1,11 @@
 import { ViewContainerRef, TemplateRef } from 'angular2/core';
+export declare class SwitchView {
+    private _viewContainerRef;
+    private _templateRef;
+    constructor(_viewContainerRef: ViewContainerRef, _templateRef: TemplateRef);
+    create(): void;
+    destroy(): void;
+}
 /**
  * Adds or removes DOM sub-trees when their match expressions match the switch expression.
  *
