@@ -13891,9 +13891,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 80 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var lang_1 = __webpack_require__(5);
 	/**
 	 * Stores error information; delivered via [NgZone.onError] stream.
 	 */
@@ -13907,15 +13906,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.NgZoneError = NgZoneError;
 	var NgZoneImpl = (function () {
 	    function NgZoneImpl(_a) {
+	        var _this = this;
 	        var trace = _a.trace, onEnter = _a.onEnter, onLeave = _a.onLeave, setMicrotask = _a.setMicrotask, setMacrotask = _a.setMacrotask, onError = _a.onError;
-	        this.name = 'angular';
-	        this.properties = { 'isAngularZone': true };
 	        this.onEnter = onEnter;
 	        this.onLeave = onLeave;
 	        this.setMicrotask = setMicrotask;
 	        this.setMacrotask = setMacrotask;
 	        this.onError = onError;
-	        if (lang_1.global.Zone) {
+	        if (Zone) {
 	            this.outer = this.inner = Zone.current;
 	            if (Zone['wtfZoneSpec']) {
 	                this.inner = this.inner.fork(Zone['wtfZoneSpec']);
@@ -13923,50 +13921,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (trace) {
 	                this.inner = this.inner.fork(Zone['longStackTraceZoneSpec']);
 	            }
-	            this.inner = this.inner.fork(this);
+	            this.inner = this.inner.fork({
+	                name: 'angular',
+	                properties: { 'isAngularZone': true },
+	                onInvokeTask: function (delegate, current, target, task, applyThis, applyArgs) {
+	                    try {
+	                        _this.onEnter();
+	                        return delegate.invokeTask(target, task, applyThis, applyArgs);
+	                    }
+	                    finally {
+	                        _this.onLeave();
+	                    }
+	                },
+	                onInvoke: function (delegate, current, target, callback, applyThis, applyArgs, source) {
+	                    try {
+	                        _this.onEnter();
+	                        return delegate.invoke(target, callback, applyThis, applyArgs, source);
+	                    }
+	                    finally {
+	                        _this.onLeave();
+	                    }
+	                },
+	                onHasTask: function (delegate, current, target, hasTaskState) {
+	                    delegate.hasTask(target, hasTaskState);
+	                    if (current == target) {
+	                        // We are only interested in hasTask events which originate from our zone
+	                        // (A child hasTask event is not interesting to us)
+	                        if (hasTaskState.change == 'microTask') {
+	                            _this.setMicrotask(hasTaskState.microTask);
+	                        }
+	                        else if (hasTaskState.change == 'macroTask') {
+	                            _this.setMacrotask(hasTaskState.macroTask);
+	                        }
+	                    }
+	                },
+	                onHandleError: function (delegate, current, target, error) {
+	                    delegate.handleError(target, error);
+	                    _this.onError(new NgZoneError(error, error.stack));
+	                    return false;
+	                }
+	            });
 	        }
 	        else {
 	            throw new Error('Angular2 needs to be run with Zone.js polyfill.');
 	        }
 	    }
 	    NgZoneImpl.isInAngularZone = function () { return Zone.current.get('isAngularZone') === true; };
-	    NgZoneImpl.prototype.onInvokeTask = function (delegate, current, target, task, applyThis, applyArgs) {
-	        try {
-	            this.onEnter();
-	            return delegate.invokeTask(target, task, applyThis, applyArgs);
-	        }
-	        finally {
-	            this.onLeave();
-	        }
-	    };
-	    ;
-	    NgZoneImpl.prototype.onInvoke = function (delegate, current, target, callback, applyThis, applyArgs, source) {
-	        try {
-	            this.onEnter();
-	            return delegate.invoke(target, callback, applyThis, applyArgs, source);
-	        }
-	        finally {
-	            this.onLeave();
-	        }
-	    };
-	    NgZoneImpl.prototype.onHasTask = function (delegate, current, target, hasTaskState) {
-	        delegate.hasTask(target, hasTaskState);
-	        if (current == target) {
-	            // We are only interested in hasTask events which originate from our zone
-	            // (A child hasTask event is not interesting to us)
-	            if (hasTaskState.change == 'microTask') {
-	                this.setMicrotask(hasTaskState.microTask);
-	            }
-	            else if (hasTaskState.change == 'macroTask') {
-	                this.setMacrotask(hasTaskState.macroTask);
-	            }
-	        }
-	    };
-	    NgZoneImpl.prototype.onHandleError = function (delegate, current, target, error) {
-	        delegate.handleError(target, error);
-	        this.onError(new NgZoneError(error, error.stack));
-	        return false;
-	    };
 	    NgZoneImpl.prototype.runInner = function (fn) { return this.inner.runGuarded(fn); };
 	    ;
 	    NgZoneImpl.prototype.runOuter = function (fn) { return this.outer.run(fn); };
@@ -18923,6 +18923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(12);
 	var _WHEN_DEFAULT = lang_1.CONST_EXPR(new Object());
+	/** @internal */
 	var SwitchView = (function () {
 	    function SwitchView(_viewContainerRef, _templateRef) {
 	        this._viewContainerRef = _viewContainerRef;
