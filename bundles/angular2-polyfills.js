@@ -121,7 +121,7 @@ THE SOFTWARE.
 	    function clearTask(task) {
 	        return clearNative(task.data.handleId);
 	    }
-	    var setNative = utils_1.patchMethod(window, setName, function (delegate) { return function (self, args) {
+	    var setNative = utils_1.patchMethod(window, setName, function () { return function (self, args) {
 	        if (typeof args[0] === 'function') {
 	            var zone = Zone.current;
 	            var options = {
@@ -134,18 +134,12 @@ THE SOFTWARE.
 	        }
 	        else {
 	            // cause an error by calling it directly.
-	            return delegate.apply(window, args);
+	            return setNative.apply(window, args);
 	        }
 	    }; });
-	    var clearNative = utils_1.patchMethod(window, cancelName, function (delegate) { return function (self, args) {
+	    var clearNative = utils_1.patchMethod(window, cancelName, function () { return function (self, args) {
 	        var task = args[0];
-	        if (task && typeof task.type == 'string') {
-	            task.zone.cancelTask(task);
-	        }
-	        else {
-	            // cause an error by calling it directly.
-	            delegate.apply(window, args);
-	        }
+	        task.zone.cancelTask(task);
 	    }; });
 	}
 
@@ -677,7 +671,7 @@ THE SOFTWARE.
 	"use strict";
 	var utils_1 = __webpack_require__(3);
 	var WTF_ISSUE_555 = 'Anchor,Area,Audio,BR,Base,BaseFont,Body,Button,Canvas,Content,DList,Directory,Div,Embed,FieldSet,Font,Form,Frame,FrameSet,HR,Head,Heading,Html,IFrame,Image,Input,Keygen,LI,Label,Legend,Link,Map,Marquee,Media,Menu,Meta,Meter,Mod,OList,Object,OptGroup,Option,Output,Paragraph,Pre,Progress,Quote,Script,Select,Source,Span,Style,TableCaption,TableCell,TableCol,Table,TableRow,TableSection,TextArea,Title,Track,UList,Unknown,Video';
-	var NO_EVENT_TARGET = 'ApplicationCache,EventSource,FileReader,InputMethodContext,MediaController,MessagePort,Node,Performance,SVGElementInstance,SharedWorker,TextTrack,TextTrackCue,TextTrackList,WebKitNamedFlow,Worker,WorkerGlobalScope,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload,IDBRequest,IDBOpenDBRequest,IDBDatabase,IDBTransaction,IDBCursor,DBIndex'.split(',');
+	var NO_EVENT_TARGET = 'ApplicationCache,EventSource,FileReader,InputMethodContext,MediaController,MessagePort,Node,Performance,SVGElementInstance,SharedWorker,TextTrack,TextTrackCue,TextTrackList,WebKitNamedFlow,Worker,WorkerGlobalScope,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload'.split(',');
 	var EVENT_TARGET = 'EventTarget';
 	function eventTargetPatch(_global) {
 	    var apis = [];
@@ -758,14 +752,8 @@ THE SOFTWARE.
 	            this.removeEventListener(eventName, this[_prop]);
 	        }
 	        if (typeof fn === 'function') {
-	            var wrapFn = function (event) {
-	                var result;
-	                result = fn.apply(this, arguments);
-	                if (result != undefined && !result)
-	                    event.preventDefault();
-	            };
-	            this[_prop] = wrapFn;
-	            this.addEventListener(eventName, wrapFn, false);
+	            this[_prop] = fn;
+	            this.addEventListener(eventName, fn, false);
 	        }
 	        else {
 	            this[_prop] = null;
@@ -879,7 +867,7 @@ THE SOFTWARE.
 	    // - When `addEventListener` is called on the global context in strict mode, `this` is undefined
 	    // see https://github.com/angular/zone.js/issues/190
 	    var target = self || _global;
-	    var eventTask = findExistingRegisteredTask(target, handler, eventName, useCapturing, true);
+	    var eventTask = findExistingRegisteredTask(target, handler, eventName, useCapturing, false);
 	    if (eventTask) {
 	        eventTask.zone.cancelTask(eventTask);
 	    }
@@ -1122,14 +1110,6 @@ THE SOFTWARE.
 	            utils_1.patchOnProperties(HTMLElement.prototype, eventNames);
 	        }
 	        utils_1.patchOnProperties(XMLHttpRequest.prototype, null);
-	        if (typeof IDBIndex !== 'undefined') {
-	            utils_1.patchOnProperties(IDBIndex.prototype, null);
-	            utils_1.patchOnProperties(IDBRequest.prototype, null);
-	            utils_1.patchOnProperties(IDBOpenDBRequest.prototype, null);
-	            utils_1.patchOnProperties(IDBDatabase.prototype, null);
-	            utils_1.patchOnProperties(IDBTransaction.prototype, null);
-	            utils_1.patchOnProperties(IDBCursor.prototype, null);
-	        }
 	        if (supportsWebSocket) {
 	            utils_1.patchOnProperties(WebSocket.prototype, null);
 	        }
@@ -1194,7 +1174,7 @@ THE SOFTWARE.
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+	"use strict";
 	var utils_1 = __webpack_require__(3);
 	// we have to patch the instance since the proto is non-configurable
 	function apply(_global) {
@@ -1224,11 +1204,9 @@ THE SOFTWARE.
 	        utils_1.patchOnProperties(proxySocket, ['close', 'error', 'message', 'open']);
 	        return proxySocket;
 	    };
-	    global.WebSocket.prototype = Object.create(WS.prototype, { constructor: { value: WebSocket } });
 	}
 	exports.apply = apply;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ]);
@@ -1361,13 +1339,13 @@ THE SOFTWARE.
 	                    var value = descriptor.value;
 	                    descriptor = {
 	                        get: function () {
-	                            return renderLongStackTrace(parentTask.data && parentTask.data[creationTrace], delegateGet ? delegateGet.apply(this) : value);
+	                            return renderLongStackTrace(parentTask.data[creationTrace], delegateGet ? delegateGet.apply(this) : value);
 	                        }
 	                    };
 	                    Object.defineProperty(error, 'stack', descriptor);
 	                }
 	                else {
-	                    error.stack = renderLongStackTrace(parentTask.data && parentTask.data[creationTrace], error.stack);
+	                    error.stack = renderLongStackTrace(parentTask.data[creationTrace], error.stack);
 	                }
 	            }
 	            return parentZoneDelegate.handleError(targetZone, error);
