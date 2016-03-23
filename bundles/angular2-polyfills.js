@@ -140,7 +140,10 @@ THE SOFTWARE.
 	    var clearNative = utils_1.patchMethod(window, cancelName, function (delegate) { return function (self, args) {
 	        var task = args[0];
 	        if (task && typeof task.type == 'string') {
-	            task.zone.cancelTask(task);
+	            if (task.cancelFn) {
+	                // Do not cancel already canceled functions
+	                task.zone.cancelTask(task);
+	            }
 	        }
 	        else {
 	            // cause an error by calling it directly.
@@ -266,10 +269,11 @@ THE SOFTWARE.
 	                }
 	            }
 	            finally {
+	                if (task.type == 'macroTask' && task.data && !task.data.isPeriodic) {
+	                    task.cancelFn = null;
+	                }
 	                _currentZone = oldZone;
 	                _currentTask = previousTask;
-	                if (task.type == 'microTask') {
-	                }
 	            }
 	        };
 	        Zone.prototype.scheduleMicroTask = function (source, callback, data, customSchedule) {
@@ -391,7 +395,6 @@ THE SOFTWARE.
 	            var prev = counts[type];
 	            var next = counts[type] = prev + count;
 	            if (next < 0) {
-	                debugger;
 	                throw new Error('More tasks executed then were scheduled.');
 	            }
 	            if (prev == 0 || next == 0) {
@@ -706,7 +709,12 @@ THE SOFTWARE.
 /* 3 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+	/* WEBPACK VAR INJECTION */(function(global) {/**
+	 * Suppress closure compiler errors about unknown 'process' variable
+	 * @fileoverview
+	 * @suppress {undefinedVars}
+	 */
+	"use strict";
 	exports.zoneSymbol = Zone['__symbol__'];
 	var _global = typeof window == 'undefined' ? global : window;
 	function bindArguments(args, source) {
