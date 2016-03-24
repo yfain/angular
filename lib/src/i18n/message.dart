@@ -13,7 +13,7 @@ class Message {
   String content;
   String meaning;
   String description;
-  Message(this.content, this.meaning, this.description) {}
+  Message(this.content, this.meaning, [this.description = null]) {}
 }
 
 /**

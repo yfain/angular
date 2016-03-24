@@ -39,6 +39,12 @@ main() {
       // If not reset, the second attempt to test results in false
       expect(RegExpWrapper.test(re, str)).toEqual(true);
     });
+    it("should implement replace all", () {
+      var re = new RegExp(r'(\d)+');
+      var m = RegExpWrapper.replaceAll(
+          re, "a1b2c", (match) => '''!${ match [ 1 ]}!''');
+      expect(m).toEqual("a!1!b!2!c");
+    });
   });
   describe("const", () {
     it("should support const expressions both in TS and Dart", () {

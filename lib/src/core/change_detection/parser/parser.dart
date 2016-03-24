@@ -64,6 +64,12 @@ class ParseException extends BaseException {
   }
 }
 
+class SplitInterpolation {
+  List<String> strings;
+  List<String> expressions;
+  SplitInterpolation(this.strings, this.expressions) {}
+}
+
 @Injectable()
 class Parser {
   Lexer _lexer;
@@ -128,6 +134,20 @@ class Parser {
   }
 
   ASTWithSource parseInterpolation(String input, dynamic location) {
+    var split = this.splitInterpolation(input, location);
+    if (split == null) return null;
+    var expressions = [];
+    for (var i = 0; i < split.expressions.length; ++i) {
+      var tokens = this._lexer.tokenize(split.expressions[i]);
+      var ast = new _ParseAST(input, location, tokens, this._reflector, false)
+          .parseChain();
+      expressions.add(ast);
+    }
+    return new ASTWithSource(
+        new Interpolation(split.strings, expressions), input, location);
+  }
+
+  SplitInterpolation splitInterpolation(String input, String location) {
     var parts = StringWrapper.split(input, INTERPOLATION_REGEXP);
     if (parts.length <= 1) {
       return null;
@@ -140,10 +160,7 @@ class Parser {
         // fixed string
         strings.add(part);
       } else if (part.trim().length > 0) {
-        var tokens = this._lexer.tokenize(part);
-        var ast = new _ParseAST(input, location, tokens, this._reflector, false)
-            .parseChain();
-        expressions.add(ast);
+        expressions.add(part);
       } else {
         throw new ParseException(
             "Blank expressions are not allowed in interpolated strings",
@@ -152,8 +169,7 @@ class Parser {
             location);
       }
     }
-    return new ASTWithSource(
-        new Interpolation(strings, expressions), input, location);
+    return new SplitInterpolation(strings, expressions);
   }
 
   ASTWithSource wrapLiteralPrimitive(String input, dynamic location) {

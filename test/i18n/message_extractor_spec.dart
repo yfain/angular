@@ -4,8 +4,8 @@ import "package:angular2/testing_internal.dart"
     show
         AsyncTestCompleter,
         beforeEach,
-        ddescribe,
         describe,
+        ddescribe,
         expect,
         iit,
         inject,
@@ -57,18 +57,6 @@ main() {
         new Message("message2", "meaning2", "desc2")
       ]);
     });
-    it("should error on i18n attributes without matching \"real\" attributes",
-        () {
-      var res = extractor.extract(
-          '''
-        <div
-          title1=\'message1\' i18n-title1=\'meaning1|desc1\' i18n-title2=\'meaning2|desc2\'>
-        </div>
-      ''',
-          "someurl");
-      expect(res.errors.length).toEqual(1);
-      expect(res.errors[0].msg).toEqual("Missing attribute 'title2'.");
-    });
     it("should extract from partitions", () {
       var res = extractor.extract(
           '''
@@ -88,40 +76,43 @@ main() {
       expect(res.messages)
           .toEqual([new Message("message1", "meaning1", "desc1")]);
     });
-    it("should error when cannot find a matching desc", () {
-      var res = extractor.extract(
-          '''
-         <!-- i18n: meaning1|desc1 -->message1''',
-          "someUrl");
-      expect(res.errors.length).toEqual(1);
-      expect(res.errors[0].msg).toEqual("Missing closing 'i18n' comment.");
-    });
     it("should replace interpolation with placeholders (text nodes)", () {
       var res = extractor.extract(
           "<div i18n>Hi {{one}} and {{two}}</div>", "someurl");
-      expect(res.messages)
-          .toEqual([new Message("Hi {{I0}} and {{I1}}", null, null)]);
+      expect(res.messages).toEqual([
+        new Message(
+            "<ph name=\"t0\">Hi <ph name=\"0\"/> and <ph name=\"1\"/></ph>",
+            null,
+            null)
+      ]);
     });
     it("should replace interpolation with placeholders (attributes)", () {
       var res = extractor.extract(
           "<div title='Hi {{one}} and {{two}}' i18n-title></div>", "someurl");
-      expect(res.messages)
-          .toEqual([new Message("Hi {{I0}} and {{I1}}", null, null)]);
-    });
-    it("should ignore errors in interpolation", () {
-      var res = extractor.extract("<div i18n>Hi {{on???.s}}</div>", "someurl");
-      expect(res.messages).toEqual([new Message("Hi {{on???.s}}", null, null)]);
-    });
-    it("should return parse errors when the template is invalid", () {
-      var res = extractor.extract("<input&#Besfs", "someurl");
-      expect(res.errors.length).toEqual(1);
-      expect(res.errors[0].msg).toEqual("Unexpected character \"s\"");
+      expect(res.messages).toEqual([
+        new Message("Hi <ph name=\"0\"/> and <ph name=\"1\"/>", null, null)
+      ]);
     });
     it("should handle html content", () {
       var res = extractor.extract(
-          "<div i18n><div attr=\"value\">message</div></div>", "someurl");
-      expect(res.messages).toEqual(
-          [new Message("<div attr=\"value\">message</div>", null, null)]);
+          "<div i18n><div attr=\"value\">zero<div>one</div></div><div>two</div></div>",
+          "someurl");
+      expect(res.messages).toEqual([
+        new Message(
+            "<ph name=\"e0\">zero<ph name=\"e2\">one</ph></ph><ph name=\"e4\">two</ph>",
+            null,
+            null)
+      ]);
+    });
+    it("should handle html content with interpolation", () {
+      var res = extractor.extract(
+          "<div i18n><div>zero{{a}}<div>{{b}}</div></div></div>", "someurl");
+      expect(res.messages).toEqual([
+        new Message(
+            "<ph name=\"e0\"><ph name=\"t1\">zero<ph name=\"0\"/></ph><ph name=\"e2\"><ph name=\"t3\"><ph name=\"0\"/></ph></ph></ph>",
+            null,
+            null)
+      ]);
     });
     it("should extract from nested elements", () {
       var res = extractor.extract(
@@ -137,7 +128,7 @@ main() {
           "<div i18n><div attr=\"value\" i18n-attr=\"meaning|desc\">message</div></div>",
           "someurl");
       expect(res.messages).toEqual([
-        new Message("<div attr=\"value\">message</div>", null, null),
+        new Message("<ph name=\"e0\">message</ph>", null, null),
         new Message("value", "meaning", "desc")
       ]);
     });
@@ -149,6 +140,33 @@ main() {
           "someUrl");
       expect(removeDuplicates(res.messages))
           .toEqual([new Message("message", "meaning", "desc1")]);
+    });
+    describe("errors", () {
+      it("should error on i18n attributes without matching \"real\" attributes",
+          () {
+        var res = extractor.extract(
+            '''
+        <div
+          title1=\'message1\' i18n-title1=\'meaning1|desc1\' i18n-title2=\'meaning2|desc2\'>
+        </div>
+      ''',
+            "someurl");
+        expect(res.errors.length).toEqual(1);
+        expect(res.errors[0].msg).toEqual("Missing attribute 'title2'.");
+      });
+      it("should error when cannot find a matching desc", () {
+        var res = extractor.extract(
+            '''
+         <!-- i18n: meaning1|desc1 -->message1''',
+            "someUrl");
+        expect(res.errors.length).toEqual(1);
+        expect(res.errors[0].msg).toEqual("Missing closing 'i18n' comment.");
+      });
+      it("should return parse errors when the template is invalid", () {
+        var res = extractor.extract("<input&#Besfs", "someurl");
+        expect(res.errors.length).toEqual(1);
+        expect(res.errors[0].msg).toEqual("Unexpected character \"s\"");
+      });
     });
   });
 }
