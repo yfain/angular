@@ -24,6 +24,7 @@ import { reflector } from 'angular2/src/core/reflection/reflection';
 import { Injectable, Inject, Optional } from 'angular2/src/core/di';
 import { PLATFORM_DIRECTIVES, PLATFORM_PIPES } from 'angular2/src/core/platform_directives_and_pipes';
 import { MODULE_SUFFIX } from './util';
+import { assertArrayOfStrings } from './assertions';
 import { getUrlScheme } from 'angular2/src/compiler/url_resolver';
 export let RuntimeMetadataResolver = class {
     constructor(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes) {
@@ -43,9 +44,11 @@ export let RuntimeMetadataResolver = class {
             var templateMeta = null;
             var changeDetectionStrategy = null;
             if (dirMeta instanceof md.ComponentMetadata) {
+                assertArrayOfStrings('styles', dirMeta.styles);
                 var cmpMeta = dirMeta;
                 moduleUrl = calcModuleUrl(directiveType, cmpMeta);
                 var viewMeta = this._viewResolver.resolve(directiveType);
+                assertArrayOfStrings('styles', viewMeta.styles);
                 templateMeta = new cpl.CompileTemplateMetadata({
                     encapsulation: viewMeta.encapsulation,
                     template: viewMeta.template,
