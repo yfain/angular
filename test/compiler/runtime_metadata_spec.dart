@@ -40,6 +40,7 @@ import "package:angular2/src/compiler/util.dart" show MODULE_SUFFIX;
 import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/core/platform_directives_and_pipes.dart"
     show PLATFORM_DIRECTIVES;
+import "runtime_metadata_fixture.dart" show MalformedStylesComponent;
 
 main() {
   describe("RuntimeMetadataResolver", () {
@@ -85,6 +86,16 @@ main() {
             var expectedEndValue =
                 IS_DART ? "test/compiler/runtime_metadata_spec.dart" : "./";
             expect(value.endsWith(expectedEndValue)).toBe(true);
+          }));
+      it(
+          "should throw when metadata is incorrectly typed",
+          inject([RuntimeMetadataResolver], (RuntimeMetadataResolver resolver) {
+            if (!IS_DART) {
+              expect(() =>
+                      resolver.getDirectiveMetadata(MalformedStylesComponent))
+                  .toThrowError(
+                      '''Expected \'styles\' to be an array of strings.''');
+            }
           }));
     });
     describe("getViewDirectivesMetadata", () {

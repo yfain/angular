@@ -20,6 +20,7 @@ import "package:angular2/src/core/di.dart" show Injectable, Inject, Optional;
 import "package:angular2/src/core/platform_directives_and_pipes.dart"
     show PLATFORM_DIRECTIVES, PLATFORM_PIPES;
 import "util.dart" show MODULE_SUFFIX;
+import "assertions.dart" show assertArrayOfStrings;
 import "package:angular2/src/compiler/url_resolver.dart" show getUrlScheme;
 
 @Injectable()
@@ -45,9 +46,11 @@ class RuntimeMetadataResolver {
       var templateMeta = null;
       var changeDetectionStrategy = null;
       if (dirMeta is md.ComponentMetadata) {
+        assertArrayOfStrings("styles", dirMeta.styles);
         var cmpMeta = (dirMeta as md.ComponentMetadata);
         moduleUrl = calcModuleUrl(directiveType, cmpMeta);
         var viewMeta = this._viewResolver.resolve(directiveType);
+        assertArrayOfStrings("styles", viewMeta.styles);
         templateMeta = new cpl.CompileTemplateMetadata(
             encapsulation: viewMeta.encapsulation,
             template: viewMeta.template,

@@ -15,6 +15,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
+import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/core.dart" show Component, TemplateRef, ContentChild;
 import "package:angular2/src/common/directives/ng_for.dart" show NgFor;
 import "package:angular2/src/common/directives/ng_if.dart" show NgIf;
@@ -172,6 +173,26 @@ main() {
             async.done();
           });
         }));
+    if (!IS_DART) {
+      it(
+          "should throw on non-iterable ref and suggest using an array",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            tcb
+                .overrideTemplate(TestComponent, TEMPLATE)
+                .createAsync(TestComponent)
+                .then((fixture) {
+              fixture.debugElement.componentInstance.items = "whaaa";
+              try {
+                fixture.detectChanges();
+              } catch (e, e_stack) {
+                expect(e.message).toContain(
+                    '''Cannot find a differ supporting object \'whaaa\' of type \'string\'. NgFor only supports binding to Iterables such as Arrays.''');
+                async.done();
+              }
+            });
+          }));
+    }
     it(
         "should throw on ref changing to string",
         inject([TestComponentBuilder, AsyncTestCompleter],
