@@ -19753,11 +19753,13 @@ System.register("angular2/src/compiler/template_preparser", ["angular2/src/facad
   var STYLE_ELEMENT = 'style';
   var SCRIPT_ELEMENT = 'script';
   var NG_NON_BINDABLE_ATTR = 'ngNonBindable';
+  var NG_PROJECT_AS = 'ngProjectAs';
   function preparseElement(ast) {
     var selectAttr = null;
     var hrefAttr = null;
     var relAttr = null;
     var nonBindable = false;
+    var projectAs = null;
     ast.attrs.forEach(function(attr) {
       var lcAttrName = attr.name.toLowerCase();
       if (lcAttrName == NG_CONTENT_SELECT_ATTR) {
@@ -19768,6 +19770,10 @@ System.register("angular2/src/compiler/template_preparser", ["angular2/src/facad
         relAttr = attr.value;
       } else if (attr.name == NG_NON_BINDABLE_ATTR) {
         nonBindable = true;
+      } else if (attr.name == NG_PROJECT_AS) {
+        if (attr.value.length > 0) {
+          projectAs = attr.value;
+        }
       }
     });
     selectAttr = normalizeNgContentSelect(selectAttr);
@@ -19782,7 +19788,7 @@ System.register("angular2/src/compiler/template_preparser", ["angular2/src/facad
     } else if (nodeName == LINK_ELEMENT && relAttr == LINK_STYLE_REL_VALUE) {
       type = PreparsedElementType.STYLESHEET;
     }
-    return new PreparsedElement(type, selectAttr, hrefAttr, nonBindable);
+    return new PreparsedElement(type, selectAttr, hrefAttr, nonBindable, projectAs);
   }
   exports.preparseElement = preparseElement;
   (function(PreparsedElementType) {
@@ -19794,11 +19800,12 @@ System.register("angular2/src/compiler/template_preparser", ["angular2/src/facad
   })(exports.PreparsedElementType || (exports.PreparsedElementType = {}));
   var PreparsedElementType = exports.PreparsedElementType;
   var PreparsedElement = (function() {
-    function PreparsedElement(type, selectAttr, hrefAttr, nonBindable) {
+    function PreparsedElement(type, selectAttr, hrefAttr, nonBindable, projectAs) {
       this.type = type;
       this.selectAttr = selectAttr;
       this.hrefAttr = hrefAttr;
       this.nonBindable = nonBindable;
+      this.projectAs = projectAs;
     }
     return PreparsedElement;
   })();
@@ -34317,30 +34324,32 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
       var directives = this._createDirectiveAsts(element.name, this._parseDirectives(this.selectorMatcher, elementCssSelector), elementOrDirectiveProps, isTemplateElement ? [] : vars, element.sourceSpan);
       var elementProps = this._createElementPropertyAsts(element.name, elementOrDirectiveProps, directives);
       var children = html_ast_1.htmlVisitAll(preparsedElement.nonBindable ? NON_BINDABLE_VISITOR : this, element.children, Component.create(directives));
-      var elementNgContentIndex = hasInlineTemplates ? null : component.findNgContentIndex(elementCssSelector);
+      var projectionSelector = lang_1.isPresent(preparsedElement.projectAs) ? selector_1.CssSelector.parse(preparsedElement.projectAs)[0] : elementCssSelector;
+      var ngContentIndex = component.findNgContentIndex(projectionSelector);
       var parsedElement;
       if (preparsedElement.type === template_preparser_1.PreparsedElementType.NG_CONTENT) {
         if (lang_1.isPresent(element.children) && element.children.length > 0) {
           this._reportError("<ng-content> element cannot have content. <ng-content> must be immediately followed by </ng-content>", element.sourceSpan);
         }
-        parsedElement = new template_ast_1.NgContentAst(this.ngContentCount++, elementNgContentIndex, element.sourceSpan);
+        parsedElement = new template_ast_1.NgContentAst(this.ngContentCount++, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
       } else if (isTemplateElement) {
         this._assertAllEventsPublishedByDirectives(directives, events);
         this._assertNoComponentsNorElementBindingsOnTemplate(directives, elementProps, element.sourceSpan);
-        parsedElement = new template_ast_1.EmbeddedTemplateAst(attrs, events, vars, directives, children, elementNgContentIndex, element.sourceSpan);
+        parsedElement = new template_ast_1.EmbeddedTemplateAst(attrs, events, vars, directives, children, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
       } else {
         this._assertOnlyOneComponent(directives, element.sourceSpan);
         var elementExportAsVars = vars.filter(function(varAst) {
           return varAst.value.length === 0;
         });
-        parsedElement = new template_ast_1.ElementAst(nodeName, attrs, elementProps, events, elementExportAsVars, directives, children, elementNgContentIndex, element.sourceSpan);
+        var ngContentIndex_1 = hasInlineTemplates ? null : component.findNgContentIndex(projectionSelector);
+        parsedElement = new template_ast_1.ElementAst(nodeName, attrs, elementProps, events, elementExportAsVars, directives, children, hasInlineTemplates ? null : ngContentIndex_1, element.sourceSpan);
       }
       if (hasInlineTemplates) {
         var templateCssSelector = createElementCssSelector(TEMPLATE_ELEMENT, templateMatchableAttrs);
         var templateDirectives = this._createDirectiveAsts(element.name, this._parseDirectives(this.selectorMatcher, templateCssSelector), templateElementOrDirectiveProps, [], element.sourceSpan);
         var templateElementProps = this._createElementPropertyAsts(element.name, templateElementOrDirectiveProps, templateDirectives);
         this._assertNoComponentsNorElementBindingsOnTemplate(templateDirectives, templateElementProps, element.sourceSpan);
-        parsedElement = new template_ast_1.EmbeddedTemplateAst([], [], templateVars, templateDirectives, [parsedElement], component.findNgContentIndex(templateCssSelector), element.sourceSpan);
+        parsedElement = new template_ast_1.EmbeddedTemplateAst([], [], templateVars, templateDirectives, [parsedElement], ngContentIndex, element.sourceSpan);
       }
       return parsedElement;
     };
