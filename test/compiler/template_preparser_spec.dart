@@ -25,7 +25,7 @@ main() {
       htmlParser = _htmlParser;
     }));
     PreparsedElement preparse(String html) {
-      return preparseElement(htmlParser.parse(html, "").rootNodes[0]);
+      return preparseElement(htmlParser.parse(html, "TestComp").rootNodes[0]);
     }
     it(
         "should detect script elements",
@@ -61,5 +61,9 @@ main() {
           expect(preparse("<ng-content select>").selectAttr).toEqual("*");
           expect(preparse("<ng-content select=\"*\">").selectAttr).toEqual("*");
         }));
+    it("should extract ngProjectAs value", () {
+      expect(preparse("<p ngProjectAs=\"el[attr].class\"></p>").projectAs)
+          .toEqual("el[attr].class");
+    });
   });
 }
