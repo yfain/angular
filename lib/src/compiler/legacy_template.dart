@@ -51,8 +51,7 @@ class LegacyHtmlAstTransformer implements HtmlAstVisitor {
     var attrs = ast.attrs.map((attr) => attr.visit(this, null)).toList();
     var children =
         ast.children.map((child) => child.visit(this, null)).toList();
-    return new HtmlElementAst(ast.name, attrs, children, ast.sourceSpan,
-        ast.startSourceSpan, ast.endSourceSpan);
+    return new HtmlElementAst(ast.name, attrs, children, ast.sourceSpan);
   }
 
   HtmlAttrAst visitAttr(HtmlAttrAst originalAst, dynamic context) {

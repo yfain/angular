@@ -13,11 +13,13 @@ const LINK_STYLE_REL_VALUE = "stylesheet";
 const STYLE_ELEMENT = "style";
 const SCRIPT_ELEMENT = "script";
 const NG_NON_BINDABLE_ATTR = "ngNonBindable";
+const NG_PROJECT_AS = "ngProjectAs";
 PreparsedElement preparseElement(HtmlElementAst ast) {
   var selectAttr = null;
   var hrefAttr = null;
   var relAttr = null;
   var nonBindable = false;
+  String projectAs = null;
   ast.attrs.forEach((attr) {
     var lcAttrName = attr.name.toLowerCase();
     if (lcAttrName == NG_CONTENT_SELECT_ATTR) {
@@ -28,6 +30,10 @@ PreparsedElement preparseElement(HtmlElementAst ast) {
       relAttr = attr.value;
     } else if (attr.name == NG_NON_BINDABLE_ATTR) {
       nonBindable = true;
+    } else if (attr.name == NG_PROJECT_AS) {
+      if (attr.value.length > 0) {
+        projectAs = attr.value;
+      }
     }
   });
   selectAttr = normalizeNgContentSelect(selectAttr);
@@ -42,7 +48,8 @@ PreparsedElement preparseElement(HtmlElementAst ast) {
   } else if (nodeName == LINK_ELEMENT && relAttr == LINK_STYLE_REL_VALUE) {
     type = PreparsedElementType.STYLESHEET;
   }
-  return new PreparsedElement(type, selectAttr, hrefAttr, nonBindable);
+  return new PreparsedElement(
+      type, selectAttr, hrefAttr, nonBindable, projectAs);
 }
 
 enum PreparsedElementType { NG_CONTENT, STYLE, STYLESHEET, SCRIPT, OTHER }
@@ -52,8 +59,9 @@ class PreparsedElement {
   String selectAttr;
   String hrefAttr;
   bool nonBindable;
-  PreparsedElement(
-      this.type, this.selectAttr, this.hrefAttr, this.nonBindable) {}
+  String projectAs;
+  PreparsedElement(this.type, this.selectAttr, this.hrefAttr, this.nonBindable,
+      this.projectAs) {}
 }
 
 String normalizeNgContentSelect(String selectAttr) {
