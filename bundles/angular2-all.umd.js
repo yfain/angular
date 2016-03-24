@@ -1743,6 +1743,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        regExp.lastIndex = 0;
 	        return { re: regExp, input: input };
 	    };
+	    RegExpWrapper.replaceAll = function (regExp, input, replace) {
+	        var c = regExp.exec(input);
+	        var res = '';
+	        regExp.lastIndex = 0;
+	        var prev = 0;
+	        while (c) {
+	            res += input.substring(prev, c.index);
+	            res += replace(c);
+	            prev = c.index + c[0].length;
+	            regExp.lastIndex = prev;
+	            c = regExp.exec(input);
+	        }
+	        res += input.substring(prev);
+	        return res;
+	    };
 	    return RegExpWrapper;
 	})();
 	exports.RegExpWrapper = RegExpWrapper;
@@ -3818,6 +3833,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return solution;
 	    };
 	    ListWrapper.isImmutable = function (list) { return Object.isSealed(list); };
+	    ListWrapper.flatten = function (array) {
+	        var res = [];
+	        array.forEach(function (a) { return res = res.concat(a); });
+	        return res;
+	    };
 	    return ListWrapper;
 	})();
 	exports.ListWrapper = ListWrapper;
@@ -8608,6 +8628,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return ParseException;
 	})(exceptions_1.BaseException);
+	var SplitInterpolation = (function () {
+	    function SplitInterpolation(strings, expressions) {
+	        this.strings = strings;
+	        this.expressions = expressions;
+	    }
+	    return SplitInterpolation;
+	})();
+	exports.SplitInterpolation = SplitInterpolation;
 	var Parser = (function () {
 	    function Parser(/** @internal */ _lexer, providedReflector) {
 	        if (providedReflector === void 0) { providedReflector = null; }
@@ -8659,6 +8687,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return new _ParseAST(input, location, tokens, this._reflector, false).parseTemplateBindings();
 	    };
 	    Parser.prototype.parseInterpolation = function (input, location) {
+	        var split = this.splitInterpolation(input, location);
+	        if (split == null)
+	            return null;
+	        var expressions = [];
+	        for (var i = 0; i < split.expressions.length; ++i) {
+	            var tokens = this._lexer.tokenize(split.expressions[i]);
+	            var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
+	            expressions.push(ast);
+	        }
+	        return new ast_1.ASTWithSource(new ast_1.Interpolation(split.strings, expressions), input, location);
+	    };
+	    Parser.prototype.splitInterpolation = function (input, location) {
 	        var parts = lang_1.StringWrapper.split(input, INTERPOLATION_REGEXP);
 	        if (parts.length <= 1) {
 	            return null;
@@ -8672,15 +8712,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                strings.push(part);
 	            }
 	            else if (part.trim().length > 0) {
-	                var tokens = this._lexer.tokenize(part);
-	                var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
-	                expressions.push(ast);
+	                expressions.push(part);
 	            }
 	            else {
 	                throw new ParseException('Blank expressions are not allowed in interpolated strings', input, "at column " + this._findInterpolationErrorColumn(parts, i) + " in", location);
 	            }
 	        }
-	        return new ast_1.ASTWithSource(new ast_1.Interpolation(strings, expressions), input, location);
+	        return new SplitInterpolation(strings, expressions);
 	    };
 	    Parser.prototype.wrapLiteralPrimitive = function (input, location) {
 	        return new ast_1.ASTWithSource(new ast_1.LiteralPrimitive(input), input, location);
@@ -26970,10 +27008,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            selfClosing = false;
 	        }
 	        var end = this.peek.sourceSpan.start;
-	        var el = new html_ast_1.HtmlElementAst(fullName, attrs, [], new parse_util_1.ParseSourceSpan(startTagToken.sourceSpan.start, end));
+	        var span = new parse_util_1.ParseSourceSpan(startTagToken.sourceSpan.start, end);
+	        var el = new html_ast_1.HtmlElementAst(fullName, attrs, [], span, span, null);
 	        this._pushElement(el);
 	        if (selfClosing) {
 	            this._popElement(fullName);
+	            el.endSourceSpan = span;
 	        }
 	    };
 	    TreeBuilder.prototype._pushElement = function (el) {
@@ -26986,7 +27026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var tagDef = html_tags_1.getHtmlTagDefinition(el.name);
 	        var parentEl = this._getParentElement();
 	        if (tagDef.requireExtraParent(lang_1.isPresent(parentEl) ? parentEl.name : null)) {
-	            var newParent = new html_ast_1.HtmlElementAst(tagDef.parentToAdd, [], [el], el.sourceSpan);
+	            var newParent = new html_ast_1.HtmlElementAst(tagDef.parentToAdd, [], [el], el.sourceSpan, el.startSourceSpan, el.endSourceSpan);
 	            this._addToParent(newParent);
 	            this.elementStack.push(newParent);
 	            this.elementStack.push(el);
@@ -26998,6 +27038,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    TreeBuilder.prototype._consumeEndTag = function (endTagToken) {
 	        var fullName = getElementFullName(endTagToken.parts[0], endTagToken.parts[1], this._getParentElement());
+	        this._getParentElement().endSourceSpan = endTagToken.sourceSpan;
 	        if (html_tags_1.getHtmlTagDefinition(fullName).isVoid) {
 	            this.errors.push(HtmlTreeError.create(fullName, endTagToken.sourceSpan, "Void elements do not have end tags \"" + endTagToken.parts[1] + "\""));
 	        }
@@ -27079,11 +27120,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 	exports.HtmlAttrAst = HtmlAttrAst;
 	var HtmlElementAst = (function () {
-	    function HtmlElementAst(name, attrs, children, sourceSpan) {
+	    function HtmlElementAst(name, attrs, children, sourceSpan, startSourceSpan, endSourceSpan) {
 	        this.name = name;
 	        this.attrs = attrs;
 	        this.children = children;
 	        this.sourceSpan = sourceSpan;
+	        this.startSourceSpan = startSourceSpan;
+	        this.endSourceSpan = endSourceSpan;
 	    }
 	    HtmlElementAst.prototype.visit = function (visitor, context) { return visitor.visitElement(this, context); };
 	    return HtmlElementAst;
