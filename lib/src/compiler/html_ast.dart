@@ -32,7 +32,10 @@ class HtmlElementAst implements HtmlAst {
   List<HtmlAttrAst> attrs;
   List<HtmlAst> children;
   ParseSourceSpan sourceSpan;
-  HtmlElementAst(this.name, this.attrs, this.children, this.sourceSpan) {}
+  ParseSourceSpan startSourceSpan;
+  ParseSourceSpan endSourceSpan;
+  HtmlElementAst(this.name, this.attrs, this.children, this.sourceSpan,
+      this.startSourceSpan, this.endSourceSpan) {}
   dynamic visit(HtmlAstVisitor visitor, dynamic context) {
     return visitor.visitElement(this, context);
   }

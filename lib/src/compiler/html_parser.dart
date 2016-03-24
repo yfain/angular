@@ -162,11 +162,12 @@ class TreeBuilder {
       selfClosing = false;
     }
     var end = this.peek.sourceSpan.start;
-    var el = new HtmlElementAst(fullName, attrs, [],
-        new ParseSourceSpan(startTagToken.sourceSpan.start, end));
+    var span = new ParseSourceSpan(startTagToken.sourceSpan.start, end);
+    var el = new HtmlElementAst(fullName, attrs, [], span, span, null);
     this._pushElement(el);
     if (selfClosing) {
       this._popElement(fullName);
+      el.endSourceSpan = span;
     }
   }
 
@@ -180,8 +181,8 @@ class TreeBuilder {
     var tagDef = getHtmlTagDefinition(el.name);
     var parentEl = this._getParentElement();
     if (tagDef.requireExtraParent(isPresent(parentEl) ? parentEl.name : null)) {
-      var newParent =
-          new HtmlElementAst(tagDef.parentToAdd, [], [el], el.sourceSpan);
+      var newParent = new HtmlElementAst(tagDef.parentToAdd, [], [el],
+          el.sourceSpan, el.startSourceSpan, el.endSourceSpan);
       this._addToParent(newParent);
       this.elementStack.add(newParent);
       this.elementStack.add(el);
@@ -194,6 +195,7 @@ class TreeBuilder {
   _consumeEndTag(HtmlToken endTagToken) {
     var fullName = getElementFullName(
         endTagToken.parts[0], endTagToken.parts[1], this._getParentElement());
+    this._getParentElement().endSourceSpan = endTagToken.sourceSpan;
     if (getHtmlTagDefinition(fullName).isVoid) {
       this.errors.add(HtmlTreeError.create(fullName, endTagToken.sourceSpan,
           '''Void elements do not have end tags "${ endTagToken . parts [ 1 ]}"'''));
