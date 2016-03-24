@@ -21,10 +21,7 @@ var _global = globalScope;
 export { _global as global };
 export var Type = Function;
 export function getTypeNameForDebugging(type) {
-    if (type['name']) {
-        return type['name'];
-    }
-    return typeof type;
+    return type['name'];
 }
 export var Math = _global.Math;
 export var Date = _global.Date;
