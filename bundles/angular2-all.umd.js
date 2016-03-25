@@ -37045,6 +37045,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var core_1 = __webpack_require__(2);
+	var lang_1 = __webpack_require__(5);
 	var async_1 = __webpack_require__(47);
 	var browser_1 = __webpack_require__(194);
 	var metadata_1 = __webpack_require__(275);
@@ -37327,6 +37328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var rootScope;
 	        var hostViewFactoryRefMap = {};
 	        var ng1Module = angular.module(this.idPrefix, modules);
+	        var ng1BootstrapPromise = null;
 	        var ng1compilePromise = null;
 	        ng1Module.value(constants_1.NG2_INJECTOR, injector)
 	            .value(constants_1.NG2_ZONE, ngZone)
@@ -37350,21 +37352,64 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        return rootScope = rootScopeDelegate;
 	                    }
 	                ]);
-	            }
-	        ])
-	            .run([
-	            '$injector',
-	            '$rootScope',
-	            function (injector, rootScope) {
-	                ng1Injector = injector;
-	                async_1.ObservableWrapper.subscribe(ngZone.onMicrotaskEmpty, function (_) { return ngZone.runOutsideAngular(function () { return rootScope.$apply(); }); });
-	                ng1compilePromise =
-	                    upgrade_ng1_adapter_1.UpgradeNg1ComponentAdapterBuilder.resolve(_this.downgradedComponents, injector);
+	                provide.decorator(constants_1.NG1_TESTABILITY, [
+	                    '$delegate',
+	                    function (testabilityDelegate) {
+	                        var _this = this;
+	                        var ng2Testability = injector.get(core_1.Testability);
+	                        var origonalWhenStable = testabilityDelegate.whenStable;
+	                        var newWhenStable = function (callback) {
+	                            var whenStableContext = _this;
+	                            origonalWhenStable.call(_this, function () {
+	                                if (ng2Testability.isStable()) {
+	                                    callback.apply(this, arguments);
+	                                }
+	                                else {
+	                                    ng2Testability.whenStable(newWhenStable.bind(whenStableContext, callback));
+	                                }
+	                            });
+	                        };
+	                        testabilityDelegate.whenStable = newWhenStable;
+	                        return testabilityDelegate;
+	                    }
+	                ]);
 	            }
 	        ]);
+	        ng1compilePromise = new Promise(function (resolve, reject) {
+	            ng1Module.run([
+	                '$injector',
+	                '$rootScope',
+	                function (injector, rootScope) {
+	                    ng1Injector = injector;
+	                    async_1.ObservableWrapper.subscribe(ngZone.onMicrotaskEmpty, function (_) { return ngZone.runOutsideAngular(function () { return rootScope.$apply(); }); });
+	                    upgrade_ng1_adapter_1.UpgradeNg1ComponentAdapterBuilder.resolve(_this.downgradedComponents, injector)
+	                        .then(resolve, reject);
+	                }
+	            ]);
+	        });
+	        // Make sure resumeBootstrap() only exists if the current bootstrap is deferred
+	        var windowAngular = lang_1.global.angular;
+	        windowAngular.resumeBootstrap = undefined;
 	        angular.element(element).data(util_1.controllerKey(constants_1.NG2_INJECTOR), injector);
 	        ngZone.run(function () { angular.bootstrap(element, [_this.idPrefix], config); });
-	        Promise.all([this.compileNg2Components(compiler, hostViewFactoryRefMap), ng1compilePromise])
+	        ng1BootstrapPromise = new Promise(function (resolve, reject) {
+	            if (windowAngular.resumeBootstrap) {
+	                var originalResumeBootstrap = windowAngular.resumeBootstrap;
+	                windowAngular.resumeBootstrap = function () {
+	                    windowAngular.resumeBootstrap = originalResumeBootstrap;
+	                    windowAngular.resumeBootstrap.apply(this, arguments);
+	                    resolve();
+	                };
+	            }
+	            else {
+	                resolve();
+	            }
+	        });
+	        Promise.all([
+	            this.compileNg2Components(compiler, hostViewFactoryRefMap),
+	            ng1BootstrapPromise,
+	            ng1compilePromise
+	        ])
 	            .then(function () {
 	            ngZone.run(function () {
 	                if (rootScopePrototype) {
@@ -37654,6 +37699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.NG1_INJECTOR = '$injector';
 	exports.NG1_PARSE = '$parse';
 	exports.NG1_TEMPLATE_CACHE = '$templateCache';
+	exports.NG1_TESTABILITY = '$$testability';
 	exports.REQUIRE_INJECTOR = '^' + exports.NG2_INJECTOR;
 
 
@@ -38118,7 +38164,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	function noNg() {
 	    throw new Error('AngularJS v1.x is not loaded!');
 	}
-	var angular = { bootstrap: noNg, module: noNg, element: noNg, version: noNg };
+	var angular = {
+	    bootstrap: noNg,
+	    module: noNg,
+	    element: noNg,
+	    version: noNg,
+	    resumeBootstrap: noNg,
+	    getTestability: noNg
+	};
 	try {
 	    if (window.hasOwnProperty('angular')) {
 	        angular = window.angular;
@@ -38130,6 +38183,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.module = angular.module;
 	exports.element = angular.element;
 	exports.version = angular.version;
+	exports.resumeBootstrap = angular.resumeBootstrap;
+	exports.getTestability = angular.getTestability;
 
 
 /***/ }
