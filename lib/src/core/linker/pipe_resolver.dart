@@ -4,6 +4,8 @@ import "package:angular2/src/core/di.dart" show resolveForwardRef, Injectable;
 import "package:angular2/src/facade/lang.dart" show Type, isPresent, stringify;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "package:angular2/src/core/metadata.dart" show PipeMetadata;
+import "package:angular2/src/core/reflection/reflector_reader.dart"
+    show ReflectorReader;
 import "package:angular2/src/core/reflection/reflection.dart" show reflector;
 
 bool _isPipeMetadata(dynamic type) {
@@ -19,11 +21,19 @@ bool _isPipeMetadata(dynamic type) {
  */
 @Injectable()
 class PipeResolver {
+  ReflectorReader _reflector;
+  PipeResolver([ReflectorReader _reflector]) {
+    if (isPresent(_reflector)) {
+      this._reflector = _reflector;
+    } else {
+      this._reflector = reflector;
+    }
+  }
   /**
    * Return [PipeMetadata] for a given `Type`.
    */
   PipeMetadata resolve(Type type) {
-    var metas = reflector.annotations(resolveForwardRef(type));
+    var metas = this._reflector.annotations(resolveForwardRef(type));
     if (isPresent(metas)) {
       var annotation = metas.firstWhere(_isPipeMetadata, orElse: () => null);
       if (isPresent(annotation)) {
@@ -35,4 +45,4 @@ class PipeResolver {
   }
 }
 
-var CODEGEN_PIPE_RESOLVER = new PipeResolver();
+var CODEGEN_PIPE_RESOLVER = new PipeResolver(reflector);

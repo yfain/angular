@@ -6,6 +6,7 @@ import "package:angular2/src/facade/exceptions.dart"
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, Map, MapWrapper, Set, SetWrapper, StringMapWrapper;
 import "types.dart" show SetterFn, GetterFn, MethodFn;
+import "reflector_reader.dart" show ReflectorReader;
 import "platform_reflection_capabilities.dart"
     show PlatformReflectionCapabilities;
 export "types.dart" show SetterFn, GetterFn, MethodFn;
@@ -33,7 +34,7 @@ class ReflectionInfo {
  * Provides access to reflection data about symbols. Used internally by Angular
  * to power dependency injection and compilation.
  */
-class Reflector {
+class Reflector extends ReflectorReader {
   /** @internal */
   var _injectableInfo = new Map<dynamic, ReflectionInfo>();
   /** @internal */
@@ -45,7 +46,8 @@ class Reflector {
   /** @internal */
   Set<dynamic> _usedKeys;
   PlatformReflectionCapabilities reflectionCapabilities;
-  Reflector(PlatformReflectionCapabilities reflectionCapabilities) {
+  Reflector(PlatformReflectionCapabilities reflectionCapabilities) : super() {
+    /* super call moved to initializer */;
     this._usedKeys = null;
     this.reflectionCapabilities = reflectionCapabilities;
   }

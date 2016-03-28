@@ -19,6 +19,8 @@ import "package:angular2/src/core/metadata.dart"
         ContentChildMetadata,
         ViewChildMetadata;
 import "package:angular2/src/core/reflection/reflection.dart" show reflector;
+import "package:angular2/src/core/reflection/reflector_reader.dart"
+    show ReflectorReader;
 
 bool _isDirectiveMetadata(dynamic type) {
   return type is DirectiveMetadata;
@@ -33,16 +35,24 @@ bool _isDirectiveMetadata(dynamic type) {
  */
 @Injectable()
 class DirectiveResolver {
+  ReflectorReader _reflector;
+  DirectiveResolver([ReflectorReader _reflector]) {
+    if (isPresent(_reflector)) {
+      this._reflector = _reflector;
+    } else {
+      this._reflector = reflector;
+    }
+  }
   /**
    * Return [DirectiveMetadata] for a given `Type`.
    */
   DirectiveMetadata resolve(Type type) {
-    var typeMetadata = reflector.annotations(resolveForwardRef(type));
+    var typeMetadata = this._reflector.annotations(resolveForwardRef(type));
     if (isPresent(typeMetadata)) {
       var metadata =
           typeMetadata.firstWhere(_isDirectiveMetadata, orElse: () => null);
       if (isPresent(metadata)) {
-        var propertyMetadata = reflector.propMetadata(type);
+        var propertyMetadata = this._reflector.propMetadata(type);
         return this
             ._mergeWithPropertyMetadata(metadata, propertyMetadata, type);
       }
@@ -154,4 +164,4 @@ class DirectiveResolver {
   }
 }
 
-var CODEGEN_DIRECTIVE_RESOLVER = new DirectiveResolver();
+var CODEGEN_DIRECTIVE_RESOLVER = new DirectiveResolver(reflector);

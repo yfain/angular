@@ -7,6 +7,8 @@ import "package:angular2/src/facade/lang.dart"
     show Type, stringify, isBlank, isPresent;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "package:angular2/src/facade/collection.dart" show Map;
+import "package:angular2/src/core/reflection/reflector_reader.dart"
+    show ReflectorReader;
 import "package:angular2/src/core/reflection/reflection.dart" show reflector;
 
 /**
@@ -14,8 +16,16 @@ import "package:angular2/src/core/reflection/reflection.dart" show reflector;
  */
 @Injectable()
 class ViewResolver {
+  ReflectorReader _reflector;
   /** @internal */
   var _cache = new Map<Type, ViewMetadata>();
+  ViewResolver([ReflectorReader _reflector]) {
+    if (isPresent(_reflector)) {
+      this._reflector = _reflector;
+    } else {
+      this._reflector = reflector;
+    }
+  }
   ViewMetadata resolve(Type component) {
     var view = this._cache[component];
     if (isBlank(view)) {
@@ -29,7 +39,7 @@ class ViewResolver {
   ViewMetadata _resolve(Type component) {
     ComponentMetadata compMeta;
     ViewMetadata viewMeta;
-    reflector.annotations(component).forEach((m) {
+    this._reflector.annotations(component).forEach((m) {
       if (m is ViewMetadata) {
         viewMeta = m;
       }
