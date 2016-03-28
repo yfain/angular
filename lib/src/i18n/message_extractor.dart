@@ -21,10 +21,10 @@ import "shared.dart"
     show
         I18nError,
         Part,
+        I18N_ATTR_PREFIX,
         partition,
         meaning,
         description,
-        isI18nAttr,
         stringifyNodes,
         messageFromAttribute;
 
@@ -165,7 +165,7 @@ class MessageExtractor {
 
   void _extractMessagesFromAttributes(HtmlElementAst p) {
     p.attrs.forEach((attr) {
-      if (isI18nAttr(attr.name)) {
+      if (attr.name.startsWith(I18N_ATTR_PREFIX)) {
         try {
           this.messages.add(messageFromAttribute(this._parser, p, attr));
         } catch (e, e_stack) {

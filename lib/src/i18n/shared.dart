@@ -90,10 +90,6 @@ bool _isClosingComment(HtmlAst n) {
   return n is HtmlCommentAst && isPresent(n.value) && n.value == "/i18n";
 }
 
-bool isI18nAttr(String n) {
-  return n.startsWith(I18N_ATTR_PREFIX);
-}
-
 HtmlAttrAst _findI18nAttr(HtmlElementAst p) {
   var i18n = p.attrs.where((a) => a.name == I18N_ATTR).toList();
   return i18n.length == 0 ? null : i18n[0];

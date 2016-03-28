@@ -18,6 +18,7 @@ import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
 import "package:angular2/src/core/change_detection/parser/lexer.dart"
     show Lexer;
+import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/compiler/html_parser.dart"
     show HtmlParser, HtmlParseTreeResult;
 import "package:angular2/src/compiler/html_ast.dart"
@@ -29,6 +30,8 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlTextAst,
         HtmlCommentAst,
         htmlVisitAll;
+import "package:angular2/src/i18n/xmb_serializer.dart"
+    show serializeXmb, deserializeXmb;
 import "package:angular2/src/compiler/parse_util.dart"
     show ParseError, ParseLocation;
 import "../../test/compiler/html_ast_spec_utils.dart" show humanizeDom;
@@ -38,7 +41,12 @@ main() {
     HtmlParseTreeResult parse(String template, Map<String, String> messages) {
       var parser = new Parser(new Lexer());
       var htmlParser = new HtmlParser();
-      return new I18nHtmlParser(htmlParser, parser, messages)
+      var msgs = "";
+      StringMapWrapper.forEach(
+          messages, (v, k) => msgs += '''<msg id="${ k}">${ v}</msg>''');
+      var res = deserializeXmb(
+          '''<message-bundle>${ msgs}</message-bundle>''', "someUrl");
+      return new I18nHtmlParser(htmlParser, parser, res.content, res.messages)
           .parse(template, "someurl");
     }
     it("should delegate to the provided parser when no i18n", () {
@@ -126,6 +134,16 @@ main() {
         [HtmlTextAst, "A", 2]
       ]);
     });
+    it("should preserve non-i18n attributes", () {
+      Map<String, String> translations = {};
+      translations[id(new Message("message", null, null))] = "another message";
+      expect(humanizeDom(
+          parse("<div i18n value=\"b\">message</div>", translations))).toEqual([
+        [HtmlElementAst, "div", 0],
+        [HtmlAttrAst, "value", "b"],
+        [HtmlTextAst, "another message", 1]
+      ]);
+    });
     it("should extract from partitions", () {
       Map<String, String> translations = {};
       translations[id(new Message("message1", "meaning1", null))] =
@@ -168,13 +186,6 @@ main() {
         expect(humanizeErrors(parse("<div i18n>some message</div>", {}).errors))
             .toEqual(['''Cannot find message for id \'${ mid}\'''']);
       });
-      it("should error when message cannot be parsed", () {
-        Map<String, String> translations = {};
-        translations[id(new Message("some message", null, null))] = "<a>a</b>";
-        expect(humanizeErrors(
-                parse("<div i18n>some message</div>", translations).errors))
-            .toEqual(['''Unexpected closing tag "b"''']);
-      });
       it("should error when a non-placeholder element appears in translation",
           () {
         Map<String, String> translations = {};
@@ -191,10 +202,6 @@ main() {
         expect(humanizeErrors(
                 parse("<div i18n>some message</div>", translations).errors))
             .toEqual(['''Missing "name" attribute.''']);
-      });
-      it("should error when no matching attribute", () {
-        expect(humanizeErrors(parse("<div i18n-value></div>", {}).errors))
-            .toEqual(['''Missing attribute \'value\'.''']);
       });
       it("should error when the translation refers to an invalid expression",
           () {
