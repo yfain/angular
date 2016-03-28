@@ -2,7 +2,7 @@ import { HtmlElementAst } from 'angular2/src/compiler/html_ast';
 import { isPresent } from 'angular2/src/facade/lang';
 import { StringMapWrapper } from 'angular2/src/facade/collection';
 import { id } from './message';
-import { I18nError, partition, isI18nAttr, messageFromAttribute } from './shared';
+import { I18nError, I18N_ATTR_PREFIX, partition, messageFromAttribute } from './shared';
 /**
  * All messages extracted from a template.
  */
@@ -136,7 +136,7 @@ export class MessageExtractor {
     }
     _extractMessagesFromAttributes(p) {
         p.attrs.forEach(attr => {
-            if (isI18nAttr(attr.name)) {
+            if (attr.name.startsWith(I18N_ATTR_PREFIX)) {
                 try {
                     this.messages.push(messageFromAttribute(this._parser, p, attr));
                 }

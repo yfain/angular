@@ -2,8 +2,8 @@ import { ParseError } from 'angular2/src/compiler/parse_util';
 import { HtmlElementAst, HtmlTextAst, HtmlCommentAst, htmlVisitAll } from 'angular2/src/compiler/html_ast';
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { Message } from './message';
-const I18N_ATTR = "i18n";
-const I18N_ATTR_PREFIX = "i18n-";
+export const I18N_ATTR = "i18n";
+export const I18N_ATTR_PREFIX = "i18n-";
 /**
  * An i18n error.
  */
@@ -65,9 +65,6 @@ function _isOpeningComment(n) {
 }
 function _isClosingComment(n) {
     return n instanceof HtmlCommentAst && isPresent(n.value) && n.value == "/i18n";
-}
-export function isI18nAttr(n) {
-    return n.startsWith(I18N_ATTR_PREFIX);
 }
 function _findI18nAttr(p) {
     let i18n = p.attrs.filter(a => a.name == I18N_ATTR);

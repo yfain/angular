@@ -2,6 +2,8 @@ import { ParseSourceSpan, ParseError } from 'angular2/src/compiler/parse_util';
 import { HtmlAst, HtmlElementAst, HtmlAttrAst, HtmlTextAst } from 'angular2/src/compiler/html_ast';
 import { Message } from './message';
 import { Parser } from 'angular2/src/core/change_detection/parser/parser';
+export declare const I18N_ATTR: string;
+export declare const I18N_ATTR_PREFIX: string;
 /**
  * An i18n error.
  */
@@ -19,7 +21,6 @@ export declare class Part {
     sourceSpan: ParseSourceSpan;
     createMessage(parser: Parser): Message;
 }
-export declare function isI18nAttr(n: string): boolean;
 export declare function meaning(i18n: string): string;
 export declare function description(i18n: string): string;
 export declare function messageFromAttribute(parser: Parser, p: HtmlElementAst, attr: HtmlAttrAst): Message;

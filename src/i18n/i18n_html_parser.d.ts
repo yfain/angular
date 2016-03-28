@@ -1,5 +1,6 @@
 import { HtmlParser, HtmlParseTreeResult } from 'angular2/src/compiler/html_parser';
 import { ParseError } from 'angular2/src/compiler/parse_util';
+import { HtmlAst } from 'angular2/src/compiler/html_ast';
 import { Parser } from 'angular2/src/core/change_detection/parser/parser';
 /**
  * Creates an i18n-ed version of the parsed template.
@@ -64,7 +65,7 @@ import { Parser } from 'angular2/src/core/change_detection/parser/parser';
  * This is how the merging works:
  *
  * 1. Use the stringify function to get the message id. Look up the message in the map.
- * 2. Parse the translated message. At this point we have two trees: the original tree
+ * 2. Get the translated message. At this point we have two trees: the original tree
  * and the translated tree, where all the elements are replaced with placeholders.
  * 3. Use the original tree to create a mapping Index:number -> HtmlAst.
  * 4. Walk the translated tree.
@@ -84,23 +85,25 @@ import { Parser } from 'angular2/src/core/change_detection/parser/parser';
 export declare class I18nHtmlParser implements HtmlParser {
     private _htmlParser;
     private _parser;
+    private _messagesContent;
     private _messages;
     errors: ParseError[];
-    constructor(_htmlParser: HtmlParser, _parser: Parser, _messages: {
-        [key: string]: string;
+    constructor(_htmlParser: HtmlParser, _parser: Parser, _messagesContent: string, _messages: {
+        [key: string]: HtmlAst[];
     });
     parse(sourceContent: string, sourceUrl: string): HtmlParseTreeResult;
     private _processI18nPart(p);
     private _mergeI18Part(p);
     private _recurseIntoI18nPart(p);
     private _recurse(nodes);
-    private _mergeTrees(p, translatedSource, translated, original);
-    private _mergeTreesHelper(translatedSource, translated, mapping);
-    private _mergeElementOrInterpolation(t, translatedSource, translated, mapping);
+    private _mergeTrees(p, translated, original);
+    private _mergeTreesHelper(translated, mapping);
+    private _mergeElementOrInterpolation(t, translated, mapping);
     private _getName(t);
-    private _mergeTextInterpolation(t, originalNode, translatedSource);
-    private _mergeElement(t, originalNode, mapping, translatedSource);
+    private _mergeTextInterpolation(t, originalNode);
+    private _mergeElement(t, originalNode, mapping);
     private _i18nAttributes(el);
+    private _replaceInterpolationInAttr(attr, msg);
     private _replacePlaceholdersWithExpressions(message, exps, sourceSpan);
     private _convertIntoExpression(index, exps, sourceSpan);
 }
