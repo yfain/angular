@@ -2,6 +2,7 @@ library angular2.test.core.reflection.reflector_spec;
 
 import "package:angular2/testing_internal.dart"
     show describe, it, iit, ddescribe, expect, beforeEach, browserDetection;
+import "package:angular2/core.dart" show OnInit;
 import "package:angular2/src/core/reflection/reflection.dart"
     show Reflector, ReflectionInfo;
 import "package:angular2/src/core/reflection/reflection_capabilities.dart"
@@ -63,6 +64,20 @@ class SuperClassImplementingInterface implements Interface2 {}
 
 class ClassImplementingInterface extends SuperClassImplementingInterface
     implements Interface {}
+// Classes used to test our runtime check for classes that implement lifecycle interfaces but do not
+
+// declare them.
+
+// See https://github.com/angular/angular/pull/6879 and https://goo.gl/b07Kii for details.
+class ClassDoesNotDeclareOnInit {
+  ngOnInit() {}
+}
+
+class SuperClassImplementingOnInit implements OnInit {
+  ngOnInit() {}
+}
+
+class SubClassDoesNotDeclareOnInit extends SuperClassImplementingOnInit {}
 
 main() {
   describe("Reflector", () {
@@ -284,6 +299,15 @@ main() {
         it("should return an empty array otherwise", () {
           var p = reflector.interfaces(ClassWithDecorators);
           expect(p).toEqual([]);
+        });
+        it("should throw for undeclared lifecycle interfaces", () {
+          expect(() => reflector.interfaces(ClassDoesNotDeclareOnInit))
+              .toThrowError();
+        });
+        it("should throw for class inheriting a lifecycle impl and not declaring the interface",
+            () {
+          expect(() => reflector.interfaces(SubClassDoesNotDeclareOnInit))
+              .toThrowError();
         });
       });
     }
