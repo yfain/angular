@@ -79,7 +79,7 @@ class DynamicPathSegment implements PathSegment {
       throw new BaseException(
           '''Route generator for \'${ this . name}\' was not included in parameters passed.''');
     }
-    return normalizeString(params.get(this.name));
+    return encodeDynamicSegment(normalizeString(params.get(this.name)));
   }
 }
 
@@ -144,7 +144,8 @@ class ParamRoutePath implements RoutePath {
         }
         captured.add(currentUrlSegment.path);
         if (pathSegment is DynamicPathSegment) {
-          positionalParams[pathSegment.name] = currentUrlSegment.path;
+          positionalParams[pathSegment.name] =
+              decodeDynamicSegment(currentUrlSegment.path);
         } else if (!pathSegment.match(currentUrlSegment.path)) {
           return null;
         }
@@ -286,4 +287,38 @@ class ParamRoutePath implements RoutePath {
   }
 
   static var RESERVED_CHARS = RegExpWrapper.create("//|\\(|\\)|;|\\?|=");
+}
+
+var REGEXP_PERCENT = new RegExp(r'%');
+var REGEXP_SLASH = new RegExp(r'\/');
+var REGEXP_OPEN_PARENT = new RegExp(r'\(');
+var REGEXP_CLOSE_PARENT = new RegExp(r'\)');
+var REGEXP_SEMICOLON = new RegExp(r';');
+String encodeDynamicSegment(String value) {
+  if (isBlank(value)) {
+    return null;
+  }
+  value = StringWrapper.replaceAll(value, REGEXP_PERCENT, "%25");
+  value = StringWrapper.replaceAll(value, REGEXP_SLASH, "%2F");
+  value = StringWrapper.replaceAll(value, REGEXP_OPEN_PARENT, "%28");
+  value = StringWrapper.replaceAll(value, REGEXP_CLOSE_PARENT, "%29");
+  value = StringWrapper.replaceAll(value, REGEXP_SEMICOLON, "%3B");
+  return value;
+}
+
+var REGEXP_ENC_SEMICOLON = new RegExp(r'%3B', caseSensitive: false);
+var REGEXP_ENC_CLOSE_PARENT = new RegExp(r'%29', caseSensitive: false);
+var REGEXP_ENC_OPEN_PARENT = new RegExp(r'%28', caseSensitive: false);
+var REGEXP_ENC_SLASH = new RegExp(r'%2F', caseSensitive: false);
+var REGEXP_ENC_PERCENT = new RegExp(r'%25', caseSensitive: false);
+String decodeDynamicSegment(String value) {
+  if (isBlank(value)) {
+    return null;
+  }
+  value = StringWrapper.replaceAll(value, REGEXP_ENC_SEMICOLON, ";");
+  value = StringWrapper.replaceAll(value, REGEXP_ENC_CLOSE_PARENT, ")");
+  value = StringWrapper.replaceAll(value, REGEXP_ENC_OPEN_PARENT, "(");
+  value = StringWrapper.replaceAll(value, REGEXP_ENC_SLASH, "/");
+  value = StringWrapper.replaceAll(value, REGEXP_ENC_PERCENT, "%");
+  return value;
 }
