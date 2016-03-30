@@ -28536,24 +28536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._platformPipes = _platformPipes;
 	        this._directiveCache = new Map();
 	        this._pipeCache = new Map();
-	        this._anonymousTypes = new Map();
-	        this._anonymousTypeIndex = 0;
 	    }
-	    /**
-	     * Wrap the stringify method to avoid naming things `function (arg1...) {`
-	     */
-	    RuntimeMetadataResolver.prototype.sanitizeName = function (obj) {
-	        var result = lang_1.stringify(obj);
-	        if (result.indexOf('(') < 0) {
-	            return result;
-	        }
-	        var found = this._anonymousTypes.get(obj);
-	        if (!found) {
-	            this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
-	            found = this._anonymousTypes.get(obj);
-	        }
-	        return "anonymous_type_" + found + "_";
-	    };
 	    RuntimeMetadataResolver.prototype.getDirectiveMetadata = function (directiveType) {
 	        var meta = this._directiveCache.get(directiveType);
 	        if (lang_1.isBlank(meta)) {
@@ -28581,7 +28564,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                exportAs: dirMeta.exportAs,
 	                isComponent: lang_1.isPresent(templateMeta),
 	                dynamicLoadable: true,
-	                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(directiveType), moduleUrl: moduleUrl, runtime: directiveType }),
+	                type: new cpl.CompileTypeMetadata({ name: lang_1.stringify(directiveType), moduleUrl: moduleUrl, runtime: directiveType }),
 	                template: templateMeta,
 	                changeDetection: changeDetectionStrategy,
 	                inputs: dirMeta.inputs,
@@ -28599,7 +28582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var pipeMeta = this._pipeResolver.resolve(pipeType);
 	            var moduleUrl = reflection_1.reflector.importUri(pipeType);
 	            meta = new cpl.CompilePipeMetadata({
-	                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(pipeType), moduleUrl: moduleUrl, runtime: pipeType }),
+	                type: new cpl.CompileTypeMetadata({ name: lang_1.stringify(pipeType), moduleUrl: moduleUrl, runtime: pipeType }),
 	                name: pipeMeta.name,
 	                pure: pipeMeta.pure
 	            });

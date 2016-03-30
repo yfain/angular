@@ -15458,21 +15458,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       this._platformPipes = _platformPipes;
       this._directiveCache = new Map();
       this._pipeCache = new Map();
-      this._anonymousTypes = new Map();
-      this._anonymousTypeIndex = 0;
     }
-    RuntimeMetadataResolver.prototype.sanitizeName = function(obj) {
-      var result = lang_1.stringify(obj);
-      if (result.indexOf('(') < 0) {
-        return result;
-      }
-      var found = this._anonymousTypes.get(obj);
-      if (!found) {
-        this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
-        found = this._anonymousTypes.get(obj);
-      }
-      return "anonymous_type_" + found + "_";
-    };
     RuntimeMetadataResolver.prototype.getDirectiveMetadata = function(directiveType) {
       var meta = this._directiveCache.get(directiveType);
       if (lang_1.isBlank(meta)) {
@@ -15501,7 +15487,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
           isComponent: lang_1.isPresent(templateMeta),
           dynamicLoadable: true,
           type: new cpl.CompileTypeMetadata({
-            name: this.sanitizeName(directiveType),
+            name: lang_1.stringify(directiveType),
             moduleUrl: moduleUrl,
             runtime: directiveType
           }),
@@ -15525,7 +15511,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         var moduleUrl = reflection_1.reflector.importUri(pipeType);
         meta = new cpl.CompilePipeMetadata({
           type: new cpl.CompileTypeMetadata({
-            name: this.sanitizeName(pipeType),
+            name: lang_1.stringify(pipeType),
             moduleUrl: moduleUrl,
             runtime: pipeType
           }),

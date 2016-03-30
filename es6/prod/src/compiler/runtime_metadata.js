@@ -35,23 +35,6 @@ export let RuntimeMetadataResolver = class {
         this._platformPipes = _platformPipes;
         this._directiveCache = new Map();
         this._pipeCache = new Map();
-        this._anonymousTypes = new Map();
-        this._anonymousTypeIndex = 0;
-    }
-    /**
-     * Wrap the stringify method to avoid naming things `function (arg1...) {`
-     */
-    sanitizeName(obj) {
-        let result = stringify(obj);
-        if (result.indexOf('(') < 0) {
-            return result;
-        }
-        let found = this._anonymousTypes.get(obj);
-        if (!found) {
-            this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
-            found = this._anonymousTypes.get(obj);
-        }
-        return `anonymous_type_${found}_`;
     }
     getDirectiveMetadata(directiveType) {
         var meta = this._directiveCache.get(directiveType);
@@ -80,7 +63,7 @@ export let RuntimeMetadataResolver = class {
                 exportAs: dirMeta.exportAs,
                 isComponent: isPresent(templateMeta),
                 dynamicLoadable: true,
-                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(directiveType), moduleUrl: moduleUrl, runtime: directiveType }),
+                type: new cpl.CompileTypeMetadata({ name: stringify(directiveType), moduleUrl: moduleUrl, runtime: directiveType }),
                 template: templateMeta,
                 changeDetection: changeDetectionStrategy,
                 inputs: dirMeta.inputs,
@@ -98,7 +81,7 @@ export let RuntimeMetadataResolver = class {
             var pipeMeta = this._pipeResolver.resolve(pipeType);
             var moduleUrl = reflector.importUri(pipeType);
             meta = new cpl.CompilePipeMetadata({
-                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(pipeType), moduleUrl: moduleUrl, runtime: pipeType }),
+                type: new cpl.CompileTypeMetadata({ name: stringify(pipeType), moduleUrl: moduleUrl, runtime: pipeType }),
                 name: pipeMeta.name,
                 pure: pipeMeta.pure
             });
