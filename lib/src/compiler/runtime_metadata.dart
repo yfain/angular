@@ -32,12 +32,30 @@ class RuntimeMetadataResolver {
   List<Type> _platformPipes;
   var _directiveCache = new Map<Type, cpl.CompileDirectiveMetadata>();
   var _pipeCache = new Map<Type, cpl.CompilePipeMetadata>();
+  var _anonymousTypes = new Map<Object, num>();
+  var _anonymousTypeIndex = 0;
   RuntimeMetadataResolver(
       this._directiveResolver,
       this._pipeResolver,
       this._viewResolver,
       @Optional() @Inject(PLATFORM_DIRECTIVES) this._platformDirectives,
       @Optional() @Inject(PLATFORM_PIPES) this._platformPipes) {}
+  /**
+   * Wrap the stringify method to avoid naming things `function (arg1...) {`
+   */
+  String sanitizeName(dynamic obj) {
+    var result = stringify(obj);
+    if (result.indexOf("(") < 0) {
+      return result;
+    }
+    var found = this._anonymousTypes[obj];
+    if (!found) {
+      this._anonymousTypes[obj] = this._anonymousTypeIndex++;
+      found = this._anonymousTypes[obj];
+    }
+    return '''anonymous_type_${ found}_''';
+  }
+
   cpl.CompileDirectiveMetadata getDirectiveMetadata(Type directiveType) {
     var meta = this._directiveCache[directiveType];
     if (isBlank(meta)) {
@@ -65,7 +83,7 @@ class RuntimeMetadataResolver {
           isComponent: isPresent(templateMeta),
           dynamicLoadable: true,
           type: new cpl.CompileTypeMetadata(
-              name: stringify(directiveType),
+              name: this.sanitizeName(directiveType),
               moduleUrl: moduleUrl,
               runtime: directiveType),
           template: templateMeta,
@@ -88,7 +106,7 @@ class RuntimeMetadataResolver {
       var moduleUrl = reflector.importUri(pipeType);
       meta = new cpl.CompilePipeMetadata(
           type: new cpl.CompileTypeMetadata(
-              name: stringify(pipeType),
+              name: this.sanitizeName(pipeType),
               moduleUrl: moduleUrl,
               runtime: pipeType),
           name: pipeMeta.name,
