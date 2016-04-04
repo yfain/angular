@@ -20,7 +20,9 @@ import "package:angular2/src/compiler/directive_metadata.dart"
         CompileTemplateMetadata,
         CompileProviderMetadata,
         CompileDiDependencyMetadata,
-        CompileQueryMetadata;
+        CompileQueryMetadata,
+        CompileIdentifierMetadata,
+        CompileFactoryMetadata;
 import "package:angular2/src/core/metadata/view.dart" show ViewEncapsulation;
 import "package:angular2/src/core/change_detection.dart"
     show ChangeDetectionStrategy;
@@ -32,29 +34,28 @@ main() {
     CompileTemplateMetadata fullTemplateMeta;
     CompileDirectiveMetadata fullDirectiveMeta;
     beforeEach(() {
+      var diDep = new CompileDiDependencyMetadata(
+          isAttribute: true,
+          isSelf: true,
+          isHost: true,
+          isSkipSelf: true,
+          isOptional: true,
+          token: "someToken",
+          query: new CompileQueryMetadata(
+              selectors: ["one"],
+              descendants: true,
+              first: true,
+              propertyName: "one"),
+          viewQuery: new CompileQueryMetadata(
+              selectors: ["one"],
+              descendants: true,
+              first: true,
+              propertyName: "one"));
       fullTypeMeta = new CompileTypeMetadata(
           name: "SomeType",
           moduleUrl: "someUrl",
           isHost: true,
-          diDeps: [
-            new CompileDiDependencyMetadata(
-                isAttribute: true,
-                isSelf: true,
-                isHost: true,
-                isSkipSelf: true,
-                isOptional: true,
-                token: "someToken",
-                query: new CompileQueryMetadata(
-                    selectors: ["one"],
-                    descendants: true,
-                    first: true,
-                    propertyName: "one"),
-                viewQuery: new CompileQueryMetadata(
-                    selectors: ["one"],
-                    descendants: true,
-                    first: true,
-                    propertyName: "one"))
-          ]);
+          diDeps: [diDep]);
       fullTemplateMeta = new CompileTemplateMetadata(
           encapsulation: ViewEncapsulation.Emulated,
           template: "<a></a>",
@@ -84,7 +85,36 @@ main() {
             LifecycleHooks.OnChanges
           ],
           providers: [
-            new CompileProviderMetadata(token: "token", useClass: fullTypeMeta)
+            new CompileProviderMetadata(
+                token: "token",
+                useClass: fullTypeMeta,
+                useExisting: new CompileIdentifierMetadata(name: "someName"),
+                useFactory: new CompileFactoryMetadata(
+                    name: "someName", diDeps: [diDep]),
+                useValue: "someValue")
+          ],
+          viewProviders: [
+            new CompileProviderMetadata(
+                token: "token",
+                useClass: fullTypeMeta,
+                useExisting: new CompileIdentifierMetadata(name: "someName"),
+                useFactory: new CompileFactoryMetadata(
+                    name: "someName", diDeps: [diDep]),
+                useValue: "someValue")
+          ],
+          queries: [
+            new CompileQueryMetadata(
+                selectors: ["selector"],
+                descendants: true,
+                first: false,
+                propertyName: "prop")
+          ],
+          viewQueries: [
+            new CompileQueryMetadata(
+                selectors: ["selector"],
+                descendants: true,
+                first: false,
+                propertyName: "prop")
           ]);
     });
     describe("DirectiveMetadata", () {

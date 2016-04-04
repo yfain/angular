@@ -116,6 +116,9 @@ class TemplateCompiler {
                 hostAttributes: directive.hostAttributes,
                 lifecycleHooks: directive.lifecycleHooks,
                 providers: directive.providers,
+                viewProviders: directive.viewProviders,
+                queries: directive.queries,
+                viewQueries: directive.viewQueries,
                 template: normalizedTemplate));
   }
 

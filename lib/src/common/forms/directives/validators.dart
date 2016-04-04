@@ -27,8 +27,9 @@ abstract class Validator {
   Map<String, dynamic> validate(modelModule.AbstractControl c);
 }
 
+const REQUIRED = Validators.required;
 const REQUIRED_VALIDATOR =
-    const Provider(NG_VALIDATORS, useValue: Validators.required, multi: true);
+    const Provider(NG_VALIDATORS, useValue: REQUIRED, multi: true);
 
 /**
  * A Directive that adds the `required` validator to any controls marked with the

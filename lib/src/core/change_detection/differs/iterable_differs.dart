@@ -34,7 +34,6 @@ abstract class IterableDifferFactory {
 /**
  * A repository of different iterable diffing strategies used by NgFor, NgClass, and others.
  */
-@Injectable()
 class IterableDiffers {
   final List<IterableDifferFactory> factories;
   const IterableDiffers(this.factories);

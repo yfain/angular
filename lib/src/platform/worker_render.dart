@@ -60,7 +60,6 @@ class UIMessageBusSource extends IsolateMessageBusSource {
  * Wrapper class that exposes the Isolate
  * and underlying {@link MessageBus} for lower level message passing.
  */
-@Injectable()
 class WebWorkerInstance {
   Isolate worker;
   MessageBus bus;

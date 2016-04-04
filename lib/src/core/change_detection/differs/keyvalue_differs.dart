@@ -26,7 +26,6 @@ abstract class KeyValueDifferFactory {
 /**
  * A repository of different Map diffing strategies used by NgClass, NgStyle, and others.
  */
-@Injectable()
 class KeyValueDiffers {
   final List<KeyValueDifferFactory> factories;
   const KeyValueDiffers(this.factories);
