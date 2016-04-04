@@ -75,6 +75,14 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return obj === undefined || obj === null;
   }
   exports.isBlank = isBlank;
+  function isBoolean(obj) {
+    return typeof obj === "boolean";
+  }
+  exports.isBoolean = isBoolean;
+  function isNumber(obj) {
+    return typeof obj === "number";
+  }
+  exports.isNumber = isNumber;
   function isString(obj) {
     return typeof obj === "string";
   }
@@ -99,10 +107,6 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     return Array.isArray(obj);
   }
   exports.isArray = isArray;
-  function isNumber(obj) {
-    return typeof obj === 'number';
-  }
-  exports.isNumber = isNumber;
   function isDate(obj) {
     return obj instanceof exports.Date && !isNaN(obj.valueOf());
   }
@@ -2384,7 +2388,7 @@ System.register("angular2/src/core/change_detection/differs/iterable_differs", [
         throw new exceptions_1.BaseException("Cannot find a differ supporting object '" + iterable + "' of type '" + lang_1.getTypeNameForDebugging(iterable) + "'");
       }
     };
-    IterableDiffers = __decorate([di_1.Injectable(), lang_1.CONST(), __metadata('design:paramtypes', [Array])], IterableDiffers);
+    IterableDiffers = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Array])], IterableDiffers);
     return IterableDiffers;
   })();
   exports.IterableDiffers = IterableDiffers;
@@ -2968,7 +2972,7 @@ System.register("angular2/src/core/change_detection/differs/keyvalue_differs", [
         throw new exceptions_1.BaseException("Cannot find a differ supporting object '" + kv + "'");
       }
     };
-    KeyValueDiffers = __decorate([di_1.Injectable(), lang_1.CONST(), __metadata('design:paramtypes', [Array])], KeyValueDiffers);
+    KeyValueDiffers = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Array])], KeyValueDiffers);
     return KeyValueDiffers;
   })();
   exports.KeyValueDiffers = KeyValueDiffers;
@@ -17376,8 +17380,9 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
   var lang_1 = require("angular2/src/facade/lang");
   var validators_1 = require("angular2/src/common/forms/validators");
   var lang_2 = require("angular2/src/facade/lang");
+  var REQUIRED = validators_1.Validators.required;
   var REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
-    useValue: validators_1.Validators.required,
+    useValue: REQUIRED,
     multi: true
   }));
   var RequiredValidator = (function() {
@@ -21290,9 +21295,6 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
   var HOST_REG_EXP = /^(?:(?:\[([^\]]+)\])|(?:\(([^\)]+)\)))$/g;
   var CompileMetadataWithIdentifier = (function() {
     function CompileMetadataWithIdentifier() {}
-    CompileMetadataWithIdentifier.fromJson = function(data) {
-      return _COMPILE_METADATA_FROM_JSON[data['class']](data);
-    };
     Object.defineProperty(CompileMetadataWithIdentifier.prototype, "identifier", {
       get: function() {
         return exceptions_1.unimplemented();
@@ -21308,9 +21310,6 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
     function CompileMetadataWithType() {
       _super.apply(this, arguments);
     }
-    CompileMetadataWithType.fromJson = function(data) {
-      return _COMPILE_METADATA_FROM_JSON[data['class']](data);
-    };
     Object.defineProperty(CompileMetadataWithType.prototype, "type", {
       get: function() {
         return exceptions_1.unimplemented();
@@ -21328,6 +21327,10 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
     return CompileMetadataWithType;
   })(CompileMetadataWithIdentifier);
   exports.CompileMetadataWithType = CompileMetadataWithType;
+  function metadataFromJson(data) {
+    return _COMPILE_METADATA_FROM_JSON[data['class']](data);
+  }
+  exports.metadataFromJson = metadataFromJson;
   var CompileIdentifierMetadata = (function() {
     function CompileIdentifierMetadata(_a) {
       var _b = _a === void 0 ? {} : _a,
@@ -21335,28 +21338,34 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
           name = _b.name,
           moduleUrl = _b.moduleUrl,
           prefix = _b.prefix,
-          constConstructor = _b.constConstructor;
+          constConstructor = _b.constConstructor,
+          value = _b.value;
       this.runtime = runtime;
       this.name = name;
       this.prefix = prefix;
       this.moduleUrl = moduleUrl;
       this.constConstructor = constConstructor;
+      this.value = value;
     }
     CompileIdentifierMetadata.fromJson = function(data) {
+      var value = lang_1.isArray(data['value']) ? arrayFromJson(data['value'], metadataFromJson) : objFromJson(data['value'], metadataFromJson);
       return new CompileIdentifierMetadata({
         name: data['name'],
         prefix: data['prefix'],
         moduleUrl: data['moduleUrl'],
-        constConstructor: data['constConstructor']
+        constConstructor: data['constConstructor'],
+        value: value
       });
     };
     CompileIdentifierMetadata.prototype.toJson = function() {
+      var value = lang_1.isArray(this.value) ? arrayToJson(this.value) : objToJson(this.value);
       return {
         'class': 'Identifier',
         'name': this.name,
         'moduleUrl': this.moduleUrl,
         'prefix': this.prefix,
-        'constConstructor': this.constConstructor
+        'constConstructor': this.constConstructor,
+        'value': value
       };
     };
     Object.defineProperty(CompileIdentifierMetadata.prototype, "identifier", {
@@ -21436,13 +21445,20 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
     CompileProviderMetadata.fromJson = function(data) {
       return new CompileProviderMetadata({
         token: objFromJson(data['token'], CompileIdentifierMetadata.fromJson),
-        useClass: objFromJson(data['useClass'], CompileTypeMetadata.fromJson)
+        useClass: objFromJson(data['useClass'], CompileTypeMetadata.fromJson),
+        useExisting: objFromJson(data['useExisting'], CompileIdentifierMetadata.fromJson),
+        useValue: objFromJson(data['useValue'], CompileIdentifierMetadata.fromJson),
+        useFactory: objFromJson(data['useFactory'], CompileFactoryMetadata.fromJson)
       });
     };
     CompileProviderMetadata.prototype.toJson = function() {
       return {
+        'class': 'Provider',
         'token': objToJson(this.token),
-        'useClass': objToJson(this.useClass)
+        'useClass': objToJson(this.useClass),
+        'useExisting': objToJson(this.useExisting),
+        'useValue': objToJson(this.useValue),
+        'useFactory': objToJson(this.useFactory)
       };
     };
     return CompileProviderMetadata;
@@ -21453,13 +21469,17 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
       var runtime = _a.runtime,
           name = _a.name,
           moduleUrl = _a.moduleUrl,
+          prefix = _a.prefix,
           constConstructor = _a.constConstructor,
-          diDeps = _a.diDeps;
+          diDeps = _a.diDeps,
+          value = _a.value;
       this.runtime = runtime;
       this.name = name;
+      this.prefix = prefix;
       this.moduleUrl = moduleUrl;
       this.diDeps = diDeps;
       this.constConstructor = constConstructor;
+      this.value = value;
     }
     Object.defineProperty(CompileFactoryMetadata.prototype, "identifier", {
       get: function() {
@@ -21468,8 +21488,26 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
       enumerable: true,
       configurable: true
     });
+    CompileFactoryMetadata.fromJson = function(data) {
+      return new CompileFactoryMetadata({
+        name: data['name'],
+        prefix: data['prefix'],
+        moduleUrl: data['moduleUrl'],
+        constConstructor: data['constConstructor'],
+        value: data['value'],
+        diDeps: arrayFromJson(data['diDeps'], CompileDiDependencyMetadata.fromJson)
+      });
+    };
     CompileFactoryMetadata.prototype.toJson = function() {
-      return null;
+      return {
+        'class': 'Factory',
+        'name': this.name,
+        'prefix': this.prefix,
+        'moduleUrl': this.moduleUrl,
+        'constConstructor': this.constConstructor,
+        'value': this.value,
+        'diDeps': arrayToJson(this.diDeps)
+      };
     };
     return CompileFactoryMetadata;
   })();
@@ -21483,6 +21521,7 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
           prefix = _b.prefix,
           isHost = _b.isHost,
           constConstructor = _b.constConstructor,
+          value = _b.value,
           diDeps = _b.diDeps;
       this.runtime = runtime;
       this.name = name;
@@ -21490,6 +21529,7 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
       this.prefix = prefix;
       this.isHost = lang_1.normalizeBool(isHost);
       this.constConstructor = constConstructor;
+      this.value = value;
       this.diDeps = lang_1.normalizeBlank(diDeps);
     }
     CompileTypeMetadata.fromJson = function(data) {
@@ -21499,6 +21539,7 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
         prefix: data['prefix'],
         isHost: data['isHost'],
         constConstructor: data['constConstructor'],
+        value: data['value'],
         diDeps: arrayFromJson(data['diDeps'], CompileDiDependencyMetadata.fromJson)
       });
     };
@@ -21524,6 +21565,7 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
         'prefix': this.prefix,
         'isHost': this.isHost,
         'constConstructor': this.constConstructor,
+        'value': this.value,
         'diDeps': arrayToJson(this.diDeps)
       };
     };
@@ -21634,8 +21676,8 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
       this.lifecycleHooks = lifecycleHooks;
       this.providers = lang_1.normalizeBlank(providers);
       this.viewProviders = lang_1.normalizeBlank(viewProviders);
-      this.queries = queries;
-      this.viewQueries = viewQueries;
+      this.queries = lang_1.normalizeBlank(queries);
+      this.viewQueries = lang_1.normalizeBlank(viewQueries);
       this.template = template;
     }
     CompileDirectiveMetadata.create = function(_a) {
@@ -21728,7 +21770,10 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
           return interfaces_1.LIFECYCLE_HOOKS_VALUES[hookValue];
         }),
         template: lang_1.isPresent(data['template']) ? CompileTemplateMetadata.fromJson(data['template']) : data['template'],
-        providers: arrayFromJson(data['providers'], CompileProviderMetadata.fromJson)
+        providers: arrayFromJson(data['providers'], metadataFromJson),
+        viewProviders: arrayFromJson(data['viewProviders'], metadataFromJson),
+        queries: arrayFromJson(data['queries'], CompileQueryMetadata.fromJson),
+        viewQueries: arrayFromJson(data['viewQueries'], CompileQueryMetadata.fromJson)
       });
     };
     CompileDirectiveMetadata.prototype.toJson = function() {
@@ -21749,7 +21794,10 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
           return lang_1.serializeEnum(hook);
         }),
         'template': lang_1.isPresent(this.template) ? this.template.toJson() : this.template,
-        'providers': arrayToJson(this.providers)
+        'providers': arrayToJson(this.providers),
+        'viewProviders': arrayToJson(this.viewProviders),
+        'queries': arrayToJson(this.queries),
+        'viewQueries': arrayToJson(this.viewQueries)
       };
     };
     return CompileDirectiveMetadata;
@@ -21825,7 +21873,9 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
     'Directive': CompileDirectiveMetadata.fromJson,
     'Pipe': CompilePipeMetadata.fromJson,
     'Type': CompileTypeMetadata.fromJson,
-    'Identifier': CompileIdentifierMetadata.fromJson
+    'Provider': CompileProviderMetadata.fromJson,
+    'Identifier': CompileIdentifierMetadata.fromJson,
+    'Factory': CompileFactoryMetadata.fromJson
   };
   function arrayFromJson(obj, fn) {
     return lang_1.isBlank(obj) ? null : obj.map(function(o) {
@@ -21836,10 +21886,10 @@ System.register("angular2/src/compiler/directive_metadata", ["angular2/src/facad
     return lang_1.isBlank(obj) ? null : obj.map(objToJson);
   }
   function objFromJson(obj, fn) {
-    return (lang_1.isString(obj) || lang_1.isBlank(obj)) ? obj : fn(obj);
+    return (lang_1.isString(obj) || lang_1.isBlank(obj) || lang_1.isBoolean(obj) || lang_1.isNumber(obj)) ? obj : fn(obj);
   }
   function objToJson(obj) {
-    return (lang_1.isString(obj) || lang_1.isBlank(obj)) ? obj : obj.toJson();
+    return (lang_1.isString(obj) || lang_1.isBlank(obj) || lang_1.isBoolean(obj) || lang_1.isNumber(obj)) ? obj : obj.toJson();
   }
   global.define = __define;
   return module.exports;
@@ -25062,6 +25112,9 @@ System.register("angular2/src/compiler/template_compiler", ["angular2/src/facade
           hostAttributes: directive.hostAttributes,
           lifecycleHooks: directive.lifecycleHooks,
           providers: directive.providers,
+          viewProviders: directive.viewProviders,
+          queries: directive.queries,
+          viewQueries: directive.viewQueries,
           template: normalizedTemplate
         });
       });
