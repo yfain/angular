@@ -9758,7 +9758,7 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
         this._select.writeValue(this._select.value);
       }
     };
-    __decorate([core_1.Input('ng-value'), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "ngValue", null);
+    __decorate([core_1.Input('ngValue'), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "ngValue", null);
     __decorate([core_1.Input('value'), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "value", null);
     NgSelectOption = __decorate([core_1.Directive({selector: 'option'}), __param(2, core_1.Optional()), __param(2, core_1.Host()), __metadata('design:paramtypes', [core_1.ElementRef, core_1.Renderer, SelectControlValueAccessor])], NgSelectOption);
     return NgSelectOption;
