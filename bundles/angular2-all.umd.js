@@ -20919,7 +20919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    __decorate([
-	        core_1.Input('ng-value'), 
+	        core_1.Input('ngValue'), 
 	        __metadata('design:type', Object), 
 	        __metadata('design:paramtypes', [Object])
 	    ], NgSelectOption.prototype, "ngValue", null);
