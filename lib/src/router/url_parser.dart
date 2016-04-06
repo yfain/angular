@@ -111,6 +111,12 @@ String matchUrlSegment(String str) {
   return isPresent(match) ? match[0] : "";
 }
 
+var QUERY_PARAM_VALUE_RE = RegExpWrapper.create("^[^\\(\\)\\?;&#]+");
+String matchUrlQueryParamValue(String str) {
+  var match = RegExpWrapper.firstMatch(QUERY_PARAM_VALUE_RE, str);
+  return isPresent(match) ? match[0] : "";
+}
+
 class UrlParser {
   String _remaining;
   bool peekStartsWith(String str) {
@@ -188,10 +194,10 @@ class UrlParser {
   Map<String, dynamic> parseQueryParams() {
     Map<String, dynamic> params = {};
     this.capture("?");
-    this.parseParam(params);
+    this.parseQueryParam(params);
     while (this._remaining.length > 0 && this.peekStartsWith("&")) {
       this.capture("&");
-      this.parseParam(params);
+      this.parseQueryParam(params);
     }
     return params;
   }
@@ -215,6 +221,24 @@ class UrlParser {
     if (this.peekStartsWith("=")) {
       this.capture("=");
       var valueMatch = matchUrlSegment(this._remaining);
+      if (isPresent(valueMatch)) {
+        value = valueMatch;
+        this.capture(value);
+      }
+    }
+    params[key] = value;
+  }
+
+  void parseQueryParam(Map<String, dynamic> params) {
+    var key = matchUrlSegment(this._remaining);
+    if (isBlank(key)) {
+      return;
+    }
+    this.capture(key);
+    dynamic value = true;
+    if (this.peekStartsWith("=")) {
+      this.capture("=");
+      var valueMatch = matchUrlQueryParamValue(this._remaining);
       if (isPresent(valueMatch)) {
         value = valueMatch;
         this.capture(value);
