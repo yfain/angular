@@ -4,15 +4,12 @@ import "package:angular2/src/facade/lang.dart"
     show
         isPresent,
         isBlank,
-        isNumber,
-        isBoolean,
         normalizeBool,
         serializeEnum,
         Type,
         isString,
         RegExpWrapper,
-        StringWrapper,
-        isArray;
+        StringWrapper;
 import "package:angular2/src/facade/exceptions.dart" show unimplemented;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/core/change_detection/change_detection.dart"
@@ -29,6 +26,10 @@ import "package:angular2/src/core/linker/interfaces.dart"
 var HOST_REG_EXP = new RegExp(r'^(?:(?:\[([^\]]+)\])|(?:\(([^\)]+)\)))$');
 
 abstract class CompileMetadataWithIdentifier {
+  static CompileMetadataWithIdentifier fromJson(Map<String, dynamic> data) {
+    return _COMPILE_METADATA_FROM_JSON[data["class"]](data);
+  }
+
   Map<String, dynamic> toJson();
   CompileIdentifierMetadata get identifier {
     return (unimplemented() as CompileIdentifierMetadata);
@@ -36,6 +37,10 @@ abstract class CompileMetadataWithIdentifier {
 }
 
 abstract class CompileMetadataWithType extends CompileMetadataWithIdentifier {
+  static CompileMetadataWithType fromJson(Map<String, dynamic> data) {
+    return _COMPILE_METADATA_FROM_JSON[data["class"]](data);
+  }
+
   Map<String, dynamic> toJson();
   CompileTypeMetadata get type {
     return (unimplemented() as CompileTypeMetadata);
@@ -46,49 +51,33 @@ abstract class CompileMetadataWithType extends CompileMetadataWithIdentifier {
   }
 }
 
-dynamic metadataFromJson(Map<String, dynamic> data) {
-  return _COMPILE_METADATA_FROM_JSON[data["class"]](data);
-}
-
 class CompileIdentifierMetadata implements CompileMetadataWithIdentifier {
   dynamic runtime;
   String name;
   String prefix;
   String moduleUrl;
   bool constConstructor;
-  dynamic value;
   CompileIdentifierMetadata(
-      {runtime, name, moduleUrl, prefix, constConstructor, value}) {
+      {runtime, name, moduleUrl, prefix, constConstructor}) {
     this.runtime = runtime;
     this.name = name;
     this.prefix = prefix;
     this.moduleUrl = moduleUrl;
     this.constConstructor = constConstructor;
-    this.value = value;
   }
   static CompileIdentifierMetadata fromJson(Map<String, dynamic> data) {
-    var value = isArray(data["value"])
-        ? arrayFromJson(data["value"], metadataFromJson)
-        : objFromJson(data["value"], metadataFromJson);
     return new CompileIdentifierMetadata(
         name: data["name"],
         prefix: data["prefix"],
         moduleUrl: data["moduleUrl"],
-        constConstructor: data["constConstructor"],
-        value: value);
+        constConstructor: data["constConstructor"]);
   }
 
   Map<String, dynamic> toJson() {
-    var value =
-        isArray(this.value) ? arrayToJson(this.value) : objToJson(this.value);
     return {
       // Note: Runtime type can't be serialized...
-      "class": "Identifier",
-      "name": this.name,
-      "moduleUrl": this.moduleUrl,
-      "prefix": this.prefix,
-      "constConstructor": this.constConstructor,
-      "value": value
+      "class": "Identifier", "name": this.name, "moduleUrl": this.moduleUrl,
+      "prefix": this.prefix, "constConstructor": this.constConstructor
     };
   }
 
@@ -173,72 +162,37 @@ class CompileProviderMetadata {
   static CompileProviderMetadata fromJson(Map<String, dynamic> data) {
     return new CompileProviderMetadata(
         token: objFromJson(data["token"], CompileIdentifierMetadata.fromJson),
-        useClass: objFromJson(data["useClass"], CompileTypeMetadata.fromJson),
-        useExisting: objFromJson(
-            data["useExisting"], CompileIdentifierMetadata.fromJson),
-        useValue:
-            objFromJson(data["useValue"], CompileIdentifierMetadata.fromJson),
-        useFactory:
-            objFromJson(data["useFactory"], CompileFactoryMetadata.fromJson));
+        useClass: objFromJson(data["useClass"], CompileTypeMetadata.fromJson));
   }
 
   Map<String, dynamic> toJson() {
     return {
       // Note: Runtime type can't be serialized...
-      "class": "Provider",
-      "token": objToJson(this.token),
-      "useClass": objToJson(this.useClass),
-      "useExisting": objToJson(this.useExisting),
-      "useValue": objToJson(this.useValue),
-      "useFactory": objToJson(this.useFactory)
+      "token": objToJson(this.token), "useClass": objToJson(this.useClass)
     };
   }
 }
 
-class CompileFactoryMetadata
-    implements CompileIdentifierMetadata, CompileMetadataWithIdentifier {
+class CompileFactoryMetadata implements CompileIdentifierMetadata {
   Function runtime;
   String name;
   String prefix;
   String moduleUrl;
   bool constConstructor;
-  dynamic value;
   List<CompileDiDependencyMetadata> diDeps;
-  CompileFactoryMetadata(
-      {runtime, name, moduleUrl, prefix, constConstructor, diDeps, value}) {
+  CompileFactoryMetadata({runtime, name, moduleUrl, constConstructor, diDeps}) {
     this.runtime = runtime;
     this.name = name;
-    this.prefix = prefix;
     this.moduleUrl = moduleUrl;
     this.diDeps = diDeps;
     this.constConstructor = constConstructor;
-    this.value = value;
   }
   CompileIdentifierMetadata get identifier {
     return this;
   }
 
-  static CompileFactoryMetadata fromJson(Map<String, dynamic> data) {
-    return new CompileFactoryMetadata(
-        name: data["name"],
-        prefix: data["prefix"],
-        moduleUrl: data["moduleUrl"],
-        constConstructor: data["constConstructor"],
-        value: data["value"],
-        diDeps: arrayFromJson(
-            data["diDeps"], CompileDiDependencyMetadata.fromJson));
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "class": "Factory",
-      "name": this.name,
-      "prefix": this.prefix,
-      "moduleUrl": this.moduleUrl,
-      "constConstructor": this.constConstructor,
-      "value": this.value,
-      "diDeps": arrayToJson(this.diDeps)
-    };
+  toJson() {
+    return null;
   }
 }
 
@@ -253,24 +207,15 @@ class CompileTypeMetadata
   String moduleUrl;
   bool isHost;
   bool constConstructor;
-  dynamic value;
   List<CompileDiDependencyMetadata> diDeps;
   CompileTypeMetadata(
-      {runtime,
-      name,
-      moduleUrl,
-      prefix,
-      isHost,
-      constConstructor,
-      value,
-      diDeps}) {
+      {runtime, name, moduleUrl, prefix, isHost, constConstructor, diDeps}) {
     this.runtime = runtime;
     this.name = name;
     this.moduleUrl = moduleUrl;
     this.prefix = prefix;
     this.isHost = normalizeBool(isHost);
     this.constConstructor = constConstructor;
-    this.value = value;
     this.diDeps = diDeps;
   }
   static CompileTypeMetadata fromJson(Map<String, dynamic> data) {
@@ -280,7 +225,6 @@ class CompileTypeMetadata
         prefix: data["prefix"],
         isHost: data["isHost"],
         constConstructor: data["constConstructor"],
-        value: data["value"],
         diDeps: arrayFromJson(
             data["diDeps"], CompileDiDependencyMetadata.fromJson));
   }
@@ -302,7 +246,6 @@ class CompileTypeMetadata
       "prefix": this.prefix,
       "isHost": this.isHost,
       "constConstructor": this.constConstructor,
-      "value": this.value,
       "diDeps": arrayToJson(this.diDeps)
     };
   }
@@ -546,11 +489,8 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
         template: isPresent(data["template"])
             ? CompileTemplateMetadata.fromJson(data["template"])
             : data["template"],
-        providers: arrayFromJson(data["providers"], metadataFromJson),
-        viewProviders: arrayFromJson(data["viewProviders"], metadataFromJson),
-        queries: arrayFromJson(data["queries"], CompileQueryMetadata.fromJson),
-        viewQueries:
-            arrayFromJson(data["viewQueries"], CompileQueryMetadata.fromJson));
+        providers:
+            arrayFromJson(data["providers"], CompileProviderMetadata.fromJson));
   }
 
   Map<String, dynamic> toJson() {
@@ -573,10 +513,7 @@ class CompileDirectiveMetadata implements CompileMetadataWithType {
           this.lifecycleHooks.map((hook) => serializeEnum(hook)).toList(),
       "template":
           isPresent(this.template) ? this.template.toJson() : this.template,
-      "providers": arrayToJson(this.providers),
-      "viewProviders": arrayToJson(this.viewProviders),
-      "queries": arrayToJson(this.queries),
-      "viewQueries": arrayToJson(this.viewQueries)
+      "providers": arrayToJson(this.providers)
     };
   }
 }
@@ -650,9 +587,7 @@ var _COMPILE_METADATA_FROM_JSON = {
   "Directive": CompileDirectiveMetadata.fromJson,
   "Pipe": CompilePipeMetadata.fromJson,
   "Type": CompileTypeMetadata.fromJson,
-  "Provider": CompileProviderMetadata.fromJson,
-  "Identifier": CompileIdentifierMetadata.fromJson,
-  "Factory": CompileFactoryMetadata.fromJson
+  "Identifier": CompileIdentifierMetadata.fromJson
 };
 dynamic arrayFromJson(
     List<dynamic> obj, dynamic /* (a: {[key: string]: any}) => any */ fn) {
@@ -665,13 +600,9 @@ dynamic /* String | Map < String , dynamic > */ arrayToJson(List<dynamic> obj) {
 
 dynamic objFromJson(
     dynamic obj, dynamic /* (a: {[key: string]: any}) => any */ fn) {
-  return (isString(obj) || isBlank(obj) || isBoolean(obj) || isNumber(obj))
-      ? obj
-      : fn(obj);
+  return (isString(obj) || isBlank(obj)) ? obj : fn(obj);
 }
 
 dynamic /* String | Map < String , dynamic > */ objToJson(dynamic obj) {
-  return (isString(obj) || isBlank(obj) || isBoolean(obj) || isNumber(obj))
-      ? obj
-      : obj.toJson();
+  return (isString(obj) || isBlank(obj)) ? obj : obj.toJson();
 }
