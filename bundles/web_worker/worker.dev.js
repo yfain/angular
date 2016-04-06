@@ -9625,7 +9625,7 @@ System.register("angular2/src/common/forms/directives/checkbox_value_accessor", 
   return module.exports;
 });
 
-System.register("angular2/src/common/forms/directives/select_control_value_accessor", ["angular2/core", "angular2/src/facade/async", "angular2/src/common/forms/directives/control_value_accessor", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/common/forms/directives/select_control_value_accessor", ["angular2/core", "angular2/src/common/forms/directives/control_value_accessor", "angular2/src/facade/lang", "angular2/src/facade/collection"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -9651,44 +9651,60 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
     };
   };
   var core_1 = require("angular2/core");
-  var async_1 = require("angular2/src/facade/async");
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var lang_1 = require("angular2/src/facade/lang");
+  var collection_1 = require("angular2/src/facade/collection");
   var SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return SelectControlValueAccessor;
     }),
     multi: true
   }));
-  var NgSelectOption = (function() {
-    function NgSelectOption() {}
-    NgSelectOption = __decorate([core_1.Directive({selector: 'option'}), __metadata('design:paramtypes', [])], NgSelectOption);
-    return NgSelectOption;
-  })();
-  exports.NgSelectOption = NgSelectOption;
+  function _buildValueString(id, value) {
+    if (!lang_1.isPrimitive(value))
+      value = "Object";
+    return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);
+  }
+  function _extractId(valueString) {
+    return valueString.split(":")[0];
+  }
   var SelectControlValueAccessor = (function() {
-    function SelectControlValueAccessor(_renderer, _elementRef, query) {
+    function SelectControlValueAccessor(_renderer, _elementRef) {
       this._renderer = _renderer;
       this._elementRef = _elementRef;
+      this._optionMap = new Map();
+      this._idCounter = 0;
       this.onChange = function(_) {};
       this.onTouched = function() {};
-      this._updateValueWhenListOfOptionsChanges(query);
     }
     SelectControlValueAccessor.prototype.writeValue = function(value) {
       this.value = value;
-      this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', value);
+      var valueString = _buildValueString(this._getOptionId(value), value);
+      this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', valueString);
     };
     SelectControlValueAccessor.prototype.registerOnChange = function(fn) {
-      this.onChange = fn;
+      var _this = this;
+      this.onChange = function(valueString) {
+        fn(_this._getOptionValue(valueString));
+      };
     };
     SelectControlValueAccessor.prototype.registerOnTouched = function(fn) {
       this.onTouched = fn;
     };
-    SelectControlValueAccessor.prototype._updateValueWhenListOfOptionsChanges = function(query) {
-      var _this = this;
-      async_1.ObservableWrapper.subscribe(query.changes, function(_) {
-        return _this.writeValue(_this.value);
-      });
+    SelectControlValueAccessor.prototype._registerOption = function() {
+      return (this._idCounter++).toString();
+    };
+    SelectControlValueAccessor.prototype._getOptionId = function(value) {
+      for (var _i = 0,
+          _a = collection_1.MapWrapper.keys(this._optionMap); _i < _a.length; _i++) {
+        var id = _a[_i];
+        if (lang_1.looseIdentical(this._optionMap.get(id), value))
+          return id;
+      }
+      return null;
+    };
+    SelectControlValueAccessor.prototype._getOptionValue = function(valueString) {
+      return this._optionMap.get(_extractId(valueString));
     };
     SelectControlValueAccessor = __decorate([core_1.Directive({
       selector: 'select[ngControl],select[ngFormControl],select[ngModel]',
@@ -9696,11 +9712,44 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
         '(input)': 'onChange($event.target.value)',
         '(blur)': 'onTouched()'
       },
-      bindings: [SELECT_VALUE_ACCESSOR]
-    }), __param(2, core_1.Query(NgSelectOption, {descendants: true})), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef, core_1.QueryList])], SelectControlValueAccessor);
+      providers: [SELECT_VALUE_ACCESSOR]
+    }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])], SelectControlValueAccessor);
     return SelectControlValueAccessor;
   })();
   exports.SelectControlValueAccessor = SelectControlValueAccessor;
+  var NgSelectOption = (function() {
+    function NgSelectOption(_element, _renderer, _select) {
+      this._element = _element;
+      this._renderer = _renderer;
+      this._select = _select;
+      if (lang_1.isPresent(this._select))
+        this.id = this._select._registerOption();
+    }
+    Object.defineProperty(NgSelectOption.prototype, "value", {
+      set: function(value) {
+        if (this._select == null)
+          return ;
+        this._select._optionMap.set(this.id, value);
+        this._setElementValue(_buildValueString(this.id, value));
+        this._select.writeValue(this._select.value);
+      },
+      enumerable: true,
+      configurable: true
+    });
+    NgSelectOption.prototype._setElementValue = function(value) {
+      this._renderer.setElementProperty(this._element.nativeElement, 'value', value);
+    };
+    NgSelectOption.prototype.ngOnDestroy = function() {
+      if (lang_1.isPresent(this._select)) {
+        this._select._optionMap.delete(this.id);
+        this._select.writeValue(this._select.value);
+      }
+    };
+    __decorate([core_1.Input(), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "value", null);
+    NgSelectOption = __decorate([core_1.Directive({selector: 'option'}), __param(2, core_1.Optional()), __param(2, core_1.Host()), __metadata('design:paramtypes', [core_1.ElementRef, core_1.Renderer, SelectControlValueAccessor])], NgSelectOption);
+    return NgSelectOption;
+  })();
+  exports.NgSelectOption = NgSelectOption;
   global.define = __define;
   return module.exports;
 });
