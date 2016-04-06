@@ -107,11 +107,5 @@ main() {
       var url = urlParser.parse("hello/there;sort=asc(modal)?friend=true");
       expect(url.toString()).toEqual("hello/there;sort=asc(modal)?friend=true");
     });
-    it("should allow slashes within query parameters", () {
-      var url = urlParser.parse(
-          "hello?code=4/B8o0n_Y7XZTb-pVKBw5daZyGAUbMljyLf7uNgTy6ja8&scope=https://www.googleapis.com/auth/analytics");
-      expect(url.toString()).toEqual(
-          "hello?code=4/B8o0n_Y7XZTb-pVKBw5daZyGAUbMljyLf7uNgTy6ja8&scope=https://www.googleapis.com/auth/analytics");
-    });
   });
 }
