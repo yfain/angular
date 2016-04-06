@@ -110,7 +110,7 @@ export let NgSelectOption = class {
     }
 };
 __decorate([
-    Input('ngValue'), 
+    Input('ng-value'), 
     __metadata('design:type', Object), 
     __metadata('design:paramtypes', [Object])
 ], NgSelectOption.prototype, "ngValue", null);
