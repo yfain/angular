@@ -36,6 +36,7 @@ export declare class NgSelectOption implements OnDestroy {
     private _select;
     id: string;
     constructor(_element: ElementRef, _renderer: Renderer, _select: SelectControlValueAccessor);
+    ngValue: any;
     value: any;
     _setElementValue(value: string): void;
     ngOnDestroy(): void;

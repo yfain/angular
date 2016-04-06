@@ -16441,6 +16441,8 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
     multi: true
   }));
   function _buildValueString(id, value) {
+    if (lang_1.isBlank(id))
+      return value.toString();
     if (!lang_1.isPrimitive(value))
       value = "Object";
     return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);
@@ -16484,7 +16486,8 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
       return null;
     };
     SelectControlValueAccessor.prototype._getOptionValue = function(valueString) {
-      return this._optionMap.get(_extractId(valueString));
+      var value = this._optionMap.get(_extractId(valueString));
+      return lang_1.isPresent(value) ? value : valueString;
     };
     SelectControlValueAccessor = __decorate([core_1.Directive({
       selector: 'select[ngControl],select[ngFormControl],select[ngModel]',
@@ -16505,12 +16508,22 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
       if (lang_1.isPresent(this._select))
         this.id = this._select._registerOption();
     }
-    Object.defineProperty(NgSelectOption.prototype, "value", {
+    Object.defineProperty(NgSelectOption.prototype, "ngValue", {
       set: function(value) {
         if (this._select == null)
           return ;
         this._select._optionMap.set(this.id, value);
         this._setElementValue(_buildValueString(this.id, value));
+        this._select.writeValue(this._select.value);
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgSelectOption.prototype, "value", {
+      set: function(value) {
+        if (this._select == null)
+          return ;
+        this._setElementValue(value);
         this._select.writeValue(this._select.value);
       },
       enumerable: true,
@@ -16525,7 +16538,8 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
         this._select.writeValue(this._select.value);
       }
     };
-    __decorate([core_1.Input(), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "value", null);
+    __decorate([core_1.Input('ng-value'), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "ngValue", null);
+    __decorate([core_1.Input('value'), __metadata('design:type', Object), __metadata('design:paramtypes', [Object])], NgSelectOption.prototype, "value", null);
     NgSelectOption = __decorate([core_1.Directive({selector: 'option'}), __param(2, core_1.Optional()), __param(2, core_1.Host()), __metadata('design:paramtypes', [core_1.ElementRef, core_1.Renderer, SelectControlValueAccessor])], NgSelectOption);
     return NgSelectOption;
   })();

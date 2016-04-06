@@ -20814,6 +20814,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var collection_1 = __webpack_require__(12);
 	var SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return SelectControlValueAccessor; }), multi: true }));
 	function _buildValueString(id, value) {
+	    if (lang_1.isBlank(id))
+	        return value.toString();
 	    if (!lang_1.isPrimitive(value))
 	        value = "Object";
 	    return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);
@@ -20852,7 +20854,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return null;
 	    };
-	    SelectControlValueAccessor.prototype._getOptionValue = function (valueString) { return this._optionMap.get(_extractId(valueString)); };
+	    SelectControlValueAccessor.prototype._getOptionValue = function (valueString) {
+	        var value = this._optionMap.get(_extractId(valueString));
+	        return lang_1.isPresent(value) ? value : valueString;
+	    };
 	    SelectControlValueAccessor = __decorate([
 	        core_1.Directive({
 	            selector: 'select[ngControl],select[ngFormControl],select[ngModel]',
@@ -20883,12 +20888,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(this._select))
 	            this.id = this._select._registerOption();
 	    }
-	    Object.defineProperty(NgSelectOption.prototype, "value", {
+	    Object.defineProperty(NgSelectOption.prototype, "ngValue", {
 	        set: function (value) {
 	            if (this._select == null)
 	                return;
 	            this._select._optionMap.set(this.id, value);
 	            this._setElementValue(_buildValueString(this.id, value));
+	            this._select.writeValue(this._select.value);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(NgSelectOption.prototype, "value", {
+	        set: function (value) {
+	            if (this._select == null)
+	                return;
+	            this._setElementValue(value);
 	            this._select.writeValue(this._select.value);
 	        },
 	        enumerable: true,
@@ -20904,7 +20919,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    __decorate([
-	        core_1.Input(), 
+	        core_1.Input('ng-value'), 
+	        __metadata('design:type', Object), 
+	        __metadata('design:paramtypes', [Object])
+	    ], NgSelectOption.prototype, "ngValue", null);
+	    __decorate([
+	        core_1.Input('value'), 
 	        __metadata('design:type', Object), 
 	        __metadata('design:paramtypes', [Object])
 	    ], NgSelectOption.prototype, "value", null);

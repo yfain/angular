@@ -12,10 +12,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { Directive, Renderer, forwardRef, Provider, ElementRef, Input, Host, Optional } from 'angular2/core';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
-import { CONST_EXPR, StringWrapper, isPrimitive, isPresent, looseIdentical } from 'angular2/src/facade/lang';
+import { CONST_EXPR, StringWrapper, isPrimitive, isPresent, isBlank, looseIdentical } from 'angular2/src/facade/lang';
 import { MapWrapper } from 'angular2/src/facade/collection';
 const SELECT_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => SelectControlValueAccessor), multi: true }));
 function _buildValueString(id, value) {
+    if (isBlank(id))
+        return value.toString();
     if (!isPrimitive(value))
         value = "Object";
     return StringWrapper.slice(`${id}: ${value}`, 0, 50);
@@ -52,7 +54,10 @@ export let SelectControlValueAccessor = class {
         }
         return null;
     }
-    _getOptionValue(valueString) { return this._optionMap.get(_extractId(valueString)); }
+    _getOptionValue(valueString) {
+        let value = this._optionMap.get(_extractId(valueString));
+        return isPresent(value) ? value : valueString;
+    }
 };
 SelectControlValueAccessor = __decorate([
     Directive({
@@ -81,11 +86,17 @@ export let NgSelectOption = class {
         if (isPresent(this._select))
             this.id = this._select._registerOption();
     }
-    set value(value) {
+    set ngValue(value) {
         if (this._select == null)
             return;
         this._select._optionMap.set(this.id, value);
         this._setElementValue(_buildValueString(this.id, value));
+        this._select.writeValue(this._select.value);
+    }
+    set value(value) {
+        if (this._select == null)
+            return;
+        this._setElementValue(value);
         this._select.writeValue(this._select.value);
     }
     _setElementValue(value) {
@@ -99,7 +110,12 @@ export let NgSelectOption = class {
     }
 };
 __decorate([
-    Input(), 
+    Input('ng-value'), 
+    __metadata('design:type', Object), 
+    __metadata('design:paramtypes', [Object])
+], NgSelectOption.prototype, "ngValue", null);
+__decorate([
+    Input('value'), 
     __metadata('design:type', Object), 
     __metadata('design:paramtypes', [Object])
 ], NgSelectOption.prototype, "value", null);
