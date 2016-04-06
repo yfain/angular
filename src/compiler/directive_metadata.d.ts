@@ -3,36 +3,36 @@ import { ChangeDetectionStrategy } from 'angular2/src/core/change_detection/chan
 import { ViewEncapsulation } from 'angular2/src/core/metadata/view';
 import { LifecycleHooks } from 'angular2/src/core/linker/interfaces';
 export declare abstract class CompileMetadataWithIdentifier {
+    static fromJson(data: {
+        [key: string]: any;
+    }): CompileMetadataWithIdentifier;
     abstract toJson(): {
         [key: string]: any;
     };
     identifier: CompileIdentifierMetadata;
 }
 export declare abstract class CompileMetadataWithType extends CompileMetadataWithIdentifier {
+    static fromJson(data: {
+        [key: string]: any;
+    }): CompileMetadataWithType;
     abstract toJson(): {
         [key: string]: any;
     };
     type: CompileTypeMetadata;
     identifier: CompileIdentifierMetadata;
 }
-export declare function metadataFromJson(data: {
-    [key: string]: any;
-}): any;
 export declare class CompileIdentifierMetadata implements CompileMetadataWithIdentifier {
     runtime: any;
     name: string;
     prefix: string;
     moduleUrl: string;
     constConstructor: boolean;
-    value: any;
-    constructor({runtime, name, moduleUrl, prefix, constConstructor, value}?: {
+    constructor({runtime, name, moduleUrl, prefix, constConstructor}?: {
         runtime?: any;
         name?: string;
-        staticMethodName?: string;
         moduleUrl?: string;
         prefix?: string;
         constConstructor?: boolean;
-        value?: any;
     });
     static fromJson(data: {
         [key: string]: any;
@@ -92,30 +92,22 @@ export declare class CompileProviderMetadata {
         [key: string]: any;
     };
 }
-export declare class CompileFactoryMetadata implements CompileIdentifierMetadata, CompileMetadataWithIdentifier {
+export declare class CompileFactoryMetadata implements CompileIdentifierMetadata {
     runtime: Function;
     name: string;
     prefix: string;
     moduleUrl: string;
     constConstructor: boolean;
-    value: any;
     diDeps: CompileDiDependencyMetadata[];
-    constructor({runtime, name, moduleUrl, prefix, constConstructor, diDeps, value}: {
+    constructor({runtime, name, moduleUrl, constConstructor, diDeps}: {
         runtime?: Function;
         name?: string;
-        prefix?: string;
         moduleUrl?: string;
         constConstructor?: boolean;
-        value?: boolean;
         diDeps?: CompileDiDependencyMetadata[];
     });
     identifier: CompileIdentifierMetadata;
-    static fromJson(data: {
-        [key: string]: any;
-    }): CompileFactoryMetadata;
-    toJson(): {
-        [key: string]: any;
-    };
+    toJson(): any;
 }
 /**
  * Metadata regarding compilation of a type.
@@ -127,16 +119,14 @@ export declare class CompileTypeMetadata implements CompileIdentifierMetadata, C
     moduleUrl: string;
     isHost: boolean;
     constConstructor: boolean;
-    value: any;
     diDeps: CompileDiDependencyMetadata[];
-    constructor({runtime, name, moduleUrl, prefix, isHost, constConstructor, value, diDeps}?: {
+    constructor({runtime, name, moduleUrl, prefix, isHost, constConstructor, diDeps}?: {
         runtime?: Type;
         name?: string;
         moduleUrl?: string;
         prefix?: string;
         isHost?: boolean;
         constConstructor?: boolean;
-        value?: any;
         diDeps?: CompileDiDependencyMetadata[];
     });
     static fromJson(data: {
@@ -208,8 +198,8 @@ export declare class CompileDirectiveMetadata implements CompileMetadataWithType
             [key: string]: string;
         };
         lifecycleHooks?: LifecycleHooks[];
-        providers?: Array<CompileProviderMetadata | CompileTypeMetadata | CompileIdentifierMetadata | any[]>;
-        viewProviders?: Array<CompileProviderMetadata | CompileTypeMetadata | CompileIdentifierMetadata | any[]>;
+        providers?: Array<CompileProviderMetadata | CompileTypeMetadata | any[]>;
+        viewProviders?: Array<CompileProviderMetadata | CompileTypeMetadata | any[]>;
         queries?: CompileQueryMetadata[];
         viewQueries?: CompileQueryMetadata[];
         template?: CompileTemplateMetadata;
@@ -264,8 +254,8 @@ export declare class CompileDirectiveMetadata implements CompileMetadataWithType
             [key: string]: string;
         };
         lifecycleHooks?: LifecycleHooks[];
-        providers?: Array<CompileProviderMetadata | CompileTypeMetadata | CompileIdentifierMetadata | any[]>;
-        viewProviders?: Array<CompileProviderMetadata | CompileTypeMetadata | CompileIdentifierMetadata | any[]>;
+        providers?: Array<CompileProviderMetadata | CompileTypeMetadata | any[]>;
+        viewProviders?: Array<CompileProviderMetadata | CompileTypeMetadata | any[]>;
         queries?: CompileQueryMetadata[];
         viewQueries?: CompileQueryMetadata[];
         template?: CompileTemplateMetadata;

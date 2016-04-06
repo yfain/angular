@@ -1519,14 +1519,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return obj === undefined || obj === null;
 	}
 	exports.isBlank = isBlank;
-	function isBoolean(obj) {
-	    return typeof obj === "boolean";
-	}
-	exports.isBoolean = isBoolean;
-	function isNumber(obj) {
-	    return typeof obj === "number";
-	}
-	exports.isNumber = isNumber;
 	function isString(obj) {
 	    return typeof obj === "string";
 	}
@@ -1551,6 +1543,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Array.isArray(obj);
 	}
 	exports.isArray = isArray;
+	function isNumber(obj) {
+	    return typeof obj === 'number';
+	}
+	exports.isNumber = isNumber;
 	function isDate(obj) {
 	    return obj instanceof exports.Date && !isNaN(obj.valueOf());
 	}
@@ -22876,9 +22872,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            hostAttributes: directive.hostAttributes,
 	            lifecycleHooks: directive.lifecycleHooks,
 	            providers: directive.providers,
-	            viewProviders: directive.viewProviders,
-	            queries: directive.queries,
-	            viewQueries: directive.viewQueries,
 	            template: normalizedTemplate
 	        }); });
 	    };
@@ -23181,6 +23174,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var CompileMetadataWithIdentifier = (function () {
 	    function CompileMetadataWithIdentifier() {
 	    }
+	    CompileMetadataWithIdentifier.fromJson = function (data) {
+	        return _COMPILE_METADATA_FROM_JSON[data['class']](data);
+	    };
 	    Object.defineProperty(CompileMetadataWithIdentifier.prototype, "identifier", {
 	        get: function () { return exceptions_1.unimplemented(); },
 	        enumerable: true,
@@ -23194,6 +23190,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function CompileMetadataWithType() {
 	        _super.apply(this, arguments);
 	    }
+	    CompileMetadataWithType.fromJson = function (data) {
+	        return _COMPILE_METADATA_FROM_JSON[data['class']](data);
+	    };
 	    Object.defineProperty(CompileMetadataWithType.prototype, "type", {
 	        get: function () { return exceptions_1.unimplemented(); },
 	        enumerable: true,
@@ -23207,41 +23206,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return CompileMetadataWithType;
 	})(CompileMetadataWithIdentifier);
 	exports.CompileMetadataWithType = CompileMetadataWithType;
-	function metadataFromJson(data) {
-	    return _COMPILE_METADATA_FROM_JSON[data['class']](data);
-	}
-	exports.metadataFromJson = metadataFromJson;
 	var CompileIdentifierMetadata = (function () {
 	    function CompileIdentifierMetadata(_a) {
-	        var _b = _a === void 0 ? {} : _a, runtime = _b.runtime, name = _b.name, moduleUrl = _b.moduleUrl, prefix = _b.prefix, constConstructor = _b.constConstructor, value = _b.value;
+	        var _b = _a === void 0 ? {} : _a, runtime = _b.runtime, name = _b.name, moduleUrl = _b.moduleUrl, prefix = _b.prefix, constConstructor = _b.constConstructor;
 	        this.runtime = runtime;
 	        this.name = name;
 	        this.prefix = prefix;
 	        this.moduleUrl = moduleUrl;
 	        this.constConstructor = constConstructor;
-	        this.value = value;
 	    }
 	    CompileIdentifierMetadata.fromJson = function (data) {
-	        var value = lang_1.isArray(data['value']) ? arrayFromJson(data['value'], metadataFromJson) :
-	            objFromJson(data['value'], metadataFromJson);
 	        return new CompileIdentifierMetadata({
 	            name: data['name'],
 	            prefix: data['prefix'],
 	            moduleUrl: data['moduleUrl'],
-	            constConstructor: data['constConstructor'],
-	            value: value
+	            constConstructor: data['constConstructor']
 	        });
 	    };
 	    CompileIdentifierMetadata.prototype.toJson = function () {
-	        var value = lang_1.isArray(this.value) ? arrayToJson(this.value) : objToJson(this.value);
 	        return {
 	            // Note: Runtime type can't be serialized...
 	            'class': 'Identifier',
 	            'name': this.name,
 	            'moduleUrl': this.moduleUrl,
 	            'prefix': this.prefix,
-	            'constConstructor': this.constConstructor,
-	            'value': value
+	            'constConstructor': this.constConstructor
 	        };
 	    };
 	    Object.defineProperty(CompileIdentifierMetadata.prototype, "identifier", {
@@ -23306,21 +23295,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    CompileProviderMetadata.fromJson = function (data) {
 	        return new CompileProviderMetadata({
 	            token: objFromJson(data['token'], CompileIdentifierMetadata.fromJson),
-	            useClass: objFromJson(data['useClass'], CompileTypeMetadata.fromJson),
-	            useExisting: objFromJson(data['useExisting'], CompileIdentifierMetadata.fromJson),
-	            useValue: objFromJson(data['useValue'], CompileIdentifierMetadata.fromJson),
-	            useFactory: objFromJson(data['useFactory'], CompileFactoryMetadata.fromJson)
+	            useClass: objFromJson(data['useClass'], CompileTypeMetadata.fromJson)
 	        });
 	    };
 	    CompileProviderMetadata.prototype.toJson = function () {
 	        return {
 	            // Note: Runtime type can't be serialized...
-	            'class': 'Provider',
 	            'token': objToJson(this.token),
-	            'useClass': objToJson(this.useClass),
-	            'useExisting': objToJson(this.useExisting),
-	            'useValue': objToJson(this.useValue),
-	            'useFactory': objToJson(this.useFactory)
+	            'useClass': objToJson(this.useClass)
 	        };
 	    };
 	    return CompileProviderMetadata;
@@ -23328,41 +23310,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.CompileProviderMetadata = CompileProviderMetadata;
 	var CompileFactoryMetadata = (function () {
 	    function CompileFactoryMetadata(_a) {
-	        var runtime = _a.runtime, name = _a.name, moduleUrl = _a.moduleUrl, prefix = _a.prefix, constConstructor = _a.constConstructor, diDeps = _a.diDeps, value = _a.value;
+	        var runtime = _a.runtime, name = _a.name, moduleUrl = _a.moduleUrl, constConstructor = _a.constConstructor, diDeps = _a.diDeps;
 	        this.runtime = runtime;
 	        this.name = name;
-	        this.prefix = prefix;
 	        this.moduleUrl = moduleUrl;
 	        this.diDeps = diDeps;
 	        this.constConstructor = constConstructor;
-	        this.value = value;
 	    }
 	    Object.defineProperty(CompileFactoryMetadata.prototype, "identifier", {
 	        get: function () { return this; },
 	        enumerable: true,
 	        configurable: true
 	    });
-	    CompileFactoryMetadata.fromJson = function (data) {
-	        return new CompileFactoryMetadata({
-	            name: data['name'],
-	            prefix: data['prefix'],
-	            moduleUrl: data['moduleUrl'],
-	            constConstructor: data['constConstructor'],
-	            value: data['value'],
-	            diDeps: arrayFromJson(data['diDeps'], CompileDiDependencyMetadata.fromJson)
-	        });
-	    };
-	    CompileFactoryMetadata.prototype.toJson = function () {
-	        return {
-	            'class': 'Factory',
-	            'name': this.name,
-	            'prefix': this.prefix,
-	            'moduleUrl': this.moduleUrl,
-	            'constConstructor': this.constConstructor,
-	            'value': this.value,
-	            'diDeps': arrayToJson(this.diDeps)
-	        };
-	    };
+	    CompileFactoryMetadata.prototype.toJson = function () { return null; };
 	    return CompileFactoryMetadata;
 	})();
 	exports.CompileFactoryMetadata = CompileFactoryMetadata;
@@ -23371,14 +23331,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var CompileTypeMetadata = (function () {
 	    function CompileTypeMetadata(_a) {
-	        var _b = _a === void 0 ? {} : _a, runtime = _b.runtime, name = _b.name, moduleUrl = _b.moduleUrl, prefix = _b.prefix, isHost = _b.isHost, constConstructor = _b.constConstructor, value = _b.value, diDeps = _b.diDeps;
+	        var _b = _a === void 0 ? {} : _a, runtime = _b.runtime, name = _b.name, moduleUrl = _b.moduleUrl, prefix = _b.prefix, isHost = _b.isHost, constConstructor = _b.constConstructor, diDeps = _b.diDeps;
 	        this.runtime = runtime;
 	        this.name = name;
 	        this.moduleUrl = moduleUrl;
 	        this.prefix = prefix;
 	        this.isHost = lang_1.normalizeBool(isHost);
 	        this.constConstructor = constConstructor;
-	        this.value = value;
 	        this.diDeps = lang_1.normalizeBlank(diDeps);
 	    }
 	    CompileTypeMetadata.fromJson = function (data) {
@@ -23388,7 +23347,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            prefix: data['prefix'],
 	            isHost: data['isHost'],
 	            constConstructor: data['constConstructor'],
-	            value: data['value'],
 	            diDeps: arrayFromJson(data['diDeps'], CompileDiDependencyMetadata.fromJson)
 	        });
 	    };
@@ -23411,7 +23369,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'prefix': this.prefix,
 	            'isHost': this.isHost,
 	            'constConstructor': this.constConstructor,
-	            'value': this.value,
 	            'diDeps': arrayToJson(this.diDeps)
 	        };
 	    };
@@ -23504,8 +23461,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.lifecycleHooks = lifecycleHooks;
 	        this.providers = lang_1.normalizeBlank(providers);
 	        this.viewProviders = lang_1.normalizeBlank(viewProviders);
-	        this.queries = lang_1.normalizeBlank(queries);
-	        this.viewQueries = lang_1.normalizeBlank(viewQueries);
+	        this.queries = queries;
+	        this.viewQueries = viewQueries;
 	        this.template = template;
 	    }
 	    CompileDirectiveMetadata.create = function (_a) {
@@ -23588,10 +23545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            lifecycleHooks: data['lifecycleHooks'].map(function (hookValue) { return interfaces_1.LIFECYCLE_HOOKS_VALUES[hookValue]; }),
 	            template: lang_1.isPresent(data['template']) ? CompileTemplateMetadata.fromJson(data['template']) :
 	                data['template'],
-	            providers: arrayFromJson(data['providers'], metadataFromJson),
-	            viewProviders: arrayFromJson(data['viewProviders'], metadataFromJson),
-	            queries: arrayFromJson(data['queries'], CompileQueryMetadata.fromJson),
-	            viewQueries: arrayFromJson(data['viewQueries'], CompileQueryMetadata.fromJson)
+	            providers: arrayFromJson(data['providers'], CompileProviderMetadata.fromJson)
 	        });
 	    };
 	    CompileDirectiveMetadata.prototype.toJson = function () {
@@ -23611,10 +23565,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'hostAttributes': this.hostAttributes,
 	            'lifecycleHooks': this.lifecycleHooks.map(function (hook) { return lang_1.serializeEnum(hook); }),
 	            'template': lang_1.isPresent(this.template) ? this.template.toJson() : this.template,
-	            'providers': arrayToJson(this.providers),
-	            'viewProviders': arrayToJson(this.viewProviders),
-	            'queries': arrayToJson(this.queries),
-	            'viewQueries': arrayToJson(this.viewQueries)
+	            'providers': arrayToJson(this.providers)
 	        };
 	    };
 	    return CompileDirectiveMetadata;
@@ -23682,9 +23633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'Directive': CompileDirectiveMetadata.fromJson,
 	    'Pipe': CompilePipeMetadata.fromJson,
 	    'Type': CompileTypeMetadata.fromJson,
-	    'Provider': CompileProviderMetadata.fromJson,
-	    'Identifier': CompileIdentifierMetadata.fromJson,
-	    'Factory': CompileFactoryMetadata.fromJson
+	    'Identifier': CompileIdentifierMetadata.fromJson
 	};
 	function arrayFromJson(obj, fn) {
 	    return lang_1.isBlank(obj) ? null : obj.map(function (o) { return objFromJson(o, fn); });
@@ -23693,10 +23642,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return lang_1.isBlank(obj) ? null : obj.map(objToJson);
 	}
 	function objFromJson(obj, fn) {
-	    return (lang_1.isString(obj) || lang_1.isBlank(obj) || lang_1.isBoolean(obj) || lang_1.isNumber(obj)) ? obj : fn(obj);
+	    return (lang_1.isString(obj) || lang_1.isBlank(obj)) ? obj : fn(obj);
 	}
 	function objToJson(obj) {
-	    return (lang_1.isString(obj) || lang_1.isBlank(obj) || lang_1.isBoolean(obj) || lang_1.isNumber(obj)) ? obj : obj.toJson();
+	    return (lang_1.isString(obj) || lang_1.isBlank(obj)) ? obj : obj.toJson();
 	}
 
 
