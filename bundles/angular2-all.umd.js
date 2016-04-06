@@ -20815,7 +20815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return SelectControlValueAccessor; }), multi: true }));
 	function _buildValueString(id, value) {
 	    if (lang_1.isBlank(id))
-	        return value.toString();
+	        return "" + value;
 	    if (!lang_1.isPrimitive(value))
 	        value = "Object";
 	    return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);

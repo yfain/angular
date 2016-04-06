@@ -25,7 +25,7 @@ const SELECT_VALUE_ACCESSOR = CONST_EXPR(new Provider(
     NG_VALUE_ACCESSOR, {useExisting: forwardRef(() => SelectControlValueAccessor), multi: true}));
 
 function _buildValueString(id: string, value: any): string {
-  if (isBlank(id)) return value.toString();
+  if (isBlank(id)) return `${value}`;
   if (!isPrimitive(value)) value = "Object";
   return StringWrapper.slice(`${id}: ${value}`, 0, 50);
 }

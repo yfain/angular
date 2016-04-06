@@ -9662,7 +9662,7 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
   }));
   function _buildValueString(id, value) {
     if (lang_1.isBlank(id))
-      return value.toString();
+      return "" + value;
     if (!lang_1.isPrimitive(value))
       value = "Object";
     return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);
