@@ -1,13 +1,85 @@
 library angular2.src.common.forms.directives.select_control_value_accessor;
 
 import "package:angular2/core.dart"
-    show Query, Directive, Renderer, Self, Provider, ElementRef, QueryList;
-import "package:angular2/src/facade/async.dart" show ObservableWrapper;
+    show
+        Directive,
+        Renderer,
+        Provider,
+        ElementRef,
+        Input,
+        Host,
+        OnDestroy,
+        Optional;
 import "control_value_accessor.dart"
     show NG_VALUE_ACCESSOR, ControlValueAccessor;
+import "package:angular2/src/facade/lang.dart"
+    show StringWrapper, isPrimitive, isPresent, looseIdentical;
+import "package:angular2/src/facade/collection.dart" show MapWrapper;
 
 const SELECT_VALUE_ACCESSOR = const Provider(NG_VALUE_ACCESSOR,
     useExisting: SelectControlValueAccessor, multi: true);
+String _buildValueString(String id, dynamic value) {
+  if (!isPrimitive(value)) value = "Object";
+  return StringWrapper.slice('''${ id}: ${ value}''', 0, 50);
+}
+
+String _extractId(String valueString) {
+  return valueString.split(":")[0];
+}
+
+/**
+ * The accessor for writing a value and listening to changes on a select element.
+ */
+@Directive(
+    selector: "select[ngControl],select[ngFormControl],select[ngModel]",
+    host: const {
+      "(input)": "onChange(\$event.target.value)",
+      "(blur)": "onTouched()"
+    },
+    providers: const [
+      SELECT_VALUE_ACCESSOR
+    ])
+class SelectControlValueAccessor implements ControlValueAccessor {
+  Renderer _renderer;
+  ElementRef _elementRef;
+  dynamic value;
+  Map<String, dynamic> _optionMap = new Map<String, dynamic>();
+  num _idCounter = 0;
+  var onChange = (dynamic _) {};
+  var onTouched = () {};
+  SelectControlValueAccessor(this._renderer, this._elementRef) {}
+  void writeValue(dynamic value) {
+    this.value = value;
+    var valueString = _buildValueString(this._getOptionId(value), value);
+    this._renderer.setElementProperty(
+        this._elementRef.nativeElement, "value", valueString);
+  }
+
+  void registerOnChange(dynamic /* (value: any) => any */ fn) {
+    this.onChange = (String valueString) {
+      fn(this._getOptionValue(valueString));
+    };
+  }
+
+  void registerOnTouched(dynamic /* () => any */ fn) {
+    this.onTouched = fn;
+  }
+
+  String _registerOption() {
+    return (this._idCounter++).toString();
+  }
+
+  String _getOptionId(dynamic value) {
+    for (var id in MapWrapper.keys(this._optionMap)) {
+      if (looseIdentical(this._optionMap[id], value)) return id;
+    }
+    return null;
+  }
+
+  dynamic _getOptionValue(String valueString) {
+    return this._optionMap[_extractId(valueString)];
+  }
+}
 
 /**
  * Marks `<option>` as dynamic, so Angular can be notified when options change.
@@ -21,50 +93,34 @@ const SELECT_VALUE_ACCESSOR = const Provider(NG_VALUE_ACCESSOR,
  * ```
  */
 @Directive(selector: "option")
-class NgSelectOption {}
-
-/**
- * The accessor for writing a value and listening to changes on a select element.
- */
-@Directive(
-    selector: "select[ngControl],select[ngFormControl],select[ngModel]",
-    host: const {
-      "(input)": "onChange(\$event.target.value)",
-      "(blur)": "onTouched()"
-    },
-    bindings: const [
-      SELECT_VALUE_ACCESSOR
-    ])
-class SelectControlValueAccessor implements ControlValueAccessor {
+class NgSelectOption implements OnDestroy {
+  ElementRef _element;
   Renderer _renderer;
-  ElementRef _elementRef;
-  String value;
-  var onChange = (dynamic _) {};
-  var onTouched = () {};
-  SelectControlValueAccessor(
-      this._renderer,
-      this._elementRef,
-      @Query(NgSelectOption, descendants: true)
-          QueryList<NgSelectOption> query) {
-    this._updateValueWhenListOfOptionsChanges(query);
+  SelectControlValueAccessor _select;
+  String id;
+  NgSelectOption(
+      this._element, this._renderer, @Optional() @Host() this._select) {
+    if (isPresent(this._select)) this.id = this._select._registerOption();
   }
-  void writeValue(dynamic value) {
-    this.value = value;
+  @Input()
+  set value(dynamic value) {
+    if (this._select == null) return;
+    this._select._optionMap[this.id] = value;
+    this._setElementValue(_buildValueString(this.id, value));
+    this._select.writeValue(this._select.value);
+  }
+
+  void _setElementValue(String value) {
     this
         ._renderer
-        .setElementProperty(this._elementRef.nativeElement, "value", value);
+        .setElementProperty(this._element.nativeElement, "value", value);
   }
 
-  void registerOnChange(dynamic /* () => any */ fn) {
-    this.onChange = fn;
-  }
-
-  void registerOnTouched(dynamic /* () => any */ fn) {
-    this.onTouched = fn;
-  }
-
-  _updateValueWhenListOfOptionsChanges(QueryList<NgSelectOption> query) {
-    ObservableWrapper.subscribe(
-        query.changes, (_) => this.writeValue(this.value));
+  ngOnDestroy() {
+    if (isPresent(this._select)) {
+      (this._select._optionMap.containsKey(this.id) &&
+          (this._select._optionMap.remove(this.id) != null || true));
+      this._select.writeValue(this._select.value);
+    }
   }
 }
