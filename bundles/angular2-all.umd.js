@@ -34674,11 +34674,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var match = lang_1.RegExpWrapper.firstMatch(SEGMENT_RE, str);
 	    return lang_1.isPresent(match) ? match[0] : '';
 	}
-	var QUERY_PARAM_VALUE_RE = lang_1.RegExpWrapper.create('^[^\\(\\)\\?;&#]+');
-	function matchUrlQueryParamValue(str) {
-	    var match = lang_1.RegExpWrapper.firstMatch(QUERY_PARAM_VALUE_RE, str);
-	    return lang_1.isPresent(match) ? match[0] : '';
-	}
 	var UrlParser = (function () {
 	    function UrlParser() {
 	    }
@@ -34750,10 +34745,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    UrlParser.prototype.parseQueryParams = function () {
 	        var params = {};
 	        this.capture('?');
-	        this.parseQueryParam(params);
+	        this.parseParam(params);
 	        while (this._remaining.length > 0 && this.peekStartsWith('&')) {
 	            this.capture('&');
-	            this.parseQueryParam(params);
+	            this.parseParam(params);
 	        }
 	        return params;
 	    };
@@ -34775,23 +34770,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.peekStartsWith('=')) {
 	            this.capture('=');
 	            var valueMatch = matchUrlSegment(this._remaining);
-	            if (lang_1.isPresent(valueMatch)) {
-	                value = valueMatch;
-	                this.capture(value);
-	            }
-	        }
-	        params[key] = value;
-	    };
-	    UrlParser.prototype.parseQueryParam = function (params) {
-	        var key = matchUrlSegment(this._remaining);
-	        if (lang_1.isBlank(key)) {
-	            return;
-	        }
-	        this.capture(key);
-	        var value = true;
-	        if (this.peekStartsWith('=')) {
-	            this.capture('=');
-	            var valueMatch = matchUrlQueryParamValue(this._remaining);
 	            if (lang_1.isPresent(valueMatch)) {
 	                value = valueMatch;
 	                this.capture(value);
