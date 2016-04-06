@@ -19,7 +19,7 @@ import "package:angular2/src/facade/collection.dart" show MapWrapper;
 const SELECT_VALUE_ACCESSOR = const Provider(NG_VALUE_ACCESSOR,
     useExisting: SelectControlValueAccessor, multi: true);
 String _buildValueString(String id, dynamic value) {
-  if (isBlank(id)) return value.toString();
+  if (isBlank(id)) return '''${ value}''';
   if (!isPrimitive(value)) value = "Object";
   return StringWrapper.slice('''${ id}: ${ value}''', 0, 50);
 }
