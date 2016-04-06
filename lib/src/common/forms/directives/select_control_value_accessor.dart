@@ -104,7 +104,7 @@ class NgSelectOption implements OnDestroy {
       this._element, this._renderer, @Optional() @Host() this._select) {
     if (isPresent(this._select)) this.id = this._select._registerOption();
   }
-  @Input("ng-value")
+  @Input("ngValue")
   set ngValue(dynamic value) {
     if (this._select == null) return;
     this._select._optionMap[this.id] = value;
