@@ -14129,6 +14129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._ngZone = _ngZone;
 	        /** @internal */
 	        this._pendingCount = 0;
+	        /** @internal */
 	        this._isZoneStable = true;
 	        /**
 	         * Whether any work was done since the last 'whenStable' callback. This is
@@ -31172,7 +31173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(debugParent) && debugParent instanceof debug_node_1.DebugElement) {
 	            nodes.forEach(function (node) { debugParent.addChild(debug_node_1.getDebugNode(node)); });
 	        }
-	        return this._delegate.projectNodes(parentElement, nodes);
+	        this._delegate.projectNodes(parentElement, nodes);
 	    };
 	    DebugDomRenderer.prototype.attachViewAfter = function (node, viewRootNodes) {
 	        var debugNode = debug_node_1.getDebugNode(node);
@@ -31184,7 +31185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
 	            }
 	        }
-	        return this._delegate.attachViewAfter(node, viewRootNodes);
+	        this._delegate.attachViewAfter(node, viewRootNodes);
 	    };
 	    DebugDomRenderer.prototype.detachView = function (viewRootNodes) {
 	        viewRootNodes.forEach(function (node) {
@@ -31193,11 +31194,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                debugNode.parent.removeChild(debugNode);
 	            }
 	        });
-	        return this._delegate.detachView(viewRootNodes);
+	        this._delegate.detachView(viewRootNodes);
 	    };
 	    DebugDomRenderer.prototype.destroyView = function (hostElement, viewAllNodes) {
 	        viewAllNodes.forEach(function (node) { debug_node_1.removeDebugNodeFromIndex(debug_node_1.getDebugNode(node)); });
-	        return this._delegate.destroyView(hostElement, viewAllNodes);
+	        this._delegate.destroyView(hostElement, viewAllNodes);
 	    };
 	    DebugDomRenderer.prototype.listen = function (renderElement, name, callback) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
@@ -31214,21 +31215,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
 	            debugEl.properties.set(propertyName, propertyValue);
 	        }
-	        return this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
+	        this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
 	    };
 	    DebugDomRenderer.prototype.setElementAttribute = function (renderElement, attributeName, attributeValue) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
 	        if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
 	            debugEl.attributes.set(attributeName, attributeValue);
 	        }
-	        return this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
+	        this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
 	    };
 	    /**
 	     * Used only in debug mode to serialize property changes to comment nodes,
 	     * such as <template> placeholders.
 	     */
 	    DebugDomRenderer.prototype.setBindingDebugInfo = function (renderElement, propertyName, propertyValue) {
-	        return this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
+	        this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
 	    };
 	    /**
 	     * Used only in development mode to set information needed by the DebugNode for this element.
@@ -31236,18 +31237,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DebugDomRenderer.prototype.setElementDebugInfo = function (renderElement, info) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
 	        debugEl.setDebugInfo(info);
-	        return this._delegate.setElementDebugInfo(renderElement, info);
+	        this._delegate.setElementDebugInfo(renderElement, info);
 	    };
 	    DebugDomRenderer.prototype.setElementClass = function (renderElement, className, isAdd) {
-	        return this._delegate.setElementClass(renderElement, className, isAdd);
+	        this._delegate.setElementClass(renderElement, className, isAdd);
 	    };
 	    DebugDomRenderer.prototype.setElementStyle = function (renderElement, styleName, styleValue) {
-	        return this._delegate.setElementStyle(renderElement, styleName, styleValue);
+	        this._delegate.setElementStyle(renderElement, styleName, styleValue);
 	    };
 	    DebugDomRenderer.prototype.invokeElementMethod = function (renderElement, methodName, args) {
-	        return this._delegate.invokeElementMethod(renderElement, methodName, args);
+	        this._delegate.invokeElementMethod(renderElement, methodName, args);
 	    };
-	    DebugDomRenderer.prototype.setText = function (renderNode, text) { return this._delegate.setText(renderNode, text); };
+	    DebugDomRenderer.prototype.setText = function (renderNode, text) { this._delegate.setText(renderNode, text); };
 	    return DebugDomRenderer;
 	})();
 	exports.DebugDomRenderer = DebugDomRenderer;
@@ -33474,6 +33475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    Router.prototype._emitNavigationFinish = function (url) { async_1.ObservableWrapper.callEmit(this._subject, url); };
+	    /** @internal */
 	    Router.prototype._emitNavigationFail = function (url) { async_1.ObservableWrapper.callError(this._subject, url); };
 	    Router.prototype._afterPromiseFinishNavigating = function (promise) {
 	        var _this = this;
@@ -38100,7 +38102,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        return new UpgradeNg1ComponentAdapter(self.linkFn, scope, self.directive, elementRef, self.$controller, self.inputs, self.outputs, self.propertyOutputs, self.checkProperties, self.propertyMap);
 	                    }
 	                ],
-	                ngOnInit: function () { },
 	                ngOnChanges: function () { },
 	                ngDoCheck: function () { }
 	            });
@@ -38151,8 +38152,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            this.propertyMap[outputName] = localName;
 	                        // don't break; let it fall through to '@'
 	                        case '@':
-	                        // handle the '<' binding of angular 1.5 components
-	                        case '<':
 	                            this.inputs.push(inputName);
 	                            this.inputsRename.push(inputNameRename);
 	                            this.propertyMap[inputName] = localName;
@@ -38279,11 +38278,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.checkLastValues.push(INITIAL_VALUE);
 	        }
 	    }
-	    UpgradeNg1ComponentAdapter.prototype.ngOnInit = function () {
-	        if (this.destinationObj.$onInit) {
-	            this.destinationObj.$onInit();
-	        }
-	    };
 	    UpgradeNg1ComponentAdapter.prototype.ngOnChanges = function (changes) {
 	        for (var name in changes) {
 	            if (changes.hasOwnProperty(name)) {

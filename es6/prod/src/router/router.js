@@ -229,6 +229,7 @@ export let Router = class {
         });
     }
     _emitNavigationFinish(url) { ObservableWrapper.callEmit(this._subject, url); }
+    /** @internal */
     _emitNavigationFail(url) { ObservableWrapper.callError(this._subject, url); }
     _afterPromiseFinishNavigating(promise) {
         return PromiseWrapper.catchError(promise.then((_) => this._finishNavigating()), (err) => {

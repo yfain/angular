@@ -107,7 +107,9 @@ export declare class CompileFactoryMetadata implements CompileIdentifierMetadata
         diDeps?: CompileDiDependencyMetadata[];
     });
     identifier: CompileIdentifierMetadata;
-    toJson(): any;
+    toJson(): {
+        [key: string]: any;
+    };
 }
 /**
  * Metadata regarding compilation of a type.
