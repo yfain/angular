@@ -333,6 +333,7 @@ System.register("angular2/src/upgrade/upgrade_ng1_adapter", ["angular2/core", "a
         constructor: [new core_1.Inject(constants_1.NG1_SCOPE), core_1.ElementRef, function(scope, elementRef) {
           return new UpgradeNg1ComponentAdapter(self.linkFn, scope, self.directive, elementRef, self.$controller, self.inputs, self.outputs, self.propertyOutputs, self.checkProperties, self.propertyMap);
         }],
+        ngOnInit: function() {},
         ngOnChanges: function() {},
         ngDoCheck: function() {}
       });
@@ -382,6 +383,7 @@ System.register("angular2/src/upgrade/upgrade_ng1_adapter", ["angular2/core", "a
                 this.outputsRename.push(outputNameRenameChange);
                 this.propertyMap[outputName] = localName;
               case '@':
+              case '<':
                 this.inputs.push(inputName);
                 this.inputsRename.push(inputNameRename);
                 this.propertyMap[inputName] = localName;
@@ -514,6 +516,11 @@ System.register("angular2/src/upgrade/upgrade_ng1_adapter", ["angular2/core", "a
         this.checkLastValues.push(INITIAL_VALUE);
       }
     }
+    UpgradeNg1ComponentAdapter.prototype.ngOnInit = function() {
+      if (this.destinationObj.$onInit) {
+        this.destinationObj.$onInit();
+      }
+    };
     UpgradeNg1ComponentAdapter.prototype.ngOnChanges = function(changes) {
       for (var name in changes) {
         if (changes.hasOwnProperty(name)) {
