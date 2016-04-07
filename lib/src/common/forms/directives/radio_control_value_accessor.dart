@@ -91,10 +91,13 @@ class RadioControlValueAccessor
   ElementRef _elementRef;
   RadioControlRegistry _registry;
   Injector _injector;
+  /** @internal */
   RadioButtonState _state;
+  /** @internal */
   NgControl _control;
   @Input()
   String name;
+  /** @internal */
   Function _fn;
   var onChange = () {};
   var onTouched = () {};

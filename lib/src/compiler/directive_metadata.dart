@@ -191,7 +191,7 @@ class CompileFactoryMetadata implements CompileIdentifierMetadata {
     return this;
   }
 
-  toJson() {
+  Map<String, dynamic> toJson() {
     return null;
   }
 }

@@ -258,6 +258,7 @@ class Router {
     ObservableWrapper.callEmit(this._subject, url);
   }
 
+  /** @internal */
   void _emitNavigationFail(url) {
     ObservableWrapper.callError(this._subject, url);
   }

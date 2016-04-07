@@ -96,13 +96,14 @@ class LexedCssResult {
   LexedCssResult(this.error, this.token) {}
 }
 
-generateErrorMessage(input, message, errorValue, index, row, column) {
+String generateErrorMessage(String input, String message, String errorValue,
+    num index, num row, num column) {
   return '''${ message} at column ${ row}:${ column} in expression [''' +
       findProblemCode(input, errorValue, index, column) +
       "]";
 }
 
-findProblemCode(input, errorValue, index, column) {
+String findProblemCode(String input, String errorValue, num index, num column) {
   var endOfProblemLine = index;
   var current = charCode(input, index);
   while (current > 0 && !isNewline(current)) {
@@ -171,7 +172,9 @@ class CssScanner {
   num index = -1;
   num column = -1;
   num line = 0;
+  /** @internal */
   CssLexerMode _currentMode = CssLexerMode.BLOCK;
+  /** @internal */
   CssScannerError _currentError = null;
   CssScanner(this.input, [this._trackComments = false]) {
     this.length = this.input.length;
@@ -203,7 +206,7 @@ class CssScanner {
     this.peekPeek = this.peekAt(this.index + 1);
   }
 
-  num peekAt(index) {
+  num peekAt(num index) {
     return index >= this.length
         ? $EOF
         : StringWrapper.charCodeAt(this.input, index);
@@ -296,6 +299,7 @@ class CssScanner {
     return new LexedCssResult(error, token);
   }
 
+  /** @internal */
   CssToken _scan() {
     var peek = this.peek;
     var peekPeek = this.peekPeek;
@@ -344,7 +348,7 @@ class CssScanner {
         '''Unexpected character [${ StringWrapper . fromCharCode ( peek )}]''');
   }
 
-  scanComment() {
+  CssToken scanComment() {
     if (this.assertCondition(isCommentStart(this.peek, this.peekPeek),
         "Expected comment start value")) {
       return null;
@@ -367,7 +371,7 @@ class CssScanner {
         start, startingColumn, startingLine, CssTokenType.Comment, str);
   }
 
-  scanWhitespace() {
+  CssToken scanWhitespace() {
     var start = this.index;
     var startingColumn = this.column;
     var startingLine = this.line;
@@ -379,7 +383,7 @@ class CssScanner {
         start, startingColumn, startingLine, CssTokenType.Whitespace, str);
   }
 
-  scanString() {
+  CssToken scanString() {
     if (this.assertCondition(isStringStart(this.peek, this.peekPeek),
         "Unexpected non-string starting value")) {
       return null;
@@ -406,7 +410,7 @@ class CssScanner {
         start, startingColumn, startingLine, CssTokenType.String, str);
   }
 
-  scanNumber() {
+  CssToken scanNumber() {
     var start = this.index;
     var startingColumn = this.column;
     if (this.peek == $PLUS || this.peek == $MINUS) {
@@ -427,7 +431,7 @@ class CssScanner {
         start, startingColumn, this.line, CssTokenType.Number, strValue);
   }
 
-  scanIdentifier() {
+  CssToken scanIdentifier() {
     if (this.assertCondition(isIdentifierStart(this.peek, this.peekPeek),
         "Expected identifier starting value")) {
       return null;
@@ -442,7 +446,7 @@ class CssScanner {
         start, startingColumn, this.line, CssTokenType.Identifier, strValue);
   }
 
-  scanCssValueFunction() {
+  CssToken scanCssValueFunction() {
     var start = this.index;
     var startingColumn = this.column;
     while (this.peek != $EOF && this.peek != $RPAREN) {
@@ -453,7 +457,7 @@ class CssScanner {
         start, startingColumn, this.line, CssTokenType.Identifier, strValue);
   }
 
-  scanCharacter() {
+  CssToken scanCharacter() {
     var start = this.index;
     var startingColumn = this.column;
     if (this.assertCondition(isValidCssCharacter(this.peek, this._currentMode),
@@ -466,7 +470,7 @@ class CssScanner {
         start, startingColumn, this.line, CssTokenType.Character, c);
   }
 
-  scanAtExpression() {
+  CssToken scanAtExpression() {
     if (this.assertCondition(this.peek == $AT, "Expected @ value")) {
       return null;
     }
@@ -515,7 +519,7 @@ bool isAtKeyword(CssToken current, CssToken next) {
   return current.numValue == $AT && next.type == CssTokenType.Identifier;
 }
 
-isCharMatch(num target, num previous, num code) {
+bool isCharMatch(num target, num previous, num code) {
   return code == target && previous != $BACKSLASH;
 }
 
@@ -523,11 +527,11 @@ bool isDigit(num code) {
   return $0 <= code && code <= $9;
 }
 
-isCommentStart(num code, num next) {
+bool isCommentStart(num code, num next) {
   return code == $SLASH && next == $STAR;
 }
 
-isCommentEnd(num code, num next) {
+bool isCommentEnd(num code, num next) {
   return code == $STAR && next == $SLASH;
 }
 
@@ -551,7 +555,7 @@ bool isIdentifierStart(num code, num next) {
       target == $_;
 }
 
-isIdentifierPart(num target) {
+bool isIdentifierPart(num target) {
   return ($a <= target && target <= $z) ||
       ($A <= target && target <= $Z) ||
       target == $BACKSLASH ||
@@ -560,7 +564,7 @@ isIdentifierPart(num target) {
       isDigit(target);
 }
 
-isValidPseudoSelectorCharacter(num code) {
+bool isValidPseudoSelectorCharacter(num code) {
   switch (code) {
     case $LPAREN:
     case $RPAREN:
@@ -570,11 +574,11 @@ isValidPseudoSelectorCharacter(num code) {
   }
 }
 
-isValidKeyframeBlockCharacter(num code) {
+bool isValidKeyframeBlockCharacter(num code) {
   return code == $PERCENT;
 }
 
-isValidAttributeSelectorCharacter(num code) {
+bool isValidAttributeSelectorCharacter(num code) {
   // value^*|$~=something
   switch (code) {
     case $$:
@@ -589,7 +593,7 @@ isValidAttributeSelectorCharacter(num code) {
   }
 }
 
-isValidSelectorCharacter(num code) {
+bool isValidSelectorCharacter(num code) {
   // selector [ key   = value ]
 
   // IDENT    C IDENT C IDENT C
@@ -613,7 +617,7 @@ isValidSelectorCharacter(num code) {
   }
 }
 
-isValidStyleBlockCharacter(num code) {
+bool isValidStyleBlockCharacter(num code) {
   // key:value;
 
   // key:calc(something ... )
@@ -634,7 +638,7 @@ isValidStyleBlockCharacter(num code) {
   }
 }
 
-isValidMediaQueryRuleCharacter(num code) {
+bool isValidMediaQueryRuleCharacter(num code) {
   // (min-width: 7.5em) and (orientation: landscape)
   switch (code) {
     case $LPAREN:
@@ -648,7 +652,7 @@ isValidMediaQueryRuleCharacter(num code) {
   }
 }
 
-isValidAtRuleCharacter(num code) {
+bool isValidAtRuleCharacter(num code) {
   // @document url(http://www.w3.org/page?something=on#hash),
   switch (code) {
     case $LPAREN:
@@ -672,7 +676,7 @@ isValidAtRuleCharacter(num code) {
   }
 }
 
-isValidStyleFunctionCharacter(num code) {
+bool isValidStyleFunctionCharacter(num code) {
   switch (code) {
     case $PERIOD:
     case $MINUS:
@@ -688,7 +692,7 @@ isValidStyleFunctionCharacter(num code) {
   }
 }
 
-isValidBlockCharacter(num code) {
+bool isValidBlockCharacter(num code) {
   // @something { }
 
   // IDENT

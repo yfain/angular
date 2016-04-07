@@ -482,7 +482,7 @@ class RouteRegistry {
  * Given: ['/a/b', {c: 2}]
  * Returns: ['', 'a', 'b', {c: 2}]
  */
-splitAndFlattenLinkParams(List<dynamic> linkParams) {
+List<dynamic> splitAndFlattenLinkParams(List<dynamic> linkParams) {
   var accumulation = [];
   linkParams.forEach((dynamic item) {
     if (isString(item)) {
