@@ -58,12 +58,6 @@ export class TemplateParseError extends ParseError {
         super(span, message);
     }
 }
-export class TemplateParseResult {
-    constructor(templateAst, errors) {
-        this.templateAst = templateAst;
-        this.errors = errors;
-    }
-}
 export let TemplateParser = class {
     constructor(_exprParser, _schemaRegistry, _htmlParser, transforms) {
         this._exprParser = _exprParser;
@@ -72,25 +66,18 @@ export let TemplateParser = class {
         this.transforms = transforms;
     }
     parse(template, directives, pipes, templateUrl) {
-        var result = this.tryParse(template, directives, pipes, templateUrl);
-        if (isPresent(result.errors)) {
-            var errorString = result.errors.join('\n');
-            throw new BaseException(`Template parse errors:\n${errorString}`);
-        }
-        return result.templateAst;
-    }
-    tryParse(template, directives, pipes, templateUrl) {
         var parseVisitor = new TemplateParseVisitor(directives, pipes, this._exprParser, this._schemaRegistry);
         var htmlAstWithErrors = this._htmlParser.parse(template, templateUrl);
         var result = htmlVisitAll(parseVisitor, htmlAstWithErrors.rootNodes, EMPTY_COMPONENT);
         var errors = htmlAstWithErrors.errors.concat(parseVisitor.errors);
         if (errors.length > 0) {
-            return new TemplateParseResult(result, errors);
+            var errorString = errors.join('\n');
+            throw new BaseException(`Template parse errors:\n${errorString}`);
         }
         if (isPresent(this.transforms)) {
             this.transforms.forEach((transform) => { result = templateVisitAll(transform, result); });
         }
-        return new TemplateParseResult(result);
+        return result;
     }
 };
 TemplateParser = __decorate([

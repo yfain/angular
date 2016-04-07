@@ -26354,14 +26354,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return TemplateParseError;
 	})(parse_util_1.ParseError);
 	exports.TemplateParseError = TemplateParseError;
-	var TemplateParseResult = (function () {
-	    function TemplateParseResult(templateAst, errors) {
-	        this.templateAst = templateAst;
-	        this.errors = errors;
-	    }
-	    return TemplateParseResult;
-	})();
-	exports.TemplateParseResult = TemplateParseResult;
 	var TemplateParser = (function () {
 	    function TemplateParser(_exprParser, _schemaRegistry, _htmlParser, transforms) {
 	        this._exprParser = _exprParser;
@@ -26370,25 +26362,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.transforms = transforms;
 	    }
 	    TemplateParser.prototype.parse = function (template, directives, pipes, templateUrl) {
-	        var result = this.tryParse(template, directives, pipes, templateUrl);
-	        if (lang_1.isPresent(result.errors)) {
-	            var errorString = result.errors.join('\n');
-	            throw new exceptions_1.BaseException("Template parse errors:\n" + errorString);
-	        }
-	        return result.templateAst;
-	    };
-	    TemplateParser.prototype.tryParse = function (template, directives, pipes, templateUrl) {
 	        var parseVisitor = new TemplateParseVisitor(directives, pipes, this._exprParser, this._schemaRegistry);
 	        var htmlAstWithErrors = this._htmlParser.parse(template, templateUrl);
 	        var result = html_ast_1.htmlVisitAll(parseVisitor, htmlAstWithErrors.rootNodes, EMPTY_COMPONENT);
 	        var errors = htmlAstWithErrors.errors.concat(parseVisitor.errors);
 	        if (errors.length > 0) {
-	            return new TemplateParseResult(result, errors);
+	            var errorString = errors.join('\n');
+	            throw new exceptions_1.BaseException("Template parse errors:\n" + errorString);
 	        }
 	        if (lang_1.isPresent(this.transforms)) {
 	            this.transforms.forEach(function (transform) { result = template_ast_1.templateVisitAll(transform, result); });
 	        }
-	        return new TemplateParseResult(result);
+	        return result;
 	    };
 	    TemplateParser = __decorate([
 	        core_1.Injectable(),
