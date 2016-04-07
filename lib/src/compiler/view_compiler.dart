@@ -215,7 +215,7 @@ class CodeGenViewFactory implements ViewFactory<Expression, Statement> {
     return new Expression(disposableVar);
   }
 
-  createElementEventListener(
+  Expression createElementEventListener(
       Expression renderer,
       Expression appView,
       num boundElementIndex,

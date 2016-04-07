@@ -127,7 +127,7 @@ class StaticReflector {
 
   var conversionMap = new Map<StaticType,
       dynamic /* (moduleContext: string, expression: any) => any */ >();
-  initializeConversionMap() {
+  dynamic initializeConversionMap() {
     var core_metadata = "angular2/src/core/metadata";
     var conversionMap = this.conversionMap;
     conversionMap[this.getStaticType(core_metadata, "Directive")] =
@@ -246,6 +246,7 @@ class StaticReflector {
         (moduleContext, expression) => new HostListenerMetadata(
             this.getDecoratorParameter(moduleContext, expression, 0),
             this.getDecoratorParameter(moduleContext, expression, 1));
+    return null;
   }
 
   dynamic convertKnownDecorator(

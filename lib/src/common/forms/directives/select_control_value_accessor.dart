@@ -44,7 +44,9 @@ class SelectControlValueAccessor implements ControlValueAccessor {
   Renderer _renderer;
   ElementRef _elementRef;
   dynamic value;
+  /** @internal */
   Map<String, dynamic> _optionMap = new Map<String, dynamic>();
+  /** @internal */
   num _idCounter = 0;
   var onChange = (dynamic _) {};
   var onTouched = () {};
@@ -66,10 +68,12 @@ class SelectControlValueAccessor implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
+  /** @internal */
   String _registerOption() {
     return (this._idCounter++).toString();
   }
 
+  /** @internal */
   String _getOptionId(dynamic value) {
     for (var id in MapWrapper.keys(this._optionMap)) {
       if (looseIdentical(this._optionMap[id], value)) return id;
@@ -77,6 +81,7 @@ class SelectControlValueAccessor implements ControlValueAccessor {
     return null;
   }
 
+  /** @internal */
   dynamic _getOptionValue(String valueString) {
     var value = this._optionMap[_extractId(valueString)];
     return isPresent(value) ? value : valueString;
@@ -119,6 +124,7 @@ class NgSelectOption implements OnDestroy {
     this._select.writeValue(this._select.value);
   }
 
+  /** @internal */
   void _setElementValue(String value) {
     this
         ._renderer

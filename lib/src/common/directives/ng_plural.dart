@@ -78,6 +78,7 @@ abstract class NgLocalization {
 @Directive(selector: "[ngPluralCase]")
 class NgPluralCase {
   String value;
+  /** @internal */
   SwitchView _view;
   NgPluralCase(@Attribute("ngPluralCase") this.value, TemplateRef template,
       ViewContainerRef viewContainer) {

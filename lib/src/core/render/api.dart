@@ -30,21 +30,21 @@ abstract class Renderer implements ParentRenderer {
   dynamic createViewRoot(dynamic hostElement);
   dynamic createTemplateAnchor(dynamic parentElement);
   dynamic createText(dynamic parentElement, String value);
-  projectNodes(dynamic parentElement, List<dynamic> nodes);
-  attachViewAfter(dynamic node, List<dynamic> viewRootNodes);
-  detachView(List<dynamic> viewRootNodes);
-  destroyView(dynamic hostElement, List<dynamic> viewAllNodes);
+  void projectNodes(dynamic parentElement, List<dynamic> nodes);
+  void attachViewAfter(dynamic node, List<dynamic> viewRootNodes);
+  void detachView(List<dynamic> viewRootNodes);
+  void destroyView(dynamic hostElement, List<dynamic> viewAllNodes);
   Function listen(dynamic renderElement, String name, Function callback);
   Function listenGlobal(String target, String name, Function callback);
-  setElementProperty(
+  void setElementProperty(
       dynamic renderElement, String propertyName, dynamic propertyValue);
-  setElementAttribute(
+  void setElementAttribute(
       dynamic renderElement, String attributeName, String attributeValue);
   /**
    * Used only in debug mode to serialize property changes to comment nodes,
    * such as <template> placeholders.
    */
-  setBindingDebugInfo(
+  void setBindingDebugInfo(
       dynamic renderElement, String propertyName, String propertyValue);
   setElementDebugInfo(dynamic renderElement, RenderDebugInfo info);
   setElementClass(dynamic renderElement, String className, bool isAdd);

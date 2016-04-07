@@ -141,7 +141,7 @@ String removeInterpolation(
   }
 }
 
-stringifyNodes(List<HtmlAst> nodes, Parser parser) {
+String stringifyNodes(List<HtmlAst> nodes, Parser parser) {
   var visitor = new _StringifyVisitor(parser);
   return htmlVisitAll(visitor, nodes).join("");
 }
