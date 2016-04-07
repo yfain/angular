@@ -4719,4 +4719,1245 @@ class ChangeDetector72 extends _gen.AbstractChangeDetector<dynamic> {
   }
 }
 
-class ChangeDetector73 ext
+class ChangeDetector73 extends _gen.AbstractChangeDetector<dynamic> {
+  var literal0, directive_0_0;
+
+  ChangeDetector73()
+      : super(
+            "directNoDispatcher",
+            1,
+            ChangeDetector73._gen_propertyBindingTargets,
+            ChangeDetector73._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_literal0;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_literal0 = 42;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.literal0, l_literal0)) {
+      this.throwOnChangeError(this.literal0, l_literal0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_literal0, this.literal0)) {
+      this.directive_0_0.a = l_literal0;
+      this.logBindingUpdate(l_literal0);
+      isChanged = true;
+
+      changes = addChange(changes, this.literal0, l_literal0);
+      this.literal0 = l_literal0;
+    }
+
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(1);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+    }
+    this.literal0 = this.directive_0_0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil
+        .bindingTarget("directive", 0, "a", null, "42 in location")
+  ];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector73();
+  }
+}
+
+class ChangeDetector74 extends _gen.AbstractChangeDetector<dynamic> {
+  var literal0,
+      literal1,
+      OnChanges2,
+      literal3,
+      OnChanges4,
+      directive_0_0,
+      directive_0_1;
+
+  ChangeDetector74()
+      : super("groupChanges", 5, ChangeDetector74._gen_propertyBindingTargets,
+            ChangeDetector74._gen_directiveIndices, null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context,
+        l_literal0,
+        l_literal1,
+        l_OnChanges2,
+        l_literal3,
+        l_OnChanges4;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_literal0 = 1;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.literal0, l_literal0)) {
+      this.throwOnChangeError(this.literal0, l_literal0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_literal0, this.literal0)) {
+      this.directive_0_0.a = l_literal0;
+      this.logBindingUpdate(l_literal0);
+      isChanged = true;
+
+      changes = addChange(changes, this.literal0, l_literal0);
+      this.literal0 = l_literal0;
+    }
+
+    this.propertyBindingIndex = 1;
+    l_literal1 = 2;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.literal1, l_literal1)) {
+      this.throwOnChangeError(this.literal1, l_literal1);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_literal1, this.literal1)) {
+      this.directive_0_0.b = l_literal1;
+      this.logBindingUpdate(l_literal1);
+      isChanged = true;
+
+      changes = addChange(changes, this.literal1, l_literal1);
+      this.literal1 = l_literal1;
+    }
+
+    if (!throwOnChange && changes != null)
+      this.directive_0_0.ngOnChanges(changes);
+    changes = null;
+
+    isChanged = false;
+
+    this.propertyBindingIndex = 3;
+    l_literal3 = 3;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.literal3, l_literal3)) {
+      this.throwOnChangeError(this.literal3, l_literal3);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_literal3, this.literal3)) {
+      this.directive_0_1.a = l_literal3;
+      this.logBindingUpdate(l_literal3);
+      isChanged = true;
+
+      changes = addChange(changes, this.literal3, l_literal3);
+      this.literal3 = l_literal3;
+    }
+
+    if (!throwOnChange && changes != null)
+      this.directive_0_1.ngOnChanges(changes);
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterContentInit();
+    this.directive_0_1.ngAfterContentChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterViewInit();
+    this.directive_0_1.ngAfterViewChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(2);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+    this.directive_0_1 = this.getDirectiveFor(directives, 1);
+    this.outputSubscriptions[1] = this
+        .directive_0_1
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+      this.directive_0_1.ngOnDestroy();
+    }
+    this.literal0 = this.literal1 = this.OnChanges2 = this.literal3 =
+        this.OnChanges4 = this.directive_0_0 =
+            this.directive_0_1 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil
+        .bindingTarget("directive", 0, "a", null, "1 in location"),
+    _gen.ChangeDetectionUtil
+        .bindingTarget("directive", 0, "b", null, "2 in location"),
+    null,
+    _gen.ChangeDetectionUtil
+        .bindingTarget("directive", 0, "a", null, "3 in location"),
+    null
+  ];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0),
+    _gen.ChangeDetectionUtil.directiveIndex(0, 1)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector74();
+  }
+}
+
+class ChangeDetector75 extends _gen.AbstractChangeDetector<dynamic> {
+  var DoCheck0, directive_0_0;
+
+  ChangeDetector75()
+      : super(
+            "directiveDoCheck",
+            1,
+            ChangeDetector75._gen_propertyBindingTargets,
+            ChangeDetector75._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_DoCheck0;
+    var isChanged = false;
+    var changes = null;
+
+    if (!throwOnChange) this.directive_0_0.ngDoCheck();
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(1);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+    }
+    this.DoCheck0 = this.directive_0_0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [null];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector75();
+  }
+}
+
+class ChangeDetector76 extends _gen.AbstractChangeDetector<dynamic> {
+  var OnInit0, directive_0_0;
+
+  ChangeDetector76()
+      : super(
+            "directiveOnInit",
+            1,
+            ChangeDetector76._gen_propertyBindingTargets,
+            ChangeDetector76._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_OnInit0;
+    var isChanged = false;
+    var changes = null;
+
+    if (!throwOnChange && this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngOnInit();
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(1);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+    }
+    this.OnInit0 = this.directive_0_0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [null];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector76();
+  }
+}
+
+class ChangeDetector77 extends _gen.AbstractChangeDetector<dynamic> {
+  var directive_0_0, directive_0_1;
+
+  ChangeDetector77()
+      : super(
+            "emptyWithDirectiveRecords",
+            0,
+            ChangeDetector77._gen_propertyBindingTargets,
+            ChangeDetector77._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterContentInit();
+    this.directive_0_1.ngAfterContentChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterViewInit();
+    this.directive_0_1.ngAfterViewChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(2);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+    this.directive_0_1 = this.getDirectiveFor(directives, 1);
+    this.outputSubscriptions[1] = this
+        .directive_0_1
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+      this.directive_0_1.ngOnDestroy();
+    }
+    this.directive_0_0 =
+        this.directive_0_1 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0),
+    _gen.ChangeDetectionUtil.directiveIndex(0, 1)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector77();
+  }
+}
+
+class ChangeDetector78 extends _gen.AbstractChangeDetector<dynamic> {
+  var literal0, directive_0_0;
+
+  ChangeDetector78()
+      : super("noCallbacks", 1, ChangeDetector78._gen_propertyBindingTargets,
+            ChangeDetector78._gen_directiveIndices, null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_literal0;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_literal0 = 1;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.literal0, l_literal0)) {
+      this.throwOnChangeError(this.literal0, l_literal0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_literal0, this.literal0)) {
+      this.directive_0_0.a = l_literal0;
+      this.logBindingUpdate(l_literal0);
+      isChanged = true;
+
+      this.literal0 = l_literal0;
+    }
+
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void hydrateDirectives(directives) {
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {}
+    this.literal0 = this.directive_0_0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil
+        .bindingTarget("directive", 0, "a", null, "1 in location")
+  ];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector78();
+  }
+}
+
+class ChangeDetector79 extends _gen.AbstractChangeDetector<dynamic> {
+  var a0, directive_0_0;
+
+  ChangeDetector79()
+      : super(
+            "readingDirectives",
+            1,
+            ChangeDetector79._gen_propertyBindingTargets,
+            ChangeDetector79._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_a0;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_a0 = this.directive_0_0.a;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.a0, l_a0)) {
+      this.throwOnChangeError(this.a0, l_a0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_a0, this.a0)) {
+      this.notifyDispatcher(l_a0);
+      this.logBindingUpdate(l_a0);
+
+      this.a0 = l_a0;
+    }
+
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(1);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+    }
+    this.a0 = this.directive_0_0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil
+        .bindingTarget("elementProperty", 0, "propName", null, "a in location")
+  ];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector79();
+  }
+}
+
+class ChangeDetector80 extends _gen.AbstractChangeDetector<dynamic> {
+  var a0, interpolate1;
+
+  ChangeDetector80()
+      : super("interpolation", 2, ChangeDetector80._gen_propertyBindingTargets,
+            ChangeDetector80._gen_directiveIndices, null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_a0, c_a0, l_interpolate1;
+    c_a0 = false;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_a0 = l_context.a;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.a0, l_a0)) {
+      this.throwOnChangeError(this.a0, l_a0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_a0, this.a0)) {
+      c_a0 = true;
+
+      this.a0 = l_a0;
+    }
+
+    if (c_a0) {
+      l_interpolate1 = "${"B"}${_gen.ChangeDetectionUtil.s(l_a0)}${"A"}";
+      if (_gen.assertionsEnabled() &&
+          throwOnChange &&
+          !_gen.ChangeDetectionUtil
+              .devModeEqual(this.interpolate1, l_interpolate1)) {
+        this.throwOnChangeError(this.interpolate1, l_interpolate1);
+      }
+
+      if (_gen.ChangeDetectionUtil
+          .looseNotIdentical(l_interpolate1, this.interpolate1)) {
+        this.notifyDispatcher(l_interpolate1);
+        this.logBindingUpdate(l_interpolate1);
+
+        this.interpolate1 = l_interpolate1;
+      }
+    }
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {}
+    this.a0 = this.interpolate1 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil.bindingTarget(
+        "elementProperty", 0, "propName", null, "B{{a}}A in location")
+  ];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector80();
+  }
+}
+
+class ChangeDetector81 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector81()
+      : super(
+            "(event)=\"onEvent(\$event)\"",
+            0,
+            ChangeDetector81._gen_propertyBindingTargets,
+            ChangeDetector81._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_event0_0, l_onEvent1_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_event0_0 = locals.get(r'$event');
+
+      l_onEvent1_0 = l_context.onEvent(l_event0_0);
+      if (l_onEvent1_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector81();
+  }
+}
+
+class ChangeDetector82 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector82()
+      : super(
+            "(event)=\"b=a=\$event\"",
+            0,
+            ChangeDetector82._gen_propertyBindingTargets,
+            ChangeDetector82._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_event0_0, l_a1_0, l_b2_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_event0_0 = locals.get(r'$event');
+      l_a1_0 = l_context.a = l_event0_0;
+
+      l_b2_0 = l_context.b = l_a1_0;
+      if (l_b2_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector82();
+  }
+}
+
+class ChangeDetector83 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector83()
+      : super(
+            "(event)=\"a[0]=\$event\"",
+            0,
+            ChangeDetector83._gen_propertyBindingTargets,
+            ChangeDetector83._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_a0_0, l_literal1_0, l_event2_0, l_null3_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_a0_0 = l_context.a;
+      l_literal1_0 = 0;
+      l_event2_0 = locals.get(r'$event');
+
+      l_null3_0 = l_a0_0[l_literal1_0] = l_event2_0;
+      if (l_null3_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector83();
+  }
+}
+
+class ChangeDetector84 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector84()
+      : super(
+            "(event)=\"a=a+1; a=a+1;\"",
+            0,
+            ChangeDetector84._gen_propertyBindingTargets,
+            ChangeDetector84._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context,
+        l_a0_0,
+        l_literal1_0,
+        l_operation_add2_0,
+        l_a3_0,
+        l_a4_0,
+        l_literal5_0,
+        l_operation_add6_0,
+        l_a7_0,
+        l_chain8_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_a0_0 = l_context.a;
+      l_literal1_0 = 1;
+      l_operation_add2_0 =
+          _gen.ChangeDetectionUtil.operation_add(l_a0_0, l_literal1_0);
+      l_a3_0 = l_context.a = l_operation_add2_0;
+      l_a4_0 = l_context.a;
+      l_literal5_0 = 1;
+      l_operation_add6_0 =
+          _gen.ChangeDetectionUtil.operation_add(l_a4_0, l_literal5_0);
+      l_a7_0 = l_context.a = l_operation_add6_0;
+
+      l_chain8_0 = l_a7_0;
+      if (l_chain8_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector84();
+  }
+}
+
+class ChangeDetector85 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector85()
+      : super(
+            "(event)=\"true; false\"",
+            0,
+            ChangeDetector85._gen_propertyBindingTargets,
+            ChangeDetector85._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_literal0_0, l_literal1_0, l_chain2_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_literal0_0 = true;
+      l_literal1_0 = false;
+
+      l_chain2_0 = l_literal1_0;
+      if (l_chain2_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector85();
+  }
+}
+
+class ChangeDetector86 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector86()
+      : super(
+            "(event)=\"false\"",
+            0,
+            ChangeDetector86._gen_propertyBindingTargets,
+            ChangeDetector86._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_literal0_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_literal0_0 = false;
+      if (l_literal0_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector86();
+  }
+}
+
+class ChangeDetector87 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector87()
+      : super(
+            "(event)=\"true\"",
+            0,
+            ChangeDetector87._gen_propertyBindingTargets,
+            ChangeDetector87._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_literal0_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_literal0_0 = true;
+      if (l_literal0_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector87();
+  }
+}
+
+class ChangeDetector88 extends _gen.AbstractChangeDetector<dynamic> {
+  ChangeDetector88()
+      : super(
+            "(event)=\"true ? a = a + 1 : a = a + 1\"",
+            0,
+            ChangeDetector88._gen_propertyBindingTargets,
+            ChangeDetector88._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context,
+        l_literal0_0,
+        l_SkipRecordsIfNot1_0,
+        l_a2_0,
+        l_literal3_0,
+        l_operation_add4_0,
+        l_a5_0,
+        l_SkipRecords6_0,
+        l_a7_0,
+        l_literal8_0,
+        l_operation_add9_0,
+        l_a10_0,
+        l_cond11_0;
+    if (eventName == "event" && elIndex == 0) {
+      l_literal0_0 = true;
+      if (l_literal0_0) {
+        l_a2_0 = l_context.a;
+        l_literal3_0 = 1;
+        l_operation_add4_0 =
+            _gen.ChangeDetectionUtil.operation_add(l_a2_0, l_literal3_0);
+        l_a5_0 = l_context.a = l_operation_add4_0;
+      } else {
+        l_a7_0 = l_context.a;
+        l_literal8_0 = 1;
+        l_operation_add9_0 =
+            _gen.ChangeDetectionUtil.operation_add(l_a7_0, l_literal8_0);
+        l_a10_0 = l_context.a = l_operation_add9_0;
+      }
+
+      l_cond11_0 = _gen.ChangeDetectionUtil.cond(l_literal0_0, l_a5_0, l_a10_0);
+      if (l_cond11_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector88();
+  }
+}
+
+class ChangeDetector89 extends _gen.AbstractChangeDetector<dynamic> {
+  var directive_0_0, directive_0_1;
+
+  ChangeDetector89()
+      : super(
+            "(host-event)=\"onEvent(\$event)\"",
+            0,
+            ChangeDetector89._gen_propertyBindingTargets,
+            ChangeDetector89._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context;
+    var isChanged = false;
+    var changes = null;
+  }
+
+  handleEventInternal(eventName, elIndex, locals) {
+    var preventDefault = false;
+    var l_context = this.context, l_event0_0, l_onEvent1_0;
+    if (eventName == "host-event" && elIndex == 0) {
+      l_event0_0 = locals.get(r'$event');
+
+      l_onEvent1_0 = this.directive_0_0.onEvent(l_event0_0);
+      if (l_onEvent1_0 == false) {
+        preventDefault = true;
+      }
+    }
+    return preventDefault;
+  }
+
+  void afterContentLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterContentInit();
+    this.directive_0_1.ngAfterContentChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterContentInit();
+    this.directive_0_0.ngAfterContentChecked();
+  }
+
+  void afterViewLifecycleCallbacksInternal() {
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_1.ngAfterViewInit();
+    this.directive_0_1.ngAfterViewChecked();
+    if (this.state == _gen.ChangeDetectorState.NeverChecked)
+      this.directive_0_0.ngAfterViewInit();
+    this.directive_0_0.ngAfterViewChecked();
+  }
+
+  void hydrateDirectives(directives) {
+    this.outputSubscriptions = new List(2);
+    this.directive_0_0 = this.getDirectiveFor(directives, 0);
+    this.outputSubscriptions[0] = this
+        .directive_0_0
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+    this.directive_0_1 = this.getDirectiveFor(directives, 1);
+    this.outputSubscriptions[1] = this
+        .directive_0_1
+        .eventEmitter
+        .listen((event) => this.handleEvent('host-event', 0, event));
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {
+      this.directive_0_0.ngOnDestroy();
+      this.directive_0_1.ngOnDestroy();
+    }
+    this.directive_0_0 =
+        this.directive_0_1 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [];
+
+  static final _gen_directiveIndices = [
+    _gen.ChangeDetectionUtil.directiveIndex(0, 0),
+    _gen.ChangeDetectionUtil.directiveIndex(0, 1)
+  ];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector89();
+  }
+}
+
+class ChangeDetector90 extends _gen.AbstractChangeDetector<dynamic> {
+  var name0;
+
+  ChangeDetector90()
+      : super(
+            "updateElementProduction",
+            1,
+            ChangeDetector90._gen_propertyBindingTargets,
+            ChangeDetector90._gen_directiveIndices,
+            null) {
+    dehydrateDirectives(false);
+  }
+
+  void detectChangesInRecordsInternal(throwOnChange) {
+    var l_context = this.context, l_name0;
+    var isChanged = false;
+    var changes = null;
+
+    this.propertyBindingIndex = 0;
+    l_name0 = l_context.name;
+    if (_gen.assertionsEnabled() &&
+        throwOnChange &&
+        !_gen.ChangeDetectionUtil.devModeEqual(this.name0, l_name0)) {
+      this.throwOnChangeError(this.name0, l_name0);
+    }
+
+    if (_gen.ChangeDetectionUtil.looseNotIdentical(l_name0, this.name0)) {
+      this.notifyDispatcher(l_name0);
+
+      this.name0 = l_name0;
+    }
+
+    changes = null;
+
+    isChanged = false;
+  }
+
+  void dehydrateDirectives(destroyPipes) {
+    if (destroyPipes) {}
+    this.name0 = _gen.ChangeDetectionUtil.uninitialized;
+  }
+
+  static final _gen_propertyBindingTargets = [
+    _gen.ChangeDetectionUtil
+        .bindingTarget("elementProperty", 0, "propName", null, null)
+  ];
+
+  static final _gen_directiveIndices = [];
+
+  static _gen.ChangeDetector newChangeDetector() {
+    return new ChangeDetector90();
+  }
+}
+
+var _idToProtoMap = {
+  '''"\$"''': ChangeDetector0.newChangeDetector,
+  '''10''': ChangeDetector1.newChangeDetector,
+  '''"str"''': ChangeDetector2.newChangeDetector,
+  '''"a
+
+b"''': ChangeDetector3.newChangeDetector,
+  '''10 + 2''': ChangeDetector4.newChangeDetector,
+  '''10 - 2''': ChangeDetector5.newChangeDetector,
+  '''10 * 2''': ChangeDetector6.newChangeDetector,
+  '''10 / 2''': ChangeDetector7.newChangeDetector,
+  '''11 % 2''': ChangeDetector8.newChangeDetector,
+  '''1 == 1''': ChangeDetector9.newChangeDetector,
+  '''1 != 1''': ChangeDetector10.newChangeDetector,
+  '''1 == true''': ChangeDetector11.newChangeDetector,
+  '''1 === 1''': ChangeDetector12.newChangeDetector,
+  '''1 !== 1''': ChangeDetector13.newChangeDetector,
+  '''1 === true''': ChangeDetector14.newChangeDetector,
+  '''1 < 2''': ChangeDetector15.newChangeDetector,
+  '''2 < 1''': ChangeDetector16.newChangeDetector,
+  '''1 > 2''': ChangeDetector17.newChangeDetector,
+  '''2 > 1''': ChangeDetector18.newChangeDetector,
+  '''1 <= 2''': ChangeDetector19.newChangeDetector,
+  '''2 <= 2''': ChangeDetector20.newChangeDetector,
+  '''2 <= 1''': ChangeDetector21.newChangeDetector,
+  '''2 >= 1''': ChangeDetector22.newChangeDetector,
+  '''2 >= 2''': ChangeDetector23.newChangeDetector,
+  '''1 >= 2''': ChangeDetector24.newChangeDetector,
+  '''true && true''': ChangeDetector25.newChangeDetector,
+  '''true && false''': ChangeDetector26.newChangeDetector,
+  '''true || false''': ChangeDetector27.newChangeDetector,
+  '''false || false''': ChangeDetector28.newChangeDetector,
+  '''!true''': ChangeDetector29.newChangeDetector,
+  '''!!true''': ChangeDetector30.newChangeDetector,
+  '''1 < 2 ? 1 : 2''': ChangeDetector31.newChangeDetector,
+  '''1 > 2 ? 1 : 2''': ChangeDetector32.newChangeDetector,
+  '''["foo", "bar"][0]''': ChangeDetector33.newChangeDetector,
+  '''{"foo": "bar"}["foo"]''': ChangeDetector34.newChangeDetector,
+  '''name''': ChangeDetector35.newChangeDetector,
+  '''[1, 2]''': ChangeDetector36.newChangeDetector,
+  '''[1, a]''': ChangeDetector37.newChangeDetector,
+  '''{z: 1}''': ChangeDetector38.newChangeDetector,
+  '''{z: a}''': ChangeDetector39.newChangeDetector,
+  '''name | pipe''': ChangeDetector40.newChangeDetector,
+  '''(name | pipe).length''': ChangeDetector41.newChangeDetector,
+  '''name | pipe:'one':address.city''': ChangeDetector42.newChangeDetector,
+  '''name | pipe:'a':'b' | pipe:0:1:2''': ChangeDetector43.newChangeDetector,
+  '''value''': ChangeDetector44.newChangeDetector,
+  '''a''': ChangeDetector45.newChangeDetector,
+  '''address.city''': ChangeDetector46.newChangeDetector,
+  '''address?.city''': ChangeDetector47.newChangeDetector,
+  '''address?.toString()''': ChangeDetector48.newChangeDetector,
+  '''sayHi("Jim")''': ChangeDetector49.newChangeDetector,
+  '''a()(99)''': ChangeDetector50.newChangeDetector,
+  '''a.sayHi("Jim")''': ChangeDetector51.newChangeDetector,
+  '''passThrough([12])''': ChangeDetector52.newChangeDetector,
+  '''invalidFn(1)''': ChangeDetector53.newChangeDetector,
+  '''age''': ChangeDetector54.newChangeDetector,
+  '''true ? city : zipcode''': ChangeDetector55.newChangeDetector,
+  '''false ? city : zipcode''': ChangeDetector56.newChangeDetector,
+  '''getTrue() && getTrue()''': ChangeDetector57.newChangeDetector,
+  '''getFalse() && getTrue()''': ChangeDetector58.newChangeDetector,
+  '''getFalse() || getFalse()''': ChangeDetector59.newChangeDetector,
+  '''getTrue() || getFalse()''': ChangeDetector60.newChangeDetector,
+  '''name == "Victor" ? (true ? address.city : address.zipcode) : address.zipcode''':
+      ChangeDetector61.newChangeDetector,
+  '''valueFromLocals''': ChangeDetector62.newChangeDetector,
+  '''functionFromLocals''': ChangeDetector63.newChangeDetector,
+  '''nestedLocals''': ChangeDetector64.newChangeDetector,
+  '''fallbackLocals''': ChangeDetector65.newChangeDetector,
+  '''contextNestedPropertyWithLocals''': ChangeDetector66.newChangeDetector,
+  '''localPropertyWithSimilarContext''': ChangeDetector67.newChangeDetector,
+  '''emptyUsingDefaultStrategy''': ChangeDetector68.newChangeDetector,
+  '''emptyUsingOnPushStrategy''': ChangeDetector69.newChangeDetector,
+  '''onPushRecordsUsingDefaultStrategy''': ChangeDetector70.newChangeDetector,
+  '''onPushWithEvent''': ChangeDetector71.newChangeDetector,
+  '''onPushWithHostEvent''': ChangeDetector72.newChangeDetector,
+  '''directNoDispatcher''': ChangeDetector73.newChangeDetector,
+  '''groupChanges''': ChangeDetector74.newChangeDetector,
+  '''directiveDoCheck''': ChangeDetector75.newChangeDetector,
+  '''directiveOnInit''': ChangeDetector76.newChangeDetector,
+  '''emptyWithDirectiveRecords''': ChangeDetector77.newChangeDetector,
+  '''noCallbacks''': ChangeDetector78.newChangeDetector,
+  '''readingDirectives''': ChangeDetector79.newChangeDetector,
+  '''interpolation''': ChangeDetector80.newChangeDetector,
+  '''(event)="onEvent(\$event)"''': ChangeDetector81.newChangeDetector,
+  '''(event)="b=a=\$event"''': ChangeDetector82.newChangeDetector,
+  '''(event)="a[0]=\$event"''': ChangeDetector83.newChangeDetector,
+  '''(event)="a=a+1; a=a+1;"''': ChangeDetector84.newChangeDetector,
+  '''(event)="true; false"''': ChangeDetector85.newChangeDetector,
+  '''(event)="false"''': ChangeDetector86.newChangeDetector,
+  '''(event)="true"''': ChangeDetector87.newChangeDetector,
+  '''(event)="true ? a = a + 1 : a = a + 1"''':
+      ChangeDetector88.newChangeDetector,
+  '''(host-event)="onEvent(\$event)"''': ChangeDetector89.newChangeDetector,
+  '''updateElementProduction''': ChangeDetector90.newChangeDetector
+};
+
+getFactoryById(String id) => _idToProtoMap[id];
+

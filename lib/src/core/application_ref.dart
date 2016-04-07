@@ -254,7 +254,7 @@ class PlatformRef_ extends PlatformRef {
         provide(NgZone, useValue: zone),
         provide(ApplicationRef, useFactory: () => app, deps: [])
       ]);
-      Function exceptionHandler;
+      ExceptionHandler exceptionHandler;
       try {
         injector = this.injector.resolveAndCreateChild(providers);
         exceptionHandler = injector.get(ExceptionHandler);
