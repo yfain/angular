@@ -94,6 +94,12 @@ class TemplateParseError extends ParseError {
   }
 }
 
+class TemplateParseResult {
+  List<TemplateAst> templateAst;
+  List<ParseError> errors;
+  TemplateParseResult([this.templateAst, this.errors]) {}
+}
+
 @Injectable()
 class TemplateParser {
   Parser _exprParser;
@@ -107,6 +113,20 @@ class TemplateParser {
       List<CompileDirectiveMetadata> directives,
       List<CompilePipeMetadata> pipes,
       String templateUrl) {
+    var result = this.tryParse(template, directives, pipes, templateUrl);
+    if (isPresent(result.errors)) {
+      var errorString = result.errors.join("\n");
+      throw new BaseException('''Template parse errors:
+${ errorString}''');
+    }
+    return result.templateAst;
+  }
+
+  TemplateParseResult tryParse(
+      String template,
+      List<CompileDirectiveMetadata> directives,
+      List<CompilePipeMetadata> pipes,
+      String templateUrl) {
     var parseVisitor = new TemplateParseVisitor(
         directives, pipes, this._exprParser, this._schemaRegistry);
     var htmlAstWithErrors = this._htmlParser.parse(template, templateUrl);
@@ -115,16 +135,14 @@ class TemplateParser {
     List<ParseError> errors =
         (new List.from(htmlAstWithErrors.errors)..addAll(parseVisitor.errors));
     if (errors.length > 0) {
-      var errorString = errors.join("\n");
-      throw new BaseException('''Template parse errors:
-${ errorString}''');
+      return new TemplateParseResult(result, errors);
     }
     if (isPresent(this.transforms)) {
       this.transforms.forEach((TemplateAstVisitor transform) {
         result = templateVisitAll(transform, result);
       });
     }
-    return result;
+    return new TemplateParseResult(result);
   }
 }
 
