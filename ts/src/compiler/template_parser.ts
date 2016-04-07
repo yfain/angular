@@ -83,10 +83,6 @@ export class TemplateParseError extends ParseError {
   constructor(message: string, span: ParseSourceSpan) { super(span, message); }
 }
 
-export class TemplateParseResult {
-  constructor(public templateAst?: TemplateAst[], public errors?: ParseError[]) {}
-}
-
 @Injectable()
 export class TemplateParser {
   constructor(private _exprParser: Parser, private _schemaRegistry: ElementSchemaRegistry,
@@ -95,29 +91,20 @@ export class TemplateParser {
 
   parse(template: string, directives: CompileDirectiveMetadata[], pipes: CompilePipeMetadata[],
         templateUrl: string): TemplateAst[] {
-    var result = this.tryParse(template, directives, pipes, templateUrl);
-    if (isPresent(result.errors)) {
-      var errorString = result.errors.join('\n');
-      throw new BaseException(`Template parse errors:\n${errorString}`);
-    }
-    return result.templateAst;
-  }
-
-  tryParse(template: string, directives: CompileDirectiveMetadata[], pipes: CompilePipeMetadata[],
-           templateUrl: string): TemplateParseResult {
     var parseVisitor =
         new TemplateParseVisitor(directives, pipes, this._exprParser, this._schemaRegistry);
     var htmlAstWithErrors = this._htmlParser.parse(template, templateUrl);
     var result = htmlVisitAll(parseVisitor, htmlAstWithErrors.rootNodes, EMPTY_COMPONENT);
     var errors: ParseError[] = htmlAstWithErrors.errors.concat(parseVisitor.errors);
     if (errors.length > 0) {
-      return new TemplateParseResult(result, errors);
+      var errorString = errors.join('\n');
+      throw new BaseException(`Template parse errors:\n${errorString}`);
     }
     if (isPresent(this.transforms)) {
       this.transforms.forEach(
           (transform: TemplateAstVisitor) => { result = templateVisitAll(transform, result); });
     }
-    return new TemplateParseResult(result);
+    return result;
   }
 }
 

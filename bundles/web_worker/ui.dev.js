@@ -19794,14 +19794,6 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
     return TemplateParseError;
   })(parse_util_1.ParseError);
   exports.TemplateParseError = TemplateParseError;
-  var TemplateParseResult = (function() {
-    function TemplateParseResult(templateAst, errors) {
-      this.templateAst = templateAst;
-      this.errors = errors;
-    }
-    return TemplateParseResult;
-  })();
-  exports.TemplateParseResult = TemplateParseResult;
   var TemplateParser = (function() {
     function TemplateParser(_exprParser, _schemaRegistry, _htmlParser, transforms) {
       this._exprParser = _exprParser;
@@ -19810,27 +19802,20 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
       this.transforms = transforms;
     }
     TemplateParser.prototype.parse = function(template, directives, pipes, templateUrl) {
-      var result = this.tryParse(template, directives, pipes, templateUrl);
-      if (lang_1.isPresent(result.errors)) {
-        var errorString = result.errors.join('\n');
-        throw new exceptions_1.BaseException("Template parse errors:\n" + errorString);
-      }
-      return result.templateAst;
-    };
-    TemplateParser.prototype.tryParse = function(template, directives, pipes, templateUrl) {
       var parseVisitor = new TemplateParseVisitor(directives, pipes, this._exprParser, this._schemaRegistry);
       var htmlAstWithErrors = this._htmlParser.parse(template, templateUrl);
       var result = html_ast_1.htmlVisitAll(parseVisitor, htmlAstWithErrors.rootNodes, EMPTY_COMPONENT);
       var errors = htmlAstWithErrors.errors.concat(parseVisitor.errors);
       if (errors.length > 0) {
-        return new TemplateParseResult(result, errors);
+        var errorString = errors.join('\n');
+        throw new exceptions_1.BaseException("Template parse errors:\n" + errorString);
       }
       if (lang_1.isPresent(this.transforms)) {
         this.transforms.forEach(function(transform) {
           result = template_ast_1.templateVisitAll(transform, result);
         });
       }
-      return new TemplateParseResult(result);
+      return result;
     };
     TemplateParser = __decorate([core_1.Injectable(), __param(3, core_1.Optional()), __param(3, core_1.Inject(exports.TEMPLATE_TRANSFORMS)), __metadata('design:paramtypes', [change_detection_1.Parser, element_schema_registry_1.ElementSchemaRegistry, html_parser_1.HtmlParser, Array])], TemplateParser);
     return TemplateParser;
