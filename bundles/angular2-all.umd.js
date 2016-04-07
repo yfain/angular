@@ -38118,6 +38118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        return new UpgradeNg1ComponentAdapter(self.linkFn, scope, self.directive, elementRef, self.$controller, self.inputs, self.outputs, self.propertyOutputs, self.checkProperties, self.propertyMap);
 	                    }
 	                ],
+	                ngOnInit: function () { },
 	                ngOnChanges: function () { },
 	                ngDoCheck: function () { }
 	            });
@@ -38168,6 +38169,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            this.propertyMap[outputName] = localName;
 	                        // don't break; let it fall through to '@'
 	                        case '@':
+	                        // handle the '<' binding of angular 1.5 components
+	                        case '<':
 	                            this.inputs.push(inputName);
 	                            this.inputsRename.push(inputNameRename);
 	                            this.propertyMap[inputName] = localName;
@@ -38294,6 +38297,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.checkLastValues.push(INITIAL_VALUE);
 	        }
 	    }
+	    UpgradeNg1ComponentAdapter.prototype.ngOnInit = function () {
+	        if (this.destinationObj.$onInit) {
+	            this.destinationObj.$onInit();
+	        }
+	    };
 	    UpgradeNg1ComponentAdapter.prototype.ngOnChanges = function (changes) {
 	        for (var name in changes) {
 	            if (changes.hasOwnProperty(name)) {
