@@ -214,7 +214,7 @@ export class CompileFactoryMetadata implements CompileIdentifierMetadata {
 
   get identifier(): CompileIdentifierMetadata { return this; }
 
-  toJson(): {[key: string]: any} { return null; }
+  toJson() { return null; }
 }
 
 /**

@@ -53,6 +53,7 @@ export declare class NgFor implements DoCheck {
     private _templateRef;
     private _iterableDiffers;
     private _cdr;
+    _ngForTrackBy: TrackByFn;
     private _differ;
     constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef, _iterableDiffers: IterableDiffers, _cdr: ChangeDetectorRef);
     ngForOf: any;

@@ -878,7 +878,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
   })(ResolvedInstruction);
   exports.RedirectInstruction = RedirectInstruction;
   var ComponentInstruction = (function() {
-    function ComponentInstruction(urlPath, urlParams, data, componentType, terminal, specificity, params) {
+    function ComponentInstruction(urlPath, urlParams, data, componentType, terminal, specificity, params, routeName) {
       if (params === void 0) {
         params = null;
       }
@@ -888,6 +888,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       this.terminal = terminal;
       this.specificity = specificity;
       this.params = params;
+      this.routeName = routeName;
       this.reuse = false;
       this.routeData = lang_1.isPresent(data) ? data : exports.BLANK_ROUTE_DATA;
     }
@@ -1599,9 +1600,10 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
   })();
   exports.RedirectRule = RedirectRule;
   var RouteRule = (function() {
-    function RouteRule(_routePath, handler) {
+    function RouteRule(_routePath, handler, _routeName) {
       this._routePath = _routePath;
       this.handler = handler;
+      this._routeName = _routeName;
       this._cache = new collection_1.Map();
       this.specificity = this._routePath.specificity;
       this.hash = this._routePath.hash;
@@ -1645,7 +1647,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
       if (this._cache.has(hashKey)) {
         return this._cache.get(hashKey);
       }
-      var instruction = new instruction_1.ComponentInstruction(urlPath, urlParams, this.handler.data, this.handler.componentType, this.terminal, this.specificity, params);
+      var instruction = new instruction_1.ComponentInstruction(urlPath, urlParams, this.handler.data, this.handler.componentType, this.terminal, this.specificity, params, this._routeName);
       this._cache.set(hashKey, instruction);
       return instruction;
     };
@@ -2397,7 +2399,7 @@ System.register("angular2/src/router/rules/rule_set", ["angular2/src/facade/lang
       if (config instanceof route_config_impl_1.AuxRoute) {
         handler = new sync_route_handler_1.SyncRouteHandler(config.component, config.data);
         var routePath_1 = this._getRoutePath(config);
-        var auxRule = new rules_1.RouteRule(routePath_1, handler);
+        var auxRule = new rules_1.RouteRule(routePath_1, handler, config.name);
         this.auxRulesByPath.set(routePath_1.toString(), auxRule);
         if (lang_1.isPresent(config.name)) {
           this.auxRulesByName.set(config.name, auxRule);
@@ -2420,7 +2422,7 @@ System.register("angular2/src/router/rules/rule_set", ["angular2/src/facade/lang
         useAsDefault = lang_1.isPresent(config.useAsDefault) && config.useAsDefault;
       }
       var routePath = this._getRoutePath(config);
-      var newRule = new rules_1.RouteRule(routePath, handler);
+      var newRule = new rules_1.RouteRule(routePath, handler, config.name);
       this._assertNoHashCollision(newRule.hash, config.path);
       if (useAsDefault) {
         if (lang_1.isPresent(this.defaultRule)) {
@@ -2998,12 +3000,27 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
       return _resolveToTrue;
     };
     Router.prototype.isRouteActive = function(instruction) {
+      var _this = this;
       var router = this;
+      if (lang_1.isBlank(this.currentInstruction)) {
+        return false;
+      }
       while (lang_1.isPresent(router.parent) && lang_1.isPresent(instruction.child)) {
         router = router.parent;
         instruction = instruction.child;
       }
-      return lang_1.isPresent(this.currentInstruction) && this.currentInstruction.component == instruction.component;
+      if (lang_1.isBlank(instruction.component) || lang_1.isBlank(this.currentInstruction.component) || this.currentInstruction.component.routeName != instruction.component.routeName) {
+        return false;
+      }
+      var paramEquals = true;
+      if (lang_1.isPresent(this.currentInstruction.component.params)) {
+        collection_1.StringMapWrapper.forEach(instruction.component.params, function(value, key) {
+          if (_this.currentInstruction.component.params[key] !== value) {
+            paramEquals = false;
+          }
+        });
+      }
+      return paramEquals;
     };
     Router.prototype.config = function(definitions) {
       var _this = this;

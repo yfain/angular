@@ -7362,7 +7362,7 @@ System.register("angular2/src/core/debug/debug_renderer", ["angular2/src/facade/
           debugParent.addChild(debug_node_1.getDebugNode(node));
         });
       }
-      this._delegate.projectNodes(parentElement, nodes);
+      return this._delegate.projectNodes(parentElement, nodes);
     };
     DebugDomRenderer.prototype.attachViewAfter = function(node, viewRootNodes) {
       var debugNode = debug_node_1.getDebugNode(node);
@@ -7376,7 +7376,7 @@ System.register("angular2/src/core/debug/debug_renderer", ["angular2/src/facade/
           debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
         }
       }
-      this._delegate.attachViewAfter(node, viewRootNodes);
+      return this._delegate.attachViewAfter(node, viewRootNodes);
     };
     DebugDomRenderer.prototype.detachView = function(viewRootNodes) {
       viewRootNodes.forEach(function(node) {
@@ -7385,13 +7385,13 @@ System.register("angular2/src/core/debug/debug_renderer", ["angular2/src/facade/
           debugNode.parent.removeChild(debugNode);
         }
       });
-      this._delegate.detachView(viewRootNodes);
+      return this._delegate.detachView(viewRootNodes);
     };
     DebugDomRenderer.prototype.destroyView = function(hostElement, viewAllNodes) {
       viewAllNodes.forEach(function(node) {
         debug_node_1.removeDebugNodeFromIndex(debug_node_1.getDebugNode(node));
       });
-      this._delegate.destroyView(hostElement, viewAllNodes);
+      return this._delegate.destroyView(hostElement, viewAllNodes);
     };
     DebugDomRenderer.prototype.listen = function(renderElement, name, callback) {
       var debugEl = debug_node_1.getDebugNode(renderElement);
@@ -7408,34 +7408,34 @@ System.register("angular2/src/core/debug/debug_renderer", ["angular2/src/facade/
       if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
         debugEl.properties.set(propertyName, propertyValue);
       }
-      this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
+      return this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
     };
     DebugDomRenderer.prototype.setElementAttribute = function(renderElement, attributeName, attributeValue) {
       var debugEl = debug_node_1.getDebugNode(renderElement);
       if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
         debugEl.attributes.set(attributeName, attributeValue);
       }
-      this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
+      return this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
     };
     DebugDomRenderer.prototype.setBindingDebugInfo = function(renderElement, propertyName, propertyValue) {
-      this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
+      return this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
     };
     DebugDomRenderer.prototype.setElementDebugInfo = function(renderElement, info) {
       var debugEl = debug_node_1.getDebugNode(renderElement);
       debugEl.setDebugInfo(info);
-      this._delegate.setElementDebugInfo(renderElement, info);
+      return this._delegate.setElementDebugInfo(renderElement, info);
     };
     DebugDomRenderer.prototype.setElementClass = function(renderElement, className, isAdd) {
-      this._delegate.setElementClass(renderElement, className, isAdd);
+      return this._delegate.setElementClass(renderElement, className, isAdd);
     };
     DebugDomRenderer.prototype.setElementStyle = function(renderElement, styleName, styleValue) {
-      this._delegate.setElementStyle(renderElement, styleName, styleValue);
+      return this._delegate.setElementStyle(renderElement, styleName, styleValue);
     };
     DebugDomRenderer.prototype.invokeElementMethod = function(renderElement, methodName, args) {
-      this._delegate.invokeElementMethod(renderElement, methodName, args);
+      return this._delegate.invokeElementMethod(renderElement, methodName, args);
     };
     DebugDomRenderer.prototype.setText = function(renderNode, text) {
-      this._delegate.setText(renderNode, text);
+      return this._delegate.setText(renderNode, text);
     };
     return DebugDomRenderer;
   })();

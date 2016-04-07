@@ -14129,7 +14129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._ngZone = _ngZone;
 	        /** @internal */
 	        this._pendingCount = 0;
-	        /** @internal */
 	        this._isZoneStable = true;
 	        /**
 	         * Whether any work was done since the last 'whenStable' callback. This is
@@ -31173,7 +31172,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(debugParent) && debugParent instanceof debug_node_1.DebugElement) {
 	            nodes.forEach(function (node) { debugParent.addChild(debug_node_1.getDebugNode(node)); });
 	        }
-	        this._delegate.projectNodes(parentElement, nodes);
+	        return this._delegate.projectNodes(parentElement, nodes);
 	    };
 	    DebugDomRenderer.prototype.attachViewAfter = function (node, viewRootNodes) {
 	        var debugNode = debug_node_1.getDebugNode(node);
@@ -31185,7 +31184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
 	            }
 	        }
-	        this._delegate.attachViewAfter(node, viewRootNodes);
+	        return this._delegate.attachViewAfter(node, viewRootNodes);
 	    };
 	    DebugDomRenderer.prototype.detachView = function (viewRootNodes) {
 	        viewRootNodes.forEach(function (node) {
@@ -31194,11 +31193,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                debugNode.parent.removeChild(debugNode);
 	            }
 	        });
-	        this._delegate.detachView(viewRootNodes);
+	        return this._delegate.detachView(viewRootNodes);
 	    };
 	    DebugDomRenderer.prototype.destroyView = function (hostElement, viewAllNodes) {
 	        viewAllNodes.forEach(function (node) { debug_node_1.removeDebugNodeFromIndex(debug_node_1.getDebugNode(node)); });
-	        this._delegate.destroyView(hostElement, viewAllNodes);
+	        return this._delegate.destroyView(hostElement, viewAllNodes);
 	    };
 	    DebugDomRenderer.prototype.listen = function (renderElement, name, callback) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
@@ -31215,21 +31214,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
 	            debugEl.properties.set(propertyName, propertyValue);
 	        }
-	        this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
+	        return this._delegate.setElementProperty(renderElement, propertyName, propertyValue);
 	    };
 	    DebugDomRenderer.prototype.setElementAttribute = function (renderElement, attributeName, attributeValue) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
 	        if (lang_1.isPresent(debugEl) && debugEl instanceof debug_node_1.DebugElement) {
 	            debugEl.attributes.set(attributeName, attributeValue);
 	        }
-	        this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
+	        return this._delegate.setElementAttribute(renderElement, attributeName, attributeValue);
 	    };
 	    /**
 	     * Used only in debug mode to serialize property changes to comment nodes,
 	     * such as <template> placeholders.
 	     */
 	    DebugDomRenderer.prototype.setBindingDebugInfo = function (renderElement, propertyName, propertyValue) {
-	        this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
+	        return this._delegate.setBindingDebugInfo(renderElement, propertyName, propertyValue);
 	    };
 	    /**
 	     * Used only in development mode to set information needed by the DebugNode for this element.
@@ -31237,18 +31236,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DebugDomRenderer.prototype.setElementDebugInfo = function (renderElement, info) {
 	        var debugEl = debug_node_1.getDebugNode(renderElement);
 	        debugEl.setDebugInfo(info);
-	        this._delegate.setElementDebugInfo(renderElement, info);
+	        return this._delegate.setElementDebugInfo(renderElement, info);
 	    };
 	    DebugDomRenderer.prototype.setElementClass = function (renderElement, className, isAdd) {
-	        this._delegate.setElementClass(renderElement, className, isAdd);
+	        return this._delegate.setElementClass(renderElement, className, isAdd);
 	    };
 	    DebugDomRenderer.prototype.setElementStyle = function (renderElement, styleName, styleValue) {
-	        this._delegate.setElementStyle(renderElement, styleName, styleValue);
+	        return this._delegate.setElementStyle(renderElement, styleName, styleValue);
 	    };
 	    DebugDomRenderer.prototype.invokeElementMethod = function (renderElement, methodName, args) {
-	        this._delegate.invokeElementMethod(renderElement, methodName, args);
+	        return this._delegate.invokeElementMethod(renderElement, methodName, args);
 	    };
-	    DebugDomRenderer.prototype.setText = function (renderNode, text) { this._delegate.setText(renderNode, text); };
+	    DebugDomRenderer.prototype.setText = function (renderNode, text) { return this._delegate.setText(renderNode, text); };
 	    return DebugDomRenderer;
 	})();
 	exports.DebugDomRenderer = DebugDomRenderer;
@@ -33358,13 +33357,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * otherwise `false`.
 	     */
 	    Router.prototype.isRouteActive = function (instruction) {
+	        var _this = this;
 	        var router = this;
+	        if (lang_1.isBlank(this.currentInstruction)) {
+	            return false;
+	        }
+	        // `instruction` corresponds to the root router
 	        while (lang_1.isPresent(router.parent) && lang_1.isPresent(instruction.child)) {
 	            router = router.parent;
 	            instruction = instruction.child;
 	        }
-	        return lang_1.isPresent(this.currentInstruction) &&
-	            this.currentInstruction.component == instruction.component;
+	        if (lang_1.isBlank(instruction.component) || lang_1.isBlank(this.currentInstruction.component) ||
+	            this.currentInstruction.component.routeName != instruction.component.routeName) {
+	            return false;
+	        }
+	        var paramEquals = true;
+	        if (lang_1.isPresent(this.currentInstruction.component.params)) {
+	            collection_1.StringMapWrapper.forEach(instruction.component.params, function (value, key) {
+	                if (_this.currentInstruction.component.params[key] !== value) {
+	                    paramEquals = false;
+	                }
+	            });
+	        }
+	        return paramEquals;
 	    };
 	    /**
 	     * Dynamically update the routing configuration and trigger a navigation.
@@ -33475,7 +33490,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    Router.prototype._emitNavigationFinish = function (url) { async_1.ObservableWrapper.callEmit(this._subject, url); };
-	    /** @internal */
 	    Router.prototype._emitNavigationFail = function (url) { async_1.ObservableWrapper.callError(this._subject, url); };
 	    Router.prototype._afterPromiseFinishNavigating = function (promise) {
 	        var _this = this;
@@ -34529,9 +34543,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	// represents something like '/foo/:bar'
 	var RouteRule = (function () {
 	    // TODO: cache component instruction instances by params and by ParsedUrl instance
-	    function RouteRule(_routePath, handler) {
+	    function RouteRule(_routePath, handler, _routeName) {
 	        this._routePath = _routePath;
 	        this.handler = handler;
+	        this._routeName = _routeName;
 	        this._cache = new collection_1.Map();
 	        this.specificity = this._routePath.specificity;
 	        this.hash = this._routePath.hash;
@@ -34571,7 +34586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this._cache.has(hashKey)) {
 	            return this._cache.get(hashKey);
 	        }
-	        var instruction = new instruction_1.ComponentInstruction(urlPath, urlParams, this.handler.data, this.handler.componentType, this.terminal, this.specificity, params);
+	        var instruction = new instruction_1.ComponentInstruction(urlPath, urlParams, this.handler.data, this.handler.componentType, this.terminal, this.specificity, params, this._routeName);
 	        this._cache.set(hashKey, instruction);
 	        return instruction;
 	    };
@@ -35149,7 +35164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * @internal
 	     */
-	    function ComponentInstruction(urlPath, urlParams, data, componentType, terminal, specificity, params) {
+	    function ComponentInstruction(urlPath, urlParams, data, componentType, terminal, specificity, params, routeName) {
 	        if (params === void 0) { params = null; }
 	        this.urlPath = urlPath;
 	        this.urlParams = urlParams;
@@ -35157,6 +35172,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.terminal = terminal;
 	        this.specificity = specificity;
 	        this.params = params;
+	        this.routeName = routeName;
 	        this.reuse = false;
 	        this.routeData = lang_1.isPresent(data) ? data : exports.BLANK_ROUTE_DATA;
 	    }
@@ -35209,7 +35225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (config instanceof route_config_impl_1.AuxRoute) {
 	            handler = new sync_route_handler_1.SyncRouteHandler(config.component, config.data);
 	            var routePath_1 = this._getRoutePath(config);
-	            var auxRule = new rules_1.RouteRule(routePath_1, handler);
+	            var auxRule = new rules_1.RouteRule(routePath_1, handler, config.name);
 	            this.auxRulesByPath.set(routePath_1.toString(), auxRule);
 	            if (lang_1.isPresent(config.name)) {
 	                this.auxRulesByName.set(config.name, auxRule);
@@ -35233,7 +35249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            useAsDefault = lang_1.isPresent(config.useAsDefault) && config.useAsDefault;
 	        }
 	        var routePath = this._getRoutePath(config);
-	        var newRule = new rules_1.RouteRule(routePath, handler);
+	        var newRule = new rules_1.RouteRule(routePath, handler, config.name);
 	        this._assertNoHashCollision(newRule.hash, config.path);
 	        if (useAsDefault) {
 	            if (lang_1.isPresent(this.defaultRule)) {
