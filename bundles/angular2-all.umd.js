@@ -33547,6 +33547,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return false;
 	            }
 	            if (lang_1.isPresent(_this._childRouter)) {
+	                // TODO: ideally, this closure would map to async-await in Dart.
+	                // For now, casting to any to suppress an error.
 	                return _this._childRouter._routerCanDeactivate(childInstruction);
 	            }
 	            return true;
