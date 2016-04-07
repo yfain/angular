@@ -83,7 +83,7 @@ num getDelimFromCharacter(num code) {
   }
 }
 
-bool characterContainsDelimiter(num code, num delimiters) {
+characterContainsDelimiter(num code, num delimiters) {
   return bitWiseAnd([getDelimFromCharacter(code), delimiters]) > 0;
 }
 
@@ -120,7 +120,6 @@ class CssParser {
   CssParser(this._scanner, this._fileName) {
     this._file = new ParseSourceFile(this._scanner.input, _fileName);
   }
-  /** @internal */
   BlockType _resolveBlockType(CssToken token) {
     switch (token.strValue) {
       case "@-o-keyframes":
@@ -159,7 +158,6 @@ class CssParser {
     return new ParsedCssResult(errors, ast);
   }
 
-  /** @internal */
   CssStyleSheetAST _parseStyleSheet(delimiters) {
     var results = [];
     this._scanner.consumeEmptyStatements();
@@ -170,7 +168,6 @@ class CssParser {
     return new CssStyleSheetAST(results);
   }
 
-  /** @internal */
   CssRuleAST _parseRule(num delimiters) {
     if (this._scanner.peek == $AT) {
       return this._parseAtRule(delimiters);
@@ -178,7 +175,6 @@ class CssParser {
     return this._parseSelectorRule(delimiters);
   }
 
-  /** @internal */
   CssRuleAST _parseAtRule(num delimiters) {
     this._scanner.setMode(CssLexerMode.BLOCK);
     var token = this._scan();
@@ -252,7 +248,6 @@ class CssParser {
     }
   }
 
-  /** @internal */
   CssSelectorRuleAST _parseSelectorRule(num delimiters) {
     var selectors = this._parseSelectors(delimiters);
     var block = this._parseStyleBlock(delimiters);
@@ -261,7 +256,6 @@ class CssParser {
     return new CssSelectorRuleAST(selectors, block);
   }
 
-  /** @internal */
   List<CssSelectorAST> _parseSelectors(num delimiters) {
     delimiters = bitWiseOr([delimiters, LBRACE_DELIM]);
     var selectors = [];
@@ -279,7 +273,6 @@ class CssParser {
     return selectors;
   }
 
-  /** @internal */
   CssToken _scan() {
     var output = this._scanner.scan();
     var token = output.token;
@@ -290,7 +283,6 @@ class CssParser {
     return token;
   }
 
-  /** @internal */
   CssToken _consume(CssTokenType type, [String value = null]) {
     var output = this._scanner.consume(type, value);
     var token = output.token;
@@ -301,7 +293,6 @@ class CssParser {
     return token;
   }
 
-  /** @internal */
   CssBlockAST _parseKeyframeBlock(num delimiters) {
     delimiters = bitWiseOr([delimiters, RBRACE_DELIM]);
     this._scanner.setMode(CssLexerMode.KEYFRAME_BLOCK);
@@ -314,7 +305,6 @@ class CssParser {
     return new CssBlockAST(definitions);
   }
 
-  /** @internal */
   CssKeyframeDefinitionAST _parseKeyframeDefinition(num delimiters) {
     var stepTokens = [];
     delimiters = bitWiseOr([delimiters, LBRACE_DELIM]);
@@ -330,13 +320,11 @@ class CssParser {
     return new CssKeyframeDefinitionAST(stepTokens, styles);
   }
 
-  /** @internal */
   CssToken _parseKeyframeLabel(num delimiters) {
     this._scanner.setMode(CssLexerMode.KEYFRAME_BLOCK);
     return mergeTokens(this._collectUntilDelim(delimiters));
   }
 
-  /** @internal */
   CssSelectorAST _parseSelector(num delimiters) {
     delimiters = bitWiseOr([delimiters, COMMA_DELIM, LBRACE_DELIM]);
     this._scanner.setMode(CssLexerMode.SELECTOR);
@@ -427,7 +415,6 @@ class CssParser {
     return new CssSelectorAST(selectorCssTokens, isComplex);
   }
 
-  /** @internal */
   CssStyleValueAST _parseValue(num delimiters) {
     delimiters =
         bitWiseOr([delimiters, RBRACE_DELIM, SEMICOLON_DELIM, NEWLINE_DELIM]);
@@ -478,7 +465,6 @@ class CssParser {
     return new CssStyleValueAST(tokens, strValue);
   }
 
-  /** @internal */
   List<CssToken> _collectUntilDelim(num delimiters,
       [CssTokenType assertType = null]) {
     var tokens = [];
@@ -490,7 +476,6 @@ class CssParser {
     return tokens;
   }
 
-  /** @internal */
   CssBlockAST _parseBlock(num delimiters) {
     delimiters = bitWiseOr([delimiters, RBRACE_DELIM]);
     this._scanner.setMode(CssLexerMode.BLOCK);
@@ -506,7 +491,6 @@ class CssParser {
     return new CssBlockAST(results);
   }
 
-  /** @internal */
   CssBlockAST _parseStyleBlock(num delimiters) {
     delimiters = bitWiseOr([delimiters, RBRACE_DELIM, LBRACE_DELIM]);
     this._scanner.setMode(CssLexerMode.STYLE_BLOCK);
@@ -523,7 +507,6 @@ class CssParser {
     return new CssBlockAST(definitions);
   }
 
-  /** @internal */
   CssDefinitionAST _parseDefinition(num delimiters) {
     this._scanner.setMode(CssLexerMode.STYLE_BLOCK);
     var prop = this._consume(CssTokenType.Identifier);
@@ -585,7 +568,6 @@ class CssParser {
     return new CssDefinitionAST(prop, value);
   }
 
-  /** @internal */
   bool _assertCondition(
       bool status, String errorMessage, CssToken problemToken) {
     if (!status) {
@@ -595,7 +577,6 @@ class CssParser {
     return false;
   }
 
-  /** @internal */
   _error(String message, CssToken problemToken) {
     var length = problemToken.strValue.length;
     var error = CssParseError.create(

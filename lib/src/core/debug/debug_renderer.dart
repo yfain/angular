@@ -69,7 +69,7 @@ class DebugDomRenderer implements Renderer {
         debugParent.addChild(getDebugNode(node));
       });
     }
-    this._delegate.projectNodes(parentElement, nodes);
+    return this._delegate.projectNodes(parentElement, nodes);
   }
 
   attachViewAfter(dynamic node, List<dynamic> viewRootNodes) {
@@ -83,7 +83,7 @@ class DebugDomRenderer implements Renderer {
         debugParent.insertChildrenAfter(debugNode, debugViewRootNodes);
       }
     }
-    this._delegate.attachViewAfter(node, viewRootNodes);
+    return this._delegate.attachViewAfter(node, viewRootNodes);
   }
 
   detachView(List<dynamic> viewRootNodes) {
@@ -93,17 +93,17 @@ class DebugDomRenderer implements Renderer {
         debugNode.parent.removeChild(debugNode);
       }
     });
-    this._delegate.detachView(viewRootNodes);
+    return this._delegate.detachView(viewRootNodes);
   }
 
   destroyView(dynamic hostElement, List<dynamic> viewAllNodes) {
     viewAllNodes.forEach((node) {
       removeDebugNodeFromIndex(getDebugNode(node));
     });
-    this._delegate.destroyView(hostElement, viewAllNodes);
+    return this._delegate.destroyView(hostElement, viewAllNodes);
   }
 
-  Function listen(dynamic renderElement, String name, Function callback) {
+  listen(dynamic renderElement, String name, Function callback) {
     var debugEl = getDebugNode(renderElement);
     if (isPresent(debugEl)) {
       debugEl.listeners.add(new EventListener(name, callback));
@@ -121,7 +121,7 @@ class DebugDomRenderer implements Renderer {
     if (isPresent(debugEl) && debugEl is DebugElement) {
       debugEl.properties[propertyName] = propertyValue;
     }
-    this
+    return this
         ._delegate
         .setElementProperty(renderElement, propertyName, propertyValue);
   }
@@ -132,7 +132,7 @@ class DebugDomRenderer implements Renderer {
     if (isPresent(debugEl) && debugEl is DebugElement) {
       debugEl.attributes[attributeName] = attributeValue;
     }
-    this
+    return this
         ._delegate
         .setElementAttribute(renderElement, attributeName, attributeValue);
   }
@@ -143,7 +143,7 @@ class DebugDomRenderer implements Renderer {
    */
   setBindingDebugInfo(
       dynamic renderElement, String propertyName, String propertyValue) {
-    this
+    return this
         ._delegate
         .setBindingDebugInfo(renderElement, propertyName, propertyValue);
   }
@@ -154,23 +154,23 @@ class DebugDomRenderer implements Renderer {
   setElementDebugInfo(dynamic renderElement, RenderDebugInfo info) {
     var debugEl = getDebugNode(renderElement);
     debugEl.setDebugInfo(info);
-    this._delegate.setElementDebugInfo(renderElement, info);
+    return this._delegate.setElementDebugInfo(renderElement, info);
   }
 
   setElementClass(dynamic renderElement, String className, bool isAdd) {
-    this._delegate.setElementClass(renderElement, className, isAdd);
+    return this._delegate.setElementClass(renderElement, className, isAdd);
   }
 
   setElementStyle(dynamic renderElement, String styleName, String styleValue) {
-    this._delegate.setElementStyle(renderElement, styleName, styleValue);
+    return this._delegate.setElementStyle(renderElement, styleName, styleValue);
   }
 
   invokeElementMethod(
       dynamic renderElement, String methodName, List<dynamic> args) {
-    this._delegate.invokeElementMethod(renderElement, methodName, args);
+    return this._delegate.invokeElementMethod(renderElement, methodName, args);
   }
 
   setText(dynamic renderNode, String text) {
-    this._delegate.setText(renderNode, text);
+    return this._delegate.setText(renderNode, text);
   }
 }

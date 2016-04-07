@@ -285,7 +285,7 @@ main() {
                     expect(link2).toHaveCssClass("router-link-active");
                     async.done();
                   });
-                  router.navigateByUrl("/better-child");
+                  router.navigateByUrl("/better-child?extra=0");
                 });
           }));
       it(
@@ -322,7 +322,8 @@ main() {
                     expect(link4).not.toHaveCssClass("router-link-active");
                     async.done();
                   });
-                  router.navigateByUrl("/child-with-grandchild/grandchild");
+                  router.navigateByUrl(
+                      "/child-with-grandchild/grandchild?extra=0");
                 });
           }));
       describe("router link dsl", () {

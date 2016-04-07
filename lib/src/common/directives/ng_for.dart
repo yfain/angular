@@ -76,7 +76,6 @@ class NgFor implements DoCheck {
   ChangeDetectorRef _cdr;
   /** @internal */
   dynamic _ngForOf;
-  /** @internal */
   TrackByFn _ngForTrackBy;
   IterableDiffer _differ;
   NgFor(this._viewContainer, this._templateRef, this._iterableDiffers,

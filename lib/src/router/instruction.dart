@@ -333,6 +333,7 @@ class ComponentInstruction {
   bool terminal;
   String specificity;
   Map<String, String> params;
+  String routeName;
   bool reuse = false;
   RouteData routeData;
   /**
@@ -340,7 +341,7 @@ class ComponentInstruction {
    */
   ComponentInstruction(this.urlPath, this.urlParams, RouteData data,
       this.componentType, this.terminal, this.specificity,
-      [this.params = null]) {
+      [this.params = null, this.routeName]) {
     this.routeData = isPresent(data) ? data : BLANK_ROUTE_DATA;
   }
 }

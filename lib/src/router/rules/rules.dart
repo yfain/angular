@@ -76,13 +76,14 @@ class RedirectRule implements AbstractRule {
 class RouteRule implements AbstractRule {
   RoutePath _routePath;
   RouteHandler handler;
+  String _routeName;
   String specificity;
   bool terminal;
   String hash;
   Map<String, ComponentInstruction> _cache =
       new Map<String, ComponentInstruction>();
   // TODO: cache component instruction instances by params and by ParsedUrl instance
-  RouteRule(this._routePath, this.handler) {
+  RouteRule(this._routePath, this.handler, this._routeName) {
     this.specificity = this._routePath.specificity;
     this.hash = this._routePath.hash;
     this.terminal = this._routePath.terminal;
@@ -136,7 +137,8 @@ class RouteRule implements AbstractRule {
         this.handler.componentType,
         this.terminal,
         this.specificity,
-        params);
+        params,
+        this._routeName);
     this._cache[hashKey] = instruction;
     return instruction;
   }

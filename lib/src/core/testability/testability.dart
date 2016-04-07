@@ -18,7 +18,6 @@ class Testability {
   NgZone _ngZone;
   /** @internal */
   num _pendingCount = 0;
-  /** @internal */
   bool _isZoneStable = true;
   /**
    * Whether any work was done since the last 'whenStable' callback. This is

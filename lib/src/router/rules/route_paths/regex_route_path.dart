@@ -36,7 +36,7 @@ class RegexRoutePath implements RoutePath {
     return this._serializer(params);
   }
 
-  String toString() {
+  toString() {
     return this._reString;
   }
 }
