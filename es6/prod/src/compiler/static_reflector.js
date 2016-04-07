@@ -179,6 +179,7 @@ export class StaticReflector {
         });
         conversionMap.set(this.getStaticType(core_metadata, 'HostBinding'), (moduleContext, expression) => new HostBindingMetadata(this.getDecoratorParameter(moduleContext, expression, 0)));
         conversionMap.set(this.getStaticType(core_metadata, 'HostListener'), (moduleContext, expression) => new HostListenerMetadata(this.getDecoratorParameter(moduleContext, expression, 0), this.getDecoratorParameter(moduleContext, expression, 1)));
+        return null;
     }
     convertKnownDecorator(moduleContext, expression) {
         let converter = this.conversionMap.get(this.getDecoratorType(moduleContext, expression));

@@ -7,17 +7,12 @@ export declare class SelectControlValueAccessor implements ControlValueAccessor 
     private _renderer;
     private _elementRef;
     value: any;
-    _optionMap: Map<string, any>;
-    _idCounter: number;
     onChange: (_: any) => void;
     onTouched: () => void;
     constructor(_renderer: Renderer, _elementRef: ElementRef);
     writeValue(value: any): void;
     registerOnChange(fn: (value: any) => any): void;
     registerOnTouched(fn: () => any): void;
-    _registerOption(): string;
-    _getOptionId(value: any): string;
-    _getOptionValue(valueString: string): any;
 }
 /**
  * Marks `<option>` as dynamic, so Angular can be notified when options change.
@@ -38,6 +33,5 @@ export declare class NgSelectOption implements OnDestroy {
     constructor(_element: ElementRef, _renderer: Renderer, _select: SelectControlValueAccessor);
     ngValue: any;
     value: any;
-    _setElementValue(value: string): void;
     ngOnDestroy(): void;
 }

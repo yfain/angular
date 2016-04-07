@@ -23,6 +23,7 @@ export let Testability = class {
         this._ngZone = _ngZone;
         /** @internal */
         this._pendingCount = 0;
+        /** @internal */
         this._isZoneStable = true;
         /**
          * Whether any work was done since the last 'whenStable' callback. This is

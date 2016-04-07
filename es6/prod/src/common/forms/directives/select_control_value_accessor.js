@@ -32,7 +32,9 @@ export let SelectControlValueAccessor = class {
     constructor(_renderer, _elementRef) {
         this._renderer = _renderer;
         this._elementRef = _elementRef;
+        /** @internal */
         this._optionMap = new Map();
+        /** @internal */
         this._idCounter = 0;
         this.onChange = (_) => { };
         this.onTouched = () => { };
@@ -46,7 +48,9 @@ export let SelectControlValueAccessor = class {
         this.onChange = (valueString) => { fn(this._getOptionValue(valueString)); };
     }
     registerOnTouched(fn) { this.onTouched = fn; }
+    /** @internal */
     _registerOption() { return (this._idCounter++).toString(); }
+    /** @internal */
     _getOptionId(value) {
         for (let id of MapWrapper.keys(this._optionMap)) {
             if (looseIdentical(this._optionMap.get(id), value))
@@ -54,6 +58,7 @@ export let SelectControlValueAccessor = class {
         }
         return null;
     }
+    /** @internal */
     _getOptionValue(valueString) {
         let value = this._optionMap.get(_extractId(valueString));
         return isPresent(value) ? value : valueString;
@@ -99,6 +104,7 @@ export let NgSelectOption = class {
         this._setElementValue(value);
         this._select.writeValue(this._select.value);
     }
+    /** @internal */
     _setElementValue(value) {
         this._renderer.setElementProperty(this._element.nativeElement, 'value', value);
     }
