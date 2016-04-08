@@ -65,8 +65,9 @@ class DebugDomRenderer implements Renderer {
   projectNodes(dynamic parentElement, List<dynamic> nodes) {
     var debugParent = getDebugNode(parentElement);
     if (isPresent(debugParent) && debugParent is DebugElement) {
+      var debugElement = debugParent;
       nodes.forEach((node) {
-        debugParent.addChild(getDebugNode(node));
+        debugElement.addChild(getDebugNode(node));
       });
     }
     this._delegate.projectNodes(parentElement, nodes);
