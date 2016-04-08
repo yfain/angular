@@ -99,10 +99,9 @@ export let NgSelectOption = class {
         this._select.writeValue(this._select.value);
     }
     set value(value) {
-        if (this._select == null)
-            return;
         this._setElementValue(value);
-        this._select.writeValue(this._select.value);
+        if (isPresent(this._select))
+            this._select.writeValue(this._select.value);
     }
     /** @internal */
     _setElementValue(value) {

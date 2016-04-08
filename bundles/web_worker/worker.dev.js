@@ -9741,10 +9741,9 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
     });
     Object.defineProperty(NgSelectOption.prototype, "value", {
       set: function(value) {
-        if (this._select == null)
-          return ;
         this._setElementValue(value);
-        this._select.writeValue(this._select.value);
+        if (lang_1.isPresent(this._select))
+          this._select.writeValue(this._select.value);
       },
       enumerable: true,
       configurable: true
