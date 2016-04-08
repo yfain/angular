@@ -21160,7 +21160,7 @@ System.register("angular2/src/common/forms/directives", ["angular2/src/facade/la
   return module.exports;
 });
 
-System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/src/platform/dom/events/hammer_common", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/core/di"], true, function(require, exports, module) {
+System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/src/platform/dom/events/hammer_common", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/core"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -21189,17 +21189,42 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
       return Reflect.metadata(k, v);
   };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
   var hammer_common_1 = require("angular2/src/platform/dom/events/hammer_common");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
-  var di_1 = require("angular2/src/core/di");
+  var core_1 = require("angular2/core");
+  exports.HAMMER_GESTURE_CONFIG = lang_1.CONST_EXPR(new core_1.OpaqueToken("HammerGestureConfig"));
+  var HammerGestureConfig = (function() {
+    function HammerGestureConfig() {
+      this.events = [];
+      this.overrides = {};
+    }
+    HammerGestureConfig.prototype.buildHammer = function(element) {
+      var mc = new Hammer(element);
+      mc.get('pinch').set({enable: true});
+      mc.get('rotate').set({enable: true});
+      for (var eventName in this.overrides) {
+        mc.get(eventName).set(this.overrides[eventName]);
+      }
+      return mc;
+    };
+    HammerGestureConfig = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [])], HammerGestureConfig);
+    return HammerGestureConfig;
+  })();
+  exports.HammerGestureConfig = HammerGestureConfig;
   var HammerGesturesPlugin = (function(_super) {
     __extends(HammerGesturesPlugin, _super);
-    function HammerGesturesPlugin() {
-      _super.apply(this, arguments);
+    function HammerGesturesPlugin(_config) {
+      _super.call(this);
+      this._config = _config;
     }
     HammerGesturesPlugin.prototype.supports = function(eventName) {
-      if (!_super.prototype.supports.call(this, eventName))
+      if (!_super.prototype.supports.call(this, eventName) && !this.isCustomEvent(eventName))
         return false;
       if (!lang_1.isPresent(window['Hammer'])) {
         throw new exceptions_1.BaseException("Hammer.js is not loaded, can not bind " + eventName + " event");
@@ -21207,12 +21232,11 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
       return true;
     };
     HammerGesturesPlugin.prototype.addEventListener = function(element, eventName, handler) {
+      var _this = this;
       var zone = this.manager.getZone();
       eventName = eventName.toLowerCase();
       return zone.runOutsideAngular(function() {
-        var mc = new Hammer(element);
-        mc.get('pinch').set({enable: true});
-        mc.get('rotate').set({enable: true});
+        var mc = _this._config.buildHammer(element);
         var callback = function(eventObj) {
           zone.run(function() {
             handler(eventObj);
@@ -21224,7 +21248,10 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
         };
       });
     };
-    HammerGesturesPlugin = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], HammerGesturesPlugin);
+    HammerGesturesPlugin.prototype.isCustomEvent = function(eventName) {
+      return this._config.events.indexOf(eventName) > -1;
+    };
+    HammerGesturesPlugin = __decorate([core_1.Injectable(), __param(0, core_1.Inject(exports.HAMMER_GESTURE_CONFIG)), __metadata('design:paramtypes', [HammerGestureConfig])], HammerGesturesPlugin);
     return HammerGesturesPlugin;
   })(hammer_common_1.HammerGesturesPluginCommon);
   exports.HammerGesturesPlugin = HammerGesturesPlugin;
@@ -25590,7 +25617,7 @@ System.register("angular2/compiler", ["angular2/src/compiler/url_resolver", "ang
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser_common", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/core", "angular2/common", "angular2/src/core/testability/testability", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/testability", "angular2/src/core/profile/wtf_init", "angular2/src/platform/dom/events/event_manager", "angular2/platform/common_dom", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/browser/title", "angular2/platform/common_dom", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/tools/tools"], true, function(require, exports, module) {
+System.register("angular2/src/platform/browser_common", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/core", "angular2/common", "angular2/src/core/testability/testability", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/testability", "angular2/src/core/profile/wtf_init", "angular2/src/platform/dom/events/event_manager", "angular2/src/platform/dom/events/hammer_gestures", "angular2/platform/common_dom", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/browser/title", "angular2/platform/common_dom", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/tools/tools", "angular2/src/platform/dom/events/hammer_gestures"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -25613,6 +25640,7 @@ System.register("angular2/src/platform/browser_common", ["angular2/src/facade/la
   var testability_2 = require("angular2/src/platform/browser/testability");
   var wtf_init_1 = require("angular2/src/core/profile/wtf_init");
   var event_manager_1 = require("angular2/src/platform/dom/events/event_manager");
+  var hammer_gestures_2 = require("angular2/src/platform/dom/events/hammer_gestures");
   var common_dom_1 = require("angular2/platform/common_dom");
   var dom_tokens_2 = require("angular2/src/platform/dom/dom_tokens");
   exports.DOCUMENT = dom_tokens_2.DOCUMENT;
@@ -25628,6 +25656,9 @@ System.register("angular2/src/platform/browser_common", ["angular2/src/facade/la
   var tools_1 = require("angular2/src/platform/browser/tools/tools");
   exports.enableDebugTools = tools_1.enableDebugTools;
   exports.disableDebugTools = tools_1.disableDebugTools;
+  var hammer_gestures_3 = require("angular2/src/platform/dom/events/hammer_gestures");
+  exports.HAMMER_GESTURE_CONFIG = hammer_gestures_3.HAMMER_GESTURE_CONFIG;
+  exports.HammerGestureConfig = hammer_gestures_3.HammerGestureConfig;
   exports.BROWSER_PROVIDERS = lang_1.CONST_EXPR([core_1.PLATFORM_COMMON_PROVIDERS, new di_1.Provider(core_1.PLATFORM_INITIALIZER, {
     useValue: initDomAdapter,
     multi: true
@@ -25659,7 +25690,7 @@ System.register("angular2/src/platform/browser_common", ["angular2/src/facade/la
   }), new di_1.Provider(event_manager_1.EVENT_MANAGER_PLUGINS, {
     useClass: hammer_gestures_1.HammerGesturesPlugin,
     multi: true
-  }), new di_1.Provider(dom_renderer_1.DomRootRenderer, {useClass: dom_renderer_1.DomRootRenderer_}), new di_1.Provider(core_1.RootRenderer, {useExisting: dom_renderer_1.DomRootRenderer}), new di_1.Provider(shared_styles_host_2.SharedStylesHost, {useExisting: shared_styles_host_1.DomSharedStylesHost}), shared_styles_host_1.DomSharedStylesHost, testability_1.Testability, browser_details_1.BrowserDetails, animation_builder_1.AnimationBuilder, event_manager_1.EventManager, common_dom_1.ELEMENT_PROBE_PROVIDERS]);
+  }), new di_1.Provider(hammer_gestures_2.HAMMER_GESTURE_CONFIG, {useClass: hammer_gestures_2.HammerGestureConfig}), new di_1.Provider(dom_renderer_1.DomRootRenderer, {useClass: dom_renderer_1.DomRootRenderer_}), new di_1.Provider(core_1.RootRenderer, {useExisting: dom_renderer_1.DomRootRenderer}), new di_1.Provider(shared_styles_host_2.SharedStylesHost, {useExisting: shared_styles_host_1.DomSharedStylesHost}), shared_styles_host_1.DomSharedStylesHost, testability_1.Testability, browser_details_1.BrowserDetails, animation_builder_1.AnimationBuilder, event_manager_1.EventManager, common_dom_1.ELEMENT_PROBE_PROVIDERS]);
   function initDomAdapter() {
     browser_adapter_1.BrowserDomAdapter.makeCurrent();
     wtf_init_1.wtfInit();

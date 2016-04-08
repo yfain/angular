@@ -3,6 +3,7 @@ export { Title } from 'angular2/src/platform/browser/title';
 export { ELEMENT_PROBE_PROVIDERS, ELEMENT_PROBE_PROVIDERS_PROD_MODE, inspectNativeElement, By } from 'angular2/platform/common_dom';
 export { BrowserDomAdapter } from './browser/browser_adapter';
 export { enableDebugTools, disableDebugTools } from 'angular2/src/platform/browser/tools/tools';
+export { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from './dom/events/hammer_gestures';
 /**
  * A set of providers to initialize the Angular platform in a web browser.
  *
