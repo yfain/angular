@@ -893,13 +893,15 @@ System.register("angular2/platform/testing/browser_static", ["angular2/core", "a
   return module.exports;
 });
 
-System.register("angular2/platform/testing/browser", ["angular2/platform/testing/browser_static", "angular2/platform/browser", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/platform/testing/browser", ["angular2/platform/testing/browser_static", "angular2/platform/browser", "angular2/src/facade/lang", "angular2/platform/browser"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   var browser_static_1 = require("angular2/platform/testing/browser_static");
   var browser_1 = require("angular2/platform/browser");
   var lang_1 = require("angular2/src/facade/lang");
+  var browser_2 = require("angular2/platform/browser");
+  exports.CACHED_TEMPLATE_PROVIDER = browser_2.CACHED_TEMPLATE_PROVIDER;
   exports.TEST_BROWSER_PLATFORM_PROVIDERS = lang_1.CONST_EXPR([browser_static_1.TEST_BROWSER_STATIC_PLATFORM_PROVIDERS]);
   exports.TEST_BROWSER_APPLICATION_PROVIDERS = lang_1.CONST_EXPR([browser_1.BROWSER_APP_PROVIDERS, browser_static_1.ADDITIONAL_TEST_BROWSER_PROVIDERS]);
   global.define = __define;
