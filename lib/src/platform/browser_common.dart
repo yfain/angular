@@ -43,6 +43,8 @@ import "package:angular2/src/platform/browser/testability.dart"
 import "package:angular2/src/core/profile/wtf_init.dart" show wtfInit;
 import "package:angular2/src/platform/dom/events/event_manager.dart"
     show EventManager, EVENT_MANAGER_PLUGINS;
+import "package:angular2/src/platform/dom/events/hammer_gestures.dart"
+    show HAMMER_GESTURE_CONFIG, HammerGestureConfig;
 import "package:angular2/platform/common_dom.dart" show ELEMENT_PROBE_PROVIDERS;
 export "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 export "package:angular2/src/platform/browser/title.dart" show Title;
@@ -55,6 +57,8 @@ export "package:angular2/platform/common_dom.dart"
 export "browser/browser_adapter.dart" show BrowserDomAdapter;
 export "package:angular2/src/platform/browser/tools/tools.dart"
     show enableDebugTools, disableDebugTools;
+export "dom/events/hammer_gestures.dart"
+    show HAMMER_GESTURE_CONFIG, HammerGestureConfig;
 
 /**
  * A set of providers to initialize the Angular platform in a web browser.
@@ -93,6 +97,7 @@ const List<dynamic> BROWSER_APP_COMMON_PROVIDERS = const [
   const Provider(EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true),
   const Provider(EVENT_MANAGER_PLUGINS,
       useClass: HammerGesturesPlugin, multi: true),
+  const Provider(HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig),
   const Provider(DomRootRenderer, useClass: DomRootRenderer_),
   const Provider(RootRenderer, useExisting: DomRootRenderer),
   const Provider(SharedStylesHost, useExisting: DomSharedStylesHost),
