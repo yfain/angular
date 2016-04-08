@@ -119,9 +119,8 @@ class NgSelectOption implements OnDestroy {
 
   @Input("value")
   set value(dynamic value) {
-    if (this._select == null) return;
     this._setElementValue(value);
-    this._select.writeValue(this._select.value);
+    if (isPresent(this._select)) this._select.writeValue(this._select.value);
   }
 
   /** @internal */
