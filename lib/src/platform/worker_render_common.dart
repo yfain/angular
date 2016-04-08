@@ -63,6 +63,8 @@ import "package:angular2/src/web_workers/shared/serializer.dart"
 import "package:angular2/src/web_workers/shared/api.dart" show ON_WEB_WORKER;
 import "package:angular2/src/web_workers/shared/render_store.dart"
     show RenderStore;
+import "dom/events/hammer_gestures.dart"
+    show HAMMER_GESTURE_CONFIG, HammerGestureConfig;
 
 const OpaqueToken WORKER_SCRIPT = const OpaqueToken("WebWorkerScript");
 // Message based Worker classes that listen on the MessageBus
@@ -93,6 +95,7 @@ const List<dynamic> WORKER_RENDER_APPLICATION_COMMON = const [
   const Provider(EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true),
   const Provider(EVENT_MANAGER_PLUGINS,
       useClass: HammerGesturesPlugin, multi: true),
+  const Provider(HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig),
   const Provider(DomRootRenderer, useClass: DomRootRenderer_),
   const Provider(RootRenderer, useExisting: DomRootRenderer),
   const Provider(SharedStylesHost, useExisting: DomSharedStylesHost),
