@@ -14137,22 +14137,6 @@ System.register("angular2/platform/common_dom", ["angular2/src/platform/dom/dom_
   return module.exports;
 });
 
-System.register("angular2/src/compiler/xhr", [], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  var XHR = (function() {
-    function XHR() {}
-    XHR.prototype.get = function(url) {
-      return null;
-    };
-    return XHR;
-  })();
-  exports.XHR = XHR;
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/common/pipes/invalid_pipe_argument_exception", ["angular2/src/facade/lang", "angular2/src/facade/exceptions"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -17825,53 +17809,18 @@ System.register("angular2/src/platform/dom/events/hammer_common", ["angular2/src
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/xhr_impl", ["angular2/src/facade/promise", "angular2/src/facade/lang", "angular2/src/compiler/xhr"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/xhr", [], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var promise_1 = require("angular2/src/facade/promise");
-  var lang_1 = require("angular2/src/facade/lang");
-  var xhr_1 = require("angular2/src/compiler/xhr");
-  var XHRImpl = (function(_super) {
-    __extends(XHRImpl, _super);
-    function XHRImpl() {
-      _super.apply(this, arguments);
-    }
-    XHRImpl.prototype.get = function(url) {
-      var completer = promise_1.PromiseWrapper.completer();
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.responseType = 'text';
-      xhr.onload = function() {
-        var response = lang_1.isPresent(xhr.response) ? xhr.response : xhr.responseText;
-        var status = xhr.status === 1223 ? 204 : xhr.status;
-        if (status === 0) {
-          status = response ? 200 : 0;
-        }
-        if (200 <= status && status <= 300) {
-          completer.resolve(response);
-        } else {
-          completer.reject("Failed to load " + url, null);
-        }
-      };
-      xhr.onerror = function() {
-        completer.reject("Failed to load " + url, null);
-      };
-      xhr.send();
-      return completer.promise;
+  var XHR = (function() {
+    function XHR() {}
+    XHR.prototype.get = function(url) {
+      return null;
     };
-    return XHRImpl;
-  })(xhr_1.XHR);
-  exports.XHRImpl = XHRImpl;
+    return XHR;
+  })();
+  exports.XHR = XHR;
   global.define = __define;
   return module.exports;
 });
@@ -17965,46 +17914,6 @@ System.register("angular2/src/platform/browser/testability", ["angular2/src/faca
     return BrowserGetTestability;
   })();
   exports.BrowserGetTestability = BrowserGetTestability;
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/browser/xhr_cache", ["angular2/src/compiler/xhr", "angular2/src/facade/exceptions", "angular2/src/facade/lang", "angular2/src/facade/promise"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var xhr_1 = require("angular2/src/compiler/xhr");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
-  var lang_1 = require("angular2/src/facade/lang");
-  var promise_1 = require("angular2/src/facade/promise");
-  var CachedXHR = (function(_super) {
-    __extends(CachedXHR, _super);
-    function CachedXHR() {
-      _super.call(this);
-      this._cache = lang_1.global.$templateCache;
-      if (this._cache == null) {
-        throw new exceptions_1.BaseException('CachedXHR: Template cache was not found in $templateCache.');
-      }
-    }
-    CachedXHR.prototype.get = function(url) {
-      if (this._cache.hasOwnProperty(url)) {
-        return promise_1.PromiseWrapper.resolve(this._cache[url]);
-      } else {
-        return promise_1.PromiseWrapper.reject('CachedXHR: Did not find cached template for ' + url, null);
-      }
-    };
-    return CachedXHR;
-  })(xhr_1.XHR);
-  exports.CachedXHR = CachedXHR;
   global.define = __define;
   return module.exports;
 });
@@ -21323,7 +21232,7 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/generic_browser_adapter", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/browser/xhr_impl"], true, function(require, exports, module) {
+System.register("angular2/src/platform/browser/xhr_impl", ["angular2/src/facade/promise", "angular2/src/facade/lang", "angular2/src/compiler/xhr"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -21336,73 +21245,40 @@ System.register("angular2/src/platform/browser/generic_browser_adapter", ["angul
     }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   };
-  var collection_1 = require("angular2/src/facade/collection");
+  var promise_1 = require("angular2/src/facade/promise");
   var lang_1 = require("angular2/src/facade/lang");
-  var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
-  var xhr_impl_1 = require("angular2/src/platform/browser/xhr_impl");
-  var GenericBrowserDomAdapter = (function(_super) {
-    __extends(GenericBrowserDomAdapter, _super);
-    function GenericBrowserDomAdapter() {
-      var _this = this;
-      _super.call(this);
-      this._animationPrefix = null;
-      this._transitionEnd = null;
-      try {
-        var element = this.createElement('div', this.defaultDoc());
-        if (lang_1.isPresent(this.getStyle(element, 'animationName'))) {
-          this._animationPrefix = '';
-        } else {
-          var domPrefixes = ['Webkit', 'Moz', 'O', 'ms'];
-          for (var i = 0; i < domPrefixes.length; i++) {
-            if (lang_1.isPresent(this.getStyle(element, domPrefixes[i] + 'AnimationName'))) {
-              this._animationPrefix = '-' + domPrefixes[i].toLowerCase() + '-';
-              break;
-            }
-          }
-        }
-        var transEndEventNames = {
-          WebkitTransition: 'webkitTransitionEnd',
-          MozTransition: 'transitionend',
-          OTransition: 'oTransitionEnd otransitionend',
-          transition: 'transitionend'
-        };
-        collection_1.StringMapWrapper.forEach(transEndEventNames, function(value, key) {
-          if (lang_1.isPresent(_this.getStyle(element, key))) {
-            _this._transitionEnd = value;
-          }
-        });
-      } catch (e) {
-        this._animationPrefix = null;
-        this._transitionEnd = null;
-      }
+  var xhr_1 = require("angular2/src/compiler/xhr");
+  var XHRImpl = (function(_super) {
+    __extends(XHRImpl, _super);
+    function XHRImpl() {
+      _super.apply(this, arguments);
     }
-    GenericBrowserDomAdapter.prototype.getXHR = function() {
-      return xhr_impl_1.XHRImpl;
+    XHRImpl.prototype.get = function(url) {
+      var completer = promise_1.PromiseWrapper.completer();
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'text';
+      xhr.onload = function() {
+        var response = lang_1.isPresent(xhr.response) ? xhr.response : xhr.responseText;
+        var status = xhr.status === 1223 ? 204 : xhr.status;
+        if (status === 0) {
+          status = response ? 200 : 0;
+        }
+        if (200 <= status && status <= 300) {
+          completer.resolve(response);
+        } else {
+          completer.reject("Failed to load " + url, null);
+        }
+      };
+      xhr.onerror = function() {
+        completer.reject("Failed to load " + url, null);
+      };
+      xhr.send();
+      return completer.promise;
     };
-    GenericBrowserDomAdapter.prototype.getDistributedNodes = function(el) {
-      return el.getDistributedNodes();
-    };
-    GenericBrowserDomAdapter.prototype.resolveAndSetHref = function(el, baseUrl, href) {
-      el.href = href == null ? baseUrl : baseUrl + '/../' + href;
-    };
-    GenericBrowserDomAdapter.prototype.supportsDOMEvents = function() {
-      return true;
-    };
-    GenericBrowserDomAdapter.prototype.supportsNativeShadowDOM = function() {
-      return lang_1.isFunction(this.defaultDoc().body.createShadowRoot);
-    };
-    GenericBrowserDomAdapter.prototype.getAnimationPrefix = function() {
-      return lang_1.isPresent(this._animationPrefix) ? this._animationPrefix : "";
-    };
-    GenericBrowserDomAdapter.prototype.getTransitionEnd = function() {
-      return lang_1.isPresent(this._transitionEnd) ? this._transitionEnd : "";
-    };
-    GenericBrowserDomAdapter.prototype.supportsAnimation = function() {
-      return lang_1.isPresent(this._animationPrefix) && lang_1.isPresent(this._transitionEnd);
-    };
-    return GenericBrowserDomAdapter;
-  })(dom_adapter_1.DomAdapter);
-  exports.GenericBrowserDomAdapter = GenericBrowserDomAdapter;
+    return XHRImpl;
+  })(xhr_1.XHR);
+  exports.XHRImpl = XHRImpl;
   global.define = __define;
   return module.exports;
 });
@@ -23569,6 +23445,417 @@ System.register("angular2/src/common/forms/directives/ng_control_name", ["angula
   return module.exports;
 });
 
+System.register("angular2/src/platform/browser/generic_browser_adapter", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/browser/xhr_impl"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var collection_1 = require("angular2/src/facade/collection");
+  var lang_1 = require("angular2/src/facade/lang");
+  var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
+  var xhr_impl_1 = require("angular2/src/platform/browser/xhr_impl");
+  var GenericBrowserDomAdapter = (function(_super) {
+    __extends(GenericBrowserDomAdapter, _super);
+    function GenericBrowserDomAdapter() {
+      var _this = this;
+      _super.call(this);
+      this._animationPrefix = null;
+      this._transitionEnd = null;
+      try {
+        var element = this.createElement('div', this.defaultDoc());
+        if (lang_1.isPresent(this.getStyle(element, 'animationName'))) {
+          this._animationPrefix = '';
+        } else {
+          var domPrefixes = ['Webkit', 'Moz', 'O', 'ms'];
+          for (var i = 0; i < domPrefixes.length; i++) {
+            if (lang_1.isPresent(this.getStyle(element, domPrefixes[i] + 'AnimationName'))) {
+              this._animationPrefix = '-' + domPrefixes[i].toLowerCase() + '-';
+              break;
+            }
+          }
+        }
+        var transEndEventNames = {
+          WebkitTransition: 'webkitTransitionEnd',
+          MozTransition: 'transitionend',
+          OTransition: 'oTransitionEnd otransitionend',
+          transition: 'transitionend'
+        };
+        collection_1.StringMapWrapper.forEach(transEndEventNames, function(value, key) {
+          if (lang_1.isPresent(_this.getStyle(element, key))) {
+            _this._transitionEnd = value;
+          }
+        });
+      } catch (e) {
+        this._animationPrefix = null;
+        this._transitionEnd = null;
+      }
+    }
+    GenericBrowserDomAdapter.prototype.getXHR = function() {
+      return xhr_impl_1.XHRImpl;
+    };
+    GenericBrowserDomAdapter.prototype.getDistributedNodes = function(el) {
+      return el.getDistributedNodes();
+    };
+    GenericBrowserDomAdapter.prototype.resolveAndSetHref = function(el, baseUrl, href) {
+      el.href = href == null ? baseUrl : baseUrl + '/../' + href;
+    };
+    GenericBrowserDomAdapter.prototype.supportsDOMEvents = function() {
+      return true;
+    };
+    GenericBrowserDomAdapter.prototype.supportsNativeShadowDOM = function() {
+      return lang_1.isFunction(this.defaultDoc().body.createShadowRoot);
+    };
+    GenericBrowserDomAdapter.prototype.getAnimationPrefix = function() {
+      return lang_1.isPresent(this._animationPrefix) ? this._animationPrefix : "";
+    };
+    GenericBrowserDomAdapter.prototype.getTransitionEnd = function() {
+      return lang_1.isPresent(this._transitionEnd) ? this._transitionEnd : "";
+    };
+    GenericBrowserDomAdapter.prototype.supportsAnimation = function() {
+      return lang_1.isPresent(this._animationPrefix) && lang_1.isPresent(this._transitionEnd);
+    };
+    return GenericBrowserDomAdapter;
+  })(dom_adapter_1.DomAdapter);
+  exports.GenericBrowserDomAdapter = GenericBrowserDomAdapter;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/platform/browser/tools/tools", ["angular2/src/facade/lang", "angular2/src/platform/browser/tools/common_tools"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var lang_1 = require("angular2/src/facade/lang");
+  var common_tools_1 = require("angular2/src/platform/browser/tools/common_tools");
+  var context = lang_1.global;
+  function enableDebugTools(ref) {
+    context.ng = new common_tools_1.AngularTools(ref);
+  }
+  exports.enableDebugTools = enableDebugTools;
+  function disableDebugTools() {
+    delete context.ng;
+  }
+  exports.disableDebugTools = disableDebugTools;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/compiler/html_ast", "angular2/src/core/di", "angular2/src/compiler/html_lexer", "angular2/src/compiler/parse_util", "angular2/src/compiler/html_tags"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var lang_1 = require("angular2/src/facade/lang");
+  var collection_1 = require("angular2/src/facade/collection");
+  var html_ast_1 = require("angular2/src/compiler/html_ast");
+  var di_1 = require("angular2/src/core/di");
+  var html_lexer_1 = require("angular2/src/compiler/html_lexer");
+  var parse_util_1 = require("angular2/src/compiler/parse_util");
+  var html_tags_1 = require("angular2/src/compiler/html_tags");
+  var HtmlTreeError = (function(_super) {
+    __extends(HtmlTreeError, _super);
+    function HtmlTreeError(elementName, span, msg) {
+      _super.call(this, span, msg);
+      this.elementName = elementName;
+    }
+    HtmlTreeError.create = function(elementName, span, msg) {
+      return new HtmlTreeError(elementName, span, msg);
+    };
+    return HtmlTreeError;
+  })(parse_util_1.ParseError);
+  exports.HtmlTreeError = HtmlTreeError;
+  var HtmlParseTreeResult = (function() {
+    function HtmlParseTreeResult(rootNodes, errors) {
+      this.rootNodes = rootNodes;
+      this.errors = errors;
+    }
+    return HtmlParseTreeResult;
+  })();
+  exports.HtmlParseTreeResult = HtmlParseTreeResult;
+  var HtmlParser = (function() {
+    function HtmlParser() {}
+    HtmlParser.prototype.parse = function(sourceContent, sourceUrl) {
+      var tokensAndErrors = html_lexer_1.tokenizeHtml(sourceContent, sourceUrl);
+      var treeAndErrors = new TreeBuilder(tokensAndErrors.tokens).build();
+      return new HtmlParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors.concat(treeAndErrors.errors));
+    };
+    HtmlParser = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], HtmlParser);
+    return HtmlParser;
+  })();
+  exports.HtmlParser = HtmlParser;
+  var TreeBuilder = (function() {
+    function TreeBuilder(tokens) {
+      this.tokens = tokens;
+      this.index = -1;
+      this.rootNodes = [];
+      this.errors = [];
+      this.elementStack = [];
+      this._advance();
+    }
+    TreeBuilder.prototype.build = function() {
+      while (this.peek.type !== html_lexer_1.HtmlTokenType.EOF) {
+        if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_START) {
+          this._consumeStartTag(this._advance());
+        } else if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_CLOSE) {
+          this._consumeEndTag(this._advance());
+        } else if (this.peek.type === html_lexer_1.HtmlTokenType.CDATA_START) {
+          this._closeVoidElement();
+          this._consumeCdata(this._advance());
+        } else if (this.peek.type === html_lexer_1.HtmlTokenType.COMMENT_START) {
+          this._closeVoidElement();
+          this._consumeComment(this._advance());
+        } else if (this.peek.type === html_lexer_1.HtmlTokenType.TEXT || this.peek.type === html_lexer_1.HtmlTokenType.RAW_TEXT || this.peek.type === html_lexer_1.HtmlTokenType.ESCAPABLE_RAW_TEXT) {
+          this._closeVoidElement();
+          this._consumeText(this._advance());
+        } else {
+          this._advance();
+        }
+      }
+      return new HtmlParseTreeResult(this.rootNodes, this.errors);
+    };
+    TreeBuilder.prototype._advance = function() {
+      var prev = this.peek;
+      if (this.index < this.tokens.length - 1) {
+        this.index++;
+      }
+      this.peek = this.tokens[this.index];
+      return prev;
+    };
+    TreeBuilder.prototype._advanceIf = function(type) {
+      if (this.peek.type === type) {
+        return this._advance();
+      }
+      return null;
+    };
+    TreeBuilder.prototype._consumeCdata = function(startToken) {
+      this._consumeText(this._advance());
+      this._advanceIf(html_lexer_1.HtmlTokenType.CDATA_END);
+    };
+    TreeBuilder.prototype._consumeComment = function(token) {
+      var text = this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
+      this._advanceIf(html_lexer_1.HtmlTokenType.COMMENT_END);
+      var value = lang_1.isPresent(text) ? text.parts[0].trim() : null;
+      this._addToParent(new html_ast_1.HtmlCommentAst(value, token.sourceSpan));
+    };
+    TreeBuilder.prototype._consumeText = function(token) {
+      var text = token.parts[0];
+      if (text.length > 0 && text[0] == '\n') {
+        var parent_1 = this._getParentElement();
+        if (lang_1.isPresent(parent_1) && parent_1.children.length == 0 && html_tags_1.getHtmlTagDefinition(parent_1.name).ignoreFirstLf) {
+          text = text.substring(1);
+        }
+      }
+      if (text.length > 0) {
+        this._addToParent(new html_ast_1.HtmlTextAst(text, token.sourceSpan));
+      }
+    };
+    TreeBuilder.prototype._closeVoidElement = function() {
+      if (this.elementStack.length > 0) {
+        var el = collection_1.ListWrapper.last(this.elementStack);
+        if (html_tags_1.getHtmlTagDefinition(el.name).isVoid) {
+          this.elementStack.pop();
+        }
+      }
+    };
+    TreeBuilder.prototype._consumeStartTag = function(startTagToken) {
+      var prefix = startTagToken.parts[0];
+      var name = startTagToken.parts[1];
+      var attrs = [];
+      while (this.peek.type === html_lexer_1.HtmlTokenType.ATTR_NAME) {
+        attrs.push(this._consumeAttr(this._advance()));
+      }
+      var fullName = getElementFullName(prefix, name, this._getParentElement());
+      var selfClosing = false;
+      if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_END_VOID) {
+        this._advance();
+        selfClosing = true;
+        if (html_tags_1.getNsPrefix(fullName) == null && !html_tags_1.getHtmlTagDefinition(fullName).isVoid) {
+          this.errors.push(HtmlTreeError.create(fullName, startTagToken.sourceSpan, "Only void and foreign elements can be self closed \"" + startTagToken.parts[1] + "\""));
+        }
+      } else if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_END) {
+        this._advance();
+        selfClosing = false;
+      }
+      var end = this.peek.sourceSpan.start;
+      var span = new parse_util_1.ParseSourceSpan(startTagToken.sourceSpan.start, end);
+      var el = new html_ast_1.HtmlElementAst(fullName, attrs, [], span, span, null);
+      this._pushElement(el);
+      if (selfClosing) {
+        this._popElement(fullName);
+        el.endSourceSpan = span;
+      }
+    };
+    TreeBuilder.prototype._pushElement = function(el) {
+      if (this.elementStack.length > 0) {
+        var parentEl = collection_1.ListWrapper.last(this.elementStack);
+        if (html_tags_1.getHtmlTagDefinition(parentEl.name).isClosedByChild(el.name)) {
+          this.elementStack.pop();
+        }
+      }
+      var tagDef = html_tags_1.getHtmlTagDefinition(el.name);
+      var parentEl = this._getParentElement();
+      if (tagDef.requireExtraParent(lang_1.isPresent(parentEl) ? parentEl.name : null)) {
+        var newParent = new html_ast_1.HtmlElementAst(tagDef.parentToAdd, [], [el], el.sourceSpan, el.startSourceSpan, el.endSourceSpan);
+        this._addToParent(newParent);
+        this.elementStack.push(newParent);
+        this.elementStack.push(el);
+      } else {
+        this._addToParent(el);
+        this.elementStack.push(el);
+      }
+    };
+    TreeBuilder.prototype._consumeEndTag = function(endTagToken) {
+      var fullName = getElementFullName(endTagToken.parts[0], endTagToken.parts[1], this._getParentElement());
+      this._getParentElement().endSourceSpan = endTagToken.sourceSpan;
+      if (html_tags_1.getHtmlTagDefinition(fullName).isVoid) {
+        this.errors.push(HtmlTreeError.create(fullName, endTagToken.sourceSpan, "Void elements do not have end tags \"" + endTagToken.parts[1] + "\""));
+      } else if (!this._popElement(fullName)) {
+        this.errors.push(HtmlTreeError.create(fullName, endTagToken.sourceSpan, "Unexpected closing tag \"" + endTagToken.parts[1] + "\""));
+      }
+    };
+    TreeBuilder.prototype._popElement = function(fullName) {
+      for (var stackIndex = this.elementStack.length - 1; stackIndex >= 0; stackIndex--) {
+        var el = this.elementStack[stackIndex];
+        if (el.name == fullName) {
+          collection_1.ListWrapper.splice(this.elementStack, stackIndex, this.elementStack.length - stackIndex);
+          return true;
+        }
+        if (!html_tags_1.getHtmlTagDefinition(el.name).closedByParent) {
+          return false;
+        }
+      }
+      return false;
+    };
+    TreeBuilder.prototype._consumeAttr = function(attrName) {
+      var fullName = html_tags_1.mergeNsAndName(attrName.parts[0], attrName.parts[1]);
+      var end = attrName.sourceSpan.end;
+      var value = '';
+      if (this.peek.type === html_lexer_1.HtmlTokenType.ATTR_VALUE) {
+        var valueToken = this._advance();
+        value = valueToken.parts[0];
+        end = valueToken.sourceSpan.end;
+      }
+      return new html_ast_1.HtmlAttrAst(fullName, value, new parse_util_1.ParseSourceSpan(attrName.sourceSpan.start, end));
+    };
+    TreeBuilder.prototype._getParentElement = function() {
+      return this.elementStack.length > 0 ? collection_1.ListWrapper.last(this.elementStack) : null;
+    };
+    TreeBuilder.prototype._addToParent = function(node) {
+      var parent = this._getParentElement();
+      if (lang_1.isPresent(parent)) {
+        parent.children.push(node);
+      } else {
+        this.rootNodes.push(node);
+      }
+    };
+    return TreeBuilder;
+  })();
+  function getElementFullName(prefix, localName, parentElement) {
+    if (lang_1.isBlank(prefix)) {
+      prefix = html_tags_1.getHtmlTagDefinition(localName).implicitNamespacePrefix;
+      if (lang_1.isBlank(prefix) && lang_1.isPresent(parentElement)) {
+        prefix = html_tags_1.getNsPrefix(parentElement.name);
+      }
+    }
+    return html_tags_1.mergeNsAndName(prefix, localName);
+  }
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/common/forms", ["angular2/src/common/forms/model", "angular2/src/common/forms/directives/abstract_control_directive", "angular2/src/common/forms/directives/control_container", "angular2/src/common/forms/directives/ng_control_name", "angular2/src/common/forms/directives/ng_form_control", "angular2/src/common/forms/directives/ng_model", "angular2/src/common/forms/directives/ng_control", "angular2/src/common/forms/directives/ng_control_group", "angular2/src/common/forms/directives/ng_form_model", "angular2/src/common/forms/directives/ng_form", "angular2/src/common/forms/directives/control_value_accessor", "angular2/src/common/forms/directives/default_value_accessor", "angular2/src/common/forms/directives/ng_control_status", "angular2/src/common/forms/directives/checkbox_value_accessor", "angular2/src/common/forms/directives/select_control_value_accessor", "angular2/src/common/forms/directives", "angular2/src/common/forms/validators", "angular2/src/common/forms/directives/validators", "angular2/src/common/forms/form_builder", "angular2/src/common/forms/form_builder", "angular2/src/common/forms/directives/radio_control_value_accessor", "angular2/src/facade/lang"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  var model_1 = require("angular2/src/common/forms/model");
+  exports.AbstractControl = model_1.AbstractControl;
+  exports.Control = model_1.Control;
+  exports.ControlGroup = model_1.ControlGroup;
+  exports.ControlArray = model_1.ControlArray;
+  var abstract_control_directive_1 = require("angular2/src/common/forms/directives/abstract_control_directive");
+  exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
+  var control_container_1 = require("angular2/src/common/forms/directives/control_container");
+  exports.ControlContainer = control_container_1.ControlContainer;
+  var ng_control_name_1 = require("angular2/src/common/forms/directives/ng_control_name");
+  exports.NgControlName = ng_control_name_1.NgControlName;
+  var ng_form_control_1 = require("angular2/src/common/forms/directives/ng_form_control");
+  exports.NgFormControl = ng_form_control_1.NgFormControl;
+  var ng_model_1 = require("angular2/src/common/forms/directives/ng_model");
+  exports.NgModel = ng_model_1.NgModel;
+  var ng_control_1 = require("angular2/src/common/forms/directives/ng_control");
+  exports.NgControl = ng_control_1.NgControl;
+  var ng_control_group_1 = require("angular2/src/common/forms/directives/ng_control_group");
+  exports.NgControlGroup = ng_control_group_1.NgControlGroup;
+  var ng_form_model_1 = require("angular2/src/common/forms/directives/ng_form_model");
+  exports.NgFormModel = ng_form_model_1.NgFormModel;
+  var ng_form_1 = require("angular2/src/common/forms/directives/ng_form");
+  exports.NgForm = ng_form_1.NgForm;
+  var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
+  exports.NG_VALUE_ACCESSOR = control_value_accessor_1.NG_VALUE_ACCESSOR;
+  var default_value_accessor_1 = require("angular2/src/common/forms/directives/default_value_accessor");
+  exports.DefaultValueAccessor = default_value_accessor_1.DefaultValueAccessor;
+  var ng_control_status_1 = require("angular2/src/common/forms/directives/ng_control_status");
+  exports.NgControlStatus = ng_control_status_1.NgControlStatus;
+  var checkbox_value_accessor_1 = require("angular2/src/common/forms/directives/checkbox_value_accessor");
+  exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
+  var select_control_value_accessor_1 = require("angular2/src/common/forms/directives/select_control_value_accessor");
+  exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
+  exports.SelectControlValueAccessor = select_control_value_accessor_1.SelectControlValueAccessor;
+  var directives_1 = require("angular2/src/common/forms/directives");
+  exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
+  exports.RadioButtonState = directives_1.RadioButtonState;
+  var validators_1 = require("angular2/src/common/forms/validators");
+  exports.NG_VALIDATORS = validators_1.NG_VALIDATORS;
+  exports.NG_ASYNC_VALIDATORS = validators_1.NG_ASYNC_VALIDATORS;
+  exports.Validators = validators_1.Validators;
+  var validators_2 = require("angular2/src/common/forms/directives/validators");
+  exports.RequiredValidator = validators_2.RequiredValidator;
+  exports.MinLengthValidator = validators_2.MinLengthValidator;
+  exports.MaxLengthValidator = validators_2.MaxLengthValidator;
+  exports.PatternValidator = validators_2.PatternValidator;
+  var form_builder_1 = require("angular2/src/common/forms/form_builder");
+  exports.FormBuilder = form_builder_1.FormBuilder;
+  var form_builder_2 = require("angular2/src/common/forms/form_builder");
+  var radio_control_value_accessor_1 = require("angular2/src/common/forms/directives/radio_control_value_accessor");
+  var lang_1 = require("angular2/src/facade/lang");
+  exports.FORM_PROVIDERS = lang_1.CONST_EXPR([form_builder_2.FormBuilder, radio_control_value_accessor_1.RadioControlRegistry]);
+  exports.FORM_BINDINGS = exports.FORM_PROVIDERS;
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/browser/generic_browser_adapter"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -24101,333 +24388,6 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
     urlParsingNode.setAttribute('href', url);
     return (urlParsingNode.pathname.charAt(0) === '/') ? urlParsingNode.pathname : '/' + urlParsingNode.pathname;
   }
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/browser/tools/tools", ["angular2/src/facade/lang", "angular2/src/platform/browser/tools/common_tools"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  var lang_1 = require("angular2/src/facade/lang");
-  var common_tools_1 = require("angular2/src/platform/browser/tools/common_tools");
-  var context = lang_1.global;
-  function enableDebugTools(ref) {
-    context.ng = new common_tools_1.AngularTools(ref);
-  }
-  exports.enableDebugTools = enableDebugTools;
-  function disableDebugTools() {
-    delete context.ng;
-  }
-  exports.disableDebugTools = disableDebugTools;
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/compiler/html_ast", "angular2/src/core/di", "angular2/src/compiler/html_lexer", "angular2/src/compiler/parse_util", "angular2/src/compiler/html_tags"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("angular2/src/facade/lang");
-  var collection_1 = require("angular2/src/facade/collection");
-  var html_ast_1 = require("angular2/src/compiler/html_ast");
-  var di_1 = require("angular2/src/core/di");
-  var html_lexer_1 = require("angular2/src/compiler/html_lexer");
-  var parse_util_1 = require("angular2/src/compiler/parse_util");
-  var html_tags_1 = require("angular2/src/compiler/html_tags");
-  var HtmlTreeError = (function(_super) {
-    __extends(HtmlTreeError, _super);
-    function HtmlTreeError(elementName, span, msg) {
-      _super.call(this, span, msg);
-      this.elementName = elementName;
-    }
-    HtmlTreeError.create = function(elementName, span, msg) {
-      return new HtmlTreeError(elementName, span, msg);
-    };
-    return HtmlTreeError;
-  })(parse_util_1.ParseError);
-  exports.HtmlTreeError = HtmlTreeError;
-  var HtmlParseTreeResult = (function() {
-    function HtmlParseTreeResult(rootNodes, errors) {
-      this.rootNodes = rootNodes;
-      this.errors = errors;
-    }
-    return HtmlParseTreeResult;
-  })();
-  exports.HtmlParseTreeResult = HtmlParseTreeResult;
-  var HtmlParser = (function() {
-    function HtmlParser() {}
-    HtmlParser.prototype.parse = function(sourceContent, sourceUrl) {
-      var tokensAndErrors = html_lexer_1.tokenizeHtml(sourceContent, sourceUrl);
-      var treeAndErrors = new TreeBuilder(tokensAndErrors.tokens).build();
-      return new HtmlParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors.concat(treeAndErrors.errors));
-    };
-    HtmlParser = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], HtmlParser);
-    return HtmlParser;
-  })();
-  exports.HtmlParser = HtmlParser;
-  var TreeBuilder = (function() {
-    function TreeBuilder(tokens) {
-      this.tokens = tokens;
-      this.index = -1;
-      this.rootNodes = [];
-      this.errors = [];
-      this.elementStack = [];
-      this._advance();
-    }
-    TreeBuilder.prototype.build = function() {
-      while (this.peek.type !== html_lexer_1.HtmlTokenType.EOF) {
-        if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_START) {
-          this._consumeStartTag(this._advance());
-        } else if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_CLOSE) {
-          this._consumeEndTag(this._advance());
-        } else if (this.peek.type === html_lexer_1.HtmlTokenType.CDATA_START) {
-          this._closeVoidElement();
-          this._consumeCdata(this._advance());
-        } else if (this.peek.type === html_lexer_1.HtmlTokenType.COMMENT_START) {
-          this._closeVoidElement();
-          this._consumeComment(this._advance());
-        } else if (this.peek.type === html_lexer_1.HtmlTokenType.TEXT || this.peek.type === html_lexer_1.HtmlTokenType.RAW_TEXT || this.peek.type === html_lexer_1.HtmlTokenType.ESCAPABLE_RAW_TEXT) {
-          this._closeVoidElement();
-          this._consumeText(this._advance());
-        } else {
-          this._advance();
-        }
-      }
-      return new HtmlParseTreeResult(this.rootNodes, this.errors);
-    };
-    TreeBuilder.prototype._advance = function() {
-      var prev = this.peek;
-      if (this.index < this.tokens.length - 1) {
-        this.index++;
-      }
-      this.peek = this.tokens[this.index];
-      return prev;
-    };
-    TreeBuilder.prototype._advanceIf = function(type) {
-      if (this.peek.type === type) {
-        return this._advance();
-      }
-      return null;
-    };
-    TreeBuilder.prototype._consumeCdata = function(startToken) {
-      this._consumeText(this._advance());
-      this._advanceIf(html_lexer_1.HtmlTokenType.CDATA_END);
-    };
-    TreeBuilder.prototype._consumeComment = function(token) {
-      var text = this._advanceIf(html_lexer_1.HtmlTokenType.RAW_TEXT);
-      this._advanceIf(html_lexer_1.HtmlTokenType.COMMENT_END);
-      var value = lang_1.isPresent(text) ? text.parts[0].trim() : null;
-      this._addToParent(new html_ast_1.HtmlCommentAst(value, token.sourceSpan));
-    };
-    TreeBuilder.prototype._consumeText = function(token) {
-      var text = token.parts[0];
-      if (text.length > 0 && text[0] == '\n') {
-        var parent_1 = this._getParentElement();
-        if (lang_1.isPresent(parent_1) && parent_1.children.length == 0 && html_tags_1.getHtmlTagDefinition(parent_1.name).ignoreFirstLf) {
-          text = text.substring(1);
-        }
-      }
-      if (text.length > 0) {
-        this._addToParent(new html_ast_1.HtmlTextAst(text, token.sourceSpan));
-      }
-    };
-    TreeBuilder.prototype._closeVoidElement = function() {
-      if (this.elementStack.length > 0) {
-        var el = collection_1.ListWrapper.last(this.elementStack);
-        if (html_tags_1.getHtmlTagDefinition(el.name).isVoid) {
-          this.elementStack.pop();
-        }
-      }
-    };
-    TreeBuilder.prototype._consumeStartTag = function(startTagToken) {
-      var prefix = startTagToken.parts[0];
-      var name = startTagToken.parts[1];
-      var attrs = [];
-      while (this.peek.type === html_lexer_1.HtmlTokenType.ATTR_NAME) {
-        attrs.push(this._consumeAttr(this._advance()));
-      }
-      var fullName = getElementFullName(prefix, name, this._getParentElement());
-      var selfClosing = false;
-      if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_END_VOID) {
-        this._advance();
-        selfClosing = true;
-        if (html_tags_1.getNsPrefix(fullName) == null && !html_tags_1.getHtmlTagDefinition(fullName).isVoid) {
-          this.errors.push(HtmlTreeError.create(fullName, startTagToken.sourceSpan, "Only void and foreign elements can be self closed \"" + startTagToken.parts[1] + "\""));
-        }
-      } else if (this.peek.type === html_lexer_1.HtmlTokenType.TAG_OPEN_END) {
-        this._advance();
-        selfClosing = false;
-      }
-      var end = this.peek.sourceSpan.start;
-      var span = new parse_util_1.ParseSourceSpan(startTagToken.sourceSpan.start, end);
-      var el = new html_ast_1.HtmlElementAst(fullName, attrs, [], span, span, null);
-      this._pushElement(el);
-      if (selfClosing) {
-        this._popElement(fullName);
-        el.endSourceSpan = span;
-      }
-    };
-    TreeBuilder.prototype._pushElement = function(el) {
-      if (this.elementStack.length > 0) {
-        var parentEl = collection_1.ListWrapper.last(this.elementStack);
-        if (html_tags_1.getHtmlTagDefinition(parentEl.name).isClosedByChild(el.name)) {
-          this.elementStack.pop();
-        }
-      }
-      var tagDef = html_tags_1.getHtmlTagDefinition(el.name);
-      var parentEl = this._getParentElement();
-      if (tagDef.requireExtraParent(lang_1.isPresent(parentEl) ? parentEl.name : null)) {
-        var newParent = new html_ast_1.HtmlElementAst(tagDef.parentToAdd, [], [el], el.sourceSpan, el.startSourceSpan, el.endSourceSpan);
-        this._addToParent(newParent);
-        this.elementStack.push(newParent);
-        this.elementStack.push(el);
-      } else {
-        this._addToParent(el);
-        this.elementStack.push(el);
-      }
-    };
-    TreeBuilder.prototype._consumeEndTag = function(endTagToken) {
-      var fullName = getElementFullName(endTagToken.parts[0], endTagToken.parts[1], this._getParentElement());
-      this._getParentElement().endSourceSpan = endTagToken.sourceSpan;
-      if (html_tags_1.getHtmlTagDefinition(fullName).isVoid) {
-        this.errors.push(HtmlTreeError.create(fullName, endTagToken.sourceSpan, "Void elements do not have end tags \"" + endTagToken.parts[1] + "\""));
-      } else if (!this._popElement(fullName)) {
-        this.errors.push(HtmlTreeError.create(fullName, endTagToken.sourceSpan, "Unexpected closing tag \"" + endTagToken.parts[1] + "\""));
-      }
-    };
-    TreeBuilder.prototype._popElement = function(fullName) {
-      for (var stackIndex = this.elementStack.length - 1; stackIndex >= 0; stackIndex--) {
-        var el = this.elementStack[stackIndex];
-        if (el.name == fullName) {
-          collection_1.ListWrapper.splice(this.elementStack, stackIndex, this.elementStack.length - stackIndex);
-          return true;
-        }
-        if (!html_tags_1.getHtmlTagDefinition(el.name).closedByParent) {
-          return false;
-        }
-      }
-      return false;
-    };
-    TreeBuilder.prototype._consumeAttr = function(attrName) {
-      var fullName = html_tags_1.mergeNsAndName(attrName.parts[0], attrName.parts[1]);
-      var end = attrName.sourceSpan.end;
-      var value = '';
-      if (this.peek.type === html_lexer_1.HtmlTokenType.ATTR_VALUE) {
-        var valueToken = this._advance();
-        value = valueToken.parts[0];
-        end = valueToken.sourceSpan.end;
-      }
-      return new html_ast_1.HtmlAttrAst(fullName, value, new parse_util_1.ParseSourceSpan(attrName.sourceSpan.start, end));
-    };
-    TreeBuilder.prototype._getParentElement = function() {
-      return this.elementStack.length > 0 ? collection_1.ListWrapper.last(this.elementStack) : null;
-    };
-    TreeBuilder.prototype._addToParent = function(node) {
-      var parent = this._getParentElement();
-      if (lang_1.isPresent(parent)) {
-        parent.children.push(node);
-      } else {
-        this.rootNodes.push(node);
-      }
-    };
-    return TreeBuilder;
-  })();
-  function getElementFullName(prefix, localName, parentElement) {
-    if (lang_1.isBlank(prefix)) {
-      prefix = html_tags_1.getHtmlTagDefinition(localName).implicitNamespacePrefix;
-      if (lang_1.isBlank(prefix) && lang_1.isPresent(parentElement)) {
-        prefix = html_tags_1.getNsPrefix(parentElement.name);
-      }
-    }
-    return html_tags_1.mergeNsAndName(prefix, localName);
-  }
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/common/forms", ["angular2/src/common/forms/model", "angular2/src/common/forms/directives/abstract_control_directive", "angular2/src/common/forms/directives/control_container", "angular2/src/common/forms/directives/ng_control_name", "angular2/src/common/forms/directives/ng_form_control", "angular2/src/common/forms/directives/ng_model", "angular2/src/common/forms/directives/ng_control", "angular2/src/common/forms/directives/ng_control_group", "angular2/src/common/forms/directives/ng_form_model", "angular2/src/common/forms/directives/ng_form", "angular2/src/common/forms/directives/control_value_accessor", "angular2/src/common/forms/directives/default_value_accessor", "angular2/src/common/forms/directives/ng_control_status", "angular2/src/common/forms/directives/checkbox_value_accessor", "angular2/src/common/forms/directives/select_control_value_accessor", "angular2/src/common/forms/directives", "angular2/src/common/forms/validators", "angular2/src/common/forms/directives/validators", "angular2/src/common/forms/form_builder", "angular2/src/common/forms/form_builder", "angular2/src/common/forms/directives/radio_control_value_accessor", "angular2/src/facade/lang"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  var model_1 = require("angular2/src/common/forms/model");
-  exports.AbstractControl = model_1.AbstractControl;
-  exports.Control = model_1.Control;
-  exports.ControlGroup = model_1.ControlGroup;
-  exports.ControlArray = model_1.ControlArray;
-  var abstract_control_directive_1 = require("angular2/src/common/forms/directives/abstract_control_directive");
-  exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
-  var control_container_1 = require("angular2/src/common/forms/directives/control_container");
-  exports.ControlContainer = control_container_1.ControlContainer;
-  var ng_control_name_1 = require("angular2/src/common/forms/directives/ng_control_name");
-  exports.NgControlName = ng_control_name_1.NgControlName;
-  var ng_form_control_1 = require("angular2/src/common/forms/directives/ng_form_control");
-  exports.NgFormControl = ng_form_control_1.NgFormControl;
-  var ng_model_1 = require("angular2/src/common/forms/directives/ng_model");
-  exports.NgModel = ng_model_1.NgModel;
-  var ng_control_1 = require("angular2/src/common/forms/directives/ng_control");
-  exports.NgControl = ng_control_1.NgControl;
-  var ng_control_group_1 = require("angular2/src/common/forms/directives/ng_control_group");
-  exports.NgControlGroup = ng_control_group_1.NgControlGroup;
-  var ng_form_model_1 = require("angular2/src/common/forms/directives/ng_form_model");
-  exports.NgFormModel = ng_form_model_1.NgFormModel;
-  var ng_form_1 = require("angular2/src/common/forms/directives/ng_form");
-  exports.NgForm = ng_form_1.NgForm;
-  var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
-  exports.NG_VALUE_ACCESSOR = control_value_accessor_1.NG_VALUE_ACCESSOR;
-  var default_value_accessor_1 = require("angular2/src/common/forms/directives/default_value_accessor");
-  exports.DefaultValueAccessor = default_value_accessor_1.DefaultValueAccessor;
-  var ng_control_status_1 = require("angular2/src/common/forms/directives/ng_control_status");
-  exports.NgControlStatus = ng_control_status_1.NgControlStatus;
-  var checkbox_value_accessor_1 = require("angular2/src/common/forms/directives/checkbox_value_accessor");
-  exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
-  var select_control_value_accessor_1 = require("angular2/src/common/forms/directives/select_control_value_accessor");
-  exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
-  exports.SelectControlValueAccessor = select_control_value_accessor_1.SelectControlValueAccessor;
-  var directives_1 = require("angular2/src/common/forms/directives");
-  exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
-  exports.RadioButtonState = directives_1.RadioButtonState;
-  var validators_1 = require("angular2/src/common/forms/validators");
-  exports.NG_VALIDATORS = validators_1.NG_VALIDATORS;
-  exports.NG_ASYNC_VALIDATORS = validators_1.NG_ASYNC_VALIDATORS;
-  exports.Validators = validators_1.Validators;
-  var validators_2 = require("angular2/src/common/forms/directives/validators");
-  exports.RequiredValidator = validators_2.RequiredValidator;
-  exports.MinLengthValidator = validators_2.MinLengthValidator;
-  exports.MaxLengthValidator = validators_2.MaxLengthValidator;
-  exports.PatternValidator = validators_2.PatternValidator;
-  var form_builder_1 = require("angular2/src/common/forms/form_builder");
-  exports.FormBuilder = form_builder_1.FormBuilder;
-  var form_builder_2 = require("angular2/src/common/forms/form_builder");
-  var radio_control_value_accessor_1 = require("angular2/src/common/forms/directives/radio_control_value_accessor");
-  var lang_1 = require("angular2/src/facade/lang");
-  exports.FORM_PROVIDERS = lang_1.CONST_EXPR([form_builder_2.FormBuilder, radio_control_value_accessor_1.RadioControlRegistry]);
-  exports.FORM_BINDINGS = exports.FORM_PROVIDERS;
   global.define = __define;
   return module.exports;
 });
@@ -25630,13 +25590,12 @@ System.register("angular2/compiler", ["angular2/src/compiler/url_resolver", "ang
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser_common", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/src/compiler/xhr", "angular2/core", "angular2/common", "angular2/src/core/testability/testability", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/testability", "angular2/src/platform/browser/xhr_cache", "angular2/src/core/profile/wtf_init", "angular2/src/platform/dom/events/event_manager", "angular2/platform/common_dom", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/browser/title", "angular2/platform/common_dom", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/tools/tools"], true, function(require, exports, module) {
+System.register("angular2/src/platform/browser_common", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/core", "angular2/common", "angular2/src/core/testability/testability", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/testability", "angular2/src/core/profile/wtf_init", "angular2/src/platform/dom/events/event_manager", "angular2/platform/common_dom", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/browser/title", "angular2/platform/common_dom", "angular2/src/platform/browser/browser_adapter", "angular2/src/platform/browser/tools/tools"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   var lang_1 = require("angular2/src/facade/lang");
   var di_1 = require("angular2/src/core/di");
-  var xhr_1 = require("angular2/src/compiler/xhr");
   var core_1 = require("angular2/core");
   var common_1 = require("angular2/common");
   var testability_1 = require("angular2/src/core/testability/testability");
@@ -25652,7 +25611,6 @@ System.register("angular2/src/platform/browser_common", ["angular2/src/facade/la
   var animation_builder_1 = require("angular2/src/animate/animation_builder");
   var browser_adapter_1 = require("angular2/src/platform/browser/browser_adapter");
   var testability_2 = require("angular2/src/platform/browser/testability");
-  var xhr_cache_1 = require("angular2/src/platform/browser/xhr_cache");
   var wtf_init_1 = require("angular2/src/core/profile/wtf_init");
   var event_manager_1 = require("angular2/src/platform/dom/events/event_manager");
   var common_dom_1 = require("angular2/platform/common_dom");
@@ -25702,7 +25660,6 @@ System.register("angular2/src/platform/browser_common", ["angular2/src/facade/la
     useClass: hammer_gestures_1.HammerGesturesPlugin,
     multi: true
   }), new di_1.Provider(dom_renderer_1.DomRootRenderer, {useClass: dom_renderer_1.DomRootRenderer_}), new di_1.Provider(core_1.RootRenderer, {useExisting: dom_renderer_1.DomRootRenderer}), new di_1.Provider(shared_styles_host_2.SharedStylesHost, {useExisting: shared_styles_host_1.DomSharedStylesHost}), shared_styles_host_1.DomSharedStylesHost, testability_1.Testability, browser_details_1.BrowserDetails, animation_builder_1.AnimationBuilder, event_manager_1.EventManager, common_dom_1.ELEMENT_PROBE_PROVIDERS]);
-  exports.CACHED_TEMPLATE_PROVIDER = lang_1.CONST_EXPR([new di_1.Provider(xhr_1.XHR, {useClass: xhr_cache_1.CachedXHR})]);
   function initDomAdapter() {
     browser_adapter_1.BrowserDomAdapter.makeCurrent();
     wtf_init_1.wtfInit();
@@ -25721,7 +25678,6 @@ System.register("angular2/platform/browser", ["angular2/src/core/angular_entrypo
   exports.AngularEntrypoint = angular_entrypoint_1.AngularEntrypoint;
   var browser_common_1 = require("angular2/src/platform/browser_common");
   exports.BROWSER_PROVIDERS = browser_common_1.BROWSER_PROVIDERS;
-  exports.CACHED_TEMPLATE_PROVIDER = browser_common_1.CACHED_TEMPLATE_PROVIDER;
   exports.ELEMENT_PROBE_PROVIDERS = browser_common_1.ELEMENT_PROBE_PROVIDERS;
   exports.ELEMENT_PROBE_PROVIDERS_PROD_MODE = browser_common_1.ELEMENT_PROBE_PROVIDERS_PROD_MODE;
   exports.inspectNativeElement = browser_common_1.inspectNativeElement;
