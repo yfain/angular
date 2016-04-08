@@ -261,7 +261,7 @@ ContentChildMetadata = __decorate([
  * class MyComponent {
  *   shown: boolean;
  *
- *   constructor(private @ViewQuery(Item) items:QueryList<Item>) {
+ *   constructor(private @Query(Item) items:QueryList<Item>) {
  *     items.changes.subscribe(() => console.log(items.length));
  *   }
  * }

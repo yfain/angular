@@ -658,7 +658,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *   <div #findme>...</div>
 	 * </seeker>
 	 *
-	 * @Component({ selector: 'foo' })
+	 * @Component({ selector: 'seeker' })
 	 * class seeker {
 	 *   constructor(@Query('findme') elList: QueryList<ElementRef>) {...}
 	 * }
@@ -676,7 +676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * </seeker>
 	 *
 	 *  @Component({
-	 *   selector: 'foo'
+	 *   selector: 'seeker'
 	 * })
 	 * class Seeker {
 	 *   constructor(@Query('findMe, findMeToo') elList: QueryList<ElementRef>) {...}
@@ -1319,7 +1319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * class MyComponent {
 	 *   shown: boolean;
 	 *
-	 *   constructor(private @ViewQuery(Item) items:QueryList<Item>) {
+	 *   constructor(private @Query(Item) items:QueryList<Item>) {
 	 *     items.changes.subscribe(() => console.log(items.length));
 	 *   }
 	 * }
