@@ -6,6 +6,7 @@ export "package:angular2/src/core/angular_entrypoint.dart"
 export "package:angular2/src/platform/browser_common.dart"
     show
         BROWSER_PROVIDERS,
+        CACHED_TEMPLATE_PROVIDER,
         ELEMENT_PROBE_PROVIDERS,
         ELEMENT_PROBE_PROVIDERS_PROD_MODE,
         inspectNativeElement,
