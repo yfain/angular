@@ -16,4 +16,5 @@ export declare const BROWSER_PROVIDERS: Array<any>;
  * Used automatically by `bootstrap`, or can be passed to {@link PlatformRef.application}.
  */
 export declare const BROWSER_APP_COMMON_PROVIDERS: Array<any>;
+export declare const CACHED_TEMPLATE_PROVIDER: Array<any>;
 export declare function initDomAdapter(): void;

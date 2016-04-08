@@ -1,5 +1,6 @@
 import { CONST_EXPR, IS_DART } from 'angular2/src/facade/lang';
 import { Provider } from 'angular2/src/core/di';
+import { XHR } from 'angular2/src/compiler/xhr';
 import { PLATFORM_INITIALIZER, PLATFORM_DIRECTIVES, PLATFORM_PIPES, ExceptionHandler, RootRenderer, APPLICATION_COMMON_PROVIDERS, PLATFORM_COMMON_PROVIDERS } from "angular2/core";
 import { COMMON_DIRECTIVES, COMMON_PIPES, FORM_PROVIDERS } from "angular2/common";
 import { Testability } from 'angular2/src/core/testability/testability';
@@ -15,6 +16,7 @@ import { BrowserDetails } from "angular2/src/animate/browser_details";
 import { AnimationBuilder } from "angular2/src/animate/animation_builder";
 import { BrowserDomAdapter } from './browser/browser_adapter';
 import { BrowserGetTestability } from 'angular2/src/platform/browser/testability';
+import { CachedXHR } from 'angular2/src/platform/browser/xhr_cache';
 import { wtfInit } from 'angular2/src/core/profile/wtf_init';
 import { EventManager, EVENT_MANAGER_PLUGINS } from "angular2/src/platform/dom/events/event_manager";
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from 'angular2/src/platform/dom/events/hammer_gestures';
@@ -68,6 +70,7 @@ export const BROWSER_APP_COMMON_PROVIDERS = CONST_EXPR([
     EventManager,
     ELEMENT_PROBE_PROVIDERS
 ]);
+export const CACHED_TEMPLATE_PROVIDER = CONST_EXPR([new Provider(XHR, { useClass: CachedXHR })]);
 export function initDomAdapter() {
     BrowserDomAdapter.makeCurrent();
     wtfInit();
