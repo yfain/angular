@@ -3,6 +3,7 @@ library angular2.src.platform.browser_common;
 import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/core/di.dart"
     show provide, Provider, Injector, OpaqueToken;
+import "package:angular2/src/compiler/xhr.dart" show XHR;
 import "package:angular2/core.dart"
     show
         PLATFORM_INITIALIZER,
@@ -40,6 +41,7 @@ import "package:angular2/src/animate/animation_builder.dart"
 import "browser/browser_adapter.dart" show BrowserDomAdapter;
 import "package:angular2/src/platform/browser/testability.dart"
     show BrowserGetTestability;
+import "package:angular2/src/platform/browser/xhr_cache.dart" show CachedXHR;
 import "package:angular2/src/core/profile/wtf_init.dart" show wtfInit;
 import "package:angular2/src/platform/dom/events/event_manager.dart"
     show EventManager, EVENT_MANAGER_PLUGINS;
@@ -107,6 +109,9 @@ const List<dynamic> BROWSER_APP_COMMON_PROVIDERS = const [
   AnimationBuilder,
   EventManager,
   ELEMENT_PROBE_PROVIDERS
+];
+const List<dynamic> CACHED_TEMPLATE_PROVIDER = const [
+  const Provider(XHR, useClass: CachedXHR)
 ];
 initDomAdapter() {
   BrowserDomAdapter.makeCurrent();
