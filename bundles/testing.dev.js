@@ -2045,15 +2045,16 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
   function _it(jsmFn, name, testFn, testTimeOut) {
     var timeOut = testTimeOut;
     if (testFn instanceof test_injector_1.FunctionWithParamTokens) {
+      var testFnT = testFn;
       jsmFn(name, function(done) {
         var returnedTestValue;
         try {
-          returnedTestValue = testInjector.execute(testFn);
+          returnedTestValue = testInjector.execute(testFnT);
         } catch (err) {
           done.fail(err);
           return ;
         }
-        if (testFn.isAsync) {
+        if (testFnT.isAsync) {
           if (_isPromiseLike(returnedTestValue)) {
             returnedTestValue.then(function() {
               done();
@@ -2076,15 +2077,16 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
   }
   function beforeEach(fn) {
     if (fn instanceof test_injector_1.FunctionWithParamTokens) {
+      var fnT = fn;
       jsmBeforeEach(function(done) {
         var returnedTestValue;
         try {
-          returnedTestValue = testInjector.execute(fn);
+          returnedTestValue = testInjector.execute(fnT);
         } catch (err) {
           done.fail(err);
           return ;
         }
-        if (fn.isAsync) {
+        if (fnT.isAsync) {
           if (_isPromiseLike(returnedTestValue)) {
             returnedTestValue.then(function() {
               done();

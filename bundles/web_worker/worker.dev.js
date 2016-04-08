@@ -17061,8 +17061,9 @@ System.register("angular2/src/core/debug/debug_renderer", ["angular2/src/facade/
     DebugDomRenderer.prototype.projectNodes = function(parentElement, nodes) {
       var debugParent = debug_node_1.getDebugNode(parentElement);
       if (lang_1.isPresent(debugParent) && debugParent instanceof debug_node_1.DebugElement) {
+        var debugElement = debugParent;
         nodes.forEach(function(node) {
-          debugParent.addChild(debug_node_1.getDebugNode(node));
+          debugElement.addChild(debug_node_1.getDebugNode(node));
         });
       }
       this._delegate.projectNodes(parentElement, nodes);

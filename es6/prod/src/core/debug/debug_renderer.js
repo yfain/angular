@@ -45,7 +45,8 @@ export class DebugDomRenderer {
     projectNodes(parentElement, nodes) {
         var debugParent = getDebugNode(parentElement);
         if (isPresent(debugParent) && debugParent instanceof DebugElement) {
-            nodes.forEach((node) => { debugParent.addChild(getDebugNode(node)); });
+            let debugElement = debugParent;
+            nodes.forEach((node) => { debugElement.addChild(getDebugNode(node)); });
         }
         this._delegate.projectNodes(parentElement, nodes);
     }
