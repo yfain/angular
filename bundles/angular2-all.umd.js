@@ -21431,7 +21431,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *         <pre>{{valueOf(f)}}</pre>
 	 *       </form>
 	 *     </div>
-	 *   `
+	 *   `,
+	 *   directives: [FORM_DIRECTIVES]
 	 * })
 	 * export class App {
 	 *   valueOf(cg: NgControlGroup): string {
