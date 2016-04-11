@@ -485,15 +485,11 @@ class RootRouter extends Router {
             if (emitPath.length > 0 && emitPath[0] != "/") {
               emitPath = "/" + emitPath;
             }
-            // We've opted to use pushstate and popState APIs regardless of whether you
-
-            // an app uses HashLocationStrategy or PathLocationStrategy.
+            // Because we've opted to use All hashchange events occur outside Angular.
 
             // However, apps that are migrating might have hash links that operate outside
 
             // angular to which routing must respond.
-
-            // Therefore we know that all hashchange events occur outside Angular.
 
             // To support these cases where we respond to hashchanges and redirect as a
 
