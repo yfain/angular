@@ -60,20 +60,15 @@ export var ChangeDetectionStrategy;
  * List of possible {@link ChangeDetectionStrategy} values.
  */
 export var CHANGE_DETECTION_STRATEGY_VALUES = [
-    ChangeDetectionStrategy.CheckOnce,
-    ChangeDetectionStrategy.Checked,
-    ChangeDetectionStrategy.CheckAlways,
-    ChangeDetectionStrategy.Detached,
-    ChangeDetectionStrategy.OnPush,
-    ChangeDetectionStrategy.Default
+    ChangeDetectionStrategy.CheckOnce, ChangeDetectionStrategy.Checked,
+    ChangeDetectionStrategy.CheckAlways, ChangeDetectionStrategy.Detached,
+    ChangeDetectionStrategy.OnPush, ChangeDetectionStrategy.Default
 ];
 /**
  * List of possible {@link ChangeDetectorState} values.
  */
 export var CHANGE_DETECTOR_STATE_VALUES = [
-    ChangeDetectorState.NeverChecked,
-    ChangeDetectorState.CheckedBefore,
-    ChangeDetectorState.Errored
+    ChangeDetectorState.NeverChecked, ChangeDetectorState.CheckedBefore, ChangeDetectorState.Errored
 ];
 export function isDefaultChangeDetectionStrategy(changeDetectionStrategy) {
     return isBlank(changeDetectionStrategy) ||

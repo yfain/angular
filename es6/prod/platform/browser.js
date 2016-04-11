@@ -5,7 +5,7 @@ import { BROWSER_PROVIDERS, BROWSER_APP_COMMON_PROVIDERS } from 'angular2/src/pl
 import { COMPILER_PROVIDERS } from 'angular2/compiler';
 import { platform, reflector } from 'angular2/core';
 import { ReflectionCapabilities } from 'angular2/src/core/reflection/reflection_capabilities';
-import { XHRImpl } from "angular2/src/platform/browser/xhr_impl";
+import { XHRImpl } from 'angular2/src/platform/browser/xhr_impl';
 import { XHR } from 'angular2/compiler';
 import { Provider } from 'angular2/src/core/di';
 /**

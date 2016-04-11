@@ -23,8 +23,7 @@ export class DynamicChangeDetector extends AbstractChangeDetector {
     }
     handleEventInternal(eventName, elIndex, locals) {
         var preventDefault = false;
-        this._matchingEventBindings(eventName, elIndex)
-            .forEach(rec => {
+        this._matchingEventBindings(eventName, elIndex).forEach(rec => {
             var res = this._processEventBinding(rec, locals);
             if (res === false) {
                 preventDefault = true;
@@ -54,7 +53,7 @@ export class DynamicChangeDetector extends AbstractChangeDetector {
                 }
             }
         }
-        throw new BaseException("Cannot be reached");
+        throw new BaseException('Cannot be reached');
     }
     _computeSkipLength(protoIndex, proto, values) {
         if (proto.mode === RecordType.SkipRecords) {
@@ -68,7 +67,7 @@ export class DynamicChangeDetector extends AbstractChangeDetector {
             let condition = this._readContext(proto, values);
             return condition ? 0 : proto.fixedArgs[0] - protoIndex - 1;
         }
-        throw new BaseException("Cannot be reached");
+        throw new BaseException('Cannot be reached');
     }
     /** @internal */
     _markPathAsCheckOnce(proto) {
@@ -141,14 +140,14 @@ export class DynamicChangeDetector extends AbstractChangeDetector {
                 this.propertyBindingIndex = proto.propertyBindingIndex;
             }
             if (proto.isLifeCycleRecord()) {
-                if (proto.name === "DoCheck" && !throwOnChange) {
+                if (proto.name === 'DoCheck' && !throwOnChange) {
                     this._getDirectiveFor(directiveRecord.directiveIndex).ngDoCheck();
                 }
-                else if (proto.name === "OnInit" && !throwOnChange &&
+                else if (proto.name === 'OnInit' && !throwOnChange &&
                     this.state == ChangeDetectorState.NeverChecked) {
                     this._getDirectiveFor(directiveRecord.directiveIndex).ngOnInit();
                 }
-                else if (proto.name === "OnChanges" && isPresent(changes) && !throwOnChange) {
+                else if (proto.name === 'OnChanges' && isPresent(changes) && !throwOnChange) {
                     this._getDirectiveFor(directiveRecord.directiveIndex).ngOnChanges(changes);
                 }
             }

@@ -27,12 +27,12 @@ export let MessageBasedPlatformLocation = class {
         this._channelSink = bus.to(ROUTER_CHANNEL);
     }
     start() {
-        this._broker.registerMethod("getLocation", null, bind(this._getLocation, this), LocationType);
-        this._broker.registerMethod("setPathname", [PRIMITIVE], bind(this._setPathname, this));
-        this._broker.registerMethod("pushState", [PRIMITIVE, PRIMITIVE, PRIMITIVE], bind(this._platformLocation.pushState, this._platformLocation));
-        this._broker.registerMethod("replaceState", [PRIMITIVE, PRIMITIVE, PRIMITIVE], bind(this._platformLocation.replaceState, this._platformLocation));
-        this._broker.registerMethod("forward", null, bind(this._platformLocation.forward, this._platformLocation));
-        this._broker.registerMethod("back", null, bind(this._platformLocation.back, this._platformLocation));
+        this._broker.registerMethod('getLocation', null, bind(this._getLocation, this), LocationType);
+        this._broker.registerMethod('setPathname', [PRIMITIVE], bind(this._setPathname, this));
+        this._broker.registerMethod('pushState', [PRIMITIVE, PRIMITIVE, PRIMITIVE], bind(this._platformLocation.pushState, this._platformLocation));
+        this._broker.registerMethod('replaceState', [PRIMITIVE, PRIMITIVE, PRIMITIVE], bind(this._platformLocation.replaceState, this._platformLocation));
+        this._broker.registerMethod('forward', null, bind(this._platformLocation.forward, this._platformLocation));
+        this._broker.registerMethod('back', null, bind(this._platformLocation.back, this._platformLocation));
     }
     _getLocation() {
         return PromiseWrapper.resolve(this._platformLocation.location);

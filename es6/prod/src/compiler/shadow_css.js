@@ -368,7 +368,8 @@ export class ShadowCss {
         for (var i = 0; i < splits.length; i++) {
             var sep = splits[i];
             var parts = scoped.split(sep);
-            scoped = parts.map(p => {
+            scoped = parts
+                .map(p => {
                 // remove :host since it should be unnecessary
                 var t = StringWrapper.replaceAll(p.trim(), _polyfillHostRe, '');
                 if (t.length > 0 && !ListWrapper.contains(splits, t) &&
@@ -404,8 +405,7 @@ var _cssColonHostRe = RegExpWrapper.create('(' + _polyfillHost + _parenSuffix, '
 var _cssColonHostContextRe = RegExpWrapper.create('(' + _polyfillHostContext + _parenSuffix, 'im');
 var _polyfillHostNoCombinator = _polyfillHost + '-no-combinator';
 var _shadowDOMSelectorsRe = [
-    /::shadow/g,
-    /::content/g,
+    /::shadow/g, /::content/g,
     // Deprecated selectors
     // TODO(vicb): see https://github.com/angular/clang-format/issues/16
     // clang-format off

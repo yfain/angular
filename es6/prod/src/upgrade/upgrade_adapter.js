@@ -267,10 +267,8 @@ export class UpgradeAdapter {
         var ng1Injector = null;
         var platformRef = platform(BROWSER_PROVIDERS);
         var applicationRef = platformRef.application([
-            BROWSER_APP_PROVIDERS,
-            provide(NG1_INJECTOR, { useFactory: () => ng1Injector }),
-            provide(NG1_COMPILE, { useFactory: () => ng1Injector.get(NG1_COMPILE) }),
-            this.providers
+            BROWSER_APP_PROVIDERS, provide(NG1_INJECTOR, { useFactory: () => ng1Injector }),
+            provide(NG1_COMPILE, { useFactory: () => ng1Injector.get(NG1_COMPILE) }), this.providers
         ]);
         var injector = applicationRef.injector;
         var ngZone = injector.get(NgZone);
@@ -300,7 +298,7 @@ export class UpgradeAdapter {
                             rootScopePrototype.$apply = (exp) => delayApplyExps.push(exp);
                         }
                         else {
-                            throw new Error("Failed to find '$apply' on '$rootScope'!");
+                            throw new Error('Failed to find \'$apply\' on \'$rootScope\'!');
                         }
                         return rootScope = rootScopeDelegate;
                     }
@@ -329,8 +327,7 @@ export class UpgradeAdapter {
         ]);
         ng1compilePromise = new Promise((resolve, reject) => {
             ng1Module.run([
-                '$injector',
-                '$rootScope',
+                '$injector', '$rootScope',
                     (injector, rootScope) => {
                     ng1Injector = injector;
                     ObservableWrapper.subscribe(ngZone.onMicrotaskEmpty, (_) => ngZone.runOutsideAngular(() => rootScope.$apply()));
@@ -357,9 +354,9 @@ export class UpgradeAdapter {
                 resolve();
             }
         });
-        Promise.all([
-            this.compileNg2Components(compiler, hostViewFactoryRefMap),
-            ng1BootstrapPromise,
+        Promise
+            .all([
+            this.compileNg2Components(compiler, hostViewFactoryRefMap), ng1BootstrapPromise,
             ng1compilePromise
         ])
             .then(() => {

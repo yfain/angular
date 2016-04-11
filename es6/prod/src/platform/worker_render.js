@@ -33,9 +33,7 @@ WebWorkerInstance = __decorate([
  * An array of providers that should be passed into `application()` when initializing a new Worker.
  */
 export const WORKER_RENDER_APPLICATION = CONST_EXPR([
-    WORKER_RENDER_APPLICATION_COMMON,
-    WebWorkerInstance,
-    new Provider(APP_INITIALIZER, {
+    WORKER_RENDER_APPLICATION_COMMON, WebWorkerInstance, new Provider(APP_INITIALIZER, {
         useFactory: (injector) => () => initWebWorkerApplication(injector),
         multi: true,
         deps: [Injector]
@@ -48,7 +46,7 @@ function initWebWorkerApplication(injector) {
         scriptUri = injector.get(WORKER_SCRIPT);
     }
     catch (e) {
-        throw new BaseException("You must provide your WebWorker's initialization script with the WORKER_SCRIPT token");
+        throw new BaseException('You must provide your WebWorker\'s initialization script with the WORKER_SCRIPT token');
     }
     let instance = injector.get(WebWorkerInstance);
     spawnWebWorker(scriptUri, instance);

@@ -5,4 +5,4 @@ import { CONST_EXPR } from 'angular2/src/facade/lang';
  *
  * See {@link DefaultValueAccessor} for how to implement one.
  */
-export const NG_VALUE_ACCESSOR = CONST_EXPR(new OpaqueToken("NgValueAccessor"));
+export const NG_VALUE_ACCESSOR = CONST_EXPR(new OpaqueToken('NgValueAccessor'));

@@ -1,7 +1,7 @@
-import { MessageBus } from "angular2/src/web_workers/shared/message_bus";
-import { Serializer } from "angular2/src/web_workers/shared/serializer";
-import { Type } from "angular2/src/facade/lang";
-export { Type } from "angular2/src/facade/lang";
+import { MessageBus } from 'angular2/src/web_workers/shared/message_bus';
+import { Serializer } from 'angular2/src/web_workers/shared/serializer';
+import { Type } from 'angular2/src/facade/lang';
+export { Type } from 'angular2/src/facade/lang';
 export declare abstract class ClientMessageBrokerFactory {
     /**
      * Initializes the given channel and attaches a new {@link ClientMessageBroker} to it.

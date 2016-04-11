@@ -27,7 +27,7 @@ export class CssSelector {
         var _addResult = (res, cssSel) => {
             if (cssSel.notSelectors.length > 0 && isBlank(cssSel.element) &&
                 ListWrapper.isEmpty(cssSel.classNames) && ListWrapper.isEmpty(cssSel.attrs)) {
-                cssSel.element = "*";
+                cssSel.element = '*';
             }
             res.push(cssSel);
         };
@@ -281,7 +281,7 @@ export class SelectorMatcher {
             return false;
         }
         var selectables = map.get(name);
-        var starSelectables = map.get("*");
+        var starSelectables = map.get('*');
         if (isPresent(starSelectables)) {
             selectables = selectables.concat(starSelectables);
         }

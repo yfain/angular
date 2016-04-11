@@ -13,8 +13,7 @@ let _postMessage = {
     }
 };
 export const WORKER_APP_APPLICATION = [
-    WORKER_APP_APPLICATION_COMMON,
-    COMPILER_PROVIDERS,
+    WORKER_APP_APPLICATION_COMMON, COMPILER_PROVIDERS,
     new Provider(MessageBus, { useFactory: createMessageBus, deps: [NgZone] }),
     new Provider(APP_INITIALIZER, { useValue: setupWebWorker, multi: true })
 ];

@@ -211,7 +211,7 @@ export class _ParseAST {
             exprs.push(expr);
             if (this.optionalCharacter($SEMICOLON)) {
                 if (!this.parseAction) {
-                    this.error("Binding expression cannot contain chained expression");
+                    this.error('Binding expression cannot contain chained expression');
                 }
                 while (this.optionalCharacter($SEMICOLON)) {
                 } // read all semicolons
@@ -228,9 +228,9 @@ export class _ParseAST {
     }
     parsePipe() {
         var result = this.parseExpression();
-        if (this.optionalOperator("|")) {
+        if (this.optionalOperator('|')) {
             if (this.parseAction) {
-                this.error("Cannot have a pipe in an action expression");
+                this.error('Cannot have a pipe in an action expression');
             }
             do {
                 var name = this.expectIdentifierOrKeyword();
@@ -239,7 +239,7 @@ export class _ParseAST {
                     args.push(this.parseExpression());
                 }
                 result = new BindingPipe(result, name, args);
-            } while (this.optionalOperator("|"));
+            } while (this.optionalOperator('|'));
         }
         return result;
     }
@@ -378,7 +378,7 @@ export class _ParseAST {
             else if (this.optionalCharacter($LBRACKET)) {
                 var key = this.parsePipe();
                 this.expectCharacter($RBRACKET);
-                if (this.optionalOperator("=")) {
+                if (this.optionalOperator('=')) {
                     var value = this.parseConditional();
                     result = new KeyedWrite(result, key, value);
                 }
@@ -442,7 +442,7 @@ export class _ParseAST {
             this.error(`Unexpected token ${this.next}`);
         }
         // error() throws, so we don't reach here.
-        throw new BaseException("Fell through all cases in parsePrimary");
+        throw new BaseException('Fell through all cases in parsePrimary');
     }
     parseExpressionList(terminator) {
         var result = [];
@@ -479,17 +479,17 @@ export class _ParseAST {
         }
         else {
             if (isSafe) {
-                if (this.optionalOperator("=")) {
-                    this.error("The '?.' operator cannot be used in the assignment");
+                if (this.optionalOperator('=')) {
+                    this.error('The \'?.\' operator cannot be used in the assignment');
                 }
                 else {
                     return new SafePropertyRead(receiver, id, this.reflector.getter(id));
                 }
             }
             else {
-                if (this.optionalOperator("=")) {
+                if (this.optionalOperator('=')) {
                     if (!this.parseAction) {
-                        this.error("Bindings cannot contain assignments");
+                        this.error('Bindings cannot contain assignments');
                     }
                     let value = this.parseConditional();
                     return new PropertyWrite(receiver, id, this.reflector.setter(id), value);
@@ -512,7 +512,7 @@ export class _ParseAST {
     }
     parseBlockContent() {
         if (!this.parseAction) {
-            this.error("Binding expression cannot contain chained expression");
+            this.error('Binding expression cannot contain chained expression');
         }
         var exprs = [];
         while (this.index < this.tokens.length && !this.next.isCharacter($RBRACE)) {
@@ -562,7 +562,7 @@ export class _ParseAST {
             var name = null;
             var expression = null;
             if (keyIsVar) {
-                if (this.optionalOperator("=")) {
+                if (this.optionalOperator('=')) {
                     name = this.expectTemplateBindingKey();
                 }
                 else {

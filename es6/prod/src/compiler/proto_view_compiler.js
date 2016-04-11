@@ -203,8 +203,7 @@ class ProtoViewBuilderVisitor {
     _addProtoElement(isBound, boundElementIndex, attrNameAndValues, variableNameAndValues, renderEvents, directives, embeddedTemplateIndex) {
         var appProtoEl = null;
         if (isBound) {
-            appProtoEl =
-                this.factory.createAppProtoElement(boundElementIndex, attrNameAndValues, variableNameAndValues, directives, this.allStatements);
+            appProtoEl = this.factory.createAppProtoElement(boundElementIndex, attrNameAndValues, variableNameAndValues, directives, this.allStatements);
         }
         var compileProtoEl = new CompileProtoElement(boundElementIndex, attrNameAndValues, variableNameAndValues, renderEvents, directives, embeddedTemplateIndex, appProtoEl);
         this.protoElements.push(compileProtoEl);
@@ -217,7 +216,9 @@ class ProtoViewBuilderVisitor {
     visitDirective(ast, ctx) {
         ctx.targetDirectives.push(ast.directive);
         templateVisitAll(this, ast.hostEvents, ctx.hostEventTargetAndNames);
-        ast.exportAsVars.forEach(varAst => { ctx.targetVariableNameAndValues.push([varAst.name, ctx.index]); });
+        ast.exportAsVars.forEach(varAst => {
+            ctx.targetVariableNameAndValues.push([varAst.name, ctx.index]);
+        });
         return null;
     }
     visitEvent(ast, eventTargetAndNames) {
@@ -229,7 +230,9 @@ class ProtoViewBuilderVisitor {
 }
 function mapToKeyValueArray(data) {
     var entryArray = [];
-    StringMapWrapper.forEach(data, (value, name) => { entryArray.push([name, value]); });
+    StringMapWrapper.forEach(data, (value, name) => {
+        entryArray.push([name, value]);
+    });
     // We need to sort to get a defined output order
     // for tests and for caching generated artifacts...
     ListWrapper.sort(entryArray, (entry1, entry2) => StringWrapper.compare(entry1[0], entry2[0]));

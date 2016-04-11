@@ -64,7 +64,6 @@ AppCmp = __decorate([
 ], AppCmp);
 export function main() {
     return bootstrap(AppCmp, [
-        provide(APP_BASE_HREF, { useValue: '/angular2/examples/router/ts/on_deactivate' }),
-        LogService
+        provide(APP_BASE_HREF, { useValue: '/angular2/examples/router/ts/on_deactivate' }), LogService
     ]);
 }

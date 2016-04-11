@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Directive, ChangeDetectorRef, IterableDiffers, ViewContainerRef, TemplateRef } from 'angular2/core';
 import { isPresent, isBlank, getTypeNameForDebugging } from 'angular2/src/facade/lang';
-import { BaseException } from "../../facade/exceptions";
+import { BaseException } from '../../facade/exceptions';
 /**
  * The `NgFor` directive instantiates a template once per item from an iterable. The context for
  * each instantiated template inherits from the outer context with the given loop variable set

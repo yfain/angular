@@ -1,6 +1,6 @@
-import { ParseSourceSpan, ParseSourceFile, ParseError } from "angular2/src/compiler/parse_util";
-import { CssToken, CssScanner } from "angular2/src/compiler/css/lexer";
-export { CssToken } from "angular2/src/compiler/css/lexer";
+import { ParseSourceSpan, ParseSourceFile, ParseError } from 'angular2/src/compiler/parse_util';
+import { CssToken, CssScanner } from 'angular2/src/compiler/css/lexer';
+export { CssToken } from 'angular2/src/compiler/css/lexer';
 export declare enum BlockType {
     Import = 0,
     Charset = 1,

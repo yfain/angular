@@ -4,11 +4,11 @@ import { id } from './message';
 import { HtmlParser } from 'angular2/src/compiler/html_parser';
 import { ParseError } from 'angular2/src/compiler/parse_util';
 let _PLACEHOLDER_REGEXP = RegExpWrapper.create(`\\<ph(\\s)+name=("(\\w)+")\\/\\>`);
-const _ID_ATTR = "id";
-const _MSG_ELEMENT = "msg";
-const _BUNDLE_ELEMENT = "message-bundle";
+const _ID_ATTR = 'id';
+const _MSG_ELEMENT = 'msg';
+const _BUNDLE_ELEMENT = 'message-bundle';
 export function serializeXmb(messages) {
-    let ms = messages.map((m) => _serializeMessage(m)).join("");
+    let ms = messages.map((m) => _serializeMessage(m)).join('');
     return `<message-bundle>${ms}</message-bundle>`;
 }
 export class XmbDeserializationResult {
@@ -67,7 +67,7 @@ function _id(el) {
     return ids.length > 0 ? ids[0].value : null;
 }
 function _serializeMessage(m) {
-    let desc = isPresent(m.description) ? ` desc='${m.description}'` : "";
+    let desc = isPresent(m.description) ? ` desc='${m.description}'` : '';
     return `<msg id='${id(m)}'${desc}>${m.content}</msg>`;
 }
 function _expandPlaceholder(input) {

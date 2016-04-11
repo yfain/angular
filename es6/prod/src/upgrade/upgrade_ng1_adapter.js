@@ -26,8 +26,7 @@ export class UpgradeNg1ComponentAdapterBuilder {
             Directive({ selector: selector, inputs: this.inputsRename, outputs: this.outputsRename })
                 .Class({
                 constructor: [
-                    new Inject(NG1_SCOPE),
-                    ElementRef,
+                    new Inject(NG1_SCOPE), ElementRef,
                     function (scope, elementRef) {
                         return new UpgradeNg1ComponentAdapter(self.linkFn, scope, self.directive, elementRef, self.$controller, self.inputs, self.outputs, self.propertyOutputs, self.checkProperties, self.propertyMap);
                     }

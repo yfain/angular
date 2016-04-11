@@ -131,7 +131,7 @@ export class ReflectionCapabilities {
         return {};
     }
     interfaces(type) {
-        throw new BaseException("JavaScript does not support interfaces");
+        throw new BaseException('JavaScript does not support interfaces');
     }
     getter(name) { return new Function('o', 'return o.' + name + ';'); }
     setter(name) {

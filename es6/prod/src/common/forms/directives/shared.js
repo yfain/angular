@@ -15,9 +15,9 @@ export function controlPath(name, parent) {
 }
 export function setUpControl(control, dir) {
     if (isBlank(control))
-        _throwError(dir, "Cannot find control");
+        _throwError(dir, 'Cannot find control');
     if (isBlank(dir.valueAccessor))
-        _throwError(dir, "No value accessor for");
+        _throwError(dir, 'No value accessor for');
     control.validator = Validators.compose([control.validator, dir.validator]);
     control.asyncValidator = Validators.composeAsync([control.asyncValidator, dir.asyncValidator]);
     dir.valueAccessor.writeValue(control.value);
@@ -34,12 +34,12 @@ export function setUpControl(control, dir) {
 }
 export function setUpControlGroup(control, dir) {
     if (isBlank(control))
-        _throwError(dir, "Cannot find control");
+        _throwError(dir, 'Cannot find control');
     control.validator = Validators.compose([control.validator, dir.validator]);
     control.asyncValidator = Validators.composeAsync([control.asyncValidator, dir.asyncValidator]);
 }
 function _throwError(dir, message) {
-    var path = dir.path.join(" -> ");
+    var path = dir.path.join(' -> ');
     throw new BaseException(`${message} '${path}'`);
 }
 export function composeValidators(validators) {
@@ -50,9 +50,9 @@ export function composeAsyncValidators(validators) {
         null;
 }
 export function isPropertyUpdated(changes, viewModel) {
-    if (!StringMapWrapper.contains(changes, "model"))
+    if (!StringMapWrapper.contains(changes, 'model'))
         return false;
-    var change = changes["model"];
+    var change = changes['model'];
     if (change.isFirstChange())
         return true;
     return !looseIdentical(viewModel, change.currentValue);
@@ -68,17 +68,16 @@ export function selectValueAccessor(dir, valueAccessors) {
         if (hasConstructor(v, DefaultValueAccessor)) {
             defaultAccessor = v;
         }
-        else if (hasConstructor(v, CheckboxControlValueAccessor) ||
-            hasConstructor(v, NumberValueAccessor) ||
+        else if (hasConstructor(v, CheckboxControlValueAccessor) || hasConstructor(v, NumberValueAccessor) ||
             hasConstructor(v, SelectControlValueAccessor) ||
             hasConstructor(v, RadioControlValueAccessor)) {
             if (isPresent(builtinAccessor))
-                _throwError(dir, "More than one built-in value accessor matches");
+                _throwError(dir, 'More than one built-in value accessor matches');
             builtinAccessor = v;
         }
         else {
             if (isPresent(customAccessor))
-                _throwError(dir, "More than one custom value accessor matches");
+                _throwError(dir, 'More than one custom value accessor matches');
             customAccessor = v;
         }
     });
@@ -88,6 +87,6 @@ export function selectValueAccessor(dir, valueAccessors) {
         return builtinAccessor;
     if (isPresent(defaultAccessor))
         return defaultAccessor;
-    _throwError(dir, "No valid value accessor for");
+    _throwError(dir, 'No valid value accessor for');
     return null;
 }

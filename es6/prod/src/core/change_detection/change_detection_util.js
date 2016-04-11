@@ -34,10 +34,7 @@ export class WrappedValue {
     }
 }
 var _wrappedValues = [
-    new WrappedValue(null),
-    new WrappedValue(null),
-    new WrappedValue(null),
-    new WrappedValue(null),
+    new WrappedValue(null), new WrappedValue(null), new WrappedValue(null), new WrappedValue(null),
     new WrappedValue(null)
 ];
 var _wrappedIndex = 0;
@@ -160,8 +157,7 @@ export class ChangeDetectionUtil {
         if (isListLikeIterable(a) && isListLikeIterable(b)) {
             return areIterablesEqual(a, b, ChangeDetectionUtil.devModeEqual);
         }
-        else if (!isListLikeIterable(a) && !isPrimitive(a) && !isListLikeIterable(b) &&
-            !isPrimitive(b)) {
+        else if (!isListLikeIterable(a) && !isPrimitive(a) && !isListLikeIterable(b) && !isPrimitive(b)) {
             return true;
         }
         else {

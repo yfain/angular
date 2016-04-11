@@ -18,9 +18,9 @@ import { ChangeDetectorGenConfig, DynamicProtoChangeDetector } from 'angular2/sr
 import { Codegen } from 'angular2/src/transform/template_compiler/change_detector_codegen';
 import { MODULE_SUFFIX } from './util';
 import { Injectable } from 'angular2/src/core/di';
-const ABSTRACT_CHANGE_DETECTOR = "AbstractChangeDetector";
-const UTIL = "ChangeDetectionUtil";
-const CHANGE_DETECTOR_STATE = "ChangeDetectorState";
+const ABSTRACT_CHANGE_DETECTOR = 'AbstractChangeDetector';
+const UTIL = 'ChangeDetectionUtil';
+const CHANGE_DETECTOR_STATE = 'ChangeDetectorState';
 export const CHANGE_DETECTION_JIT_IMPORTS = CONST_EXPR({
     'AbstractChangeDetector': AbstractChangeDetector,
     'ChangeDetectionUtil': ChangeDetectionUtil,

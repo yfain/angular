@@ -11,7 +11,7 @@ import { HammerGesturesPlugin } from 'angular2/src/platform/dom/events/hammer_ge
 import { DOCUMENT } from 'angular2/src/platform/dom/dom_tokens';
 import { DomRootRenderer, DomRootRenderer_ } from 'angular2/src/platform/dom/dom_renderer';
 import { DomSharedStylesHost } from 'angular2/src/platform/dom/shared_styles_host';
-import { SharedStylesHost } from "angular2/src/platform/dom/shared_styles_host";
+import { SharedStylesHost } from 'angular2/src/platform/dom/shared_styles_host';
 import { BrowserDetails } from 'angular2/src/animate/browser_details';
 import { AnimationBuilder } from 'angular2/src/animate/animation_builder';
 import { XHR } from 'angular2/compiler';
@@ -29,7 +29,7 @@ import { Serializer } from 'angular2/src/web_workers/shared/serializer';
 import { ON_WEB_WORKER } from 'angular2/src/web_workers/shared/api';
 import { RenderStore } from 'angular2/src/web_workers/shared/render_store';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig } from './dom/events/hammer_gestures';
-export const WORKER_SCRIPT = CONST_EXPR(new OpaqueToken("WebWorkerScript"));
+export const WORKER_SCRIPT = CONST_EXPR(new OpaqueToken('WebWorkerScript'));
 // Message based Worker classes that listen on the MessageBus
 export const WORKER_RENDER_MESSAGING_PROVIDERS = CONST_EXPR([MessageBasedRenderer, MessageBasedXHRImpl]);
 export const WORKER_RENDER_PLATFORM = CONST_EXPR([
@@ -42,8 +42,7 @@ export const WORKER_RENDER_PLATFORM = CONST_EXPR([
  */
 export const WORKER_RENDER_ROUTER = CONST_EXPR([BrowserPlatformLocation]);
 export const WORKER_RENDER_APPLICATION_COMMON = CONST_EXPR([
-    APPLICATION_COMMON_PROVIDERS,
-    WORKER_RENDER_MESSAGING_PROVIDERS,
+    APPLICATION_COMMON_PROVIDERS, WORKER_RENDER_MESSAGING_PROVIDERS,
     new Provider(ExceptionHandler, { useFactory: _exceptionHandler, deps: [] }),
     new Provider(DOCUMENT, { useFactory: _document, deps: [] }),
     // TODO(jteplitz602): Investigate if we definitely need EVENT_MANAGER on the render thread
@@ -55,18 +54,11 @@ export const WORKER_RENDER_APPLICATION_COMMON = CONST_EXPR([
     new Provider(DomRootRenderer, { useClass: DomRootRenderer_ }),
     new Provider(RootRenderer, { useExisting: DomRootRenderer }),
     new Provider(SharedStylesHost, { useExisting: DomSharedStylesHost }),
-    new Provider(XHR, { useClass: XHRImpl }),
-    MessageBasedXHRImpl,
+    new Provider(XHR, { useClass: XHRImpl }), MessageBasedXHRImpl,
     new Provider(ServiceMessageBrokerFactory, { useClass: ServiceMessageBrokerFactory_ }),
-    new Provider(ClientMessageBrokerFactory, { useClass: ClientMessageBrokerFactory_ }),
-    Serializer,
-    new Provider(ON_WEB_WORKER, { useValue: false }),
-    RenderStore,
-    DomSharedStylesHost,
-    Testability,
-    BrowserDetails,
-    AnimationBuilder,
-    EventManager
+    new Provider(ClientMessageBrokerFactory, { useClass: ClientMessageBrokerFactory_ }), Serializer,
+    new Provider(ON_WEB_WORKER, { useValue: false }), RenderStore, DomSharedStylesHost, Testability,
+    BrowserDetails, AnimationBuilder, EventManager
 ]);
 export function initializeGenericWorkerRenderer(injector) {
     var bus = injector.get(MessageBus);

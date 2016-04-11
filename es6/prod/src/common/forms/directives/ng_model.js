@@ -66,7 +66,9 @@ export let NgModel = class extends NgControl {
     get control() { return this._control; }
     get path() { return []; }
     get validator() { return composeValidators(this._validators); }
-    get asyncValidator() { return composeAsyncValidators(this._asyncValidators); }
+    get asyncValidator() {
+        return composeAsyncValidators(this._asyncValidators);
+    }
     viewToModelUpdate(newValue) {
         this.viewModel = newValue;
         ObservableWrapper.callEmit(this.update, newValue);

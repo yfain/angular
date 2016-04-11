@@ -7,14 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { MessageBus } from "angular2/src/web_workers/shared/message_bus";
-import { print, isPresent, DateWrapper, stringify } from "angular2/src/facade/lang";
-import { PromiseWrapper, ObservableWrapper } from "angular2/src/facade/async";
-import { StringMapWrapper } from "angular2/src/facade/collection";
-import { Serializer } from "angular2/src/web_workers/shared/serializer";
-import { Injectable } from "angular2/src/core/di";
-import { StringWrapper } from "angular2/src/facade/lang";
-export { Type } from "angular2/src/facade/lang";
+import { MessageBus } from 'angular2/src/web_workers/shared/message_bus';
+import { print, isPresent, DateWrapper, stringify } from 'angular2/src/facade/lang';
+import { PromiseWrapper, ObservableWrapper } from 'angular2/src/facade/async';
+import { StringMapWrapper } from 'angular2/src/facade/collection';
+import { Serializer } from 'angular2/src/web_workers/shared/serializer';
+import { Injectable } from 'angular2/src/core/di';
+import { StringWrapper } from 'angular2/src/facade/lang';
+export { Type } from 'angular2/src/facade/lang';
 export class ClientMessageBrokerFactory {
 }
 export let ClientMessageBrokerFactory_ = class extends ClientMessageBrokerFactory {
@@ -102,10 +102,10 @@ export class ClientMessageBroker_ extends ClientMessageBroker {
     _handleMessage(message) {
         var data = new MessageData(message);
         // TODO(jteplitz602): replace these strings with messaging constants #3685
-        if (StringWrapper.equals(data.type, "result") || StringWrapper.equals(data.type, "error")) {
+        if (StringWrapper.equals(data.type, 'result') || StringWrapper.equals(data.type, 'error')) {
             var id = data.id;
             if (this._pending.has(id)) {
-                if (StringWrapper.equals(data.type, "result")) {
+                if (StringWrapper.equals(data.type, 'result')) {
                     this._pending.get(id).resolve(data.value);
                 }
                 else {
@@ -118,9 +118,9 @@ export class ClientMessageBroker_ extends ClientMessageBroker {
 }
 class MessageData {
     constructor(data) {
-        this.type = StringMapWrapper.get(data, "type");
-        this.id = this._getValueIfPresent(data, "id");
-        this.value = this._getValueIfPresent(data, "value");
+        this.type = StringMapWrapper.get(data, 'type');
+        this.id = this._getValueIfPresent(data, 'id');
+        this.value = this._getValueIfPresent(data, 'value');
     }
     /**
      * Returns the value from the StringMap if present. Otherwise returns null

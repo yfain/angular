@@ -27,7 +27,7 @@ export let AsyncPipeExample = class {
             this.reset();
         }
         else {
-            this.resolve("hi there!");
+            this.resolve('hi there!');
             this.arrived = true;
         }
     }
@@ -52,7 +52,7 @@ let Task = class {
     }
 };
 Task = __decorate([
-    Component({ selector: "task-cmp", template: "Time: {{ time | async }}" }), 
+    Component({ selector: 'task-cmp', template: 'Time: {{ time | async }}' }), 
     __metadata('design:paramtypes', [])
 ], Task);
 // #enddocregion

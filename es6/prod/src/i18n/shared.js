@@ -2,8 +2,8 @@ import { ParseError } from 'angular2/src/compiler/parse_util';
 import { HtmlElementAst, HtmlTextAst, HtmlCommentAst, htmlVisitAll } from 'angular2/src/compiler/html_ast';
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { Message } from './message';
-export const I18N_ATTR = "i18n";
-export const I18N_ATTR_PREFIX = "i18n-";
+export const I18N_ATTR = 'i18n';
+export const I18N_ATTR_PREFIX = 'i18n-';
 /**
  * An i18n error.
  */
@@ -24,7 +24,7 @@ export function partition(nodes, errors) {
             while (!_isClosingComment(nodes[i])) {
                 temp.push(nodes[i++]);
                 if (i === nodes.length) {
-                    errors.push(new I18nError(n.sourceSpan, "Missing closing 'i18n' comment."));
+                    errors.push(new I18nError(n.sourceSpan, 'Missing closing \'i18n\' comment.'));
                     break;
                 }
             }
@@ -61,24 +61,24 @@ export class Part {
     }
 }
 function _isOpeningComment(n) {
-    return n instanceof HtmlCommentAst && isPresent(n.value) && n.value.startsWith("i18n:");
+    return n instanceof HtmlCommentAst && isPresent(n.value) && n.value.startsWith('i18n:');
 }
 function _isClosingComment(n) {
-    return n instanceof HtmlCommentAst && isPresent(n.value) && n.value == "/i18n";
+    return n instanceof HtmlCommentAst && isPresent(n.value) && n.value == '/i18n';
 }
 function _findI18nAttr(p) {
     let i18n = p.attrs.filter(a => a.name == I18N_ATTR);
     return i18n.length == 0 ? null : i18n[0];
 }
 export function meaning(i18n) {
-    if (isBlank(i18n) || i18n == "")
+    if (isBlank(i18n) || i18n == '')
         return null;
-    return i18n.split("|")[0];
+    return i18n.split('|')[0];
 }
 export function description(i18n) {
-    if (isBlank(i18n) || i18n == "")
+    if (isBlank(i18n) || i18n == '')
         return null;
-    let parts = i18n.split("|");
+    let parts = i18n.split('|');
     return parts.length > 1 ? parts[1] : null;
 }
 export function messageFromAttribute(parser, p, attr) {
@@ -96,7 +96,7 @@ export function removeInterpolation(value, source, parser) {
     try {
         let parsed = parser.splitInterpolation(value, source.toString());
         if (isPresent(parsed)) {
-            let res = "";
+            let res = '';
             for (let i = 0; i < parsed.strings.length; ++i) {
                 res += parsed.strings[i];
                 if (i != parsed.strings.length - 1) {
@@ -115,7 +115,7 @@ export function removeInterpolation(value, source, parser) {
 }
 export function stringifyNodes(nodes, parser) {
     let visitor = new _StringifyVisitor(parser);
-    return htmlVisitAll(visitor, nodes).join("");
+    return htmlVisitAll(visitor, nodes).join('');
 }
 class _StringifyVisitor {
     constructor(_parser) {
@@ -124,7 +124,7 @@ class _StringifyVisitor {
     }
     visitElement(ast, context) {
         let name = this._index++;
-        let children = this._join(htmlVisitAll(this, ast.children), "");
+        let children = this._join(htmlVisitAll(this, ast.children), '');
         return `<ph name="e${name}">${children}</ph>`;
     }
     visitAttr(ast, context) { return null; }
@@ -138,7 +138,7 @@ class _StringifyVisitor {
             return ast.value;
         }
     }
-    visitComment(ast, context) { return ""; }
+    visitComment(ast, context) { return ''; }
     _join(strs, str) {
         return strs.filter(s => s.length > 0).join(str);
     }

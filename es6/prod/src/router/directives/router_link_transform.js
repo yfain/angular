@@ -86,7 +86,7 @@ class RouterLinkLexer {
                 return new Params(this.parser.parseBinding(`{${paramsContent}}`, null).ast);
             }
         }
-        throw new BaseException("Cannot find ')'");
+        throw new BaseException('Cannot find \')\'');
     }
     _parseFixedPart() {
         let start = this.index;
@@ -102,7 +102,7 @@ class RouterLinkLexer {
         }
         let fixed = this.exp.substring(start, this.index);
         if (start === this.index || !sawNonSlash || fixed.startsWith('//')) {
-            throw new BaseException("Invalid router link");
+            throw new BaseException('Invalid router link');
         }
         return new FixedPart(fixed);
     }
@@ -140,7 +140,7 @@ class RouterLinkAstTransformer extends AstTransformer {
         this.parser = parser;
     }
     visitQuote(ast) {
-        if (ast.prefix == "route") {
+        if (ast.prefix == 'route') {
             return parseRouterLinkExpression(this.parser, ast.uninterpretedExpression);
         }
         else {

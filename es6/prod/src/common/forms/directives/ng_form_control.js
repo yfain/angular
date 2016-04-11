@@ -86,14 +86,16 @@ export let NgFormControl = class extends NgControl {
     }
     get path() { return []; }
     get validator() { return composeValidators(this._validators); }
-    get asyncValidator() { return composeAsyncValidators(this._asyncValidators); }
+    get asyncValidator() {
+        return composeAsyncValidators(this._asyncValidators);
+    }
     get control() { return this.form; }
     viewToModelUpdate(newValue) {
         this.viewModel = newValue;
         ObservableWrapper.callEmit(this.update, newValue);
     }
     _isControlChanged(changes) {
-        return StringMapWrapper.contains(changes, "form");
+        return StringMapWrapper.contains(changes, 'form');
     }
 };
 NgFormControl = __decorate([

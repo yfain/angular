@@ -1,4 +1,4 @@
-import { MessageBus, MessageBusSource, MessageBusSink } from "angular2/src/web_workers/shared/message_bus";
+import { MessageBus, MessageBusSource, MessageBusSink } from 'angular2/src/web_workers/shared/message_bus';
 import { EventEmitter } from 'angular2/src/facade/async';
 import { NgZone } from 'angular2/src/core/zone/ng_zone';
 export interface PostMessageTarget {

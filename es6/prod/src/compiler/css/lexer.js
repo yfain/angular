@@ -1,7 +1,7 @@
-import { StringWrapper, isPresent, resolveEnumToken } from "angular2/src/facade/lang";
+import { StringWrapper, isPresent, resolveEnumToken } from 'angular2/src/facade/lang';
 import { BaseException } from 'angular2/src/facade/exceptions';
-import { isWhitespace, $EOF, $HASH, $TILDA, $CARET, $PERCENT, $$, $_, $COLON, $SQ, $DQ, $EQ, $SLASH, $BACKSLASH, $PERIOD, $STAR, $PLUS, $LPAREN, $RPAREN, $PIPE, $COMMA, $SEMICOLON, $MINUS, $BANG, $QUESTION, $AT, $AMPERSAND, $GT, $a, $A, $z, $Z, $0, $9, $FF, $CR, $LF, $VTAB } from "angular2/src/compiler/chars";
-export { $EOF, $AT, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isWhitespace } from "angular2/src/compiler/chars";
+import { isWhitespace, $EOF, $HASH, $TILDA, $CARET, $PERCENT, $$, $_, $COLON, $SQ, $DQ, $EQ, $SLASH, $BACKSLASH, $PERIOD, $STAR, $PLUS, $LPAREN, $RPAREN, $PIPE, $COMMA, $SEMICOLON, $MINUS, $BANG, $QUESTION, $AT, $AMPERSAND, $GT, $a, $A, $z, $Z, $0, $9, $FF, $CR, $LF, $VTAB } from 'angular2/src/compiler/chars';
+export { $EOF, $AT, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isWhitespace } from 'angular2/src/compiler/chars';
 export var CssTokenType;
 (function (CssTokenType) {
     CssTokenType[CssTokenType["EOF"] = 0] = "EOF";
@@ -48,15 +48,15 @@ export function findProblemCode(input, errorValue, index, column) {
         current = charCode(input, ++endOfProblemLine);
     }
     var choppedString = input.substring(0, endOfProblemLine);
-    var pointerPadding = "";
+    var pointerPadding = '';
     for (var i = 0; i < column; i++) {
-        pointerPadding += " ";
+        pointerPadding += ' ';
     }
-    var pointerString = "";
+    var pointerString = '';
     for (var i = 0; i < errorValue.length; i++) {
-        pointerString += "^";
+        pointerString += '^';
     }
-    return choppedString + "\n" + pointerPadding + pointerString + "\n";
+    return choppedString + '\n' + pointerPadding + pointerString + '\n';
 }
 export class CssToken {
     constructor(index, column, line, type, strValue) {
@@ -169,7 +169,7 @@ export class CssScanner {
         }
         var next = output.token;
         if (!isPresent(next)) {
-            next = new CssToken(0, 0, 0, CssTokenType.EOF, "end of file");
+            next = new CssToken(0, 0, 0, CssTokenType.EOF, 'end of file');
         }
         var isMatchingType;
         if (type == CssTokenType.IdentifierOrNumber) {
@@ -184,8 +184,8 @@ export class CssScanner {
         this.setMode(mode);
         var error = null;
         if (!isMatchingType || (isPresent(value) && value != next.strValue)) {
-            var errorMessage = resolveEnumToken(CssTokenType, next.type) + " does not match expected " +
-                resolveEnumToken(CssTokenType, type) + " value";
+            var errorMessage = resolveEnumToken(CssTokenType, next.type) + ' does not match expected ' +
+                resolveEnumToken(CssTokenType, type) + ' value';
             if (isPresent(value)) {
                 errorMessage += ' ("' + next.strValue + '" should match "' + value + '")';
             }
@@ -254,7 +254,7 @@ export class CssScanner {
         return this.error(`Unexpected character [${StringWrapper.fromCharCode(peek)}]`);
     }
     scanComment() {
-        if (this.assertCondition(isCommentStart(this.peek, this.peekPeek), "Expected comment start value")) {
+        if (this.assertCondition(isCommentStart(this.peek, this.peekPeek), 'Expected comment start value')) {
             return null;
         }
         var start = this.index;
@@ -284,7 +284,7 @@ export class CssScanner {
         return new CssToken(start, startingColumn, startingLine, CssTokenType.Whitespace, str);
     }
     scanString() {
-        if (this.assertCondition(isStringStart(this.peek, this.peekPeek), "Unexpected non-string starting value")) {
+        if (this.assertCondition(isStringStart(this.peek, this.peekPeek), 'Unexpected non-string starting value')) {
             return null;
         }
         var target = this.peek;
@@ -300,7 +300,7 @@ export class CssScanner {
             previous = this.peek;
             this.advance();
         }
-        if (this.assertCondition(this.peek == target, "Unterminated quote")) {
+        if (this.assertCondition(this.peek == target, 'Unterminated quote')) {
             return null;
         }
         this.advance();

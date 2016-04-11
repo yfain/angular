@@ -899,7 +899,7 @@ export class Injector {
         return this._throwOrNull(key, optional);
     }
     get displayName() {
-        return `Injector(providers: [${_mapProviders(this, (b) => ` "${b.key.displayName}" `).join(", ")}])`;
+        return `Injector(providers: [${_mapProviders(this, (b) => ` '${b.key.displayName}' `).join(", ")}])`;
     }
     toString() { return this.displayName; }
 }

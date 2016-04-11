@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { BaseException } from 'angular2/src/facade/exceptions';
 import { EventEmitter, ObservableWrapper } from 'angular2/src/facade/async';
 import { StringMapWrapper } from 'angular2/src/facade/collection';
-import { Injectable } from "angular2/src/core/di";
+import { Injectable } from 'angular2/src/core/di';
 export class PostMessageBusSink {
     constructor(_postMessageTarget) {
         this._postMessageTarget = _postMessageTarget;
@@ -60,11 +60,11 @@ export class PostMessageBusSource {
     constructor(eventTarget) {
         this._channels = StringMapWrapper.create();
         if (eventTarget) {
-            eventTarget.addEventListener("message", (ev) => this._handleMessages(ev));
+            eventTarget.addEventListener('message', (ev) => this._handleMessages(ev));
         }
         else {
             // if no eventTarget is given we assume we're in a WebWorker and listen on the global scope
-            addEventListener("message", (ev) => this._handleMessages(ev));
+            addEventListener('message', (ev) => this._handleMessages(ev));
         }
     }
     attachToZone(zone) { this._zone = zone; }

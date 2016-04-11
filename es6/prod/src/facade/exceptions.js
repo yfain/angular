@@ -2,7 +2,7 @@ import { BaseWrappedException } from './base_wrapped_exception';
 import { ExceptionHandler } from './exception_handler';
 export { ExceptionHandler } from './exception_handler';
 export class BaseException extends Error {
-    constructor(message = "--") {
+    constructor(message = '--') {
         super(message);
         this.message = message;
         this.stack = (new Error(message)).stack;

@@ -8,8 +8,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Injectable } from 'angular2/src/core/di/decorators';
-import { SetWrapper } from "angular2/src/facade/collection";
-import { NumberWrapper, StringJoiner, StringWrapper, isPresent } from "angular2/src/facade/lang";
+import { SetWrapper } from 'angular2/src/facade/collection';
+import { NumberWrapper, StringJoiner, StringWrapper, isPresent } from 'angular2/src/facade/lang';
 import { BaseException } from 'angular2/src/facade/exceptions';
 export var TokenType;
 (function (TokenType) {
@@ -53,13 +53,13 @@ export class Token {
     }
     isIdentifier() { return (this.type == TokenType.Identifier); }
     isKeyword() { return (this.type == TokenType.Keyword); }
-    isKeywordVar() { return (this.type == TokenType.Keyword && this.strValue == "var"); }
-    isKeywordNull() { return (this.type == TokenType.Keyword && this.strValue == "null"); }
+    isKeywordVar() { return (this.type == TokenType.Keyword && this.strValue == 'var'); }
+    isKeywordNull() { return (this.type == TokenType.Keyword && this.strValue == 'null'); }
     isKeywordUndefined() {
-        return (this.type == TokenType.Keyword && this.strValue == "undefined");
+        return (this.type == TokenType.Keyword && this.strValue == 'undefined');
     }
-    isKeywordTrue() { return (this.type == TokenType.Keyword && this.strValue == "true"); }
-    isKeywordFalse() { return (this.type == TokenType.Keyword && this.strValue == "false"); }
+    isKeywordTrue() { return (this.type == TokenType.Keyword && this.strValue == 'true'); }
+    isKeywordFalse() { return (this.type == TokenType.Keyword && this.strValue == 'false'); }
     toNumber() {
         // -1 instead of NULL ok?
         return (this.type == TokenType.Number) ? this.numValue : -1;
@@ -95,9 +95,9 @@ function newStringToken(index, text) {
     return new Token(index, TokenType.String, 0, text);
 }
 function newNumberToken(index, n) {
-    return new Token(index, TokenType.Number, n, "");
+    return new Token(index, TokenType.Number, n, '');
 }
-export var EOF = new Token(-1, TokenType.Character, 0, "");
+export var EOF = new Token(-1, TokenType.Character, 0, '');
 export const $EOF = 0;
 export const $TAB = 9;
 export const $LF = 10;
@@ -404,28 +404,7 @@ function unescape(code) {
     }
 }
 var OPERATORS = SetWrapper.createFromList([
-    '+',
-    '-',
-    '*',
-    '/',
-    '%',
-    '^',
-    '=',
-    '==',
-    '!=',
-    '===',
-    '!==',
-    '<',
-    '>',
-    '<=',
-    '>=',
-    '&&',
-    '||',
-    '&',
-    '|',
-    '!',
-    '?',
-    '#',
-    '?.'
+    '+', '-', '*', '/', '%', '^', '=', '==', '!=', '===', '!==', '<',
+    '>', '<=', '>=', '&&', '||', '&', '|', '!', '?', '#', '?.'
 ]);
 var KEYWORDS = SetWrapper.createFromList(['var', 'null', 'undefined', 'true', 'false', 'if', 'else']);

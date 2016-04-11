@@ -9,9 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Injectable } from 'angular2/src/core/di';
 import { ListWrapper, Map } from 'angular2/src/facade/collection';
-import { Serializer } from "angular2/src/web_workers/shared/serializer";
-import { isPresent, FunctionWrapper } from "angular2/src/facade/lang";
-import { MessageBus } from "angular2/src/web_workers/shared/message_bus";
+import { Serializer } from 'angular2/src/web_workers/shared/serializer';
+import { isPresent, FunctionWrapper } from 'angular2/src/facade/lang';
+import { MessageBus } from 'angular2/src/web_workers/shared/message_bus';
 import { PromiseWrapper, ObservableWrapper } from 'angular2/src/facade/async';
 export class ServiceMessageBrokerFactory {
 }

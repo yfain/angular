@@ -210,7 +210,7 @@ export class StaticReflector {
             StringMapWrapper.forEach(value, (value, name) => {
                 let data = this.getMemberData(moduleContext, value);
                 if (isPresent(data)) {
-                    let propertyData = data.filter(d => d['kind'] == "property")
+                    let propertyData = data.filter(d => d['kind'] == 'property')
                         .map(d => d['directives'])
                         .reduce((p, c) => p.concat(c), []);
                     if (propertyData.length != 0) {
@@ -257,7 +257,7 @@ export class StaticReflector {
             if (isPresent(expression)) {
                 if (isPresent(expression['__symbolic'])) {
                     switch (expression['__symbolic']) {
-                        case "binop":
+                        case 'binop':
                             let left = simplify(expression['left']);
                             let right = simplify(expression['right']);
                             switch (expression['operator']) {
@@ -303,7 +303,7 @@ export class StaticReflector {
                                     return left % right;
                             }
                             return null;
-                        case "pre":
+                        case 'pre':
                             let operand = simplify(expression['operand']);
                             switch (expression['operator']) {
                                 case '+':
@@ -316,19 +316,19 @@ export class StaticReflector {
                                     return ~operand;
                             }
                             return null;
-                        case "index":
+                        case 'index':
                             let indexTarget = simplify(expression['expression']);
                             let index = simplify(expression['index']);
                             if (isPresent(indexTarget) && isPrimitive(index))
                                 return indexTarget[index];
                             return null;
-                        case "select":
+                        case 'select':
                             let selectTarget = simplify(expression['expression']);
                             let member = simplify(expression['member']);
                             if (isPresent(selectTarget) && isPrimitive(member))
                                 return selectTarget[member];
                             return null;
-                        case "reference":
+                        case 'reference':
                             let referenceModuleName = _this.normalizeModuleName(moduleContext, expression['module']);
                             let referenceModule = _this.getModuleMetadata(referenceModuleName);
                             let referenceValue = referenceModule['metadata'][expression['name']];
@@ -337,7 +337,7 @@ export class StaticReflector {
                                 return _this.getStaticType(referenceModuleName, expression['name']);
                             }
                             return _this.simplify(referenceModuleName, referenceValue);
-                        case "call":
+                        case 'call':
                             return null;
                     }
                     return null;
@@ -355,7 +355,7 @@ export class StaticReflector {
         if (!isPresent(moduleMetadata)) {
             moduleMetadata = this.host.getMetadataFor(module);
             if (!isPresent(moduleMetadata)) {
-                moduleMetadata = { __symbolic: "module", module: module, metadata: {} };
+                moduleMetadata = { __symbolic: 'module', module: module, metadata: {} };
             }
             this.metadataCache.set(module, moduleMetadata);
         }
@@ -365,7 +365,7 @@ export class StaticReflector {
         let moduleMetadata = this.getModuleMetadata(type.moduleId);
         let result = moduleMetadata['metadata'][type.name];
         if (!isPresent(result)) {
-            result = { __symbolic: "class" };
+            result = { __symbolic: 'class' };
         }
         return result;
     }

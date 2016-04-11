@@ -1,14 +1,14 @@
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
-const DIRECTIVE_LIFECYCLE = "directiveLifecycle";
-const BINDING = "native";
-const DIRECTIVE = "directive";
-const ELEMENT_PROPERTY = "elementProperty";
-const ELEMENT_ATTRIBUTE = "elementAttribute";
-const ELEMENT_CLASS = "elementClass";
-const ELEMENT_STYLE = "elementStyle";
-const TEXT_NODE = "textNode";
-const EVENT = "event";
-const HOST_EVENT = "hostEvent";
+const DIRECTIVE_LIFECYCLE = 'directiveLifecycle';
+const BINDING = 'native';
+const DIRECTIVE = 'directive';
+const ELEMENT_PROPERTY = 'elementProperty';
+const ELEMENT_ATTRIBUTE = 'elementAttribute';
+const ELEMENT_CLASS = 'elementClass';
+const ELEMENT_STYLE = 'elementStyle';
+const TEXT_NODE = 'textNode';
+const EVENT = 'event';
+const HOST_EVENT = 'hostEvent';
 export class BindingTarget {
     constructor(mode, elementIndex, name, unit, debug) {
         this.mode = mode;
@@ -42,13 +42,13 @@ export class BindingRecord {
         return isBlank(this.directiveRecord) || this.directiveRecord.isDefaultChangeDetection();
     }
     static createDirectiveDoCheck(directiveRecord) {
-        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "DoCheck", directiveRecord);
+        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'DoCheck', directiveRecord);
     }
     static createDirectiveOnInit(directiveRecord) {
-        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "OnInit", directiveRecord);
+        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'OnInit', directiveRecord);
     }
     static createDirectiveOnChanges(directiveRecord) {
-        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "OnChanges", directiveRecord);
+        return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'OnChanges', directiveRecord);
     }
     static createForDirective(ast, propertyName, setter, directiveRecord) {
         var elementIndex = directiveRecord.directiveIndex.elementIndex;

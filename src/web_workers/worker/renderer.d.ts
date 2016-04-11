@@ -1,5 +1,5 @@
 import { Renderer, RootRenderer, RenderComponentType, RenderDebugInfo } from 'angular2/src/core/render/api';
-import { ClientMessageBrokerFactory, FnArg } from "angular2/src/web_workers/shared/client_message_broker";
+import { ClientMessageBrokerFactory, FnArg } from 'angular2/src/web_workers/shared/client_message_broker';
 import { RenderStore } from 'angular2/src/web_workers/shared/render_store';
 import { Serializer, RenderStoreObject } from 'angular2/src/web_workers/shared/serializer';
 import { MessageBus } from 'angular2/src/web_workers/shared/message_bus';

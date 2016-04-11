@@ -43,21 +43,9 @@ export { NgControl } from './directives/ng_control';
  * ```
  */
 export const FORM_DIRECTIVES = CONST_EXPR([
-    NgControlName,
-    NgControlGroup,
-    NgFormControl,
-    NgModel,
-    NgFormModel,
-    NgForm,
-    NgSelectOption,
-    DefaultValueAccessor,
-    NumberValueAccessor,
-    CheckboxControlValueAccessor,
-    SelectControlValueAccessor,
-    RadioControlValueAccessor,
-    NgControlStatus,
-    RequiredValidator,
-    MinLengthValidator,
-    MaxLengthValidator,
-    PatternValidator
+    NgControlName, NgControlGroup,
+    NgFormControl, NgModel, NgFormModel, NgForm,
+    NgSelectOption, DefaultValueAccessor, NumberValueAccessor, CheckboxControlValueAccessor,
+    SelectControlValueAccessor, RadioControlValueAccessor, NgControlStatus,
+    RequiredValidator, MinLengthValidator, MaxLengthValidator, PatternValidator
 ]);

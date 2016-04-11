@@ -8,7 +8,7 @@ import { MockViewResolver } from 'angular2/src/mock/view_resolver_mock';
 import { MockLocationStrategy } from 'angular2/src/mock/mock_location_strategy';
 import { LocationStrategy } from 'angular2/src/router/location/location_strategy';
 import { MockNgZone } from 'angular2/src/mock/ng_zone_mock';
-import { XHRImpl } from "angular2/src/platform/browser/xhr_impl";
+import { XHRImpl } from 'angular2/src/platform/browser/xhr_impl';
 import { XHR } from 'angular2/compiler';
 import { TestComponentBuilder } from 'angular2/src/testing/test_component_builder';
 import { BrowserDetection } from 'angular2/src/testing/utils';
@@ -41,7 +41,6 @@ export const ADDITIONAL_TEST_BROWSER_PROVIDERS = CONST_EXPR([
  * Default application providers for testing without a compiler.
  */
 export const TEST_BROWSER_STATIC_APPLICATION_PROVIDERS = CONST_EXPR([
-    BROWSER_APP_COMMON_PROVIDERS,
-    new Provider(XHR, { useClass: XHRImpl }),
+    BROWSER_APP_COMMON_PROVIDERS, new Provider(XHR, { useClass: XHRImpl }),
     ADDITIONAL_TEST_BROWSER_PROVIDERS
 ]);
