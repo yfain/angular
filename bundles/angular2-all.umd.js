@@ -18666,6 +18666,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * `NgFor` provides several exported values that can be aliased to local variables:
 	 *
 	 * * `index` will be set to the current loop iteration for each template context.
+	 * * `first` will be set to a boolean value indicating whether the item is the first one in the
+	 *   iteration.
 	 * * `last` will be set to a boolean value indicating whether the item is the last one in the
 	 *   iteration.
 	 * * `even` will be set to a boolean value indicating whether this item has an even index.
@@ -18769,6 +18771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        for (var i = 0, ilen = this._viewContainer.length; i < ilen; i++) {
 	            var viewRef = this._viewContainer.get(i);
+	            viewRef.setLocal('first', i === 0);
 	            viewRef.setLocal('last', i === ilen - 1);
 	        }
 	        changes.forEachIdentityChange(function (record) {
@@ -21428,8 +21431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *         <pre>{{valueOf(f)}}</pre>
 	 *       </form>
 	 *     </div>
-	 *   `,
-	 *   directives: [FORM_DIRECTIVES]
+	 *   `
 	 * })
 	 * export class App {
 	 *   valueOf(cg: NgControlGroup): string {

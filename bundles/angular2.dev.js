@@ -15050,6 +15050,7 @@ System.register("angular2/src/common/directives/ng_for", ["angular2/core", "angu
       for (var i = 0,
           ilen = this._viewContainer.length; i < ilen; i++) {
         var viewRef = this._viewContainer.get(i);
+        viewRef.setLocal('first', i === 0);
         viewRef.setLocal('last', i === ilen - 1);
       }
       changes.forEachIdentityChange(function(record) {
