@@ -46,7 +46,8 @@ const controlGroupProvider = CONST_EXPR(new Provider(ControlContainer, { useExis
  *         <pre>{{valueOf(f)}}</pre>
  *       </form>
  *     </div>
- *   `
+ *   `,
+ *   directives: [FORM_DIRECTIVES]
  * })
  * export class App {
  *   valueOf(cg: NgControlGroup): string {
