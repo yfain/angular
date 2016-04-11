@@ -1319,7 +1319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * class MyComponent {
 	 *   shown: boolean;
 	 *
-	 *   constructor(private @ViewQuery(Item) items:QueryList<Item>) {
+	 *   constructor(private @Query(Item) items:QueryList<Item>) {
 	 *     items.changes.subscribe(() => console.log(items.length));
 	 *   }
 	 * }
@@ -33840,9 +33840,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (emitPath.length > 0 && emitPath[0] != '/') {
 	                            emitPath = '/' + emitPath;
 	                        }
-	                        // Because we've opted to use All hashchange events occur outside Angular.
+	                        // We've opted to use pushstate and popState APIs regardless of whether you
+	                        // an app uses HashLocationStrategy or PathLocationStrategy.
 	                        // However, apps that are migrating might have hash links that operate outside
 	                        // angular to which routing must respond.
+	                        // Therefore we know that all hashchange events occur outside Angular.
 	                        // To support these cases where we respond to hashchanges and redirect as a
 	                        // result, we need to replace the top item on the stack.
 	                        if (change['type'] == 'hashchange') {
