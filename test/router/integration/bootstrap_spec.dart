@@ -202,8 +202,8 @@ main() {
                 expect(fixture.debugElement.nativeElement)
                     .toHaveText("qParam = search-for-something");
                 /*
-                   expect(applicationRef.hostComponent.location.path())
-                       .toEqual('/qs?q=search-for-something');*/
+               expect(applicationRef.hostComponent.location.path())
+                   .toEqual('/qs?q=search-for-something');*/
                 async.done();
               });
               router.navigateByUrl("/qs?q=search-for-something");

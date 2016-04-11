@@ -186,7 +186,7 @@ abstract class PlatformRef {
    * constructed in the same manner as a normal `application()`.
    */
   Future<ApplicationRef> asyncApplication(
-      dynamic /* (zone: NgZone) => Promise<Array<Type | Provider | any[]>> */ bindingFn,
+      dynamic /* (zone: NgZone) => Promise<Array<Type|Provider|any[]>> */ bindingFn,
       [List<dynamic /* Type | Provider | List < dynamic > */ > providers]);
   /**
    * Destroy the Angular platform and all Angular applications on the page.
@@ -223,7 +223,7 @@ class PlatformRef_ extends PlatformRef {
   }
 
   Future<ApplicationRef> asyncApplication(
-      dynamic /* (zone: NgZone) => Promise<Array<Type | Provider | any[]>> */ bindingFn,
+      dynamic /* (zone: NgZone) => Promise<Array<Type|Provider|any[]>> */ bindingFn,
       [List<
           dynamic /* Type | Provider | List < dynamic > */ > additionalProviders]) {
     var zone = createNgZone();

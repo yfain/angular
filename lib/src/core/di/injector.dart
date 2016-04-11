@@ -1069,7 +1069,7 @@ class Injector {
   }
 
   String get displayName {
-    return '''Injector(providers: [${ _mapProviders ( this , ( ResolvedProvider b ) => ''' "${ b . key . displayName}" ''' ) . join ( ", " )}])''';
+    return '''Injector(providers: [${ _mapProviders ( this , ( ResolvedProvider b ) => ''' \'${ b . key . displayName}\' ''' ) . join ( ", " )}])''';
   }
 
   String toString() {
