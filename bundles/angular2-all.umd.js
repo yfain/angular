@@ -18666,8 +18666,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * `NgFor` provides several exported values that can be aliased to local variables:
 	 *
 	 * * `index` will be set to the current loop iteration for each template context.
-	 * * `first` will be set to a boolean value indicating whether the item is the first one in the
-	 *   iteration.
 	 * * `last` will be set to a boolean value indicating whether the item is the last one in the
 	 *   iteration.
 	 * * `even` will be set to a boolean value indicating whether this item has an even index.
@@ -18771,7 +18769,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        for (var i = 0, ilen = this._viewContainer.length; i < ilen; i++) {
 	            var viewRef = this._viewContainer.get(i);
-	            viewRef.setLocal('first', i === 0);
 	            viewRef.setLocal('last', i === ilen - 1);
 	        }
 	        changes.forEachIdentityChange(function (record) {
@@ -33843,9 +33840,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (emitPath.length > 0 && emitPath[0] != '/') {
 	                            emitPath = '/' + emitPath;
 	                        }
-	                        // Because we've opted to use All hashchange events occur outside Angular.
+	                        // We've opted to use pushstate and popState APIs regardless of whether you
+	                        // an app uses HashLocationStrategy or PathLocationStrategy.
 	                        // However, apps that are migrating might have hash links that operate outside
 	                        // angular to which routing must respond.
+	                        // Therefore we know that all hashchange events occur outside Angular.
 	                        // To support these cases where we respond to hashchanges and redirect as a
 	                        // result, we need to replace the top item on the stack.
 	                        if (change['type'] == 'hashchange') {
