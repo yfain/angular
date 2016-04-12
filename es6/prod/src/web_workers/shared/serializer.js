@@ -7,11 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { isArray, isPresent, serializeEnum } from 'angular2/src/facade/lang';
+import { isArray, isPresent, serializeEnum } from "angular2/src/facade/lang";
 import { BaseException } from 'angular2/src/facade/exceptions';
-import { Map, StringMapWrapper, MapWrapper } from 'angular2/src/facade/collection';
-import { RenderComponentType } from 'angular2/src/core/render/api';
-import { Injectable } from 'angular2/src/core/di';
+import { Map, StringMapWrapper, MapWrapper } from "angular2/src/facade/collection";
+import { RenderComponentType } from "angular2/src/core/render/api";
+import { Injectable } from "angular2/src/core/di";
 import { RenderStore } from 'angular2/src/web_workers/shared/render_store';
 import { ViewEncapsulation, VIEW_ENCAPSULATION_VALUES } from 'angular2/src/core/metadata/view';
 import { LocationType } from './serialized_types';
@@ -45,7 +45,7 @@ export let Serializer = class {
             return this._serializeLocation(obj);
         }
         else {
-            throw new BaseException('No serializer for ' + type.toString());
+            throw new BaseException("No serializer for " + type.toString());
         }
     }
     deserialize(map, type, data) {
@@ -73,7 +73,7 @@ export let Serializer = class {
             return this._deserializeLocation(map);
         }
         else {
-            throw new BaseException('No deserializer for ' + type.toString());
+            throw new BaseException("No deserializer for " + type.toString());
         }
     }
     mapToObject(map, type) {

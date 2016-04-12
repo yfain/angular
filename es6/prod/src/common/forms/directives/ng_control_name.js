@@ -103,9 +103,7 @@ export let NgControlName = class extends NgControl {
     get path() { return controlPath(this.name, this._parent); }
     get formDirective() { return this._parent.formDirective; }
     get validator() { return composeValidators(this._validators); }
-    get asyncValidator() {
-        return composeAsyncValidators(this._asyncValidators);
-    }
+    get asyncValidator() { return composeAsyncValidators(this._asyncValidators); }
     get control() { return this.formDirective.getControl(this); }
 };
 NgControlName = __decorate([

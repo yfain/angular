@@ -2,16 +2,16 @@ import { StringWrapper } from 'angular2/src/facade/lang';
 import { ListWrapper, Map } from 'angular2/src/facade/collection';
 // The names of these fields must be kept in sync with abstract_change_detector.ts or change
 // detection will fail.
-const _STATE_ACCESSOR = 'state';
-const _CONTEXT_ACCESSOR = 'context';
-const _PROP_BINDING_INDEX = 'propertyBindingIndex';
-const _DIRECTIVES_ACCESSOR = 'directiveIndices';
-const _DISPATCHER_ACCESSOR = 'dispatcher';
-const _LOCALS_ACCESSOR = 'locals';
-const _MODE_ACCESSOR = 'mode';
-const _PIPES_ACCESSOR = 'pipes';
-const _PROTOS_ACCESSOR = 'protos';
-export const CONTEXT_ACCESSOR = 'context';
+const _STATE_ACCESSOR = "state";
+const _CONTEXT_ACCESSOR = "context";
+const _PROP_BINDING_INDEX = "propertyBindingIndex";
+const _DIRECTIVES_ACCESSOR = "directiveIndices";
+const _DISPATCHER_ACCESSOR = "dispatcher";
+const _LOCALS_ACCESSOR = "locals";
+const _MODE_ACCESSOR = "mode";
+const _PIPES_ACCESSOR = "pipes";
+const _PROTOS_ACCESSOR = "protos";
+export const CONTEXT_ACCESSOR = "context";
 // `context` is always first.
 export const CONTEXT_INDEX = 0;
 const _FIELD_PREFIX = 'this.';
@@ -103,7 +103,7 @@ export class CodegenNameUtil {
         });
         return res.length > 1 ? `var ${res.join(',')};` : '';
     }
-    getPreventDefaultAccesor() { return 'preventDefault'; }
+    getPreventDefaultAccesor() { return "preventDefault"; }
     getFieldCount() { return this._sanitizedNames.length; }
     getFieldName(idx) { return this._addFieldPrefix(this._sanitizedNames[idx]); }
     getAllFieldNames() {

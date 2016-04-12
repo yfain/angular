@@ -452,7 +452,7 @@ System.register("angular2/src/testing/utils", ["angular2/core", "angular2/src/fa
       this.logItems = [];
     };
     Log.prototype.result = function() {
-      return this.logItems.join('; ');
+      return this.logItems.join("; ");
     };
     Log = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [])], Log);
     return Log;
@@ -1689,7 +1689,7 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
               return {
                 pass: false,
                 get message() {
-                  return 'Was expected to throw, but did not throw';
+                  return "Was expected to throw, but did not throw";
                 }
               };
             } catch (e) {
@@ -1731,7 +1731,7 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
             return {
               pass: missedMethods.length == 0,
               get message() {
-                return 'Expected ' + actualObject + ' to have the following methods: ' + missedMethods.join(', ');
+                return 'Expected ' + actualObject + ' to have the following methods: ' + missedMethods.join(", ");
               }
             };
           }};
@@ -1744,7 +1744,7 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
       return children && children.length > 0;
     };
     if (n instanceof Array) {
-      return n.map(elementText).join('');
+      return n.map(elementText).join("");
     }
     if (dom_adapter_1.DOM.isCommentNode(n)) {
       return '';

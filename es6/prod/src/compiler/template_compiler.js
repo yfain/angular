@@ -124,22 +124,22 @@ export let TemplateCompiler = class {
         if (isBlank(compiledTemplate)) {
             compiledTemplate = new CompiledTemplate();
             this._compiledTemplateCache.set(cacheKey, compiledTemplate);
-            done =
-                PromiseWrapper
-                    .all([this._styleCompiler.compileComponentRuntime(compMeta.template)].concat(uniqViewDirectives.map(dirMeta => this.normalizeDirectiveMetadata(dirMeta))))
-                    .then((stylesAndNormalizedViewDirMetas) => {
-                    var normalizedViewDirMetas = stylesAndNormalizedViewDirMetas.slice(1);
-                    var styles = stylesAndNormalizedViewDirMetas[0];
-                    var parsedTemplate = this._templateParser.parse(compMeta.template.template, normalizedViewDirMetas, uniqViewPipes, compMeta.type.name);
-                    var childPromises = [];
-                    var usedDirectives = DirectiveCollector.findUsedDirectives(parsedTemplate);
-                    usedDirectives.components.forEach(component => this._compileNestedComponentRuntime(component, compilingComponentsPath, childPromises));
-                    return PromiseWrapper.all(childPromises).then((_) => {
-                        var filteredPipes = filterPipes(parsedTemplate, uniqViewPipes);
-                        compiledTemplate.init(this._createViewFactoryRuntime(compMeta, parsedTemplate, usedDirectives.directives, styles, filteredPipes));
-                        return compiledTemplate;
-                    });
+            done = PromiseWrapper
+                .all([this._styleCompiler.compileComponentRuntime(compMeta.template)].concat(uniqViewDirectives.map(dirMeta => this.normalizeDirectiveMetadata(dirMeta))))
+                .then((stylesAndNormalizedViewDirMetas) => {
+                var normalizedViewDirMetas = stylesAndNormalizedViewDirMetas.slice(1);
+                var styles = stylesAndNormalizedViewDirMetas[0];
+                var parsedTemplate = this._templateParser.parse(compMeta.template.template, normalizedViewDirMetas, uniqViewPipes, compMeta.type.name);
+                var childPromises = [];
+                var usedDirectives = DirectiveCollector.findUsedDirectives(parsedTemplate);
+                usedDirectives.components.forEach(component => this._compileNestedComponentRuntime(component, compilingComponentsPath, childPromises));
+                return PromiseWrapper.all(childPromises)
+                    .then((_) => {
+                    var filteredPipes = filterPipes(parsedTemplate, uniqViewPipes);
+                    compiledTemplate.init(this._createViewFactoryRuntime(compMeta, parsedTemplate, usedDirectives.directives, styles, filteredPipes));
+                    return compiledTemplate;
                 });
+            });
             this._compiledTemplateDone.set(cacheKey, done);
         }
         return compiledTemplate;
@@ -166,11 +166,7 @@ export let TemplateCompiler = class {
         else {
             var declarations = [];
             var viewFactoryExpr = this._createViewFactoryCodeGen('resolvedMetadataCache', compMeta, new SourceExpression([], 'styles'), parsedTemplate, pipes, declarations);
-            var vars = {
-                'exports': {},
-                'styles': styles,
-                'resolvedMetadataCache': this._resolvedMetadataCache
-            };
+            var vars = { 'exports': {}, 'styles': styles, 'resolvedMetadataCache': this._resolvedMetadataCache };
             directives.forEach(dirMeta => {
                 vars[dirMeta.type.name] = dirMeta.type.runtime;
                 if (dirMeta.isComponent && dirMeta.type.runtime !== compMeta.type.runtime) {

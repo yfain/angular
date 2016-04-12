@@ -33,7 +33,8 @@ export let HtmlParser = class {
     parse(sourceContent, sourceUrl) {
         var tokensAndErrors = tokenizeHtml(sourceContent, sourceUrl);
         var treeAndErrors = new TreeBuilder(tokensAndErrors.tokens).build();
-        return new HtmlParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors.concat(treeAndErrors.errors));
+        return new HtmlParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors
+            .concat(treeAndErrors.errors));
     }
 };
 HtmlParser = __decorate([
@@ -65,7 +66,8 @@ class TreeBuilder {
                 this._closeVoidElement();
                 this._consumeComment(this._advance());
             }
-            else if (this.peek.type === HtmlTokenType.TEXT || this.peek.type === HtmlTokenType.RAW_TEXT ||
+            else if (this.peek.type === HtmlTokenType.TEXT ||
+                this.peek.type === HtmlTokenType.RAW_TEXT ||
                 this.peek.type === HtmlTokenType.ESCAPABLE_RAW_TEXT) {
                 this._closeVoidElement();
                 this._consumeText(this._advance());

@@ -23,7 +23,7 @@ export function createWithoutPackagePrefix() {
 /**
  * A default provider for {@link PACKAGE_ROOT_URL} that maps to '/'.
  */
-export var DEFAULT_PACKAGE_URL_PROVIDER = new Provider(PACKAGE_ROOT_URL, { useValue: '/' });
+export var DEFAULT_PACKAGE_URL_PROVIDER = new Provider(PACKAGE_ROOT_URL, { useValue: "/" });
 /**
  * Used by the {@link Compiler} when resolving HTML and CSS template URLs.
  *
@@ -38,7 +38,7 @@ export var DEFAULT_PACKAGE_URL_PROVIDER = new Provider(PACKAGE_ROOT_URL, { useVa
 export let UrlResolver = class {
     constructor(packagePrefix = null) {
         if (isPresent(packagePrefix)) {
-            this._packagePrefix = StringWrapper.stripRight(packagePrefix, '/') + '/';
+            this._packagePrefix = StringWrapper.stripRight(packagePrefix, "/") + "/";
         }
     }
     /**
@@ -58,8 +58,8 @@ export let UrlResolver = class {
         if (isPresent(baseUrl) && baseUrl.length > 0) {
             resolvedUrl = _resolveUrl(baseUrl, resolvedUrl);
         }
-        if (isPresent(this._packagePrefix) && getUrlScheme(resolvedUrl) == 'package') {
-            resolvedUrl = resolvedUrl.replace('package:', this._packagePrefix);
+        if (isPresent(this._packagePrefix) && getUrlScheme(resolvedUrl) == "package") {
+            resolvedUrl = resolvedUrl.replace("package:", this._packagePrefix);
         }
         return resolvedUrl;
     }
@@ -74,7 +74,7 @@ UrlResolver = __decorate([
  */
 export function getUrlScheme(url) {
     var match = _split(url);
-    return (match && match[_ComponentIndex.Scheme]) || '';
+    return (match && match[_ComponentIndex.Scheme]) || "";
 }
 // The code below is adapted from Traceur:
 // https://github.com/google/traceur-compiler/blob/9511c1dafa972bf0de1202a8a863bad02f0f95a8/src/runtime/url.js

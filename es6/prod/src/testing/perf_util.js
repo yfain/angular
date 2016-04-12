@@ -9,7 +9,8 @@ export function runClickBenchmark(config) {
     return runBenchmark(config);
 }
 export function runBenchmark(config) {
-    return getScaleFactor(browser.params.benchmark.scaling).then(function (scaleFactor) {
+    return getScaleFactor(browser.params.benchmark.scaling)
+        .then(function (scaleFactor) {
         var description = {};
         var urlParams = [];
         if (config.params) {
@@ -33,7 +34,8 @@ export function runBenchmark(config) {
     });
 }
 function getScaleFactor(possibleScalings) {
-    return browser.executeScript('return navigator.userAgent').then(function (userAgent) {
+    return browser.executeScript('return navigator.userAgent')
+        .then(function (userAgent) {
         var scaleFactor = 1;
         possibleScalings.forEach(function (entry) {
             if (userAgent.match(entry.userAgent)) {

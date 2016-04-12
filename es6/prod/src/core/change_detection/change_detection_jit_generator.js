@@ -18,8 +18,8 @@ import { createPropertyRecords, createEventRecords } from './proto_change_detect
  * `angular2.transform.template_compiler.change_detector_codegen` library. If you make updates
  * here, please make equivalent changes there.
 */
-const IS_CHANGED_LOCAL = 'isChanged';
-const CHANGES_LOCAL = 'changes';
+const IS_CHANGED_LOCAL = "isChanged";
+const CHANGES_LOCAL = "changes";
 export class ChangeDetectorJITGenerator {
     constructor(definition, changeDetectionUtilVarName, abstractChangeDetectorVarName, changeDetectorStateVarName) {
         this.changeDetectionUtilVarName = changeDetectionUtilVarName;
@@ -96,7 +96,7 @@ export class ChangeDetectorJITGenerator {
     /** @internal */
     _maybeGenHandleEventInternal() {
         if (this.eventBindings.length > 0) {
-            var handlers = this.eventBindings.map(eb => this._genEventBinding(eb)).join('\n');
+            var handlers = this.eventBindings.map(eb => this._genEventBinding(eb)).join("\n");
             return `
         ${this.typeName}.prototype.handleEventInternal = function(eventName, elIndex, locals) {
           var ${this._names.getPreventDefaultAccesor()} = false;
@@ -149,7 +149,7 @@ export class ChangeDetectorJITGenerator {
     _genMarkPathToRootAsCheckOnce(r) {
         var br = r.bindingRecord;
         if (br.isDefaultChangeDetection()) {
-            return '';
+            return "";
         }
         else {
             return `${this._names.getDetectorName(br.directiveRecord.directiveIndex)}.markPathToRootAsCheckOnce();`;
@@ -190,7 +190,7 @@ export class ChangeDetectorJITGenerator {
     _maybeGenAfterContentLifecycleCallbacks() {
         var notifications = this._logic.genContentLifecycleCallbacks(this.directiveRecords);
         if (notifications.length > 0) {
-            var directiveNotifications = notifications.join('\n');
+            var directiveNotifications = notifications.join("\n");
             return `
         ${this.typeName}.prototype.afterContentLifecycleCallbacksInternal = function() {
           ${directiveNotifications}
@@ -205,7 +205,7 @@ export class ChangeDetectorJITGenerator {
     _maybeGenAfterViewLifecycleCallbacks() {
         var notifications = this._logic.genViewLifecycleCallbacks(this.directiveRecords);
         if (notifications.length > 0) {
-            var directiveNotifications = notifications.join('\n');
+            var directiveNotifications = notifications.join("\n");
             return `
         ${this.typeName}.prototype.afterViewLifecycleCallbacksInternal = function() {
           ${directiveNotifications}
@@ -246,7 +246,7 @@ export class ChangeDetectorJITGenerator {
       `;
             codes.push(code);
         }
-        return codes.join('\n');
+        return codes.join("\n");
     }
     /** @internal */
     _genConditionalSkip(r, condition) {
@@ -273,13 +273,13 @@ export class ChangeDetectorJITGenerator {
     }
     /** @internal */
     _genDirectiveLifecycle(r) {
-        if (r.name === 'DoCheck') {
+        if (r.name === "DoCheck") {
             return this._genOnCheck(r);
         }
-        else if (r.name === 'OnInit') {
+        else if (r.name === "OnInit") {
             return this._genOnInit(r);
         }
-        else if (r.name === 'OnChanges') {
+        else if (r.name === "OnChanges") {
             return this._genOnChange(r);
         }
         else {
@@ -289,7 +289,7 @@ export class ChangeDetectorJITGenerator {
     /** @internal */
     _genPipeCheck(r) {
         var context = this._names.getLocalName(r.contextIndex);
-        var argString = r.args.map((arg) => this._names.getLocalName(arg)).join(', ');
+        var argString = r.args.map((arg) => this._names.getLocalName(arg)).join(", ");
         var oldValue = this._names.getFieldName(r.selfIndex);
         var newValue = this._names.getLocalName(r.selfIndex);
         var pipe = this._names.getPipeName(r.selfIndex);
@@ -339,7 +339,7 @@ export class ChangeDetectorJITGenerator {
     `;
         var genCode = r.shouldBeChecked() ? `${read}${check}` : read;
         if (r.isPureFunction()) {
-            var condition = r.args.map((a) => this._names.getChangeName(a)).join(' || ');
+            var condition = r.args.map((a) => this._names.getChangeName(a)).join(" || ");
             if (r.isUsedByOtherRecord()) {
                 return `if (${condition}) { ${genCode} } else { ${newValue} = ${oldValue}; }`;
             }
@@ -358,9 +358,9 @@ export class ChangeDetectorJITGenerator {
     /** @internal */
     _genUpdateDirectiveOrElement(r) {
         if (!r.lastInBinding)
-            return '';
+            return "";
         var newValue = this._names.getLocalName(r.selfIndex);
-        var notifyDebug = this.genConfig.logBindingUpdate ? `this.logBindingUpdate(${newValue});` : '';
+        var notifyDebug = this.genConfig.logBindingUpdate ? `this.logBindingUpdate(${newValue});` : "";
         var br = r.bindingRecord;
         if (br.target.isDirective()) {
             var directiveProperty = `${this._names.getDirectiveName(br.directiveRecord.directiveIndex)}.${br.target.name}`;
@@ -395,7 +395,7 @@ export class ChangeDetectorJITGenerator {
         var newValue = this._names.getLocalName(r.selfIndex);
         var oldValue = this._names.getFieldName(r.selfIndex);
         if (!r.bindingRecord.callOnChanges())
-            return '';
+            return "";
         return `${CHANGES_LOCAL} = this.addChange(${CHANGES_LOCAL}, ${oldValue}, ${newValue});`;
     }
     /** @internal */
@@ -409,7 +409,7 @@ export class ChangeDetectorJITGenerator {
     /** @internal */
     _maybeGenLastInDirective(r) {
         if (!r.lastInDirective)
-            return '';
+            return "";
         return `
       ${CHANGES_LOCAL} = null;
       ${this._genNotifyOnPushDetectors(r)}
@@ -435,7 +435,7 @@ export class ChangeDetectorJITGenerator {
     _genNotifyOnPushDetectors(r) {
         var br = r.bindingRecord;
         if (!r.lastInDirective || br.isDefaultChangeDetection())
-            return '';
+            return "";
         var retVal = `
       if(${IS_CHANGED_LOCAL}) {
         ${this._names.getDetectorName(br.directiveRecord.directiveIndex)}.markAsCheckOnce();

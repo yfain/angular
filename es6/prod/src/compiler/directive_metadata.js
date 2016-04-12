@@ -246,8 +246,7 @@ export class CompileTemplateMetadata {
     }
     toJson() {
         return {
-            'encapsulation': isPresent(this.encapsulation) ? serializeEnum(this.encapsulation) :
-                this.encapsulation,
+            'encapsulation': isPresent(this.encapsulation) ? serializeEnum(this.encapsulation) : this.encapsulation,
             'template': this.template,
             'templateUrl': this.templateUrl,
             'styles': this.styles,

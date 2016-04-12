@@ -6,7 +6,7 @@ export class Codegen {
     constructor(moduleAlias) {
     }
     generate(typeName, changeDetectorTypeName, def) {
-        throw 'Not implemented in JS';
+        throw "Not implemented in JS";
     }
-    toString() { throw 'Not implemented in JS'; }
+    toString() { throw "Not implemented in JS"; }
 }

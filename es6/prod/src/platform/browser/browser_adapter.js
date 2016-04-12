@@ -53,7 +53,7 @@ var _chromeNumKeyPadMap = {
  */
 /* tslint:disable:requireParameterType */
 export class BrowserDomAdapter extends GenericBrowserDomAdapter {
-    parse(templateHtml) { throw new Error('parse not implemented'); }
+    parse(templateHtml) { throw new Error("parse not implemented"); }
     static makeCurrent() { setRootDomAdapter(new BrowserDomAdapter()); }
     hasProperty(element, name) { return name in element; }
     setProperty(el, name, value) { el[name] = value; }
@@ -120,7 +120,7 @@ export class BrowserDomAdapter extends GenericBrowserDomAdapter {
     nodeValue(node) { return node.nodeValue; }
     type(node) { return node.type; }
     content(node) {
-        if (this.hasProperty(node, 'content')) {
+        if (this.hasProperty(node, "content")) {
             return node.content;
         }
         else {
@@ -261,7 +261,7 @@ export class BrowserDomAdapter extends GenericBrowserDomAdapter {
         return matches;
     }
     isTemplateElement(el) {
-        return el instanceof HTMLElement && el.nodeName == 'TEMPLATE';
+        return el instanceof HTMLElement && el.nodeName == "TEMPLATE";
     }
     isTextNode(node) { return node.nodeType === Node.TEXT_NODE; }
     isCommentNode(node) { return node.nodeType === Node.COMMENT_NODE; }
@@ -304,13 +304,13 @@ export class BrowserDomAdapter extends GenericBrowserDomAdapter {
         return key;
     }
     getGlobalEventTarget(target) {
-        if (target == 'window') {
+        if (target == "window") {
             return window;
         }
-        else if (target == 'document') {
+        else if (target == "document") {
             return document;
         }
-        else if (target == 'body') {
+        else if (target == "body") {
             return document.body;
         }
     }
@@ -359,7 +359,7 @@ function getBaseElementHref() {
 var urlParsingNode = null;
 function relativePath(url) {
     if (isBlank(urlParsingNode)) {
-        urlParsingNode = document.createElement('a');
+        urlParsingNode = document.createElement("a");
     }
     urlParsingNode.setAttribute('href', url);
     return (urlParsingNode.pathname.charAt(0) === '/') ? urlParsingNode.pathname :

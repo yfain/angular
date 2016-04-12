@@ -13,7 +13,12 @@ export var LifecycleHooks;
  * @internal
  */
 export var LIFECYCLE_HOOKS_VALUES = [
-    LifecycleHooks.OnInit, LifecycleHooks.OnDestroy, LifecycleHooks.DoCheck, LifecycleHooks.OnChanges,
-    LifecycleHooks.AfterContentInit, LifecycleHooks.AfterContentChecked, LifecycleHooks.AfterViewInit,
+    LifecycleHooks.OnInit,
+    LifecycleHooks.OnDestroy,
+    LifecycleHooks.DoCheck,
+    LifecycleHooks.OnChanges,
+    LifecycleHooks.AfterContentInit,
+    LifecycleHooks.AfterContentChecked,
+    LifecycleHooks.AfterViewInit,
     LifecycleHooks.AfterViewChecked
 ];

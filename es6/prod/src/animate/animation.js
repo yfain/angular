@@ -57,7 +57,8 @@ export class Animation {
         if (this.data.toStyles != null)
             this.applyStyles(this.data.toStyles);
         var computedStyles = DOM.getComputedStyle(this.element);
-        this.computedDelay = Math.max(this.parseDurationString(computedStyles.getPropertyValue(this._stringPrefix + 'transition-delay')), this.parseDurationString(this.element.style.getPropertyValue(this._stringPrefix + 'transition-delay')));
+        this.computedDelay =
+            Math.max(this.parseDurationString(computedStyles.getPropertyValue(this._stringPrefix + 'transition-delay')), this.parseDurationString(this.element.style.getPropertyValue(this._stringPrefix + 'transition-delay')));
         this.computedDuration = Math.max(this.parseDurationString(computedStyles.getPropertyValue(this._stringPrefix + 'transition-duration')), this.parseDurationString(this.element.style.getPropertyValue(this._stringPrefix + 'transition-duration')));
         this.addEvents();
     }

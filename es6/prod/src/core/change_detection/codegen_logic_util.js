@@ -23,13 +23,13 @@ export class CodegenLogicUtil {
      * value of the record. Used by event bindings.
      */
     genEventBindingEvalValue(eventRecord, protoRec) {
-        return this._genEvalValue(protoRec, idx => this._names.getEventLocalName(eventRecord, idx), 'locals');
+        return this._genEvalValue(protoRec, idx => this._names.getEventLocalName(eventRecord, idx), "locals");
     }
     _genEvalValue(protoRec, getLocalName, localsAccessor) {
         var context = (protoRec.contextIndex == -1) ?
             this._names.getDirectiveName(protoRec.directiveIndex) :
             getLocalName(protoRec.contextIndex);
-        var argString = protoRec.args.map(arg => getLocalName(arg)).join(', ');
+        var argString = protoRec.args.map(arg => getLocalName(arg)).join(", ");
         var rhs;
         switch (protoRec.mode) {
             case RecordType.Self:
@@ -87,8 +87,8 @@ export class CodegenLogicUtil {
     genPropertyBindingTargets(propertyBindingTargets, genDebugInfo) {
         var bs = propertyBindingTargets.map(b => {
             if (isBlank(b))
-                return 'null';
-            var debug = genDebugInfo ? codify(b.debug) : 'null';
+                return "null";
+            var debug = genDebugInfo ? codify(b.debug) : "null";
             return `${this._utilName}.bindingTarget(${codify(b.mode)}, ${b.elementIndex}, ${codify(b.name)}, ${codify(b.unit)}, ${debug})`;
         });
         return `[${bs.join(", ")}]`;
@@ -136,7 +136,7 @@ export class CodegenLogicUtil {
                 res.unshift(`${statementStart} = new Array(${outputCount});`);
             }
         }
-        return res.join('\n');
+        return res.join("\n");
     }
     genDirectivesOnDestroy(directiveRecords) {
         var res = [];
@@ -147,7 +147,7 @@ export class CodegenLogicUtil {
                 res.push(`${dirVarName}.ngOnDestroy();`);
             }
         }
-        return res.join('\n');
+        return res.join("\n");
     }
     _genEventHandler(boundElementIndex, eventName) {
         if (IS_DART) {
@@ -166,7 +166,7 @@ export class CodegenLogicUtil {
                 res.push(`${this._names.getDetectorName(r.directiveIndex)} = this.getDetectorFor(directives, ${i});`);
             }
         }
-        return res.join('\n');
+        return res.join("\n");
     }
     genContentLifecycleCallbacks(directiveRecords) {
         var res = [];

@@ -1,4 +1,4 @@
-import { Type } from 'angular2/src/facade/lang';
+import { Type } from "angular2/src/facade/lang";
 import { RenderStore } from 'angular2/src/web_workers/shared/render_store';
 export declare const PRIMITIVE: Type;
 export declare class Serializer {

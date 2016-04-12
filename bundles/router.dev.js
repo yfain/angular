@@ -93,7 +93,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
           return new Params(this.parser.parseBinding("{" + paramsContent + "}", null).ast);
         }
       }
-      throw new exceptions_1.BaseException('Cannot find \')\'');
+      throw new exceptions_1.BaseException("Cannot find ')'");
     };
     RouterLinkLexer.prototype._parseFixedPart = function() {
       var start = this.index;
@@ -109,7 +109,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       }
       var fixed = this.exp.substring(start, this.index);
       if (start === this.index || !sawNonSlash || fixed.startsWith('//')) {
-        throw new exceptions_1.BaseException('Invalid router link');
+        throw new exceptions_1.BaseException("Invalid router link");
       }
       return new FixedPart(fixed);
     };
@@ -149,7 +149,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       this.parser = parser;
     }
     RouterLinkAstTransformer.prototype.visitQuote = function(ast) {
-      if (ast.prefix == 'route') {
+      if (ast.prefix == "route") {
         return parseRouterLinkExpression(this.parser, ast.uninterpretedExpression);
       } else {
         return _super.prototype.visitQuote.call(this, ast);
@@ -1165,11 +1165,11 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations_impl", ["an
     return CanActivate;
   })();
   exports.CanActivate = CanActivate;
-  exports.routerCanReuse = lang_1.CONST_EXPR(new RouteLifecycleHook('routerCanReuse'));
-  exports.routerCanDeactivate = lang_1.CONST_EXPR(new RouteLifecycleHook('routerCanDeactivate'));
-  exports.routerOnActivate = lang_1.CONST_EXPR(new RouteLifecycleHook('routerOnActivate'));
-  exports.routerOnReuse = lang_1.CONST_EXPR(new RouteLifecycleHook('routerOnReuse'));
-  exports.routerOnDeactivate = lang_1.CONST_EXPR(new RouteLifecycleHook('routerOnDeactivate'));
+  exports.routerCanReuse = lang_1.CONST_EXPR(new RouteLifecycleHook("routerCanReuse"));
+  exports.routerCanDeactivate = lang_1.CONST_EXPR(new RouteLifecycleHook("routerCanDeactivate"));
+  exports.routerOnActivate = lang_1.CONST_EXPR(new RouteLifecycleHook("routerOnActivate"));
+  exports.routerOnReuse = lang_1.CONST_EXPR(new RouteLifecycleHook("routerOnReuse"));
+  exports.routerOnDeactivate = lang_1.CONST_EXPR(new RouteLifecycleHook("routerOnDeactivate"));
   global.define = __define;
   return module.exports;
 });
@@ -1517,7 +1517,7 @@ System.register("angular2/src/router/router_providers_common", ["angular2/src/ro
   }
   function routerPrimaryComponentFactory(app) {
     if (app.componentTypes.length == 0) {
-      throw new exceptions_1.BaseException('Bootstrap at least one component before injecting Router.');
+      throw new exceptions_1.BaseException("Bootstrap at least one component before injecting Router.");
     }
     return app.componentTypes[0];
   }
@@ -1807,7 +1807,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
       return this.routePath;
     };
     ParamRoutePath.prototype._parsePathString = function(routePath) {
-      if (routePath.startsWith('/')) {
+      if (routePath.startsWith("/")) {
         routePath = routePath.substring(1);
       }
       var segmentStrings = routePath.split('/');

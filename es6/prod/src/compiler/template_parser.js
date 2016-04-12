@@ -253,13 +253,15 @@ class TemplateParseVisitor {
         else if (isTemplateElement) {
             this._assertAllEventsPublishedByDirectives(directives, events);
             this._assertNoComponentsNorElementBindingsOnTemplate(directives, elementProps, element.sourceSpan);
-            parsedElement = new EmbeddedTemplateAst(attrs, events, vars, directives, children, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
+            parsedElement =
+                new EmbeddedTemplateAst(attrs, events, vars, directives, children, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
         }
         else {
             this._assertOnlyOneComponent(directives, element.sourceSpan);
             var elementExportAsVars = vars.filter(varAst => varAst.value.length === 0);
             let ngContentIndex = hasInlineTemplates ? null : component.findNgContentIndex(projectionSelector);
-            parsedElement = new ElementAst(nodeName, attrs, elementProps, events, elementExportAsVars, directives, children, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
+            parsedElement =
+                new ElementAst(nodeName, attrs, elementProps, events, elementExportAsVars, directives, children, hasInlineTemplates ? null : ngContentIndex, element.sourceSpan);
         }
         if (hasInlineTemplates) {
             var templateCssSelector = createElementCssSelector(TEMPLATE_ELEMENT, templateMatchableAttrs);
@@ -543,9 +545,7 @@ class TemplateParseVisitor {
     _assertAllEventsPublishedByDirectives(directives, events) {
         var allDirectiveEvents = new Set();
         directives.forEach(directive => {
-            StringMapWrapper.forEach(directive.directive.outputs, (eventName, _) => {
-                allDirectiveEvents.add(eventName);
-            });
+            StringMapWrapper.forEach(directive.directive.outputs, (eventName, _) => { allDirectiveEvents.add(eventName); });
         });
         events.forEach(event => {
             if (isPresent(event.target) || !SetWrapper.has(allDirectiveEvents, event.name)) {

@@ -18,9 +18,7 @@ fdescribe('some component', () => {
         // This test will run.
     });
 });
-describe('another component', () => {
-    it('also has a test', () => { throw 'This test will not run.'; });
-});
+describe('another component', () => { it('also has a test', () => { throw 'This test will not run.'; }); });
 // #enddocregion
 // #docregion xdescribe
 xdescribe('some component', () => { it('has a test', () => { throw 'This test will not run.'; }); });

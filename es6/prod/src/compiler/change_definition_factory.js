@@ -69,24 +69,28 @@ class ProtoViewVisitor {
         var dirIndex = isPresent(directiveRecord) ? directiveRecord.directiveIndex : null;
         var bindingRecord;
         if (ast.type === PropertyBindingType.Property) {
-            bindingRecord = isPresent(dirIndex) ?
-                BindingRecord.createForHostProperty(dirIndex, ast.value, ast.name) :
-                BindingRecord.createForElementProperty(ast.value, boundElementIndex, ast.name);
+            bindingRecord =
+                isPresent(dirIndex) ?
+                    BindingRecord.createForHostProperty(dirIndex, ast.value, ast.name) :
+                    BindingRecord.createForElementProperty(ast.value, boundElementIndex, ast.name);
         }
         else if (ast.type === PropertyBindingType.Attribute) {
-            bindingRecord = isPresent(dirIndex) ?
-                BindingRecord.createForHostAttribute(dirIndex, ast.value, ast.name) :
-                BindingRecord.createForElementAttribute(ast.value, boundElementIndex, ast.name);
+            bindingRecord =
+                isPresent(dirIndex) ?
+                    BindingRecord.createForHostAttribute(dirIndex, ast.value, ast.name) :
+                    BindingRecord.createForElementAttribute(ast.value, boundElementIndex, ast.name);
         }
         else if (ast.type === PropertyBindingType.Class) {
-            bindingRecord = isPresent(dirIndex) ?
-                BindingRecord.createForHostClass(dirIndex, ast.value, ast.name) :
-                BindingRecord.createForElementClass(ast.value, boundElementIndex, ast.name);
+            bindingRecord =
+                isPresent(dirIndex) ?
+                    BindingRecord.createForHostClass(dirIndex, ast.value, ast.name) :
+                    BindingRecord.createForElementClass(ast.value, boundElementIndex, ast.name);
         }
         else if (ast.type === PropertyBindingType.Style) {
-            bindingRecord = isPresent(dirIndex) ?
-                BindingRecord.createForHostStyle(dirIndex, ast.value, ast.name, ast.unit) :
-                BindingRecord.createForElementStyle(ast.value, boundElementIndex, ast.name, ast.unit);
+            bindingRecord =
+                isPresent(dirIndex) ?
+                    BindingRecord.createForHostStyle(dirIndex, ast.value, ast.name, ast.unit) :
+                    BindingRecord.createForElementStyle(ast.value, boundElementIndex, ast.name, ast.unit);
         }
         this.bindingRecords.push(bindingRecord);
         return null;

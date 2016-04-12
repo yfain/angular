@@ -1,4 +1,4 @@
-import { RuntimeCompiler_ } from './runtime_compiler';
+import { RuntimeCompiler_ } from "./runtime_compiler";
 export { TemplateCompiler } from './template_compiler';
 export { CompileDirectiveMetadata, CompileTypeMetadata, CompileTemplateMetadata } from './directive_metadata';
 export { SourceModule, SourceWithImports } from './source_module';
@@ -31,11 +31,22 @@ function _createChangeDetectorGenConfig() {
  * template compilation.
  */
 export const COMPILER_PROVIDERS = CONST_EXPR([
-    Lexer, Parser, HtmlParser, TemplateParser, TemplateNormalizer, RuntimeMetadataResolver,
-    DEFAULT_PACKAGE_URL_PROVIDER, StyleCompiler, ProtoViewCompiler, ViewCompiler,
+    Lexer,
+    Parser,
+    HtmlParser,
+    TemplateParser,
+    TemplateNormalizer,
+    RuntimeMetadataResolver,
+    DEFAULT_PACKAGE_URL_PROVIDER,
+    StyleCompiler,
+    ProtoViewCompiler,
+    ViewCompiler,
     ChangeDetectionCompiler,
     new Provider(ChangeDetectorGenConfig, { useFactory: _createChangeDetectorGenConfig, deps: [] }),
-    TemplateCompiler, new Provider(RuntimeCompiler, { useClass: RuntimeCompiler_ }),
-    new Provider(Compiler, { useExisting: RuntimeCompiler }), DomElementSchemaRegistry,
-    new Provider(ElementSchemaRegistry, { useExisting: DomElementSchemaRegistry }), UrlResolver
+    TemplateCompiler,
+    new Provider(RuntimeCompiler, { useClass: RuntimeCompiler_ }),
+    new Provider(Compiler, { useExisting: RuntimeCompiler }),
+    DomElementSchemaRegistry,
+    new Provider(ElementSchemaRegistry, { useExisting: DomElementSchemaRegistry }),
+    UrlResolver
 ]);

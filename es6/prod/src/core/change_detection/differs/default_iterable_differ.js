@@ -478,12 +478,10 @@ export class DefaultIterableDiffer {
         this.forEachRemovedItem((record) => removals.push(record));
         var identityChanges = [];
         this.forEachIdentityChange((record) => identityChanges.push(record));
-        return 'collection: ' + list.join(', ') + '\n' +
-            'previous: ' + previous.join(', ') + '\n' +
-            'additions: ' + additions.join(', ') + '\n' +
-            'moves: ' + moves.join(', ') + '\n' +
-            'removals: ' + removals.join(', ') + '\n' +
-            'identityChanges: ' + identityChanges.join(', ') + '\n';
+        return "collection: " + list.join(', ') + "\n" + "previous: " + previous.join(', ') + "\n" +
+            "additions: " + additions.join(', ') + "\n" + "moves: " + moves.join(', ') + "\n" +
+            "removals: " + removals.join(', ') + "\n" + "identityChanges: " +
+            identityChanges.join(', ') + "\n";
     }
 }
 export class CollectionChangeRecord {
@@ -514,9 +512,10 @@ export class CollectionChangeRecord {
         this._nextIdentityChange = null;
     }
     toString() {
-        return this.previousIndex === this.currentIndex ? stringify(this.item) :
-            stringify(this.item) + '[' +
-                stringify(this.previousIndex) + '->' + stringify(this.currentIndex) + ']';
+        return this.previousIndex === this.currentIndex ?
+            stringify(this.item) :
+            stringify(this.item) + '[' + stringify(this.previousIndex) + '->' +
+                stringify(this.currentIndex) + ']';
     }
 }
 // A linked list of CollectionChangeRecords with the same CollectionChangeRecord.item

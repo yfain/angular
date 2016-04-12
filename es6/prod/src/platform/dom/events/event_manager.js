@@ -15,7 +15,7 @@ import { BaseException } from 'angular2/src/facade/exceptions';
 import { Injectable, Inject, OpaqueToken } from 'angular2/src/core/di';
 import { NgZone } from 'angular2/src/core/zone/ng_zone';
 import { ListWrapper } from 'angular2/src/facade/collection';
-export const EVENT_MANAGER_PLUGINS = CONST_EXPR(new OpaqueToken('EventManagerPlugins'));
+export const EVENT_MANAGER_PLUGINS = CONST_EXPR(new OpaqueToken("EventManagerPlugins"));
 export let EventManager = class {
     constructor(plugins, _zone) {
         this._zone = _zone;
@@ -52,9 +52,9 @@ export class EventManagerPlugin {
     // That is equivalent to having supporting $event.target
     supports(eventName) { return false; }
     addEventListener(element, eventName, handler) {
-        throw 'not implemented';
+        throw "not implemented";
     }
     addGlobalEventListener(element, eventName, handler) {
-        throw 'not implemented';
+        throw "not implemented";
     }
 }

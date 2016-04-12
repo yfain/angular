@@ -100,7 +100,7 @@ export let NgFormModel = class extends ControlContainer {
         this.ngSubmit = new EventEmitter();
     }
     ngOnChanges(changes) {
-        if (StringMapWrapper.contains(changes, 'form')) {
+        if (StringMapWrapper.contains(changes, "form")) {
             var sync = composeValidators(this._validators);
             this.form.validator = Validators.compose([this.form.validator, sync]);
             var async = composeAsyncValidators(this._asyncValidators);

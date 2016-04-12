@@ -43,8 +43,8 @@ export class RequestOptions {
         this.headers = isPresent(headers) ? headers : null;
         this.body = isPresent(body) ? body : null;
         this.url = isPresent(url) ? url : null;
-        this.search = isPresent(search) ?
-            (isString(search) ? new URLSearchParams((search)) : (search)) :
+        this.search = isPresent(search) ? (isString(search) ? new URLSearchParams((search)) :
+            (search)) :
             null;
     }
     /**

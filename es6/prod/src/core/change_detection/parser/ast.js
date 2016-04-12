@@ -1,7 +1,7 @@
-import { ListWrapper } from 'angular2/src/facade/collection';
+import { ListWrapper } from "angular2/src/facade/collection";
 export class AST {
     visit(visitor) { return null; }
-    toString() { return 'AST'; }
+    toString() { return "AST"; }
 }
 /**
  * Represents a quoted expression of the form:
@@ -24,7 +24,7 @@ export class Quote extends AST {
         this.location = location;
     }
     visit(visitor) { return visitor.visitQuote(this); }
-    toString() { return 'Quote'; }
+    toString() { return "Quote"; }
 }
 export class EmptyExpr extends AST {
     visit(visitor) {

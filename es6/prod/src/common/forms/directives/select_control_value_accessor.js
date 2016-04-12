@@ -19,11 +19,11 @@ function _buildValueString(id, value) {
     if (isBlank(id))
         return `${value}`;
     if (!isPrimitive(value))
-        value = 'Object';
+        value = "Object";
     return StringWrapper.slice(`${id}: ${value}`, 0, 50);
 }
 function _extractId(valueString) {
-    return valueString.split(':')[0];
+    return valueString.split(":")[0];
 }
 /**
  * The accessor for writing a value and listening to changes on a select element.

@@ -1,7 +1,7 @@
-import { ParseSourceSpan, ParseSourceFile, ParseLocation, ParseError } from 'angular2/src/compiler/parse_util';
-import { bitWiseOr, bitWiseAnd, isPresent } from 'angular2/src/facade/lang';
-import { CssLexerMode, CssToken, CssTokenType, generateErrorMessage, $AT, $EOF, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isNewline } from 'angular2/src/compiler/css/lexer';
-export { CssToken } from 'angular2/src/compiler/css/lexer';
+import { ParseSourceSpan, ParseSourceFile, ParseLocation, ParseError } from "angular2/src/compiler/parse_util";
+import { bitWiseOr, bitWiseAnd, isPresent } from "angular2/src/facade/lang";
+import { CssLexerMode, CssToken, CssTokenType, generateErrorMessage, $AT, $EOF, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isNewline } from "angular2/src/compiler/css/lexer";
+export { CssToken } from "angular2/src/compiler/css/lexer";
 export var BlockType;
 (function (BlockType) {
     BlockType[BlockType["Import"] = 0] = "Import";
@@ -25,7 +25,7 @@ const COLON_DELIM = 16;
 const SEMICOLON_DELIM = 32;
 const NEWLINE_DELIM = 64;
 const RPAREN_DELIM = 128;
-function mergeTokens(tokens, separator = '') {
+function mergeTokens(tokens, separator = "") {
     var mainToken = tokens[0];
     var str = mainToken.strValue;
     for (var i = 1; i < tokens.length; i++) {
@@ -295,7 +295,7 @@ export class CssParser {
             // contains an inner selector that needs to be parsed
             // in isolation
             if (this._scanner.getMode() == CssLexerMode.PSEUDO_SELECTOR && isPresent(previousToken) &&
-                previousToken.numValue == $COLON && token.strValue == 'not' &&
+                previousToken.numValue == $COLON && token.strValue == "not" &&
                 this._scanner.peek == $LPAREN) {
                 selectorCssTokens.push(token);
                 selectorCssTokens.push(this._consume(CssTokenType.Character, '('));
@@ -332,7 +332,7 @@ export class CssParser {
     _parseValue(delimiters) {
         delimiters = bitWiseOr([delimiters, RBRACE_DELIM, SEMICOLON_DELIM, NEWLINE_DELIM]);
         this._scanner.setMode(CssLexerMode.STYLE_VALUE);
-        var strValue = '';
+        var strValue = "";
         var tokens = [];
         var previous;
         while (!characterContainsDelimiter(this._scanner.peek, delimiters)) {
@@ -438,7 +438,7 @@ export class CssParser {
                     if (remainingTokens.length > 0) {
                         remainingTokens.forEach((token) => { propStr.push(token.strValue); });
                     }
-                    prop = new CssToken(prop.index, prop.column, prop.line, prop.type, propStr.join(' '));
+                    prop = new CssToken(prop.index, prop.column, prop.line, prop.type, propStr.join(" "));
                 }
                 // this means we've reached the end of the definition and/or block
                 if (this._scanner.peek == $COLON) {
@@ -500,7 +500,7 @@ export class CssKeyframeRuleAST extends CssBlockRuleAST {
 }
 export class CssKeyframeDefinitionAST extends CssBlockRuleAST {
     constructor(_steps, block) {
-        super(BlockType.Keyframes, block, mergeTokens(_steps, ','));
+        super(BlockType.Keyframes, block, mergeTokens(_steps, ","));
         this.steps = _steps;
     }
     visit(visitor, context) {
@@ -511,7 +511,7 @@ export class CssBlockDefinitionRuleAST extends CssBlockRuleAST {
     constructor(type, query, block) {
         super(type, block);
         this.query = query;
-        this.strValue = query.map(token => token.strValue).join('');
+        this.strValue = query.map(token => token.strValue).join("");
         var firstCssToken = query[0];
         this.name = new CssToken(firstCssToken.index, firstCssToken.column, firstCssToken.line, CssTokenType.Identifier, this.strValue);
     }
@@ -535,7 +535,7 @@ export class CssSelectorRuleAST extends CssBlockRuleAST {
     constructor(selectors, block) {
         super(BlockType.Selector, block);
         this.selectors = selectors;
-        this.strValue = selectors.map(selector => selector.strValue).join(',');
+        this.strValue = selectors.map(selector => selector.strValue).join(",");
     }
     visit(visitor, context) { visitor.visitCssSelectorRule(this, context); }
 }
@@ -552,7 +552,7 @@ export class CssSelectorAST extends CssAST {
         super();
         this.tokens = tokens;
         this.isComplex = isComplex;
-        this.strValue = tokens.map(token => token.strValue).join('');
+        this.strValue = tokens.map(token => token.strValue).join("");
     }
     visit(visitor, context) { visitor.visitCssSelector(this, context); }
 }
@@ -578,7 +578,7 @@ export class CssParseError extends ParseError {
         var start = new ParseLocation(file, offset, line, col);
         var end = new ParseLocation(file, offset, line, col + length);
         var span = new ParseSourceSpan(start, end);
-        return new CssParseError(span, 'CSS Parse Error: ' + errMsg);
+        return new CssParseError(span, "CSS Parse Error: " + errMsg);
     }
 }
 export class CssUnknownTokenListAST extends CssRuleAST {

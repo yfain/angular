@@ -12,5 +12,7 @@ function _reflector() {
  */
 export const PLATFORM_COMMON_PROVIDERS = CONST_EXPR([
     new Provider(Reflector, { useFactory: _reflector, deps: [] }),
-    new Provider(ReflectorReader, { useExisting: Reflector }), TestabilityRegistry, Console
+    new Provider(ReflectorReader, { useExisting: Reflector }),
+    TestabilityRegistry,
+    Console
 ]);

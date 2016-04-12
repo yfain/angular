@@ -22,7 +22,7 @@ export let Log = class {
         };
     }
     clear() { this.logItems = []; }
-    result() { return this.logItems.join('; '); }
+    result() { return this.logItems.join("; "); }
 };
 Log = __decorate([
     Injectable(), 

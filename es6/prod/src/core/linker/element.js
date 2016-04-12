@@ -17,7 +17,7 @@ import { ChangeDetectorRef } from 'angular2/src/core/change_detection/change_det
 import { QueryList } from './query_list';
 import { reflector } from 'angular2/src/core/reflection/reflection';
 import { PipeProvider } from 'angular2/src/core/pipes/pipe_provider';
-import { ViewContainerRef_ } from './view_container_ref';
+import { ViewContainerRef_ } from "./view_container_ref";
 var _staticKeys;
 export class StaticKeys {
     constructor() {
@@ -355,7 +355,8 @@ export class AppElement {
         if (this.proto.protoQueryRefs.length === 0) {
             return _emptyQueryStrategy;
         }
-        else if (this.proto.protoQueryRefs.length <= InlineQueryStrategy.NUMBER_OF_SUPPORTED_QUERIES) {
+        else if (this.proto.protoQueryRefs.length <=
+            InlineQueryStrategy.NUMBER_OF_SUPPORTED_QUERIES) {
             return new InlineQueryStrategy(this);
         }
         else {

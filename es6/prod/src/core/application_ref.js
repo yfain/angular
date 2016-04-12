@@ -21,8 +21,7 @@ function _componentProviders(appComponentType) {
                 // Save the ComponentRef for disposal later.
                 var ref;
                 // TODO(rado): investigate whether to support providers on root component.
-                return dynamicComponentLoader
-                    .loadAsRoot(appComponentType, null, injector, () => { appRef._unloadComponent(ref); })
+                return dynamicComponentLoader.loadAsRoot(appComponentType, null, injector, () => { appRef._unloadComponent(ref); })
                     .then((componentRef) => {
                     ref = componentRef;
                     var testability = injector.getOptional(Testability);
@@ -70,7 +69,7 @@ export function platform(providers) {
             return _platform;
         }
         else {
-            throw new BaseException('platform cannot be initialized with different sets of providers.');
+            throw new BaseException("platform cannot be initialized with different sets of providers.");
         }
     }
     else {
@@ -132,7 +131,7 @@ export class PlatformRef_ extends PlatformRef {
     application(providers) {
         var app = this._initApp(createNgZone(), providers);
         if (PromiseWrapper.isPromise(app)) {
-            throw new BaseException('Cannot use asyncronous app initializers with application. Use asyncApplication instead.');
+            throw new BaseException("Cannot use asyncronous app initializers with application. Use asyncApplication instead.");
         }
         return app;
     }
@@ -303,7 +302,7 @@ export class ApplicationRef_ extends ApplicationRef {
         return completer.promise.then((ref) => {
             let c = this._injector.get(Console);
             if (assertionsEnabled()) {
-                c.log('Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.');
+                c.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
             }
             return ref;
         });
@@ -328,7 +327,7 @@ export class ApplicationRef_ extends ApplicationRef {
     get zone() { return this._zone; }
     tick() {
         if (this._runningTick) {
-            throw new BaseException('ApplicationRef.tick is called recursively');
+            throw new BaseException("ApplicationRef.tick is called recursively");
         }
         var s = ApplicationRef_._tickScope();
         try {

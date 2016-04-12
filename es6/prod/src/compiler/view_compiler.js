@@ -136,8 +136,13 @@ class CodeGenViewFactory {
         var viewFactoryName = codeGenViewFactoryName(this.component, embeddedTemplateIndex);
         var changeDetectorFactory = this.changeDetectorExpressions.expressions[embeddedTemplateIndex];
         var factoryArgs = [
-            'parentRenderer', 'viewManager', 'containerEl', 'projectableNodes', 'rootSelector',
-            'dynamicallyCreatedProviders', 'rootInjector'
+            'parentRenderer',
+            'viewManager',
+            'containerEl',
+            'projectableNodes',
+            'rootSelector',
+            'dynamicallyCreatedProviders',
+            'rootInjector'
         ];
         var initRendererStmts = [];
         var rendererExpr = `parentRenderer`;

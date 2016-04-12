@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { forwardRef, Provider, Attribute, Directive } from 'angular2/core';
 import { CONST_EXPR } from 'angular2/src/facade/lang';
 import { Validators, NG_VALIDATORS } from '../validators';
-import { NumberWrapper } from 'angular2/src/facade/lang';
+import { NumberWrapper } from "angular2/src/facade/lang";
 const REQUIRED = Validators.required;
 const REQUIRED_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
 /**
@@ -58,7 +58,7 @@ MinLengthValidator = __decorate([
         selector: '[minlength][ngControl],[minlength][ngFormControl],[minlength][ngModel]',
         providers: [MIN_LENGTH_VALIDATOR]
     }),
-    __param(0, Attribute('minlength')), 
+    __param(0, Attribute("minlength")), 
     __metadata('design:paramtypes', [String])
 ], MinLengthValidator);
 /**
@@ -84,7 +84,7 @@ MaxLengthValidator = __decorate([
         selector: '[maxlength][ngControl],[maxlength][ngFormControl],[maxlength][ngModel]',
         providers: [MAX_LENGTH_VALIDATOR]
     }),
-    __param(0, Attribute('maxlength')), 
+    __param(0, Attribute("maxlength")), 
     __metadata('design:paramtypes', [String])
 ], MaxLengthValidator);
 /**
@@ -111,6 +111,6 @@ PatternValidator = __decorate([
         selector: '[pattern][ngControl],[pattern][ngFormControl],[pattern][ngModel]',
         providers: [PATTERN_VALIDATOR]
     }),
-    __param(0, Attribute('pattern')), 
+    __param(0, Attribute("pattern")), 
     __metadata('design:paramtypes', [String])
 ], PatternValidator);

@@ -142,8 +142,10 @@ export const HTTP_PROVIDERS = [
         useFactory: (xhrBackend, requestOptions) => new Http(xhrBackend, requestOptions),
         deps: [XHRBackend, RequestOptions]
     }),
-    BrowserXhr, provide(RequestOptions, { useClass: BaseRequestOptions }),
-    provide(ResponseOptions, { useClass: BaseResponseOptions }), XHRBackend
+    BrowserXhr,
+    provide(RequestOptions, { useClass: BaseRequestOptions }),
+    provide(ResponseOptions, { useClass: BaseResponseOptions }),
+    XHRBackend
 ];
 /**
  * See {@link HTTP_PROVIDERS} instead.
@@ -265,7 +267,8 @@ export const JSONP_PROVIDERS = [
         useFactory: (jsonpBackend, requestOptions) => new Jsonp(jsonpBackend, requestOptions),
         deps: [JSONPBackend, RequestOptions]
     }),
-    BrowserJsonp, provide(RequestOptions, { useClass: BaseRequestOptions }),
+    BrowserJsonp,
+    provide(RequestOptions, { useClass: BaseRequestOptions }),
     provide(ResponseOptions, { useClass: BaseResponseOptions }),
     provide(JSONPBackend, { useClass: JSONPBackend_ })
 ];

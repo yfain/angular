@@ -10,8 +10,10 @@ import { BaseException } from 'angular2/src/facade/exceptions';
  * The Platform agnostic ROUTER PROVIDERS
  */
 export const ROUTER_PROVIDERS_COMMON = CONST_EXPR([
-    RouteRegistry, CONST_EXPR(new Provider(LocationStrategy, { useClass: PathLocationStrategy })),
-    Location, CONST_EXPR(new Provider(Router, {
+    RouteRegistry,
+    CONST_EXPR(new Provider(LocationStrategy, { useClass: PathLocationStrategy })),
+    Location,
+    CONST_EXPR(new Provider(Router, {
         useFactory: routerFactory,
         deps: CONST_EXPR([RouteRegistry, Location, ROUTER_PRIMARY_COMPONENT, ApplicationRef])
     })),
@@ -24,7 +26,7 @@ function routerFactory(registry, location, primaryComponent, appRef) {
 }
 function routerPrimaryComponentFactory(app) {
     if (app.componentTypes.length == 0) {
-        throw new BaseException('Bootstrap at least one component before injecting Router.');
+        throw new BaseException("Bootstrap at least one component before injecting Router.");
     }
     return app.componentTypes[0];
 }

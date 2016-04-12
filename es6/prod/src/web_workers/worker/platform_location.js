@@ -32,10 +32,10 @@ export let WebWorkerPlatformLocation = class extends PlatformLocation {
             var listeners = null;
             if (StringMapWrapper.contains(msg, 'event')) {
                 let type = msg['event']['type'];
-                if (StringWrapper.equals(type, 'popstate')) {
+                if (StringWrapper.equals(type, "popstate")) {
                     listeners = this._popStateListeners;
                 }
-                else if (StringWrapper.equals(type, 'hashchange')) {
+                else if (StringWrapper.equals(type, "hashchange")) {
                     listeners = this._hashChangeListeners;
                 }
                 if (listeners !== null) {
@@ -49,7 +49,7 @@ export let WebWorkerPlatformLocation = class extends PlatformLocation {
     }
     /** @internal **/
     init() {
-        var args = new UiArguments('getLocation');
+        var args = new UiArguments("getLocation");
         var locationPromise = this._broker.runOnService(args, LocationType);
         return PromiseWrapper.then(locationPromise, (val) => {
             this._location = val;
@@ -57,7 +57,7 @@ export let WebWorkerPlatformLocation = class extends PlatformLocation {
         }, (err) => { throw new BaseException(err); });
     }
     getBaseHrefFromDOM() {
-        throw new BaseException('Attempt to get base href from DOM from WebWorker. You must either provide a value for the APP_BASE_HREF token through DI or use the hash location strategy.');
+        throw new BaseException("Attempt to get base href from DOM from WebWorker. You must either provide a value for the APP_BASE_HREF token through DI or use the hash location strategy.");
     }
     onPopState(fn) { this._popStateListeners.push(fn); }
     onHashChange(fn) { this._hashChangeListeners.push(fn); }
@@ -81,29 +81,29 @@ export let WebWorkerPlatformLocation = class extends PlatformLocation {
     }
     set pathname(newPath) {
         if (this._location === null) {
-            throw new BaseException('Attempt to set pathname before value is obtained from UI');
+            throw new BaseException("Attempt to set pathname before value is obtained from UI");
         }
         this._location.pathname = newPath;
         var fnArgs = [new FnArg(newPath, PRIMITIVE)];
-        var args = new UiArguments('setPathname', fnArgs);
+        var args = new UiArguments("setPathname", fnArgs);
         this._broker.runOnService(args, null);
     }
     pushState(state, title, url) {
         var fnArgs = [new FnArg(state, PRIMITIVE), new FnArg(title, PRIMITIVE), new FnArg(url, PRIMITIVE)];
-        var args = new UiArguments('pushState', fnArgs);
+        var args = new UiArguments("pushState", fnArgs);
         this._broker.runOnService(args, null);
     }
     replaceState(state, title, url) {
         var fnArgs = [new FnArg(state, PRIMITIVE), new FnArg(title, PRIMITIVE), new FnArg(url, PRIMITIVE)];
-        var args = new UiArguments('replaceState', fnArgs);
+        var args = new UiArguments("replaceState", fnArgs);
         this._broker.runOnService(args, null);
     }
     forward() {
-        var args = new UiArguments('forward');
+        var args = new UiArguments("forward");
         this._broker.runOnService(args, null);
     }
     back() {
-        var args = new UiArguments('back');
+        var args = new UiArguments("back");
         this._broker.runOnService(args, null);
     }
 };

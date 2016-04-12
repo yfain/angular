@@ -18,10 +18,10 @@ function constructResolvingPath(keys) {
     if (keys.length > 1) {
         var reversed = findFirstClosedCycle(ListWrapper.reversed(keys));
         var tokenStrs = reversed.map(k => stringify(k.token));
-        return ' (' + tokenStrs.join(' -> ') + ')';
+        return " (" + tokenStrs.join(' -> ') + ")";
     }
     else {
-        return '';
+        return "";
     }
 }
 /**
@@ -29,7 +29,7 @@ function constructResolvingPath(keys) {
  */
 export class AbstractProviderError extends BaseException {
     constructor(injector, key, constructResolvingMessage) {
-        super('DI Exception');
+        super("DI Exception");
         this.keys = [key];
         this.injectors = [injector];
         this.constructResolvingMessage = constructResolvingMessage;
@@ -115,7 +115,7 @@ export class CyclicDependencyError extends AbstractProviderError {
  */
 export class InstantiationError extends WrappedException {
     constructor(injector, originalException, originalStack, key) {
-        super('DI Exception', originalException, originalStack, null);
+        super("DI Exception", originalException, originalStack, null);
         this.keys = [key];
         this.injectors = [injector];
     }
@@ -142,7 +142,7 @@ export class InstantiationError extends WrappedException {
  */
 export class InvalidProviderError extends BaseException {
     constructor(provider) {
-        super('Invalid provider - only instances of Provider and Type are allowed, got: ' +
+        super("Invalid provider - only instances of Provider and Type are allowed, got: " +
             provider.toString());
     }
 }
@@ -189,10 +189,10 @@ export class NoAnnotationError extends BaseException {
                 signature.push(parameter.map(stringify).join(' '));
             }
         }
-        return 'Cannot resolve all parameters for \'' + stringify(typeOrFunc) + '\'(' +
-            signature.join(', ') + '). ' +
-            'Make sure that all the parameters are decorated with Inject or have valid type annotations and that \'' +
-            stringify(typeOrFunc) + '\' is decorated with Injectable.';
+        return "Cannot resolve all parameters for '" + stringify(typeOrFunc) + "'(" +
+            signature.join(', ') + "). " +
+            "Make sure that all the parameters are decorated with Inject or have valid type annotations and that '" +
+            stringify(typeOrFunc) + "' is decorated with Injectable.";
     }
 }
 /**
@@ -228,7 +228,7 @@ export class OutOfBoundsError extends BaseException {
  */
 export class MixingMultiProvidersWithRegularProvidersError extends BaseException {
     constructor(provider1, provider2) {
-        super('Cannot mix multi providers and regular providers, got: ' + provider1.toString() + ' ' +
+        super("Cannot mix multi providers and regular providers, got: " + provider1.toString() + " " +
             provider2.toString());
     }
 }

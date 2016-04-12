@@ -132,7 +132,7 @@ function _srcToDstSelfIndex(indexMap, srcIdx) {
     return isPresent(dstIdx) ? dstIdx : srcIdx;
 }
 function _createSelfRecord(r, contextIndex, selfIndex) {
-    return new ProtoRecord(RecordType.Self, 'self', null, [], r.fixedArgs, contextIndex, r.directiveIndex, selfIndex, r.bindingRecord, r.lastInBinding, r.lastInDirective, false, false, r.propertyBindingIndex);
+    return new ProtoRecord(RecordType.Self, "self", null, [], r.fixedArgs, contextIndex, r.directiveIndex, selfIndex, r.bindingRecord, r.lastInBinding, r.lastInDirective, false, false, r.propertyBindingIndex);
 }
 function _haveSameDirIndex(a, b) {
     var di1 = isBlank(a.directiveIndex) ? null : a.directiveIndex.directiveIndex;

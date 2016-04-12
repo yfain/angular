@@ -311,11 +311,9 @@ export class DefaultKeyValueDiffer {
         for (record = this._removalsHead; record !== null; record = record._nextRemoved) {
             removals.push(stringify(record));
         }
-        return 'map: ' + items.join(', ') + '\n' +
-            'previous: ' + previous.join(', ') + '\n' +
-            'additions: ' + additions.join(', ') + '\n' +
-            'changes: ' + changes.join(', ') + '\n' +
-            'removals: ' + removals.join(', ') + '\n';
+        return "map: " + items.join(', ') + "\n" + "previous: " + previous.join(', ') + "\n" +
+            "additions: " + additions.join(', ') + "\n" + "changes: " + changes.join(', ') + "\n" +
+            "removals: " + removals.join(', ') + "\n";
     }
     /** @internal */
     _forEach(obj, fn) {

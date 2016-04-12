@@ -657,7 +657,7 @@ System.register("angular2/src/upgrade/upgrade_adapter", ["angular2/core", "angul
               return delayApplyExps.push(exp);
             };
           } else {
-            throw new Error('Failed to find \'$apply\' on \'$rootScope\'!');
+            throw new Error("Failed to find '$apply' on '$rootScope'!");
           }
           return rootScope = rootScopeDelegate;
         }]);

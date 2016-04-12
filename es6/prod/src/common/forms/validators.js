@@ -12,7 +12,7 @@ import { OpaqueToken } from 'angular2/core';
  *
  * {@example core/forms/ts/ng_validators/ng_validators.ts region='ng_validators'}
  */
-export const NG_VALIDATORS = CONST_EXPR(new OpaqueToken('NgValidators'));
+export const NG_VALIDATORS = CONST_EXPR(new OpaqueToken("NgValidators"));
 /**
  * Providers for asynchronous validators to be used for {@link Control}s
  * in a form.
@@ -21,7 +21,7 @@ export const NG_VALIDATORS = CONST_EXPR(new OpaqueToken('NgValidators'));
  *
  * See {@link NG_VALIDATORS} for more details.
  */
-export const NG_ASYNC_VALIDATORS = CONST_EXPR(new OpaqueToken('NgAsyncValidators'));
+export const NG_ASYNC_VALIDATORS = CONST_EXPR(new OpaqueToken("NgAsyncValidators"));
 /**
  * Provides a set of validators used by form controls.
  *
@@ -39,8 +39,8 @@ export class Validators {
      * Validator that requires controls to have a non-empty value.
      */
     static required(control) {
-        return isBlank(control.value) || (isString(control.value) && control.value == '') ?
-            { 'required': true } :
+        return isBlank(control.value) || (isString(control.value) && control.value == "") ?
+            { "required": true } :
             null;
     }
     /**
@@ -52,7 +52,7 @@ export class Validators {
                 return null;
             var v = control.value;
             return v.length < minLength ?
-                { 'minlength': { 'requiredLength': minLength, 'actualLength': v.length } } :
+                { "minlength": { "requiredLength": minLength, "actualLength": v.length } } :
                 null;
         };
     }
@@ -65,7 +65,7 @@ export class Validators {
                 return null;
             var v = control.value;
             return v.length > maxLength ?
-                { 'maxlength': { 'requiredLength': maxLength, 'actualLength': v.length } } :
+                { "maxlength": { "requiredLength": maxLength, "actualLength": v.length } } :
                 null;
         };
     }
@@ -79,7 +79,7 @@ export class Validators {
             let regex = new RegExp(`^${pattern}$`);
             let v = control.value;
             return regex.test(v) ? null :
-                { 'pattern': { 'requiredPattern': `^${pattern}$`, 'actualValue': v } };
+                { "pattern": { "requiredPattern": `^${pattern}$`, "actualValue": v } };
         };
     }
     /**

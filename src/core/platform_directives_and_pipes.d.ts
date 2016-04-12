@@ -1,4 +1,4 @@
-import { OpaqueToken } from 'angular2/src/core/di';
+import { OpaqueToken } from "angular2/src/core/di";
 /**
  * A token that can be provided when bootstraping an application to make an array of directives
  * available in every component of the application.

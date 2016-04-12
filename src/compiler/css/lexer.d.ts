@@ -1,5 +1,5 @@
 import { BaseException } from 'angular2/src/facade/exceptions';
-export { $EOF, $AT, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isWhitespace } from 'angular2/src/compiler/chars';
+export { $EOF, $AT, $RBRACE, $LBRACE, $LBRACKET, $RBRACKET, $LPAREN, $RPAREN, $COMMA, $COLON, $SEMICOLON, isWhitespace } from "angular2/src/compiler/chars";
 export declare enum CssTokenType {
     EOF = 0,
     String = 1,

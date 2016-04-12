@@ -26,8 +26,8 @@ CanActivate = __decorate([
     CONST(), 
     __metadata('design:paramtypes', [Function])
 ], CanActivate);
-export const routerCanReuse = CONST_EXPR(new RouteLifecycleHook('routerCanReuse'));
-export const routerCanDeactivate = CONST_EXPR(new RouteLifecycleHook('routerCanDeactivate'));
-export const routerOnActivate = CONST_EXPR(new RouteLifecycleHook('routerOnActivate'));
-export const routerOnReuse = CONST_EXPR(new RouteLifecycleHook('routerOnReuse'));
-export const routerOnDeactivate = CONST_EXPR(new RouteLifecycleHook('routerOnDeactivate'));
+export const routerCanReuse = CONST_EXPR(new RouteLifecycleHook("routerCanReuse"));
+export const routerCanDeactivate = CONST_EXPR(new RouteLifecycleHook("routerCanDeactivate"));
+export const routerOnActivate = CONST_EXPR(new RouteLifecycleHook("routerOnActivate"));
+export const routerOnReuse = CONST_EXPR(new RouteLifecycleHook("routerOnReuse"));
+export const routerOnDeactivate = CONST_EXPR(new RouteLifecycleHook("routerOnDeactivate"));

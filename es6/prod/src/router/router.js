@@ -231,9 +231,11 @@ export let Router = class {
             if (!result) {
                 return false;
             }
-            return this._routerCanDeactivate(instruction).then((result) => {
+            return this._routerCanDeactivate(instruction)
+                .then((result) => {
                 if (result) {
-                    return this.commit(instruction, _skipLocationChange).then((_) => {
+                    return this.commit(instruction, _skipLocationChange)
+                        .then((_) => {
                         this._emitNavigationFinish(instruction.toRootUrl());
                         return true;
                     });
@@ -261,7 +263,8 @@ export let Router = class {
         if (isBlank(instruction.component)) {
             return _resolveToTrue;
         }
-        return this._outlet.routerCanReuse(instruction.component).then((result) => {
+        return this._outlet.routerCanReuse(instruction.component)
+            .then((result) => {
             instruction.component.reuse = result;
             if (result && isPresent(this._childRouter) && isPresent(instruction.child)) {
                 return this._childRouter._routerCanReuse(instruction.child);
@@ -408,9 +411,11 @@ export let RootRouter = class extends Router {
         this._location = location;
         this._locationSub = this._location.subscribe((change) => {
             // we call recognize ourselves
-            this.recognize(change['url']).then((instruction) => {
+            this.recognize(change['url'])
+                .then((instruction) => {
                 if (isPresent(instruction)) {
-                    this.navigateByInstruction(instruction, isPresent(change['pop'])).then((_) => {
+                    this.navigateByInstruction(instruction, isPresent(change['pop']))
+                        .then((_) => {
                         // this is a popstate event; no need to change the URL
                         if (isPresent(change['pop']) && change['type'] != 'hashchange') {
                             return;

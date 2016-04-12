@@ -76,19 +76,19 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
   }
   exports.isBlank = isBlank;
   function isBoolean(obj) {
-    return typeof obj === 'boolean';
+    return typeof obj === "boolean";
   }
   exports.isBoolean = isBoolean;
   function isNumber(obj) {
-    return typeof obj === 'number';
+    return typeof obj === "number";
   }
   exports.isNumber = isNumber;
   function isString(obj) {
-    return typeof obj === 'string';
+    return typeof obj === "string";
   }
   exports.isString = isString;
   function isFunction(obj) {
-    return typeof obj === 'function';
+    return typeof obj === "function";
   }
   exports.isFunction = isFunction;
   function isType(obj) {
@@ -127,7 +127,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
       return token.overriddenName;
     }
     var res = token.toString();
-    var newLineIndex = res.indexOf('\n');
+    var newLineIndex = res.indexOf("\n");
     return (newLineIndex === -1) ? res : res.substring(0, newLineIndex);
   }
   exports.stringify = stringify;
@@ -232,7 +232,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
       this.parts.push(part);
     };
     StringJoiner.prototype.toString = function() {
-      return this.parts.join('');
+      return this.parts.join("");
     };
     return StringJoiner;
   })();
@@ -260,7 +260,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
     NumberWrapper.parseIntAutoRadix = function(text) {
       var result = parseInt(text);
       if (isNaN(result)) {
-        throw new NumberParseError('Invalid integer literal when parsing ' + text);
+        throw new NumberParseError("Invalid integer literal when parsing " + text);
       }
       return result;
     };
@@ -279,7 +279,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
           return result;
         }
       }
-      throw new NumberParseError('Invalid integer literal when parsing ' + text + ' in base ' + radix);
+      throw new NumberParseError("Invalid integer literal when parsing " + text + " in base " + radix);
     };
     NumberWrapper.parseFloat = function(text) {
       return parseFloat(text);
@@ -360,7 +360,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
   })();
   exports.FunctionWrapper = FunctionWrapper;
   function looseIdentical(a, b) {
-    return a === b || typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b);
+    return a === b || typeof a === "number" && typeof b === "number" && isNaN(a) && isNaN(b);
   }
   exports.looseIdentical = looseIdentical;
   function getMapKey(value) {
@@ -376,7 +376,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
   }
   exports.normalizeBool = normalizeBool;
   function isJsObject(o) {
-    return o !== null && (typeof o === 'function' || typeof o === 'object');
+    return o !== null && (typeof o === "function" || typeof o === "object");
   }
   exports.isJsObject = isJsObject;
   function print(obj) {
@@ -1306,7 +1306,7 @@ System.register("angular2/src/facade/exception_handler", ["angular2/src/facade/l
       var l = new _ArrayLogger();
       var e = new ExceptionHandler(l, false);
       e.call(exception, stackTrace, reason);
-      return l.res.join('\n');
+      return l.res.join("\n");
     };
     ExceptionHandler.prototype.call = function(exception, stackTrace, reason) {
       if (stackTrace === void 0) {
@@ -1320,7 +1320,7 @@ System.register("angular2/src/facade/exception_handler", ["angular2/src/facade/l
       var context = this._findContext(exception);
       this._logger.logGroup("EXCEPTION: " + this._extractMessage(exception));
       if (lang_1.isPresent(stackTrace) && lang_1.isBlank(originalStack)) {
-        this._logger.logError('STACKTRACE:');
+        this._logger.logError("STACKTRACE:");
         this._logger.logError(this._longStackTrace(stackTrace));
       }
       if (lang_1.isPresent(reason)) {
@@ -1330,11 +1330,11 @@ System.register("angular2/src/facade/exception_handler", ["angular2/src/facade/l
         this._logger.logError("ORIGINAL EXCEPTION: " + this._extractMessage(originalException));
       }
       if (lang_1.isPresent(originalStack)) {
-        this._logger.logError('ORIGINAL STACKTRACE:');
+        this._logger.logError("ORIGINAL STACKTRACE:");
         this._logger.logError(this._longStackTrace(originalStack));
       }
       if (lang_1.isPresent(context)) {
-        this._logger.logError('ERROR CONTEXT:');
+        this._logger.logError("ERROR CONTEXT:");
         this._logger.logError(context);
       }
       this._logger.logGroupEnd();
@@ -1345,7 +1345,7 @@ System.register("angular2/src/facade/exception_handler", ["angular2/src/facade/l
       return exception instanceof base_wrapped_exception_1.BaseWrappedException ? exception.wrapperMessage : exception.toString();
     };
     ExceptionHandler.prototype._longStackTrace = function(stackTrace) {
-      return collection_1.isListLikeIterable(stackTrace) ? stackTrace.join('\n\n-----async gap-----\n') : stackTrace.toString();
+      return collection_1.isListLikeIterable(stackTrace) ? stackTrace.join("\n\n-----async gap-----\n") : stackTrace.toString();
     };
     ExceptionHandler.prototype._findContext = function(exception) {
       try {
@@ -1568,7 +1568,7 @@ System.register("angular2/src/core/reflection/reflection_capabilities", ["angula
       return {};
     };
     ReflectionCapabilities.prototype.interfaces = function(type) {
-      throw new exceptions_1.BaseException('JavaScript does not support interfaces');
+      throw new exceptions_1.BaseException("JavaScript does not support interfaces");
     };
     ReflectionCapabilities.prototype.getter = function(name) {
       return new Function('o', 'return o.' + name + ';');
@@ -1688,15 +1688,15 @@ System.register("angular2/src/core/di/exceptions", ["angular2/src/facade/collect
       var tokenStrs = reversed.map(function(k) {
         return lang_1.stringify(k.token);
       });
-      return ' (' + tokenStrs.join(' -> ') + ')';
+      return " (" + tokenStrs.join(' -> ') + ")";
     } else {
-      return '';
+      return "";
     }
   }
   var AbstractProviderError = (function(_super) {
     __extends(AbstractProviderError, _super);
     function AbstractProviderError(injector, key, constructResolvingMessage) {
-      _super.call(this, 'DI Exception');
+      _super.call(this, "DI Exception");
       this.keys = [key];
       this.injectors = [injector];
       this.constructResolvingMessage = constructResolvingMessage;
@@ -1741,7 +1741,7 @@ System.register("angular2/src/core/di/exceptions", ["angular2/src/facade/collect
   var InstantiationError = (function(_super) {
     __extends(InstantiationError, _super);
     function InstantiationError(injector, originalException, originalStack, key) {
-      _super.call(this, 'DI Exception', originalException, originalStack, null);
+      _super.call(this, "DI Exception", originalException, originalStack, null);
       this.keys = [key];
       this.injectors = [injector];
     }
@@ -1777,7 +1777,7 @@ System.register("angular2/src/core/di/exceptions", ["angular2/src/facade/collect
   var InvalidProviderError = (function(_super) {
     __extends(InvalidProviderError, _super);
     function InvalidProviderError(provider) {
-      _super.call(this, 'Invalid provider - only instances of Provider and Type are allowed, got: ' + provider.toString());
+      _super.call(this, "Invalid provider - only instances of Provider and Type are allowed, got: " + provider.toString());
     }
     return InvalidProviderError;
   })(exceptions_1.BaseException);
@@ -1798,7 +1798,7 @@ System.register("angular2/src/core/di/exceptions", ["angular2/src/facade/collect
           signature.push(parameter.map(lang_1.stringify).join(' '));
         }
       }
-      return 'Cannot resolve all parameters for \'' + lang_1.stringify(typeOrFunc) + '\'(' + signature.join(', ') + '). ' + 'Make sure that all the parameters are decorated with Inject or have valid type annotations and that \'' + lang_1.stringify(typeOrFunc) + '\' is decorated with Injectable.';
+      return "Cannot resolve all parameters for '" + lang_1.stringify(typeOrFunc) + "'(" + signature.join(', ') + "). " + "Make sure that all the parameters are decorated with Inject or have valid type annotations and that '" + lang_1.stringify(typeOrFunc) + "' is decorated with Injectable.";
     };
     return NoAnnotationError;
   })(exceptions_1.BaseException);
@@ -1814,7 +1814,7 @@ System.register("angular2/src/core/di/exceptions", ["angular2/src/facade/collect
   var MixingMultiProvidersWithRegularProvidersError = (function(_super) {
     __extends(MixingMultiProvidersWithRegularProvidersError, _super);
     function MixingMultiProvidersWithRegularProvidersError(provider1, provider2) {
-      _super.call(this, 'Cannot mix multi providers and regular providers, got: ' + provider1.toString() + ' ' + provider2.toString());
+      _super.call(this, "Cannot mix multi providers and regular providers, got: " + provider1.toString() + " " + provider2.toString());
     }
     return MixingMultiProvidersWithRegularProvidersError;
   })(exceptions_1.BaseException);
@@ -2795,7 +2795,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       this.forEachIdentityChange(function(record) {
         return identityChanges.push(record);
       });
-      return 'collection: ' + list.join(', ') + '\n' + 'previous: ' + previous.join(', ') + '\n' + 'additions: ' + additions.join(', ') + '\n' + 'moves: ' + moves.join(', ') + '\n' + 'removals: ' + removals.join(', ') + '\n' + 'identityChanges: ' + identityChanges.join(', ') + '\n';
+      return "collection: " + list.join(', ') + "\n" + "previous: " + previous.join(', ') + "\n" + "additions: " + additions.join(', ') + "\n" + "moves: " + moves.join(', ') + "\n" + "removals: " + removals.join(', ') + "\n" + "identityChanges: " + identityChanges.join(', ') + "\n";
     };
     return DefaultIterableDiffer;
   })();
@@ -3235,7 +3235,7 @@ System.register("angular2/src/core/change_detection/differs/default_keyvalue_dif
       for (record = this._removalsHead; record !== null; record = record._nextRemoved) {
         removals.push(lang_1.stringify(record));
       }
-      return 'map: ' + items.join(', ') + '\n' + 'previous: ' + previous.join(', ') + '\n' + 'additions: ' + additions.join(', ') + '\n' + 'changes: ' + changes.join(', ') + '\n' + 'removals: ' + removals.join(', ') + '\n';
+      return "map: " + items.join(', ') + "\n" + "previous: " + previous.join(', ') + "\n" + "additions: " + additions.join(', ') + "\n" + "changes: " + changes.join(', ') + "\n" + "removals: " + removals.join(', ') + "\n";
     };
     DefaultKeyValueDiffer.prototype._forEach = function(obj, fn) {
       if (obj instanceof Map) {
@@ -3289,7 +3289,7 @@ System.register("angular2/src/core/change_detection/parser/ast", ["angular2/src/
       return null;
     };
     AST.prototype.toString = function() {
-      return 'AST';
+      return "AST";
     };
     return AST;
   })();
@@ -3306,7 +3306,7 @@ System.register("angular2/src/core/change_detection/parser/ast", ["angular2/src/
       return visitor.visitQuote(this);
     };
     Quote.prototype.toString = function() {
-      return 'Quote';
+      return "Quote";
     };
     return Quote;
   })(AST);
@@ -3834,19 +3834,19 @@ System.register("angular2/src/core/change_detection/parser/lexer", ["angular2/sr
       return (this.type == TokenType.Keyword);
     };
     Token.prototype.isKeywordVar = function() {
-      return (this.type == TokenType.Keyword && this.strValue == 'var');
+      return (this.type == TokenType.Keyword && this.strValue == "var");
     };
     Token.prototype.isKeywordNull = function() {
-      return (this.type == TokenType.Keyword && this.strValue == 'null');
+      return (this.type == TokenType.Keyword && this.strValue == "null");
     };
     Token.prototype.isKeywordUndefined = function() {
-      return (this.type == TokenType.Keyword && this.strValue == 'undefined');
+      return (this.type == TokenType.Keyword && this.strValue == "undefined");
     };
     Token.prototype.isKeywordTrue = function() {
-      return (this.type == TokenType.Keyword && this.strValue == 'true');
+      return (this.type == TokenType.Keyword && this.strValue == "true");
     };
     Token.prototype.isKeywordFalse = function() {
-      return (this.type == TokenType.Keyword && this.strValue == 'false');
+      return (this.type == TokenType.Keyword && this.strValue == "false");
     };
     Token.prototype.toNumber = function() {
       return (this.type == TokenType.Number) ? this.numValue : -1;
@@ -3884,9 +3884,9 @@ System.register("angular2/src/core/change_detection/parser/lexer", ["angular2/sr
     return new Token(index, TokenType.String, 0, text);
   }
   function newNumberToken(index, n) {
-    return new Token(index, TokenType.Number, n, '');
+    return new Token(index, TokenType.Number, n, "");
   }
-  exports.EOF = new Token(-1, TokenType.Character, 0, '');
+  exports.EOF = new Token(-1, TokenType.Character, 0, "");
   exports.$EOF = 0;
   exports.$TAB = 9;
   exports.$LF = 10;
@@ -4434,7 +4434,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         exprs.push(expr);
         if (this.optionalCharacter(lexer_1.$SEMICOLON)) {
           if (!this.parseAction) {
-            this.error('Binding expression cannot contain chained expression');
+            this.error("Binding expression cannot contain chained expression");
           }
           while (this.optionalCharacter(lexer_1.$SEMICOLON)) {}
         } else if (this.index < this.tokens.length) {
@@ -4449,9 +4449,9 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
     };
     _ParseAST.prototype.parsePipe = function() {
       var result = this.parseExpression();
-      if (this.optionalOperator('|')) {
+      if (this.optionalOperator("|")) {
         if (this.parseAction) {
-          this.error('Cannot have a pipe in an action expression');
+          this.error("Cannot have a pipe in an action expression");
         }
         do {
           var name = this.expectIdentifierOrKeyword();
@@ -4460,7 +4460,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
             args.push(this.parseExpression());
           }
           result = new ast_1.BindingPipe(result, name, args);
-        } while (this.optionalOperator('|'));
+        } while (this.optionalOperator("|"));
       }
       return result;
     };
@@ -4576,7 +4576,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         } else if (this.optionalCharacter(lexer_1.$LBRACKET)) {
           var key = this.parsePipe();
           this.expectCharacter(lexer_1.$RBRACKET);
-          if (this.optionalOperator('=')) {
+          if (this.optionalOperator("=")) {
             var value = this.parseConditional();
             result = new ast_1.KeyedWrite(result, key, value);
           } else {
@@ -4626,7 +4626,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
       } else {
         this.error("Unexpected token " + this.next);
       }
-      throw new exceptions_1.BaseException('Fell through all cases in parsePrimary');
+      throw new exceptions_1.BaseException("Fell through all cases in parsePrimary");
     };
     _ParseAST.prototype.parseExpressionList = function(terminator) {
       var result = [];
@@ -4664,15 +4664,15 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         return isSafe ? new ast_1.SafeMethodCall(receiver, id, fn, args) : new ast_1.MethodCall(receiver, id, fn, args);
       } else {
         if (isSafe) {
-          if (this.optionalOperator('=')) {
-            this.error('The \'?.\' operator cannot be used in the assignment');
+          if (this.optionalOperator("=")) {
+            this.error("The '?.' operator cannot be used in the assignment");
           } else {
             return new ast_1.SafePropertyRead(receiver, id, this.reflector.getter(id));
           }
         } else {
-          if (this.optionalOperator('=')) {
+          if (this.optionalOperator("=")) {
             if (!this.parseAction) {
-              this.error('Bindings cannot contain assignments');
+              this.error("Bindings cannot contain assignments");
             }
             var value = this.parseConditional();
             return new ast_1.PropertyWrite(receiver, id, this.reflector.setter(id), value);
@@ -4694,7 +4694,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
     };
     _ParseAST.prototype.parseBlockContent = function() {
       if (!this.parseAction) {
-        this.error('Binding expression cannot contain chained expression');
+        this.error("Binding expression cannot contain chained expression");
       }
       var exprs = [];
       while (this.index < this.tokens.length && !this.next.isCharacter(lexer_1.$RBRACE)) {
@@ -4739,7 +4739,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         var name = null;
         var expression = null;
         if (keyIsVar) {
-          if (this.optionalOperator('=')) {
+          if (this.optionalOperator("=")) {
             name = this.expectTemplateBindingKey();
           } else {
             name = '\$implicit';
@@ -5040,16 +5040,16 @@ System.register("angular2/src/core/change_detection/binding_record", ["angular2/
       __define = global.define;
   global.define = undefined;
   var lang_1 = require("angular2/src/facade/lang");
-  var DIRECTIVE_LIFECYCLE = 'directiveLifecycle';
-  var BINDING = 'native';
-  var DIRECTIVE = 'directive';
-  var ELEMENT_PROPERTY = 'elementProperty';
-  var ELEMENT_ATTRIBUTE = 'elementAttribute';
-  var ELEMENT_CLASS = 'elementClass';
-  var ELEMENT_STYLE = 'elementStyle';
-  var TEXT_NODE = 'textNode';
-  var EVENT = 'event';
-  var HOST_EVENT = 'hostEvent';
+  var DIRECTIVE_LIFECYCLE = "directiveLifecycle";
+  var BINDING = "native";
+  var DIRECTIVE = "directive";
+  var ELEMENT_PROPERTY = "elementProperty";
+  var ELEMENT_ATTRIBUTE = "elementAttribute";
+  var ELEMENT_CLASS = "elementClass";
+  var ELEMENT_STYLE = "elementStyle";
+  var TEXT_NODE = "textNode";
+  var EVENT = "event";
+  var HOST_EVENT = "hostEvent";
   var BindingTarget = (function() {
     function BindingTarget(mode, elementIndex, name, unit, debug) {
       this.mode = mode;
@@ -5099,13 +5099,13 @@ System.register("angular2/src/core/change_detection/binding_record", ["angular2/
       return lang_1.isBlank(this.directiveRecord) || this.directiveRecord.isDefaultChangeDetection();
     };
     BindingRecord.createDirectiveDoCheck = function(directiveRecord) {
-      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'DoCheck', directiveRecord);
+      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "DoCheck", directiveRecord);
     };
     BindingRecord.createDirectiveOnInit = function(directiveRecord) {
-      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'OnInit', directiveRecord);
+      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "OnInit", directiveRecord);
     };
     BindingRecord.createDirectiveOnChanges = function(directiveRecord) {
-      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, 'OnChanges', directiveRecord);
+      return new BindingRecord(DIRECTIVE_LIFECYCLE, null, 0, null, null, "OnChanges", directiveRecord);
     };
     BindingRecord.createForDirective = function(ast, propertyName, setter, directiveRecord) {
       var elementIndex = directiveRecord.directiveIndex.elementIndex;
@@ -5504,7 +5504,7 @@ System.register("angular2/src/core/change_detection/coalesce", ["angular2/src/fa
     return lang_1.isPresent(dstIdx) ? dstIdx : srcIdx;
   }
   function _createSelfRecord(r, contextIndex, selfIndex) {
-    return new proto_record_1.ProtoRecord(proto_record_1.RecordType.Self, 'self', null, [], r.fixedArgs, contextIndex, r.directiveIndex, selfIndex, r.bindingRecord, r.lastInBinding, r.lastInDirective, false, false, r.propertyBindingIndex);
+    return new proto_record_1.ProtoRecord(proto_record_1.RecordType.Self, "self", null, [], r.fixedArgs, contextIndex, r.directiveIndex, selfIndex, r.bindingRecord, r.lastInBinding, r.lastInDirective, false, false, r.propertyBindingIndex);
   }
   function _haveSameDirIndex(a, b) {
     var di1 = lang_1.isBlank(a.directiveIndex) ? null : a.directiveIndex.directiveIndex;
@@ -5523,16 +5523,16 @@ System.register("angular2/src/core/change_detection/codegen_name_util", ["angula
   global.define = undefined;
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
-  var _STATE_ACCESSOR = 'state';
-  var _CONTEXT_ACCESSOR = 'context';
-  var _PROP_BINDING_INDEX = 'propertyBindingIndex';
-  var _DIRECTIVES_ACCESSOR = 'directiveIndices';
-  var _DISPATCHER_ACCESSOR = 'dispatcher';
-  var _LOCALS_ACCESSOR = 'locals';
-  var _MODE_ACCESSOR = 'mode';
-  var _PIPES_ACCESSOR = 'pipes';
-  var _PROTOS_ACCESSOR = 'protos';
-  exports.CONTEXT_ACCESSOR = 'context';
+  var _STATE_ACCESSOR = "state";
+  var _CONTEXT_ACCESSOR = "context";
+  var _PROP_BINDING_INDEX = "propertyBindingIndex";
+  var _DIRECTIVES_ACCESSOR = "directiveIndices";
+  var _DISPATCHER_ACCESSOR = "dispatcher";
+  var _LOCALS_ACCESSOR = "locals";
+  var _MODE_ACCESSOR = "mode";
+  var _PIPES_ACCESSOR = "pipes";
+  var _PROTOS_ACCESSOR = "protos";
+  exports.CONTEXT_ACCESSOR = "context";
   exports.CONTEXT_INDEX = 0;
   var _FIELD_PREFIX = 'this.';
   var _whiteSpaceRegExp = /\W/g;
@@ -5633,7 +5633,7 @@ System.register("angular2/src/core/change_detection/codegen_name_util", ["angula
       return res.length > 1 ? "var " + res.join(',') + ";" : '';
     };
     CodegenNameUtil.prototype.getPreventDefaultAccesor = function() {
-      return 'preventDefault';
+      return "preventDefault";
     };
     CodegenNameUtil.prototype.getFieldCount = function() {
       return this._sanitizedNames.length;
@@ -5827,9 +5827,9 @@ System.register("angular2/src/core/application_tokens", ["angular2/src/core/di",
   function _randomChar() {
     return lang_1.StringWrapper.fromCharCode(97 + lang_1.Math.floor(lang_1.Math.random() * 25));
   }
-  exports.PLATFORM_INITIALIZER = lang_1.CONST_EXPR(new di_1.OpaqueToken('Platform Initializer'));
-  exports.APP_INITIALIZER = lang_1.CONST_EXPR(new di_1.OpaqueToken('Application Initializer'));
-  exports.PACKAGE_ROOT_URL = lang_1.CONST_EXPR(new di_1.OpaqueToken('Application Packages Root URL'));
+  exports.PLATFORM_INITIALIZER = lang_1.CONST_EXPR(new di_1.OpaqueToken("Platform Initializer"));
+  exports.APP_INITIALIZER = lang_1.CONST_EXPR(new di_1.OpaqueToken("Application Initializer"));
+  exports.PACKAGE_ROOT_URL = lang_1.CONST_EXPR(new di_1.OpaqueToken("Application Packages Root URL"));
   global.define = __define;
   return module.exports;
 });
@@ -6969,19 +6969,19 @@ System.register("angular2/src/core/linker/view_resolver", ["angular2/src/core/di
         if (lang_1.isBlank(compMeta.template) && lang_1.isBlank(compMeta.templateUrl) && lang_1.isBlank(viewMeta)) {
           throw new exceptions_1.BaseException("Component '" + lang_1.stringify(component) + "' must have either 'template' or 'templateUrl' set.");
         } else if (lang_1.isPresent(compMeta.template) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('template', component);
+          this._throwMixingViewAndComponent("template", component);
         } else if (lang_1.isPresent(compMeta.templateUrl) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('templateUrl', component);
+          this._throwMixingViewAndComponent("templateUrl", component);
         } else if (lang_1.isPresent(compMeta.directives) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('directives', component);
+          this._throwMixingViewAndComponent("directives", component);
         } else if (lang_1.isPresent(compMeta.pipes) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('pipes', component);
+          this._throwMixingViewAndComponent("pipes", component);
         } else if (lang_1.isPresent(compMeta.encapsulation) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('encapsulation', component);
+          this._throwMixingViewAndComponent("encapsulation", component);
         } else if (lang_1.isPresent(compMeta.styles) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('styles', component);
+          this._throwMixingViewAndComponent("styles", component);
         } else if (lang_1.isPresent(compMeta.styleUrls) && lang_1.isPresent(viewMeta)) {
-          this._throwMixingViewAndComponent('styleUrls', component);
+          this._throwMixingViewAndComponent("styleUrls", component);
         } else if (lang_1.isPresent(viewMeta)) {
           return viewMeta;
         } else {
@@ -7194,8 +7194,8 @@ System.register("angular2/src/core/platform_directives_and_pipes", ["angular2/sr
   global.define = undefined;
   var di_1 = require("angular2/src/core/di");
   var lang_1 = require("angular2/src/facade/lang");
-  exports.PLATFORM_DIRECTIVES = lang_1.CONST_EXPR(new di_1.OpaqueToken('Platform Directives'));
-  exports.PLATFORM_PIPES = lang_1.CONST_EXPR(new di_1.OpaqueToken('Platform Pipes'));
+  exports.PLATFORM_DIRECTIVES = lang_1.CONST_EXPR(new di_1.OpaqueToken("Platform Directives"));
+  exports.PLATFORM_PIPES = lang_1.CONST_EXPR(new di_1.OpaqueToken("Platform Pipes"));
   global.define = __define;
   return module.exports;
 });
@@ -7519,7 +7519,7 @@ System.register("angular2/src/facade/exceptions", ["angular2/src/facade/base_wra
     __extends(BaseException, _super);
     function BaseException(message) {
       if (message === void 0) {
-        message = '--';
+        message = "--";
       }
       _super.call(this, message);
       this.message = message;
@@ -8269,13 +8269,13 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
       var _this = this;
       return this._genEvalValue(protoRec, function(idx) {
         return _this._names.getEventLocalName(eventRecord, idx);
-      }, 'locals');
+      }, "locals");
     };
     CodegenLogicUtil.prototype._genEvalValue = function(protoRec, getLocalName, localsAccessor) {
       var context = (protoRec.contextIndex == -1) ? this._names.getDirectiveName(protoRec.directiveIndex) : getLocalName(protoRec.contextIndex);
       var argString = protoRec.args.map(function(arg) {
         return getLocalName(arg);
-      }).join(', ');
+      }).join(", ");
       var rhs;
       switch (protoRec.mode) {
         case proto_record_1.RecordType.Self:
@@ -8334,8 +8334,8 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
       var _this = this;
       var bs = propertyBindingTargets.map(function(b) {
         if (lang_1.isBlank(b))
-          return 'null';
-        var debug = genDebugInfo ? codegen_facade_1.codify(b.debug) : 'null';
+          return "null";
+        var debug = genDebugInfo ? codegen_facade_1.codify(b.debug) : "null";
         return _this._utilName + ".bindingTarget(" + codegen_facade_1.codify(b.mode) + ", " + b.elementIndex + ", " + codegen_facade_1.codify(b.name) + ", " + codegen_facade_1.codify(b.unit) + ", " + debug + ")";
       });
       return "[" + bs.join(", ") + "]";
@@ -8384,7 +8384,7 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
           res.unshift(statementStart + " = new Array(" + outputCount + ");");
         }
       }
-      return res.join('\n');
+      return res.join("\n");
     };
     CodegenLogicUtil.prototype.genDirectivesOnDestroy = function(directiveRecords) {
       var res = [];
@@ -8395,7 +8395,7 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
           res.push(dirVarName + ".ngOnDestroy();");
         }
       }
-      return res.join('\n');
+      return res.join("\n");
     };
     CodegenLogicUtil.prototype._genEventHandler = function(boundElementIndex, eventName) {
       if (lang_1.IS_DART) {
@@ -8415,7 +8415,7 @@ System.register("angular2/src/core/change_detection/codegen_logic_util", ["angul
           res.push(this._names.getDetectorName(r.directiveIndex) + " = this.getDetectorFor(directives, " + i + ");");
         }
       }
-      return res.join('\n');
+      return res.join("\n");
     };
     CodegenLogicUtil.prototype.genContentLifecycleCallbacks = function(directiveRecords) {
       var res = [];
@@ -9756,8 +9756,8 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
   var codegen_facade_1 = require("angular2/src/core/change_detection/codegen_facade");
   var constants_1 = require("angular2/src/core/change_detection/constants");
   var proto_change_detector_1 = require("angular2/src/core/change_detection/proto_change_detector");
-  var IS_CHANGED_LOCAL = 'isChanged';
-  var CHANGES_LOCAL = 'changes';
+  var IS_CHANGED_LOCAL = "isChanged";
+  var CHANGES_LOCAL = "changes";
   var ChangeDetectorJITGenerator = (function() {
     function ChangeDetectorJITGenerator(definition, changeDetectionUtilVarName, abstractChangeDetectorVarName, changeDetectorStateVarName) {
       this.changeDetectionUtilVarName = changeDetectionUtilVarName;
@@ -9799,7 +9799,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
       if (this.eventBindings.length > 0) {
         var handlers = this.eventBindings.map(function(eb) {
           return _this._genEventBinding(eb);
-        }).join('\n');
+        }).join("\n");
         return "\n        " + this.typeName + ".prototype.handleEventInternal = function(eventName, elIndex, locals) {\n          var " + this._names.getPreventDefaultAccesor() + " = false;\n          " + this._names.genInitEventLocals() + "\n          " + handlers + "\n          return " + this._names.getPreventDefaultAccesor() + ";\n        }\n      ";
       } else {
         return '';
@@ -9836,7 +9836,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     ChangeDetectorJITGenerator.prototype._genMarkPathToRootAsCheckOnce = function(r) {
       var br = r.bindingRecord;
       if (br.isDefaultChangeDetection()) {
-        return '';
+        return "";
       } else {
         return this._names.getDetectorName(br.directiveRecord.directiveIndex) + ".markPathToRootAsCheckOnce();";
       }
@@ -9863,7 +9863,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     ChangeDetectorJITGenerator.prototype._maybeGenAfterContentLifecycleCallbacks = function() {
       var notifications = this._logic.genContentLifecycleCallbacks(this.directiveRecords);
       if (notifications.length > 0) {
-        var directiveNotifications = notifications.join('\n');
+        var directiveNotifications = notifications.join("\n");
         return "\n        " + this.typeName + ".prototype.afterContentLifecycleCallbacksInternal = function() {\n          " + directiveNotifications + "\n        }\n      ";
       } else {
         return '';
@@ -9872,7 +9872,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     ChangeDetectorJITGenerator.prototype._maybeGenAfterViewLifecycleCallbacks = function() {
       var notifications = this._logic.genViewLifecycleCallbacks(this.directiveRecords);
       if (notifications.length > 0) {
-        var directiveNotifications = notifications.join('\n');
+        var directiveNotifications = notifications.join("\n");
         return "\n        " + this.typeName + ".prototype.afterViewLifecycleCallbacksInternal = function() {\n          " + directiveNotifications + "\n        }\n      ";
       } else {
         return '';
@@ -9898,7 +9898,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
         code = "\n        " + this._maybeFirstInBinding(r) + "\n        " + code + "\n        " + this._maybeGenLastInDirective(r) + "\n        " + this._genEndOfSkipBlock(i) + "\n      ";
         codes.push(code);
       }
-      return codes.join('\n');
+      return codes.join("\n");
     };
     ChangeDetectorJITGenerator.prototype._genConditionalSkip = function(r, condition) {
       var maybeNegate = r.mode === proto_record_1.RecordType.SkipRecordsIf ? '!' : '';
@@ -9921,11 +9921,11 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
       return '';
     };
     ChangeDetectorJITGenerator.prototype._genDirectiveLifecycle = function(r) {
-      if (r.name === 'DoCheck') {
+      if (r.name === "DoCheck") {
         return this._genOnCheck(r);
-      } else if (r.name === 'OnInit') {
+      } else if (r.name === "OnInit") {
         return this._genOnInit(r);
-      } else if (r.name === 'OnChanges') {
+      } else if (r.name === "OnChanges") {
         return this._genOnChange(r);
       } else {
         throw new exceptions_1.BaseException("Unknown lifecycle event '" + r.name + "'");
@@ -9936,7 +9936,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
       var context = this._names.getLocalName(r.contextIndex);
       var argString = r.args.map(function(arg) {
         return _this._names.getLocalName(arg);
-      }).join(', ');
+      }).join(", ");
       var oldValue = this._names.getFieldName(r.selfIndex);
       var newValue = this._names.getLocalName(r.selfIndex);
       var pipe = this._names.getPipeName(r.selfIndex);
@@ -9966,7 +9966,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
       if (r.isPureFunction()) {
         var condition = r.args.map(function(a) {
           return _this._names.getChangeName(a);
-        }).join(' || ');
+        }).join(" || ");
         if (r.isUsedByOtherRecord()) {
           return "if (" + condition + ") { " + genCode + " } else { " + newValue + " = " + oldValue + "; }";
         } else {
@@ -9981,9 +9981,9 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     };
     ChangeDetectorJITGenerator.prototype._genUpdateDirectiveOrElement = function(r) {
       if (!r.lastInBinding)
-        return '';
+        return "";
       var newValue = this._names.getLocalName(r.selfIndex);
-      var notifyDebug = this.genConfig.logBindingUpdate ? "this.logBindingUpdate(" + newValue + ");" : '';
+      var notifyDebug = this.genConfig.logBindingUpdate ? "this.logBindingUpdate(" + newValue + ");" : "";
       var br = r.bindingRecord;
       if (br.target.isDirective()) {
         var directiveProperty = this._names.getDirectiveName(br.directiveRecord.directiveIndex) + "." + br.target.name;
@@ -10003,7 +10003,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
       var newValue = this._names.getLocalName(r.selfIndex);
       var oldValue = this._names.getFieldName(r.selfIndex);
       if (!r.bindingRecord.callOnChanges())
-        return '';
+        return "";
       return CHANGES_LOCAL + " = this.addChange(" + CHANGES_LOCAL + ", " + oldValue + ", " + newValue + ");";
     };
     ChangeDetectorJITGenerator.prototype._maybeFirstInBinding = function(r) {
@@ -10013,7 +10013,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     };
     ChangeDetectorJITGenerator.prototype._maybeGenLastInDirective = function(r) {
       if (!r.lastInDirective)
-        return '';
+        return "";
       return "\n      " + CHANGES_LOCAL + " = null;\n      " + this._genNotifyOnPushDetectors(r) + "\n      " + IS_CHANGED_LOCAL + " = false;\n    ";
     };
     ChangeDetectorJITGenerator.prototype._genOnCheck = function(r) {
@@ -10031,7 +10031,7 @@ System.register("angular2/src/core/change_detection/change_detection_jit_generat
     ChangeDetectorJITGenerator.prototype._genNotifyOnPushDetectors = function(r) {
       var br = r.bindingRecord;
       if (!r.lastInDirective || br.isDefaultChangeDetection())
-        return '';
+        return "";
       var retVal = "\n      if(" + IS_CHANGED_LOCAL + ") {\n        " + this._names.getDetectorName(br.directiveRecord.directiveIndex) + ".markAsCheckOnce();\n      }\n    ";
       return retVal;
     };
@@ -10824,7 +10824,7 @@ System.register("angular2/src/core/change_detection/dynamic_change_detector", ["
           }
         }
       }
-      throw new exceptions_1.BaseException('Cannot be reached');
+      throw new exceptions_1.BaseException("Cannot be reached");
     };
     DynamicChangeDetector.prototype._computeSkipLength = function(protoIndex, proto, values) {
       if (proto.mode === proto_record_1.RecordType.SkipRecords) {
@@ -10838,7 +10838,7 @@ System.register("angular2/src/core/change_detection/dynamic_change_detector", ["
         var condition = this._readContext(proto, values);
         return condition ? 0 : proto.fixedArgs[0] - protoIndex - 1;
       }
-      throw new exceptions_1.BaseException('Cannot be reached');
+      throw new exceptions_1.BaseException("Cannot be reached");
     };
     DynamicChangeDetector.prototype._markPathAsCheckOnce = function(proto) {
       if (!proto.bindingRecord.isDefaultChangeDetection()) {
@@ -10915,11 +10915,11 @@ System.register("angular2/src/core/change_detection/dynamic_change_detector", ["
           this.propertyBindingIndex = proto.propertyBindingIndex;
         }
         if (proto.isLifeCycleRecord()) {
-          if (proto.name === 'DoCheck' && !throwOnChange) {
+          if (proto.name === "DoCheck" && !throwOnChange) {
             this._getDirectiveFor(directiveRecord.directiveIndex).ngDoCheck();
-          } else if (proto.name === 'OnInit' && !throwOnChange && this.state == constants_1.ChangeDetectorState.NeverChecked) {
+          } else if (proto.name === "OnInit" && !throwOnChange && this.state == constants_1.ChangeDetectorState.NeverChecked) {
             this._getDirectiveFor(directiveRecord.directiveIndex).ngOnInit();
-          } else if (proto.name === 'OnChanges' && lang_1.isPresent(changes) && !throwOnChange) {
+          } else if (proto.name === "OnChanges" && lang_1.isPresent(changes) && !throwOnChange) {
             this._getDirectiveFor(directiveRecord.directiveIndex).ngOnChanges(changes);
           }
         } else if (proto.isSkipRecord()) {
@@ -11913,7 +11913,7 @@ System.register("angular2/src/core/di/injector", ["angular2/src/facade/collectio
     Object.defineProperty(Injector.prototype, "displayName", {
       get: function() {
         return "Injector(providers: [" + _mapProviders(this, function(b) {
-          return (" '" + b.key.displayName + "' ");
+          return (" \"" + b.key.displayName + "\" ");
         }).join(", ") + "])";
       },
       enumerable: true,
@@ -12053,10 +12053,10 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
     };
     _ConvertAstIntoProtoRecords.prototype.visitInterpolation = function(ast) {
       var args = this._visitAll(ast.expressions);
-      return this._addRecord(proto_record_1.RecordType.Interpolate, 'interpolate', _interpolationFn(ast.strings), args, ast.strings, 0);
+      return this._addRecord(proto_record_1.RecordType.Interpolate, "interpolate", _interpolationFn(ast.strings), args, ast.strings, 0);
     };
     _ConvertAstIntoProtoRecords.prototype.visitLiteralPrimitive = function(ast) {
-      return this._addRecord(proto_record_1.RecordType.Const, 'literal', ast.value, [], null, 0);
+      return this._addRecord(proto_record_1.RecordType.Const, "literal", ast.value, [], null, 0);
     };
     _ConvertAstIntoProtoRecords.prototype.visitPropertyRead = function(ast) {
       var receiver = ast.receiver.visit(this);
@@ -12090,7 +12090,7 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
       var args = this._visitAll(ast.args);
       if (lang_1.isPresent(this._variableNames) && collection_1.ListWrapper.contains(this._variableNames, ast.name)) {
         var target = this._addRecord(proto_record_1.RecordType.Local, ast.name, ast.name, [], null, receiver);
-        return this._addRecord(proto_record_1.RecordType.InvokeClosure, 'closure', null, args, null, target);
+        return this._addRecord(proto_record_1.RecordType.InvokeClosure, "closure", null, args, null, target);
       } else {
         return this._addRecord(proto_record_1.RecordType.InvokeMethod, ast.name, ast.fn, args, null, receiver);
       }
@@ -12103,7 +12103,7 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
     _ConvertAstIntoProtoRecords.prototype.visitFunctionCall = function(ast) {
       var target = ast.target.visit(this);
       var args = this._visitAll(ast.args);
-      return this._addRecord(proto_record_1.RecordType.InvokeClosure, 'closure', null, args, null, target);
+      return this._addRecord(proto_record_1.RecordType.InvokeClosure, "closure", null, args, null, target);
     };
     _ConvertAstIntoProtoRecords.prototype.visitLiteralArray = function(ast) {
       var primitiveName = "arrayFn" + ast.expressions.length;
@@ -12117,16 +12117,16 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
       switch (ast.operation) {
         case '&&':
           var branchEnd = [null];
-          this._addRecord(proto_record_1.RecordType.SkipRecordsIfNot, 'SkipRecordsIfNot', null, [], branchEnd, left);
+          this._addRecord(proto_record_1.RecordType.SkipRecordsIfNot, "SkipRecordsIfNot", null, [], branchEnd, left);
           var right = ast.right.visit(this);
           branchEnd[0] = right;
-          return this._addRecord(proto_record_1.RecordType.PrimitiveOp, 'cond', change_detection_util_1.ChangeDetectionUtil.cond, [left, right, left], null, 0);
+          return this._addRecord(proto_record_1.RecordType.PrimitiveOp, "cond", change_detection_util_1.ChangeDetectionUtil.cond, [left, right, left], null, 0);
         case '||':
           var branchEnd = [null];
-          this._addRecord(proto_record_1.RecordType.SkipRecordsIf, 'SkipRecordsIf', null, [], branchEnd, left);
+          this._addRecord(proto_record_1.RecordType.SkipRecordsIf, "SkipRecordsIf", null, [], branchEnd, left);
           var right = ast.right.visit(this);
           branchEnd[0] = right;
-          return this._addRecord(proto_record_1.RecordType.PrimitiveOp, 'cond', change_detection_util_1.ChangeDetectionUtil.cond, [left, left, right], null, 0);
+          return this._addRecord(proto_record_1.RecordType.PrimitiveOp, "cond", change_detection_util_1.ChangeDetectionUtil.cond, [left, left, right], null, 0);
         default:
           var right = ast.right.visit(this);
           return this._addRecord(proto_record_1.RecordType.PrimitiveOp, _operationToPrimitiveName(ast.operation), _operationToFunction(ast.operation), [left, right], null, 0);
@@ -12134,19 +12134,19 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
     };
     _ConvertAstIntoProtoRecords.prototype.visitPrefixNot = function(ast) {
       var exp = ast.expression.visit(this);
-      return this._addRecord(proto_record_1.RecordType.PrimitiveOp, 'operation_negate', change_detection_util_1.ChangeDetectionUtil.operation_negate, [exp], null, 0);
+      return this._addRecord(proto_record_1.RecordType.PrimitiveOp, "operation_negate", change_detection_util_1.ChangeDetectionUtil.operation_negate, [exp], null, 0);
     };
     _ConvertAstIntoProtoRecords.prototype.visitConditional = function(ast) {
       var condition = ast.condition.visit(this);
       var startOfFalseBranch = [null];
       var endOfFalseBranch = [null];
-      this._addRecord(proto_record_1.RecordType.SkipRecordsIfNot, 'SkipRecordsIfNot', null, [], startOfFalseBranch, condition);
+      this._addRecord(proto_record_1.RecordType.SkipRecordsIfNot, "SkipRecordsIfNot", null, [], startOfFalseBranch, condition);
       var whenTrue = ast.trueExp.visit(this);
-      var skip = this._addRecord(proto_record_1.RecordType.SkipRecords, 'SkipRecords', null, [], endOfFalseBranch, 0);
+      var skip = this._addRecord(proto_record_1.RecordType.SkipRecords, "SkipRecords", null, [], endOfFalseBranch, 0);
       var whenFalse = ast.falseExp.visit(this);
       startOfFalseBranch[0] = skip;
       endOfFalseBranch[0] = whenFalse;
-      return this._addRecord(proto_record_1.RecordType.PrimitiveOp, 'cond', change_detection_util_1.ChangeDetectionUtil.cond, [condition, whenTrue, whenFalse], null, 0);
+      return this._addRecord(proto_record_1.RecordType.PrimitiveOp, "cond", change_detection_util_1.ChangeDetectionUtil.cond, [condition, whenTrue, whenFalse], null, 0);
     };
     _ConvertAstIntoProtoRecords.prototype.visitPipe = function(ast) {
       var value = ast.exp.visit(this);
@@ -12156,14 +12156,14 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
     _ConvertAstIntoProtoRecords.prototype.visitKeyedRead = function(ast) {
       var obj = ast.obj.visit(this);
       var key = ast.key.visit(this);
-      return this._addRecord(proto_record_1.RecordType.KeyedRead, 'keyedAccess', change_detection_util_1.ChangeDetectionUtil.keyedAccess, [key], null, obj);
+      return this._addRecord(proto_record_1.RecordType.KeyedRead, "keyedAccess", change_detection_util_1.ChangeDetectionUtil.keyedAccess, [key], null, obj);
     };
     _ConvertAstIntoProtoRecords.prototype.visitChain = function(ast) {
       var _this = this;
       var args = ast.expressions.map(function(e) {
         return e.visit(_this);
       });
-      return this._addRecord(proto_record_1.RecordType.Chain, 'chain', null, args, null, 0);
+      return this._addRecord(proto_record_1.RecordType.Chain, "chain", null, args, null, 0);
     };
     _ConvertAstIntoProtoRecords.prototype.visitQuote = function(ast) {
       throw new exceptions_1.BaseException(("Caught uninterpreted expression at " + ast.location + ": " + ast.uninterpretedExpression + ". ") + ("Expression prefix " + ast.prefix + " did not match a template transformer to interpret the expression."));
@@ -12221,31 +12221,31 @@ System.register("angular2/src/core/change_detection/proto_change_detector", ["an
   function _operationToPrimitiveName(operation) {
     switch (operation) {
       case '+':
-        return 'operation_add';
+        return "operation_add";
       case '-':
-        return 'operation_subtract';
+        return "operation_subtract";
       case '*':
-        return 'operation_multiply';
+        return "operation_multiply";
       case '/':
-        return 'operation_divide';
+        return "operation_divide";
       case '%':
-        return 'operation_remainder';
+        return "operation_remainder";
       case '==':
-        return 'operation_equals';
+        return "operation_equals";
       case '!=':
-        return 'operation_not_equals';
+        return "operation_not_equals";
       case '===':
-        return 'operation_identical';
+        return "operation_identical";
       case '!==':
-        return 'operation_not_identical';
+        return "operation_not_identical";
       case '<':
-        return 'operation_less_then';
+        return "operation_less_then";
       case '>':
-        return 'operation_greater_then';
+        return "operation_greater_then";
       case '<=':
-        return 'operation_less_or_equals_then';
+        return "operation_less_or_equals_then";
       case '>=':
-        return 'operation_greater_or_equals_then';
+        return "operation_greater_or_equals_then";
       default:
         throw new exceptions_1.BaseException("Unsupported operation " + operation);
     }
@@ -12660,7 +12660,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
       if (collection_1.ListWrapper.equals(_platformProviders, providers)) {
         return _platform;
       } else {
-        throw new exceptions_1.BaseException('platform cannot be initialized with different sets of providers.');
+        throw new exceptions_1.BaseException("platform cannot be initialized with different sets of providers.");
       }
     } else {
       return _createPlatform(providers);
@@ -12726,7 +12726,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
     PlatformRef_.prototype.application = function(providers) {
       var app = this._initApp(createNgZone(), providers);
       if (async_1.PromiseWrapper.isPromise(app)) {
-        throw new exceptions_1.BaseException('Cannot use asyncronous app initializers with application. Use asyncApplication instead.');
+        throw new exceptions_1.BaseException("Cannot use asyncronous app initializers with application. Use asyncApplication instead.");
       }
       return app;
     };
@@ -12913,7 +12913,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
       return completer.promise.then(function(ref) {
         var c = _this._injector.get(console_1.Console);
         if (lang_1.assertionsEnabled()) {
-          c.log('Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.');
+          c.log("Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
         }
         return ref;
       });
@@ -12950,7 +12950,7 @@ System.register("angular2/src/core/application_ref", ["angular2/src/core/zone/ng
     });
     ApplicationRef_.prototype.tick = function() {
       if (this._runningTick) {
-        throw new exceptions_1.BaseException('ApplicationRef.tick is called recursively');
+        throw new exceptions_1.BaseException("ApplicationRef.tick is called recursively");
       }
       var s = ApplicationRef_._tickScope();
       try {
@@ -13102,8 +13102,8 @@ System.register("angular2/src/facade/async", ["angular2/src/facade/lang", "angul
       if (onComplete === void 0) {
         onComplete = function() {};
       }
-      onError = (typeof onError === 'function') && onError || lang_1.noop;
-      onComplete = (typeof onComplete === 'function') && onComplete || lang_1.noop;
+      onError = (typeof onError === "function") && onError || lang_1.noop;
+      onComplete = (typeof onComplete === "function") && onComplete || lang_1.noop;
       return emitter.subscribe({
         next: onNext,
         error: onError,
@@ -13743,7 +13743,7 @@ System.register("angular2/src/platform/dom/events/event_manager", ["angular2/src
   var di_1 = require("angular2/src/core/di");
   var ng_zone_1 = require("angular2/src/core/zone/ng_zone");
   var collection_1 = require("angular2/src/facade/collection");
-  exports.EVENT_MANAGER_PLUGINS = lang_1.CONST_EXPR(new di_1.OpaqueToken('EventManagerPlugins'));
+  exports.EVENT_MANAGER_PLUGINS = lang_1.CONST_EXPR(new di_1.OpaqueToken("EventManagerPlugins"));
   var EventManager = (function() {
     function EventManager(plugins, _zone) {
       var _this = this;
@@ -13784,10 +13784,10 @@ System.register("angular2/src/platform/dom/events/event_manager", ["angular2/src
       return false;
     };
     EventManagerPlugin.prototype.addEventListener = function(element, eventName, handler) {
-      throw 'not implemented';
+      throw "not implemented";
     };
     EventManagerPlugin.prototype.addGlobalEventListener = function(element, eventName, handler) {
-      throw 'not implemented';
+      throw "not implemented";
     };
     return EventManagerPlugin;
   })();
@@ -15480,7 +15480,7 @@ System.register("angular2/src/common/directives/ng_plural", ["angular2/core", "a
       return lang_1.isPresent(categoryView) ? categoryView : this._caseViews.get(_CATEGORY_DEFAULT);
     };
     NgPlural.prototype._isValueView = function(pluralCase) {
-      return pluralCase.value[0] === '=';
+      return pluralCase.value[0] === "=";
     };
     NgPlural.prototype._formatValue = function(pluralCase) {
       return this._isValueView(pluralCase) ? this._stripValue(pluralCase.value) : pluralCase.value;
@@ -15539,9 +15539,9 @@ System.register("angular2/src/common/forms/model", ["angular2/src/facade/lang", 
   var async_1 = require("angular2/src/facade/async");
   var promise_1 = require("angular2/src/facade/promise");
   var collection_1 = require("angular2/src/facade/collection");
-  exports.VALID = 'VALID';
-  exports.INVALID = 'INVALID';
-  exports.PENDING = 'PENDING';
+  exports.VALID = "VALID";
+  exports.INVALID = "INVALID";
+  exports.PENDING = "PENDING";
   function isControl(control) {
     return control instanceof AbstractControl;
   }
@@ -15550,7 +15550,7 @@ System.register("angular2/src/common/forms/model", ["angular2/src/facade/lang", 
     if (lang_1.isBlank(path))
       return null;
     if (!(path instanceof Array)) {
-      path = path.split('/');
+      path = path.split("/");
     }
     if (path instanceof Array && collection_1.ListWrapper.isEmpty(path))
       return null;
@@ -16138,7 +16138,7 @@ System.register("angular2/src/common/forms/directives/control_value_accessor", [
   global.define = undefined;
   var core_1 = require("angular2/core");
   var lang_1 = require("angular2/src/facade/lang");
-  exports.NG_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.OpaqueToken('NgValueAccessor'));
+  exports.NG_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.OpaqueToken("NgValueAccessor"));
   global.define = __define;
   return module.exports;
 });
@@ -16152,21 +16152,21 @@ System.register("angular2/src/common/forms/validators", ["angular2/src/facade/la
   var async_1 = require("angular2/src/facade/async");
   var collection_1 = require("angular2/src/facade/collection");
   var core_1 = require("angular2/core");
-  exports.NG_VALIDATORS = lang_1.CONST_EXPR(new core_1.OpaqueToken('NgValidators'));
-  exports.NG_ASYNC_VALIDATORS = lang_1.CONST_EXPR(new core_1.OpaqueToken('NgAsyncValidators'));
+  exports.NG_VALIDATORS = lang_1.CONST_EXPR(new core_1.OpaqueToken("NgValidators"));
+  exports.NG_ASYNC_VALIDATORS = lang_1.CONST_EXPR(new core_1.OpaqueToken("NgAsyncValidators"));
   var Validators = (function() {
     function Validators() {}
     Validators.required = function(control) {
-      return lang_1.isBlank(control.value) || (lang_1.isString(control.value) && control.value == '') ? {'required': true} : null;
+      return lang_1.isBlank(control.value) || (lang_1.isString(control.value) && control.value == "") ? {"required": true} : null;
     };
     Validators.minLength = function(minLength) {
       return function(control) {
         if (lang_1.isPresent(Validators.required(control)))
           return null;
         var v = control.value;
-        return v.length < minLength ? {'minlength': {
-            'requiredLength': minLength,
-            'actualLength': v.length
+        return v.length < minLength ? {"minlength": {
+            "requiredLength": minLength,
+            "actualLength": v.length
           }} : null;
       };
     };
@@ -16175,9 +16175,9 @@ System.register("angular2/src/common/forms/validators", ["angular2/src/facade/la
         if (lang_1.isPresent(Validators.required(control)))
           return null;
         var v = control.value;
-        return v.length > maxLength ? {'maxlength': {
-            'requiredLength': maxLength,
-            'actualLength': v.length
+        return v.length > maxLength ? {"maxlength": {
+            "requiredLength": maxLength,
+            "actualLength": v.length
           }} : null;
       };
     };
@@ -16187,9 +16187,9 @@ System.register("angular2/src/common/forms/validators", ["angular2/src/facade/la
           return null;
         var regex = new RegExp("^" + pattern + "$");
         var v = control.value;
-        return regex.test(v) ? null : {'pattern': {
-            'requiredPattern': "^" + pattern + "$",
-            'actualValue': v
+        return regex.test(v) ? null : {"pattern": {
+            "requiredPattern": "^" + pattern + "$",
+            "actualValue": v
           }};
       };
     };
@@ -16466,11 +16466,11 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
     if (lang_1.isBlank(id))
       return "" + value;
     if (!lang_1.isPrimitive(value))
-      value = 'Object';
+      value = "Object";
     return lang_1.StringWrapper.slice(id + ": " + value, 0, 50);
   }
   function _extractId(valueString) {
-    return valueString.split(':')[0];
+    return valueString.split(":")[0];
   }
   var SelectControlValueAccessor = (function() {
     function SelectControlValueAccessor(_renderer, _elementRef) {
@@ -16812,7 +16812,7 @@ System.register("angular2/src/common/forms/directives/ng_form_control", ["angula
       async_1.ObservableWrapper.callEmit(this.update, newValue);
     };
     NgFormControl.prototype._isControlChanged = function(changes) {
-      return collection_1.StringMapWrapper.contains(changes, 'form');
+      return collection_1.StringMapWrapper.contains(changes, "form");
     };
     NgFormControl = __decorate([core_1.Directive({
       selector: '[ngFormControl]',
@@ -17100,7 +17100,7 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
       this.ngSubmit = new async_1.EventEmitter();
     }
     NgFormModel.prototype.ngOnChanges = function(changes) {
-      if (collection_1.StringMapWrapper.contains(changes, 'form')) {
+      if (collection_1.StringMapWrapper.contains(changes, "form")) {
         var sync = shared_1.composeValidators(this._validators);
         this.form.validator = validators_1.Validators.compose([this.form.validator, sync]);
         var async = shared_1.composeAsyncValidators(this._asyncValidators);
@@ -17490,7 +17490,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     MinLengthValidator = __decorate([core_1.Directive({
       selector: '[minlength][ngControl],[minlength][ngFormControl],[minlength][ngModel]',
       providers: [MIN_LENGTH_VALIDATOR]
-    }), __param(0, core_1.Attribute('minlength')), __metadata('design:paramtypes', [String])], MinLengthValidator);
+    }), __param(0, core_1.Attribute("minlength")), __metadata('design:paramtypes', [String])], MinLengthValidator);
     return MinLengthValidator;
   })();
   exports.MinLengthValidator = MinLengthValidator;
@@ -17510,7 +17510,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     MaxLengthValidator = __decorate([core_1.Directive({
       selector: '[maxlength][ngControl],[maxlength][ngFormControl],[maxlength][ngModel]',
       providers: [MAX_LENGTH_VALIDATOR]
-    }), __param(0, core_1.Attribute('maxlength')), __metadata('design:paramtypes', [String])], MaxLengthValidator);
+    }), __param(0, core_1.Attribute("maxlength")), __metadata('design:paramtypes', [String])], MaxLengthValidator);
     return MaxLengthValidator;
   })();
   exports.MaxLengthValidator = MaxLengthValidator;
@@ -17530,7 +17530,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     PatternValidator = __decorate([core_1.Directive({
       selector: '[pattern][ngControl],[pattern][ngFormControl],[pattern][ngModel]',
       providers: [PATTERN_VALIDATOR]
-    }), __param(0, core_1.Attribute('pattern')), __metadata('design:paramtypes', [String])], PatternValidator);
+    }), __param(0, core_1.Attribute("pattern")), __metadata('design:paramtypes', [String])], PatternValidator);
     return PatternValidator;
   })();
   exports.PatternValidator = PatternValidator;
@@ -17569,9 +17569,9 @@ System.register("angular2/src/common/forms/form_builder", ["angular2/core", "ang
         extra = null;
       }
       var controls = this._reduceControls(controlsConfig);
-      var optionals = (lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, 'optionals') : null);
-      var validator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, 'validator') : null;
-      var asyncValidator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, 'asyncValidator') : null;
+      var optionals = (lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "optionals") : null);
+      var validator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "validator") : null;
+      var asyncValidator = lang_1.isPresent(extra) ? collection_1.StringMapWrapper.get(extra, "asyncValidator") : null;
       return new modelModule.ControlGroup(controls, optionals, validator, asyncValidator);
     };
     FormBuilder.prototype.control = function(value, validator, asyncValidator) {
@@ -18102,14 +18102,14 @@ System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "
     return new UrlResolver();
   }
   exports.createWithoutPackagePrefix = createWithoutPackagePrefix;
-  exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_2.Provider(application_tokens_1.PACKAGE_ROOT_URL, {useValue: '/'});
+  exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_2.Provider(application_tokens_1.PACKAGE_ROOT_URL, {useValue: "/"});
   var UrlResolver = (function() {
     function UrlResolver(packagePrefix) {
       if (packagePrefix === void 0) {
         packagePrefix = null;
       }
       if (lang_1.isPresent(packagePrefix)) {
-        this._packagePrefix = lang_1.StringWrapper.stripRight(packagePrefix, '/') + '/';
+        this._packagePrefix = lang_1.StringWrapper.stripRight(packagePrefix, "/") + "/";
       }
     }
     UrlResolver.prototype.resolve = function(baseUrl, url) {
@@ -18117,8 +18117,8 @@ System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "
       if (lang_1.isPresent(baseUrl) && baseUrl.length > 0) {
         resolvedUrl = _resolveUrl(baseUrl, resolvedUrl);
       }
-      if (lang_1.isPresent(this._packagePrefix) && getUrlScheme(resolvedUrl) == 'package') {
-        resolvedUrl = resolvedUrl.replace('package:', this._packagePrefix);
+      if (lang_1.isPresent(this._packagePrefix) && getUrlScheme(resolvedUrl) == "package") {
+        resolvedUrl = resolvedUrl.replace("package:", this._packagePrefix);
       }
       return resolvedUrl;
     };
@@ -18128,7 +18128,7 @@ System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "
   exports.UrlResolver = UrlResolver;
   function getUrlScheme(url) {
     var match = _split(url);
-    return (match && match[_ComponentIndex.Scheme]) || '';
+    return (match && match[_ComponentIndex.Scheme]) || "";
   }
   exports.getUrlScheme = getUrlScheme;
   function _buildFromEncodedParts(opt_scheme, opt_userInfo, opt_domain, opt_port, opt_path, opt_queryData, opt_fragment) {
@@ -18259,7 +18259,7 @@ System.register("angular2/src/compiler/selector", ["angular2/src/facade/collecti
       var results = [];
       var _addResult = function(res, cssSel) {
         if (cssSel.notSelectors.length > 0 && lang_1.isBlank(cssSel.element) && collection_1.ListWrapper.isEmpty(cssSel.classNames) && collection_1.ListWrapper.isEmpty(cssSel.attrs)) {
-          cssSel.element = '*';
+          cssSel.element = "*";
         }
         res.push(cssSel);
       };
@@ -18496,7 +18496,7 @@ System.register("angular2/src/compiler/selector", ["angular2/src/facade/collecti
         return false;
       }
       var selectables = map.get(name);
-      var starSelectables = map.get('*');
+      var starSelectables = map.get("*");
       if (lang_1.isPresent(starSelectables)) {
         selectables = selectables.concat(starSelectables);
       }
@@ -19205,10 +19205,10 @@ System.register("angular2/src/transform/template_compiler/change_detector_codege
   var Codegen = (function() {
     function Codegen(moduleAlias) {}
     Codegen.prototype.generate = function(typeName, changeDetectorTypeName, def) {
-      throw 'Not implemented in JS';
+      throw "Not implemented in JS";
     };
     Codegen.prototype.toString = function() {
-      throw 'Not implemented in JS';
+      throw "Not implemented in JS";
     };
     return Codegen;
   })();
@@ -20007,7 +20007,7 @@ System.register("angular2/src/compiler/parse_util", [], true, function(require, 
       while (ctxLen < 100 && ctxStart > 0) {
         ctxStart--;
         ctxLen++;
-        if (source[ctxStart] == '\n') {
+        if (source[ctxStart] == "\n") {
           if (++ctxLines == 3) {
             break;
           }
@@ -20018,7 +20018,7 @@ System.register("angular2/src/compiler/parse_util", [], true, function(require, 
       while (ctxLen < 100 && ctxEnd < source.length - 1) {
         ctxEnd++;
         ctxLen++;
-        if (source[ctxEnd] == '\n') {
+        if (source[ctxEnd] == "\n") {
           if (++ctxLines == 3) {
             break;
           }
@@ -21120,9 +21120,9 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
   exports.controlPath = controlPath;
   function setUpControl(control, dir) {
     if (lang_1.isBlank(control))
-      _throwError(dir, 'Cannot find control');
+      _throwError(dir, "Cannot find control");
     if (lang_1.isBlank(dir.valueAccessor))
-      _throwError(dir, 'No value accessor for');
+      _throwError(dir, "No value accessor for");
     control.validator = validators_1.Validators.compose([control.validator, dir.validator]);
     control.asyncValidator = validators_1.Validators.composeAsync([control.asyncValidator, dir.asyncValidator]);
     dir.valueAccessor.writeValue(control.value);
@@ -21141,13 +21141,13 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
   exports.setUpControl = setUpControl;
   function setUpControlGroup(control, dir) {
     if (lang_1.isBlank(control))
-      _throwError(dir, 'Cannot find control');
+      _throwError(dir, "Cannot find control");
     control.validator = validators_1.Validators.compose([control.validator, dir.validator]);
     control.asyncValidator = validators_1.Validators.composeAsync([control.asyncValidator, dir.asyncValidator]);
   }
   exports.setUpControlGroup = setUpControlGroup;
   function _throwError(dir, message) {
-    var path = dir.path.join(' -> ');
+    var path = dir.path.join(" -> ");
     throw new exceptions_1.BaseException(message + " '" + path + "'");
   }
   function composeValidators(validators) {
@@ -21159,9 +21159,9 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
   }
   exports.composeAsyncValidators = composeAsyncValidators;
   function isPropertyUpdated(changes, viewModel) {
-    if (!collection_1.StringMapWrapper.contains(changes, 'model'))
+    if (!collection_1.StringMapWrapper.contains(changes, "model"))
       return false;
-    var change = changes['model'];
+    var change = changes["model"];
     if (change.isFirstChange())
       return true;
     return !lang_1.looseIdentical(viewModel, change.currentValue);
@@ -21178,11 +21178,11 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
         defaultAccessor = v;
       } else if (lang_1.hasConstructor(v, checkbox_value_accessor_1.CheckboxControlValueAccessor) || lang_1.hasConstructor(v, number_value_accessor_1.NumberValueAccessor) || lang_1.hasConstructor(v, select_control_value_accessor_1.SelectControlValueAccessor) || lang_1.hasConstructor(v, radio_control_value_accessor_1.RadioControlValueAccessor)) {
         if (lang_1.isPresent(builtinAccessor))
-          _throwError(dir, 'More than one built-in value accessor matches');
+          _throwError(dir, "More than one built-in value accessor matches");
         builtinAccessor = v;
       } else {
         if (lang_1.isPresent(customAccessor))
-          _throwError(dir, 'More than one custom value accessor matches');
+          _throwError(dir, "More than one custom value accessor matches");
         customAccessor = v;
       }
     });
@@ -21192,7 +21192,7 @@ System.register("angular2/src/common/forms/directives/shared", ["angular2/src/fa
       return builtinAccessor;
     if (lang_1.isPresent(defaultAccessor))
       return defaultAccessor;
-    _throwError(dir, 'No valid value accessor for');
+    _throwError(dir, "No valid value accessor for");
     return null;
   }
   exports.selectValueAccessor = selectValueAccessor;
@@ -21294,7 +21294,7 @@ System.register("angular2/src/platform/dom/events/hammer_gestures", ["angular2/s
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var core_1 = require("angular2/core");
-  exports.HAMMER_GESTURE_CONFIG = lang_1.CONST_EXPR(new core_1.OpaqueToken('HammerGestureConfig'));
+  exports.HAMMER_GESTURE_CONFIG = lang_1.CONST_EXPR(new core_1.OpaqueToken("HammerGestureConfig"));
   var HammerGestureConfig = (function() {
     function HammerGestureConfig() {
       this.events = [];
@@ -21424,10 +21424,10 @@ System.register("angular2/src/platform/browser/generic_browser_adapter", ["angul
       return lang_1.isFunction(this.defaultDoc().body.createShadowRoot);
     };
     GenericBrowserDomAdapter.prototype.getAnimationPrefix = function() {
-      return lang_1.isPresent(this._animationPrefix) ? this._animationPrefix : '';
+      return lang_1.isPresent(this._animationPrefix) ? this._animationPrefix : "";
     };
     GenericBrowserDomAdapter.prototype.getTransitionEnd = function() {
-      return lang_1.isPresent(this._transitionEnd) ? this._transitionEnd : '';
+      return lang_1.isPresent(this._transitionEnd) ? this._transitionEnd : "";
     };
     GenericBrowserDomAdapter.prototype.supportsAnimation = function() {
       return lang_1.isPresent(this._animationPrefix) && lang_1.isPresent(this._transitionEnd);
@@ -22149,9 +22149,9 @@ System.register("angular2/src/compiler/change_detector_compiler", ["angular2/src
   var change_detector_codegen_1 = require("angular2/src/transform/template_compiler/change_detector_codegen");
   var util_1 = require("angular2/src/compiler/util");
   var di_1 = require("angular2/src/core/di");
-  var ABSTRACT_CHANGE_DETECTOR = 'AbstractChangeDetector';
-  var UTIL = 'ChangeDetectionUtil';
-  var CHANGE_DETECTOR_STATE = 'ChangeDetectorState';
+  var ABSTRACT_CHANGE_DETECTOR = "AbstractChangeDetector";
+  var UTIL = "ChangeDetectionUtil";
+  var CHANGE_DETECTOR_STATE = "ChangeDetectorState";
   exports.CHANGE_DETECTION_JIT_IMPORTS = lang_1.CONST_EXPR({
     'AbstractChangeDetector': abstract_change_detector_1.AbstractChangeDetector,
     'ChangeDetectionUtil': change_detection_util_1.ChangeDetectionUtil,
@@ -23717,7 +23717,7 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
       _super.apply(this, arguments);
     }
     BrowserDomAdapter.prototype.parse = function(templateHtml) {
-      throw new Error('parse not implemented');
+      throw new Error("parse not implemented");
     };
     BrowserDomAdapter.makeCurrent = function() {
       dom_adapter_1.setRootDomAdapter(new BrowserDomAdapter());
@@ -23818,7 +23818,7 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
       return node.type;
     };
     BrowserDomAdapter.prototype.content = function(node) {
-      if (this.hasProperty(node, 'content')) {
+      if (this.hasProperty(node, "content")) {
         return node.content;
       } else {
         return node;
@@ -24063,7 +24063,7 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
       return matches;
     };
     BrowserDomAdapter.prototype.isTemplateElement = function(el) {
-      return el instanceof HTMLElement && el.nodeName == 'TEMPLATE';
+      return el instanceof HTMLElement && el.nodeName == "TEMPLATE";
     };
     BrowserDomAdapter.prototype.isTextNode = function(node) {
       return node.nodeType === Node.TEXT_NODE;
@@ -24113,11 +24113,11 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
       return key;
     };
     BrowserDomAdapter.prototype.getGlobalEventTarget = function(target) {
-      if (target == 'window') {
+      if (target == "window") {
         return window;
-      } else if (target == 'document') {
+      } else if (target == "document") {
         return document;
-      } else if (target == 'body') {
+      } else if (target == "body") {
         return document.body;
       }
     };
@@ -24181,7 +24181,7 @@ System.register("angular2/src/platform/browser/browser_adapter", ["angular2/src/
   var urlParsingNode = null;
   function relativePath(url) {
     if (lang_1.isBlank(urlParsingNode)) {
-      urlParsingNode = document.createElement('a');
+      urlParsingNode = document.createElement("a");
     }
     urlParsingNode.setAttribute('href', url);
     return (urlParsingNode.pathname.charAt(0) === '/') ? urlParsingNode.pathname : '/' + urlParsingNode.pathname;

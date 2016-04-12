@@ -22,7 +22,7 @@ export let WebWorkerXHRImpl = class extends XHR {
     }
     get(url) {
         var fnArgs = [new FnArg(url, null)];
-        var args = new UiArguments('get', fnArgs);
+        var args = new UiArguments("get", fnArgs);
         return this._messageBroker.runOnService(args, String);
     }
 };
