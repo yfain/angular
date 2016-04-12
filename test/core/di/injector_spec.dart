@@ -673,7 +673,7 @@ main() {
     describe("displayName", () {
       it("should work", () {
         expect(Injector.resolveAndCreate([Engine, BrokenEngine]).displayName)
-            .toEqual("Injector(providers: [ 'Engine' ,  'BrokenEngine' ])");
+            .toEqual("Injector(providers: [ \"Engine\" ,  \"BrokenEngine\" ])");
       });
     });
   });
