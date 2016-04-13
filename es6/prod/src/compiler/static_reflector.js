@@ -52,6 +52,9 @@ export class StaticReflector {
                     .map(decorator => this.convertKnownDecorator(type.moduleId, decorator))
                     .filter(decorator => isPresent(decorator));
             }
+            else {
+                annotations = [];
+            }
             this.annotationCache.set(type, annotations);
         }
         return annotations;
@@ -61,6 +64,9 @@ export class StaticReflector {
         if (!isPresent(propMetadata)) {
             let classMetadata = this.getTypeMetadata(type);
             propMetadata = this.getPropertyMetadata(type.moduleId, classMetadata['members']);
+            if (!isPresent(propMetadata)) {
+                propMetadata = {};
+            }
             this.propertyCache.set(type, propMetadata);
         }
         return propMetadata;
@@ -69,12 +75,20 @@ export class StaticReflector {
         let parameters = this.parameterCache.get(type);
         if (!isPresent(parameters)) {
             let classMetadata = this.getTypeMetadata(type);
-            let ctorData = classMetadata['members']['__ctor__'];
-            if (isPresent(ctorData)) {
-                let ctor = ctorData.find(a => a['__symbolic'] === 'constructor');
-                parameters = this.simplify(type.moduleId, ctor['parameters']);
-                this.parameterCache.set(type, parameters);
+            if (isPresent(classMetadata)) {
+                let members = classMetadata['members'];
+                if (isPresent(members)) {
+                    let ctorData = members['__ctor__'];
+                    if (isPresent(ctorData)) {
+                        let ctor = ctorData.find(a => a['__symbolic'] === 'constructor');
+                        parameters = this.simplify(type.moduleId, ctor['parameters']);
+                    }
+                }
             }
+            if (!isPresent(parameters)) {
+                parameters = [];
+            }
+            this.parameterCache.set(type, parameters);
         }
         return parameters;
     }
@@ -220,7 +234,7 @@ export class StaticReflector {
             });
             return result;
         }
-        return null;
+        return {};
     }
     // clang-format off
     getMemberData(moduleContext, member) {
