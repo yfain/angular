@@ -15,7 +15,7 @@ import { isPresent, CONST_EXPR } from 'angular2/src/facade/lang';
 import { BaseException } from 'angular2/src/facade/exceptions';
 import { Injectable, Inject, OpaqueToken } from 'angular2/core';
 export const HAMMER_GESTURE_CONFIG = CONST_EXPR(new OpaqueToken("HammerGestureConfig"));
-export let HammerGestureConfig = class {
+export let HammerGestureConfig = class HammerGestureConfig {
     constructor() {
         this.events = [];
         this.overrides = {};
@@ -34,7 +34,7 @@ HammerGestureConfig = __decorate([
     Injectable(), 
     __metadata('design:paramtypes', [])
 ], HammerGestureConfig);
-export let HammerGesturesPlugin = class extends HammerGesturesPluginCommon {
+export let HammerGesturesPlugin = class HammerGesturesPlugin extends HammerGesturesPluginCommon {
     constructor(_config) {
         super();
         this._config = _config;

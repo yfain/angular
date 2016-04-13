@@ -64,7 +64,7 @@ export class TemplateParseResult {
         this.errors = errors;
     }
 }
-export let TemplateParser = class {
+export let TemplateParser = class TemplateParser {
     constructor(_exprParser, _schemaRegistry, _htmlParser, transforms) {
         this._exprParser = _exprParser;
         this._schemaRegistry = _schemaRegistry;

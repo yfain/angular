@@ -61,7 +61,7 @@ import { BaseException } from "../../facade/exceptions";
  * See a [live demo](http://plnkr.co/edit/KVuXxDp0qinGDyo307QW?p=preview) for a more detailed
  * example.
  */
-export let NgFor = class {
+export let NgFor = class NgFor {
     constructor(_viewContainer, _templateRef, _iterableDiffers, _cdr) {
         this._viewContainer = _viewContainer;
         this._templateRef = _templateRef;

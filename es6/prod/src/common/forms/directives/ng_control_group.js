@@ -61,7 +61,7 @@ const controlGroupProvider = CONST_EXPR(new Provider(ControlContainer, { useExis
  * This example declares a control group for a user's name. The value and validation state of
  * this group can be accessed separately from the overall form.
  */
-export let NgControlGroup = class extends ControlContainer {
+export let NgControlGroup = class NgControlGroup extends ControlContainer {
     constructor(parent, _validators, _asyncValidators) {
         super();
         this._validators = _validators;

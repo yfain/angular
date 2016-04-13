@@ -37,7 +37,7 @@ let _resolveToFalse = PromiseWrapper.resolve(false);
  * `Instruction`.
  * The router uses the `RouteRegistry` to get an `Instruction`.
  */
-export let Router = class {
+export let Router = class Router {
     constructor(registry, parent, hostComponent, root) {
         this.registry = registry;
         this.parent = parent;
@@ -404,7 +404,7 @@ Router = __decorate([
     Injectable(), 
     __metadata('design:paramtypes', [RouteRegistry, Router, Object, Router])
 ], Router);
-export let RootRouter = class extends Router {
+export let RootRouter = class RootRouter extends Router {
     constructor(registry, location, primaryComponent) {
         super(registry, null, primaryComponent);
         this.root = this;

@@ -28,7 +28,7 @@ function _extractId(valueString) {
 /**
  * The accessor for writing a value and listening to changes on a select element.
  */
-export let SelectControlValueAccessor = class {
+export let SelectControlValueAccessor = class SelectControlValueAccessor {
     constructor(_renderer, _elementRef) {
         this._renderer = _renderer;
         this._elementRef = _elementRef;
@@ -83,7 +83,7 @@ SelectControlValueAccessor = __decorate([
  * </select>
  * ```
  */
-export let NgSelectOption = class {
+export let NgSelectOption = class NgSelectOption {
     constructor(_element, _renderer, _select) {
         this._element = _element;
         this._renderer = _renderer;

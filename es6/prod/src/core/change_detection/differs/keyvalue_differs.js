@@ -14,7 +14,8 @@ import { Provider, SkipSelfMetadata, OptionalMetadata } from 'angular2/src/core/
 /**
  * A repository of different Map diffing strategies used by NgClass, NgStyle, and others.
  */
-export let KeyValueDiffers = class {
+let KeyValueDiffers_1;
+export let KeyValueDiffers = KeyValueDiffers_1 = class KeyValueDiffers {
     constructor(factories) {
         this.factories = factories;
     }
@@ -22,10 +23,10 @@ export let KeyValueDiffers = class {
         if (isPresent(parent)) {
             var copied = ListWrapper.clone(parent.factories);
             factories = factories.concat(copied);
-            return new KeyValueDiffers(factories);
+            return new KeyValueDiffers_1(factories);
         }
         else {
-            return new KeyValueDiffers(factories);
+            return new KeyValueDiffers_1(factories);
         }
     }
     /**
@@ -48,7 +49,7 @@ export let KeyValueDiffers = class {
      * ```
      */
     static extend(factories) {
-        return new Provider(KeyValueDiffers, {
+        return new Provider(KeyValueDiffers_1, {
             useFactory: (parent) => {
                 if (isBlank(parent)) {
                     // Typically would occur when calling KeyValueDiffers.extend inside of dependencies passed
@@ -56,10 +57,10 @@ export let KeyValueDiffers = class {
                     // bootstrap(), which would override default pipes instead of extending them.
                     throw new BaseException('Cannot extend KeyValueDiffers without a parent injector');
                 }
-                return KeyValueDiffers.create(factories, parent);
+                return KeyValueDiffers_1.create(factories, parent);
             },
             // Dependency technically isn't optional, but we can provide a better error message this way.
-            deps: [[KeyValueDiffers, new SkipSelfMetadata(), new OptionalMetadata()]]
+            deps: [[KeyValueDiffers_1, new SkipSelfMetadata(), new OptionalMetadata()]]
         });
     }
     find(kv) {
@@ -72,7 +73,7 @@ export let KeyValueDiffers = class {
         }
     }
 };
-KeyValueDiffers = __decorate([
+KeyValueDiffers = KeyValueDiffers_1 = __decorate([
     CONST(), 
     __metadata('design:paramtypes', [Array])
 ], KeyValueDiffers);

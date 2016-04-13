@@ -3,6 +3,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -38,21 +39,21 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       this.value = value;
     }
     return FixedPart;
-  })();
+  }());
   var AuxiliaryStart = (function() {
     function AuxiliaryStart() {}
     return AuxiliaryStart;
-  })();
+  }());
   var AuxiliaryEnd = (function() {
     function AuxiliaryEnd() {}
     return AuxiliaryEnd;
-  })();
+  }());
   var Params = (function() {
     function Params(ast) {
       this.ast = ast;
     }
     return Params;
-  })();
+  }());
   var RouterLinkLexer = (function() {
     function RouterLinkLexer(parser, exp) {
       this.parser = parser;
@@ -114,7 +115,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       return new FixedPart(fixed);
     };
     return RouterLinkLexer;
-  })();
+  }());
   var RouterLinkAstGenerator = (function() {
     function RouterLinkAstGenerator(tokens) {
       this.tokens = tokens;
@@ -141,7 +142,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       return new ast_1.LiteralArray(arr);
     };
     return RouterLinkAstGenerator;
-  })();
+  }());
   var RouterLinkAstTransformer = (function(_super) {
     __extends(RouterLinkAstTransformer, _super);
     function RouterLinkAstTransformer(parser) {
@@ -156,7 +157,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
       }
     };
     return RouterLinkAstTransformer;
-  })(ast_1.AstTransformer);
+  }(ast_1.AstTransformer));
   function parseRouterLinkExpression(parser, exp) {
     var tokens = new RouterLinkLexer(parser, exp.trim()).tokenize();
     return new RouterLinkAstGenerator(tokens).generate();
@@ -216,7 +217,7 @@ System.register("angular2/src/router/directives/router_link_transform", ["angula
     };
     RouterLinkTransform = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [parser_1.Parser])], RouterLinkTransform);
     return RouterLinkTransform;
-  })();
+  }());
   exports.RouterLinkTransform = RouterLinkTransform;
   global.define = __define;
   return module.exports;
@@ -226,6 +227,7 @@ System.register("angular2/router/router_link_dsl", ["angular2/compiler", "angula
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var compiler_1 = require("angular2/compiler");
   var core_1 = require("angular2/core");
   var router_link_transform_1 = require("angular2/src/router/directives/router_link_transform");
@@ -244,6 +246,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -277,7 +280,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     RouteConfig = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Array])], RouteConfig);
     return RouteConfig;
-  })();
+  }());
   exports.RouteConfig = RouteConfig;
   var AbstractRoute = (function() {
     function AbstractRoute(_a) {
@@ -296,7 +299,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     AbstractRoute = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Object])], AbstractRoute);
     return AbstractRoute;
-  })();
+  }());
   exports.AbstractRoute = AbstractRoute;
   var Route = (function(_super) {
     __extends(Route, _super);
@@ -321,7 +324,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     Route = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Object])], Route);
     return Route;
-  })(AbstractRoute);
+  }(AbstractRoute));
   exports.Route = Route;
   var AuxRoute = (function(_super) {
     __extends(AuxRoute, _super);
@@ -345,7 +348,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     AuxRoute = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Object])], AuxRoute);
     return AuxRoute;
-  })(AbstractRoute);
+  }(AbstractRoute));
   exports.AuxRoute = AuxRoute;
   var AsyncRoute = (function(_super) {
     __extends(AsyncRoute, _super);
@@ -370,7 +373,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     AsyncRoute = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Object])], AsyncRoute);
     return AsyncRoute;
-  })(AbstractRoute);
+  }(AbstractRoute));
   exports.AsyncRoute = AsyncRoute;
   var Redirect = (function(_super) {
     __extends(Redirect, _super);
@@ -394,7 +397,7 @@ System.register("angular2/src/router/route_config/route_config_impl", ["angular2
     }
     Redirect = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Object])], Redirect);
     return Redirect;
-  })(AbstractRoute);
+  }(AbstractRoute));
   exports.Redirect = Redirect;
   global.define = __define;
   return module.exports;
@@ -404,6 +407,7 @@ System.register("angular2/src/router/url_parser", ["angular2/src/facade/collecti
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -472,7 +476,7 @@ System.register("angular2/src/router/url_parser", ["angular2/src/facade/collecti
       return lang_1.isPresent(this.child) ? ('/' + this.child.toString()) : '';
     };
     return Url;
-  })();
+  }());
   exports.Url = Url;
   var RootUrl = (function(_super) {
     __extends(RootUrl, _super);
@@ -501,7 +505,7 @@ System.register("angular2/src/router/url_parser", ["angular2/src/facade/collecti
       return '?' + serializeParams(this.params);
     };
     return RootUrl;
-  })(Url);
+  }(Url));
   exports.RootUrl = RootUrl;
   function pathSegmentsToUrl(pathSegments) {
     var url = new Url(pathSegments[pathSegments.length - 1]);
@@ -652,7 +656,7 @@ System.register("angular2/src/router/url_parser", ["angular2/src/facade/collecti
       return routes;
     };
     return UrlParser;
-  })();
+  }());
   exports.UrlParser = UrlParser;
   exports.parser = new UrlParser();
   global.define = __define;
@@ -663,6 +667,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -683,7 +688,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return lang_1.normalizeBlank(collection_1.StringMapWrapper.get(this.params, param));
     };
     return RouteParams;
-  })();
+  }());
   exports.RouteParams = RouteParams;
   var RouteData = (function() {
     function RouteData(data) {
@@ -696,7 +701,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return lang_1.normalizeBlank(collection_1.StringMapWrapper.get(this.data, key));
     };
     return RouteData;
-  })();
+  }());
   exports.RouteData = RouteData;
   exports.BLANK_ROUTE_DATA = new RouteData();
   var Instruction = (function() {
@@ -781,7 +786,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return '';
     };
     return Instruction;
-  })();
+  }());
   exports.Instruction = Instruction;
   var ResolvedInstruction = (function(_super) {
     __extends(ResolvedInstruction, _super);
@@ -792,7 +797,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return async_1.PromiseWrapper.resolve(this.component);
     };
     return ResolvedInstruction;
-  })(Instruction);
+  }(Instruction));
   exports.ResolvedInstruction = ResolvedInstruction;
   var DefaultInstruction = (function(_super) {
     __extends(DefaultInstruction, _super);
@@ -806,7 +811,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       return '';
     };
     return DefaultInstruction;
-  })(ResolvedInstruction);
+  }(ResolvedInstruction));
   exports.DefaultInstruction = DefaultInstruction;
   var UnresolvedInstruction = (function(_super) {
     __extends(UnresolvedInstruction, _super);
@@ -859,7 +864,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       });
     };
     return UnresolvedInstruction;
-  })(Instruction);
+  }(Instruction));
   exports.UnresolvedInstruction = UnresolvedInstruction;
   var RedirectInstruction = (function(_super) {
     __extends(RedirectInstruction, _super);
@@ -875,7 +880,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       configurable: true
     });
     return RedirectInstruction;
-  })(ResolvedInstruction);
+  }(ResolvedInstruction));
   exports.RedirectInstruction = RedirectInstruction;
   var ComponentInstruction = (function() {
     function ComponentInstruction(urlPath, urlParams, data, componentType, terminal, specificity, params, routeName) {
@@ -893,7 +898,7 @@ System.register("angular2/src/router/instruction", ["angular2/src/facade/collect
       this.routeData = lang_1.isPresent(data) ? data : exports.BLANK_ROUTE_DATA;
     }
     return ComponentInstruction;
-  })();
+  }());
   exports.ComponentInstruction = ComponentInstruction;
   global.define = __define;
   return module.exports;
@@ -903,6 +908,7 @@ System.register("angular2/src/router/rules/route_handlers/async_route_handler", 
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var instruction_1 = require("angular2/src/router/instruction");
   var AsyncRouteHandler = (function() {
@@ -925,7 +931,7 @@ System.register("angular2/src/router/rules/route_handlers/async_route_handler", 
       });
     };
     return AsyncRouteHandler;
-  })();
+  }());
   exports.AsyncRouteHandler = AsyncRouteHandler;
   global.define = __define;
   return module.exports;
@@ -935,6 +941,7 @@ System.register("angular2/src/router/rules/route_handlers/sync_route_handler", [
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var async_1 = require("angular2/src/facade/async");
   var lang_1 = require("angular2/src/facade/lang");
   var instruction_1 = require("angular2/src/router/instruction");
@@ -949,7 +956,7 @@ System.register("angular2/src/router/rules/route_handlers/sync_route_handler", [
       return this._resolvedComponent;
     };
     return SyncRouteHandler;
-  })();
+  }());
   exports.SyncRouteHandler = SyncRouteHandler;
   global.define = __define;
   return module.exports;
@@ -959,6 +966,7 @@ System.register("angular2/src/router/utils", ["angular2/src/facade/lang", "angul
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
   var TouchMap = (function() {
@@ -987,7 +995,7 @@ System.register("angular2/src/router/utils", ["angular2/src/facade/lang", "angul
       return unused;
     };
     return TouchMap;
-  })();
+  }());
   exports.TouchMap = TouchMap;
   function normalizeString(obj) {
     if (lang_1.isBlank(obj)) {
@@ -1005,6 +1013,7 @@ System.register("angular2/src/router/rules/route_paths/route_path", [], true, fu
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var MatchedUrl = (function() {
     function MatchedUrl(urlPath, urlParams, allParams, auxiliary, rest) {
       this.urlPath = urlPath;
@@ -1014,7 +1023,7 @@ System.register("angular2/src/router/rules/route_paths/route_path", [], true, fu
       this.rest = rest;
     }
     return MatchedUrl;
-  })();
+  }());
   exports.MatchedUrl = MatchedUrl;
   var GeneratedUrl = (function() {
     function GeneratedUrl(urlPath, urlParams) {
@@ -1022,7 +1031,7 @@ System.register("angular2/src/router/rules/route_paths/route_path", [], true, fu
       this.urlParams = urlParams;
     }
     return GeneratedUrl;
-  })();
+  }());
   exports.GeneratedUrl = GeneratedUrl;
   global.define = __define;
   return module.exports;
@@ -1032,6 +1041,7 @@ System.register("angular2/src/router/rules/route_paths/regex_route_path", ["angu
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var route_path_1 = require("angular2/src/router/rules/route_paths/route_path");
   var RegexRoutePath = (function() {
@@ -1063,7 +1073,7 @@ System.register("angular2/src/router/rules/route_paths/regex_route_path", ["angu
       return this._reString;
     };
     return RegexRoutePath;
-  })();
+  }());
   exports.RegexRoutePath = RegexRoutePath;
   global.define = __define;
   return module.exports;
@@ -1073,6 +1083,7 @@ System.register("angular2/src/router/route_config/route_config_decorator", ["ang
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var route_config_impl_1 = require("angular2/src/router/route_config/route_config_impl");
   var decorators_1 = require("angular2/src/core/util/decorators");
   var route_config_impl_2 = require("angular2/src/router/route_config/route_config_impl");
@@ -1089,12 +1100,13 @@ System.register("angular2/src/router/location/location_strategy", ["angular2/src
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var core_1 = require("angular2/core");
   var LocationStrategy = (function() {
     function LocationStrategy() {}
     return LocationStrategy;
-  })();
+  }());
   exports.LocationStrategy = LocationStrategy;
   exports.APP_BASE_HREF = lang_1.CONST_EXPR(new core_1.OpaqueToken('appBaseHref'));
   function normalizeQueryParams(params) {
@@ -1132,6 +1144,7 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations_impl", ["an
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -1155,7 +1168,7 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations_impl", ["an
     }
     RouteLifecycleHook = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [String])], RouteLifecycleHook);
     return RouteLifecycleHook;
-  })();
+  }());
   exports.RouteLifecycleHook = RouteLifecycleHook;
   var CanActivate = (function() {
     function CanActivate(fn) {
@@ -1163,7 +1176,7 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations_impl", ["an
     }
     CanActivate = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [Function])], CanActivate);
     return CanActivate;
-  })();
+  }());
   exports.CanActivate = CanActivate;
   exports.routerCanReuse = lang_1.CONST_EXPR(new RouteLifecycleHook("routerCanReuse"));
   exports.routerCanDeactivate = lang_1.CONST_EXPR(new RouteLifecycleHook("routerCanDeactivate"));
@@ -1178,6 +1191,7 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations", ["angular
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var decorators_1 = require("angular2/src/core/util/decorators");
   var lifecycle_annotations_impl_1 = require("angular2/src/router/lifecycle/lifecycle_annotations_impl");
   var lifecycle_annotations_impl_2 = require("angular2/src/router/lifecycle/lifecycle_annotations_impl");
@@ -1195,6 +1209,7 @@ System.register("angular2/src/router/directives/router_link", ["angular2/core", 
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -1261,7 +1276,7 @@ System.register("angular2/src/router/directives/router_link", ["angular2/core", 
       }
     }), __metadata('design:paramtypes', [router_1.Router, location_1.Location])], RouterLink);
     return RouterLink;
-  })();
+  }());
   exports.RouterLink = RouterLink;
   global.define = __define;
   return module.exports;
@@ -1271,6 +1286,7 @@ System.register("angular2/src/router/location/platform_location", [], true, func
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var PlatformLocation = (function() {
     function PlatformLocation() {}
     Object.defineProperty(PlatformLocation.prototype, "pathname", {
@@ -1295,7 +1311,7 @@ System.register("angular2/src/router/location/platform_location", [], true, func
       configurable: true
     });
     return PlatformLocation;
-  })();
+  }());
   exports.PlatformLocation = PlatformLocation;
   global.define = __define;
   return module.exports;
@@ -1305,6 +1321,7 @@ System.register("angular2/src/router/location/hash_location_strategy", ["angular
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -1388,7 +1405,7 @@ System.register("angular2/src/router/location/hash_location_strategy", ["angular
     };
     HashLocationStrategy = __decorate([core_1.Injectable(), __param(1, core_1.Optional()), __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])], HashLocationStrategy);
     return HashLocationStrategy;
-  })(location_strategy_1.LocationStrategy);
+  }(location_strategy_1.LocationStrategy));
   exports.HashLocationStrategy = HashLocationStrategy;
   global.define = __define;
   return module.exports;
@@ -1398,6 +1415,7 @@ System.register("angular2/src/router/location/path_location_strategy", ["angular
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -1475,16 +1493,8 @@ System.register("angular2/src/router/location/path_location_strategy", ["angular
     };
     PathLocationStrategy = __decorate([core_1.Injectable(), __param(1, core_1.Optional()), __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])], PathLocationStrategy);
     return PathLocationStrategy;
-  })(location_strategy_1.LocationStrategy);
+  }(location_strategy_1.LocationStrategy));
   exports.PathLocationStrategy = PathLocationStrategy;
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/router/route_definition", [], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
   global.define = __define;
   return module.exports;
 });
@@ -1493,6 +1503,7 @@ System.register("angular2/src/router/router_providers_common", ["angular2/src/ro
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var location_strategy_1 = require("angular2/src/router/location/location_strategy");
   var path_location_strategy_1 = require("angular2/src/router/location/path_location_strategy");
   var router_1 = require("angular2/src/router/router");
@@ -1529,6 +1540,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -1547,7 +1559,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
   var RouteMatch = (function() {
     function RouteMatch() {}
     return RouteMatch;
-  })();
+  }());
   exports.RouteMatch = RouteMatch;
   var PathMatch = (function(_super) {
     __extends(PathMatch, _super);
@@ -1558,7 +1570,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
       this.remainingAux = remainingAux;
     }
     return PathMatch;
-  })(RouteMatch);
+  }(RouteMatch));
   exports.PathMatch = PathMatch;
   var RedirectMatch = (function(_super) {
     __extends(RedirectMatch, _super);
@@ -1568,7 +1580,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
       this.specificity = specificity;
     }
     return RedirectMatch;
-  })(RouteMatch);
+  }(RouteMatch));
   exports.RedirectMatch = RedirectMatch;
   var RedirectRule = (function() {
     function RedirectRule(_pathRecognizer, redirectTo) {
@@ -1597,7 +1609,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
       throw new exceptions_1.BaseException("Tried to generate a redirect.");
     };
     return RedirectRule;
-  })();
+  }());
   exports.RedirectRule = RedirectRule;
   var RouteRule = (function() {
     function RouteRule(_routePath, handler, _routeName) {
@@ -1652,7 +1664,7 @@ System.register("angular2/src/router/rules/rules", ["angular2/src/facade/lang", 
       return instruction;
     };
     return RouteRule;
-  })();
+  }());
   exports.RouteRule = RouteRule;
   global.define = __define;
   return module.exports;
@@ -1662,6 +1674,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var collection_1 = require("angular2/src/facade/collection");
@@ -1681,7 +1694,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
       return true;
     };
     return ContinuationPathSegment;
-  })();
+  }());
   var StaticPathSegment = (function() {
     function StaticPathSegment(path) {
       this.path = path;
@@ -1696,7 +1709,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
       return this.path;
     };
     return StaticPathSegment;
-  })();
+  }());
   var DynamicPathSegment = (function() {
     function DynamicPathSegment(name) {
       this.name = name;
@@ -1714,7 +1727,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
     };
     DynamicPathSegment.paramMatcher = /^:([^\/]+)$/g;
     return DynamicPathSegment;
-  })();
+  }());
   var StarPathSegment = (function() {
     function StarPathSegment(name) {
       this.name = name;
@@ -1729,7 +1742,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
     };
     StarPathSegment.wildcardMatcher = /^\*([^\/]+)$/g;
     return StarPathSegment;
-  })();
+  }());
   var ParamRoutePath = (function() {
     function ParamRoutePath(routePath) {
       this.routePath = routePath;
@@ -1864,7 +1877,7 @@ System.register("angular2/src/router/rules/route_paths/param_route_path", ["angu
     };
     ParamRoutePath.RESERVED_CHARS = lang_1.RegExpWrapper.create('//|\\(|\\)|;|\\?|=');
     return ParamRoutePath;
-  })();
+  }());
   exports.ParamRoutePath = ParamRoutePath;
   var REGEXP_PERCENT = /%/g;
   var REGEXP_SLASH = /\//g;
@@ -1906,6 +1919,7 @@ System.register("angular2/src/router/route_config/route_config_normalizer", ["an
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var route_config_decorator_1 = require("angular2/src/router/route_config/route_config_decorator");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
@@ -2005,6 +2019,7 @@ System.register("angular2/src/router/location/location", ["angular2/src/router/l
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -2080,7 +2095,7 @@ System.register("angular2/src/router/location/location", ["angular2/src/router/l
     };
     Location = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [location_strategy_1.LocationStrategy])], Location);
     return Location;
-  })();
+  }());
   exports.Location = Location;
   function _stripBaseHref(baseHref, url) {
     if (baseHref.length > 0 && url.startsWith(baseHref)) {
@@ -2108,6 +2123,7 @@ System.register("angular2/src/router/lifecycle/route_lifecycle_reflector", ["ang
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var lifecycle_annotations_impl_1 = require("angular2/src/router/lifecycle/lifecycle_annotations_impl");
   var reflection_1 = require("angular2/src/core/reflection/reflection");
@@ -2136,6 +2152,7 @@ System.register("angular2/src/router/directives/router_outlet", ["angular2/src/f
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -2260,7 +2277,7 @@ System.register("angular2/src/router/directives/router_outlet", ["angular2/src/f
     };
     RouterOutlet = __decorate([core_1.Directive({selector: 'router-outlet'}), __param(3, core_1.Attribute('name')), __metadata('design:paramtypes', [core_1.ElementRef, core_1.DynamicComponentLoader, routerMod.Router, String])], RouterOutlet);
     return RouterOutlet;
-  })();
+  }());
   exports.RouterOutlet = RouterOutlet;
   global.define = __define;
   return module.exports;
@@ -2270,6 +2287,7 @@ System.register("angular2/src/router/location/browser_platform_location", ["angu
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -2362,7 +2380,7 @@ System.register("angular2/src/router/location/browser_platform_location", ["angu
     };
     BrowserPlatformLocation = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [])], BrowserPlatformLocation);
     return BrowserPlatformLocation;
-  })(platform_location_1.PlatformLocation);
+  }(platform_location_1.PlatformLocation));
   exports.BrowserPlatformLocation = BrowserPlatformLocation;
   global.define = __define;
   return module.exports;
@@ -2372,6 +2390,7 @@ System.register("angular2/src/router/rules/rule_set", ["angular2/src/facade/lang
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var collection_1 = require("angular2/src/facade/collection");
@@ -2501,7 +2520,7 @@ System.register("angular2/src/router/rules/rule_set", ["angular2/src/facade/lang
       throw new exceptions_1.BaseException('Route must provide either a path or regex property');
     };
     return RuleSet;
-  })();
+  }());
   exports.RuleSet = RuleSet;
   global.define = __define;
   return module.exports;
@@ -2511,6 +2530,7 @@ System.register("angular2/src/router/router_providers", ["angular2/src/router/ro
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var router_providers_common_1 = require("angular2/src/router/router_providers_common");
   var core_1 = require("angular2/core");
   var lang_1 = require("angular2/src/facade/lang");
@@ -2526,6 +2546,7 @@ System.register("angular2/src/router/route_registry", ["angular2/src/facade/coll
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -2840,7 +2861,7 @@ System.register("angular2/src/router/route_registry", ["angular2/src/facade/coll
     };
     RouteRegistry = __decorate([core_1.Injectable(), __param(0, core_1.Inject(exports.ROUTER_PRIMARY_COMPONENT)), __metadata('design:paramtypes', [lang_1.Type])], RouteRegistry);
     return RouteRegistry;
-  })();
+  }());
   exports.RouteRegistry = RouteRegistry;
   function splitAndFlattenLinkParams(linkParams) {
     var accumulation = [];
@@ -2907,6 +2928,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   var __extends = (this && this.__extends) || function(d, b) {
     for (var p in b)
       if (b.hasOwnProperty(p))
@@ -3246,7 +3268,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     };
     Router = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [route_registry_1.RouteRegistry, Router, Object, Router])], Router);
     return Router;
-  })();
+  }());
   exports.Router = Router;
   var RootRouter = (function(_super) {
     __extends(RootRouter, _super);
@@ -3309,7 +3331,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
     };
     RootRouter = __decorate([core_1.Injectable(), __param(2, core_1.Inject(route_registry_1.ROUTER_PRIMARY_COMPONENT)), __metadata('design:paramtypes', [route_registry_1.RouteRegistry, location_1.Location, lang_1.Type])], RootRouter);
     return RootRouter;
-  })(Router);
+  }(Router));
   exports.RootRouter = RootRouter;
   var ChildRouter = (function(_super) {
     __extends(ChildRouter, _super);
@@ -3330,7 +3352,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
       return this.parent.navigateByInstruction(instruction, _skipLocationChange);
     };
     return ChildRouter;
-  })(Router);
+  }(Router));
   function canActivateOne(nextInstruction, prevInstruction) {
     var next = _resolveToTrue;
     if (lang_1.isBlank(nextInstruction.component)) {
@@ -3357,10 +3379,11 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
   return module.exports;
 });
 
-System.register("angular2/router", ["angular2/src/router/router", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/router/instruction", "angular2/src/router/location/platform_location", "angular2/src/router/route_registry", "angular2/src/router/location/location_strategy", "angular2/src/router/location/hash_location_strategy", "angular2/src/router/location/path_location_strategy", "angular2/src/router/location/location", "angular2/src/router/route_config/route_config_decorator", "angular2/src/router/route_definition", "angular2/src/router/lifecycle/lifecycle_annotations", "angular2/src/router/instruction", "angular2/core", "angular2/src/router/router_providers_common", "angular2/src/router/router_providers", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/router", ["angular2/src/router/router", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/router/instruction", "angular2/src/router/location/platform_location", "angular2/src/router/route_registry", "angular2/src/router/location/location_strategy", "angular2/src/router/location/hash_location_strategy", "angular2/src/router/location/path_location_strategy", "angular2/src/router/location/location", "angular2/src/router/route_config/route_config_decorator", "angular2/src/router/lifecycle/lifecycle_annotations", "angular2/src/router/instruction", "angular2/core", "angular2/src/router/router_providers_common", "angular2/src/router/router_providers", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
+  "use strict";
   function __export(m) {
     for (var p in m)
       if (!exports.hasOwnProperty(p))
@@ -3390,7 +3413,6 @@ System.register("angular2/router", ["angular2/src/router/router", "angular2/src/
   var location_1 = require("angular2/src/router/location/location");
   exports.Location = location_1.Location;
   __export(require("angular2/src/router/route_config/route_config_decorator"));
-  __export(require("angular2/src/router/route_definition"));
   var lifecycle_annotations_1 = require("angular2/src/router/lifecycle/lifecycle_annotations");
   exports.CanActivate = lifecycle_annotations_1.CanActivate;
   var instruction_2 = require("angular2/src/router/instruction");
