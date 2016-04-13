@@ -4370,7 +4370,6 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
   var ast_1 = require("angular2/src/core/change_detection/parser/ast");
   var _implicitReceiver = new ast_1.ImplicitReceiver();
   var INTERPOLATION_REGEXP = /\{\{([\s\S]*?)\}\}/g;
-  var COMMENT_REGEX = /\/\//g;
   var ParseException = (function(_super) {
     __extends(ParseException, _super);
     function ParseException(message, input, errLocation, ctxLocation) {
@@ -4396,7 +4395,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
     }
     Parser.prototype.parseAction = function(input, location) {
       this._checkNoInterpolation(input, location);
-      var tokens = this._lexer.tokenize(this._stripComments(input));
+      var tokens = this._lexer.tokenize(input);
       var ast = new _ParseAST(input, location, tokens, this._reflector, true).parseChain();
       return new ast_1.ASTWithSource(ast, input, location);
     };
@@ -4417,7 +4416,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         return quote;
       }
       this._checkNoInterpolation(input, location);
-      var tokens = this._lexer.tokenize(this._stripComments(input));
+      var tokens = this._lexer.tokenize(input);
       return new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
     };
     Parser.prototype._parseQuote = function(input, location) {
@@ -4442,7 +4441,7 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
         return null;
       var expressions = [];
       for (var i = 0; i < split.expressions.length; ++i) {
-        var tokens = this._lexer.tokenize(this._stripComments(split.expressions[i]));
+        var tokens = this._lexer.tokenize(split.expressions[i]);
         var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
         expressions.push(ast);
       }
@@ -4469,9 +4468,6 @@ System.register("angular2/src/core/change_detection/parser/parser", ["angular2/s
     };
     Parser.prototype.wrapLiteralPrimitive = function(input, location) {
       return new ast_1.ASTWithSource(new ast_1.LiteralPrimitive(input), input, location);
-    };
-    Parser.prototype._stripComments = function(input) {
-      return lang_1.StringWrapper.split(input, COMMENT_REGEX)[0].trim();
     };
     Parser.prototype._checkNoInterpolation = function(input, location) {
       var parts = lang_1.StringWrapper.split(input, INTERPOLATION_REGEXP);
@@ -11375,7 +11371,7 @@ System.register("angular2/src/web_workers/ui/event_serializer", ["angular2/src/f
   var KEYBOARD_EVENT_PROPERTIES = ['altkey', 'charCode', 'code', 'ctrlKey', 'isComposing', 'key', 'keyCode', 'location', 'metaKey', 'repeat', 'shiftKey', 'which'];
   var TRANSITION_EVENT_PROPERTIES = ['propertyName', 'elapsedTime', 'pseudoElement'];
   var EVENT_PROPERTIES = ['type', 'bubbles', 'cancelable'];
-  var NODES_WITH_VALUE = new collection_1.Set(["input", "select", "option", "button", "li", "meter", "progress", "param", "textarea"]);
+  var NODES_WITH_VALUE = new collection_1.Set(["input", "select", "option", "button", "li", "meter", "progress", "param"]);
   function serializeGenericEvent(e) {
     return serializeEvent(e, EVENT_PROPERTIES);
   }

@@ -762,154 +762,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ContentChild = decorators_1.makePropDecorator(di_2.ContentChildMetadata);
 	// TODO(alexeagle): remove the duplication of this doc. It is copied from ViewChildrenMetadata.
 	/**
-	 * Declares a list of child element references.
+	 * Configures a view query.
 	 *
-	 * Angular automatically updates the list when the DOM was updated.
-	 *
-	 * `ViewChildren` takes a argument to select elements.
-	 *
-	 * - If the argument is a type, directives or components with the type will be bound.
-	 *
-	 * - If the argument is a string, the string behaviors as comma-separated selectors. For each
-	 * selector, an element matched template variables (e.g. `#child`) will be bound.
-	 *
-	 * View children are set before the `ngAfterViewInit` callback is called.
+	 * View queries are set before the `ngAfterViewInit` callback is called.
 	 *
 	 * ### Example
 	 *
-	 * With type selector:
-	 *
 	 * ```
 	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
+	 *   selector: 'someDir',
+	 *   templateUrl: 'someTemplate',
+	 *   directives: [ItemDirective]
 	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: `
-	 *     <child-cmp></child-cmp>
-	 *     <child-cmp></child-cmp>
-	 *     <child-cmp></child-cmp>
-	 *   `,
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChildren(ChildCmp) children:QueryList<ChildCmp>;
+	 * class SomeDir {
+	 *   @ViewChildren(ItemDirective) viewChildren: QueryList<ItemDirective>;
 	 *
 	 *   ngAfterViewInit() {
-	 *     // children are set
-	 *     this.children.toArray().forEach((child)=>child.doSomething());
+	 *     // viewChildren is set
 	 *   }
 	 * }
 	 * ```
-	 *
-	 * With string selector:
-	 *
-	 * ```
-	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
-	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: `
-	 *     <child-cmp #child1></child-cmp>
-	 *     <child-cmp #child2></child-cmp>
-	 *     <child-cmp #child3></child-cmp>
-	 *   `,
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChildren('child1,child2,child3') children:QueryList<ChildCmp>;
-	 *
-	 *   ngAfterViewInit() {
-	 *     // children are set
-	 *     this.children.toArray().forEach((child)=>child.doSomething());
-	 *   }
-	 * }
-	 * ```
-	 *
-	 * See also: [ViewChildrenMetadata]
 	 */
 	exports.ViewChildren = decorators_1.makePropDecorator(di_2.ViewChildrenMetadata);
 	// TODO(alexeagle): remove the duplication of this doc. It is copied from ViewChildMetadata.
 	/**
-	 * Declares a reference of child element.
+	 * Configures a view query.
 	 *
-	 * `ViewChildren` takes a argument to select elements.
-	 *
-	 * - If the argument is a type, a directive or a component with the type will be bound.
-	 *
-	 * - If the argument is a string, the string behaviors as a selectors. An element matched template
-	 * variables (e.g. `#child`) will be bound.
-	 *
-	 * In either case, `@ViewChild()` assigns the first (looking from above) element if the result is
-	 * multiple.
-	 *
-	 * View child is set before the `ngAfterViewInit` callback is called.
+	 * View queries are set before the `ngAfterViewInit` callback is called.
 	 *
 	 * ### Example
 	 *
-	 * With type selector:
-	 *
 	 * ```
 	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
+	 *   selector: 'someDir',
+	 *   templateUrl: 'someTemplate',
+	 *   directives: [ItemDirective]
 	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: '<child-cmp></child-cmp>',
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChild(ChildCmp) child:ChildCmp;
+	 * class SomeDir {
+	 *   @ViewChild(ItemDirective) viewChild:ItemDirective;
 	 *
 	 *   ngAfterViewInit() {
-	 *     // child is set
-	 *     this.child.doSomething();
+	 *     // viewChild is set
 	 *   }
 	 * }
 	 * ```
-	 *
-	 * With string selector:
-	 *
-	 * ```
-	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
-	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: '<child-cmp #child></child-cmp>',
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChild('child') child:ChildCmp;
-	 *
-	 *   ngAfterViewInit() {
-	 *     // child is set
-	 *     this.child.doSomething();
-	 *   }
-	 * }
-	 * ```
-	 * See also: [ViewChildMetadata]
 	 */
 	exports.ViewChild = decorators_1.makePropDecorator(di_2.ViewChildMetadata);
 	// TODO(alexeagle): remove the duplication of this doc. It is copied from ViewQueryMetadata.
@@ -1466,77 +1362,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(QueryMetadata));
 	exports.ViewQueryMetadata = ViewQueryMetadata;
 	/**
-	 * Declares a list of child element references.
+	 * Configures a view query.
 	 *
-	 * Angular automatically updates the list when the DOM was updated.
-	 *
-	 * `ViewChildren` takes an argument to select elements.
-	 *
-	 * - If the argument is a type, directives or components with the type will be bound.
-	 *
-	 * - If the argument is a string, the string behaviors as comma-separated selectors. For each
-	 * selector, an element matched template variables (e.g. `#child`) will be bound.
-	 *
-	 * View children are set before the `ngAfterViewInit` callback is called.
+	 * View queries are set before the `ngAfterViewInit` callback is called.
 	 *
 	 * ### Example
 	 *
-	 * With type selector:
-	 *
 	 * ```
 	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
+	 *   selector: 'someDir',
+	 *   templateUrl: 'someTemplate',
+	 *   directives: [ItemDirective]
 	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: `
-	 *     <child-cmp></child-cmp>
-	 *     <child-cmp></child-cmp>
-	 *     <child-cmp></child-cmp>
-	 *   `,
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChildren(ChildCmp) children:QueryList<ChildCmp>;
+	 * class SomeDir {
+	 *   @ViewChildren(ItemDirective) viewChildren: QueryList<ItemDirective>;
 	 *
 	 *   ngAfterViewInit() {
-	 *     // children are set
-	 *     this.children.toArray().forEach((child)=>child.doSomething());
-	 *   }
-	 * }
-	 * ```
-	 *
-	 * With string selector:
-	 *
-	 * ```
-	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
-	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: `
-	 *     <child-cmp #child1></child-cmp>
-	 *     <child-cmp #child2></child-cmp>
-	 *     <child-cmp #child3></child-cmp>
-	 *   `,
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChildren('child1,child2,child3') children:QueryList<ChildCmp>;
-	 *
-	 *   ngAfterViewInit() {
-	 *     // children are set
-	 *     this.children.toArray().forEach((child)=>child.doSomething());
+	 *     // viewChildren is set
 	 *   }
 	 * }
 	 * ```
@@ -1554,71 +1396,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(ViewQueryMetadata));
 	exports.ViewChildrenMetadata = ViewChildrenMetadata;
 	/**
+	 * Configures a view query.
 	 *
-	 * Declares a reference of child element.
-	 *
-	 * `ViewChildren` takes an argument to select elements.
-	 *
-	 * - If the argument is a type, a directive or a component with the type will be bound.
-	 *
-	 * - If the argument is a string, the string behaviors as a selectors. An element matched template
-	 * variables (e.g. `#child`) will be bound.
-	 *
-	 * In either case, `@ViewChild()` assigns the first (looking from above) element if the result is
-	 * multiple.
-	 *
-	 * View child is set before the `ngAfterViewInit` callback is called.
+	 * View queries are set before the `ngAfterViewInit` callback is called.
 	 *
 	 * ### Example
 	 *
-	 * With type selector:
-	 *
 	 * ```
 	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
+	 *   selector: 'someDir',
+	 *   templateUrl: 'someTemplate',
+	 *   directives: [ItemDirective]
 	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: '<child-cmp></child-cmp>',
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChild(ChildCmp) child:ChildCmp;
+	 * class SomeDir {
+	 *   @ViewChild(ItemDirective) viewChild:ItemDirective;
 	 *
 	 *   ngAfterViewInit() {
-	 *     // child is set
-	 *     this.child.doSomething();
-	 *   }
-	 * }
-	 * ```
-	 *
-	 * With string selector:
-	 *
-	 * ```
-	 * @Component({
-	 *   selector: 'child-cmp',
-	 *   template: '<p>child</p>'
-	 * })
-	 * class ChildCmp {
-	 *   doSomething() {}
-	 * }
-	 *
-	 * @Component({
-	 *   selector: 'some-cmp',
-	 *   template: '<child-cmp #child></child-cmp>',
-	 *   directives: [ChildCmp]
-	 * })
-	 * class SomeCmp {
-	 *   @ViewChild('child') child:ChildCmp;
-	 *
-	 *   ngAfterViewInit() {
-	 *     // child is set
-	 *     this.child.doSomething();
+	 *     // viewChild is set
 	 *   }
 	 * }
 	 * ```
@@ -8877,7 +8671,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _implicitReceiver = new ast_1.ImplicitReceiver();
 	// TODO(tbosch): Cannot make this const/final right now because of the transpiler...
 	var INTERPOLATION_REGEXP = /\{\{([\s\S]*?)\}\}/g;
-	var COMMENT_REGEX = /\/\//g;
 	var ParseException = (function (_super) {
 	    __extends(ParseException, _super);
 	    function ParseException(message, input, errLocation, ctxLocation) {
@@ -8901,7 +8694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    Parser.prototype.parseAction = function (input, location) {
 	        this._checkNoInterpolation(input, location);
-	        var tokens = this._lexer.tokenize(this._stripComments(input));
+	        var tokens = this._lexer.tokenize(input);
 	        var ast = new _ParseAST(input, location, tokens, this._reflector, true).parseChain();
 	        return new ast_1.ASTWithSource(ast, input, location);
 	    };
@@ -8924,7 +8717,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return quote;
 	        }
 	        this._checkNoInterpolation(input, location);
-	        var tokens = this._lexer.tokenize(this._stripComments(input));
+	        var tokens = this._lexer.tokenize(input);
 	        return new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
 	    };
 	    Parser.prototype._parseQuote = function (input, location) {
@@ -8949,7 +8742,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return null;
 	        var expressions = [];
 	        for (var i = 0; i < split.expressions.length; ++i) {
-	            var tokens = this._lexer.tokenize(this._stripComments(split.expressions[i]));
+	            var tokens = this._lexer.tokenize(split.expressions[i]);
 	            var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
 	            expressions.push(ast);
 	        }
@@ -8979,9 +8772,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    Parser.prototype.wrapLiteralPrimitive = function (input, location) {
 	        return new ast_1.ASTWithSource(new ast_1.LiteralPrimitive(input), input, location);
-	    };
-	    Parser.prototype._stripComments = function (input) {
-	        return lang_1.StringWrapper.split(input, COMMENT_REGEX)[0].trim();
 	    };
 	    Parser.prototype._checkNoInterpolation = function (input, location) {
 	        var parts = lang_1.StringWrapper.split(input, INTERPOLATION_REGEXP);
