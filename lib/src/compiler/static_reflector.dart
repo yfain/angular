@@ -92,8 +92,6 @@ class StaticReflector {
             .toList()
             .where((decorator) => isPresent(decorator))
             .toList();
-      } else {
-        annotations = [];
       }
       this.annotationCache[type] = annotations;
     }
@@ -106,9 +104,6 @@ class StaticReflector {
       var classMetadata = this.getTypeMetadata(type);
       propMetadata =
           this.getPropertyMetadata(type.moduleId, classMetadata["members"]);
-      if (!isPresent(propMetadata)) {
-        propMetadata = {};
-      }
       this.propertyCache[type] = propMetadata;
     }
     return propMetadata;
@@ -118,22 +113,14 @@ class StaticReflector {
     var parameters = this.parameterCache[type];
     if (!isPresent(parameters)) {
       var classMetadata = this.getTypeMetadata(type);
-      if (isPresent(classMetadata)) {
-        var members = classMetadata["members"];
-        if (isPresent(members)) {
-          var ctorData = members["___ctor__"];
-          if (isPresent(ctorData)) {
-            var ctor = ((ctorData as List<dynamic>)).firstWhere(
-                (a) => identical(a["___symbolic"], "constructor"),
-                orElse: () => null);
-            parameters = this.simplify(type.moduleId, ctor["parameters"]);
-          }
-        }
+      var ctorData = classMetadata["members"]["___ctor__"];
+      if (isPresent(ctorData)) {
+        var ctor = ((ctorData as List<dynamic>)).firstWhere(
+            (a) => identical(a["___symbolic"], "constructor"),
+            orElse: () => null);
+        parameters = this.simplify(type.moduleId, ctor["parameters"]);
+        this.parameterCache[type] = parameters;
       }
-      if (!isPresent(parameters)) {
-        parameters = [];
-      }
-      this.parameterCache[type] = parameters;
     }
     return parameters;
   }
@@ -317,7 +304,7 @@ class StaticReflector {
       });
       return result;
     }
-    return {};
+    return null;
   }
 
   // clang-format off

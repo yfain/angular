@@ -60,14 +60,6 @@ main() {
       var annotation = annotations[0];
       expect(annotation.selector).toEqual("my-hero-detail");
     });
-    it("should get and empty annotation list for an unknown class", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      var UnknownClass =
-          reflector.getStaticType("./app/app.component", "UnknownClass");
-      var annotations = reflector.annotations(UnknownClass);
-      expect(annotations).toEqual([]);
-    });
     it("should get propMetadata for HeroDetailComponent", () {
       var host = new MockReflectorHost();
       var reflector = new StaticReflector(host);
@@ -75,22 +67,6 @@ main() {
           "./app/hero-detail.component", "HeroDetailComponent");
       var props = reflector.propMetadata(HeroDetailComponent);
       expect(props["hero"]).toBeTruthy();
-    });
-    it("should get an empty object from propMetadata for an unknown class", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      var UnknownClass =
-          reflector.getStaticType("./app/app.component", "UnknownClass");
-      var properties = reflector.propMetadata(UnknownClass);
-      expect(properties).toEqual({});
-    });
-    it("should get empty parameters list for an unknown class ", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      var UnknownClass =
-          reflector.getStaticType("./app/app.component", "UnknownClass");
-      var parameters = reflector.parameters(UnknownClass);
-      expect(parameters).toEqual([]);
     });
     it("should simplify primitive into itself", () {
       var host = new MockReflectorHost();
