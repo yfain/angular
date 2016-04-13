@@ -3735,11 +3735,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ListWrapper.createFixedSize = function (size) { return new Array(size); };
 	    ListWrapper.createGrowableSize = function (size) { return new Array(size); };
 	    ListWrapper.clone = function (array) { return array.slice(0); };
-	    ListWrapper.createImmutable = function (array) {
-	        var result = ListWrapper.clone(array);
-	        Object.seal(result);
-	        return result;
-	    };
 	    ListWrapper.forEachWithIndex = function (array, fn) {
 	        for (var i = 0; i < array.length; i++) {
 	            fn(array[i], i);
@@ -3836,7 +3831,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return solution;
 	    };
-	    ListWrapper.isImmutable = function (list) { return Object.isSealed(list); };
 	    ListWrapper.flatten = function (array) {
 	        var res = [];
 	        array.forEach(function (a) { return res = res.concat(a); });
@@ -6728,6 +6722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    DefaultIterableDiffer.prototype.onDestroy = function () { };
+	    // todo(vicb): optim for UnmodifiableListView (frozen arrays)
 	    DefaultIterableDiffer.prototype.check = function (collection) {
 	        var _this = this;
 	        this._reset();
@@ -6737,27 +6732,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var item;
 	        var itemTrackBy;
 	        if (lang_2.isArray(collection)) {
-	            if (collection !== this._collection || !collection_1.ListWrapper.isImmutable(collection)) {
-	                var list = collection;
-	                this._length = collection.length;
-	                for (index = 0; index < this._length; index++) {
-	                    item = list[index];
-	                    itemTrackBy = this._trackByFn(index, item);
-	                    if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
-	                        record = this._mismatch(record, item, itemTrackBy, index);
-	                        mayBeDirty = true;
-	                    }
-	                    else {
-	                        if (mayBeDirty) {
-	                            // TODO(misko): can we limit this to duplicates only?
-	                            record = this._verifyReinsertion(record, item, itemTrackBy, index);
-	                        }
-	                        if (!lang_2.looseIdentical(record.item, item))
-	                            this._addIdentityChange(record, item);
-	                    }
-	                    record = record._next;
+	            var list = collection;
+	            this._length = collection.length;
+	            for (index = 0; index < this._length; index++) {
+	                item = list[index];
+	                itemTrackBy = this._trackByFn(index, item);
+	                if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
+	                    record = this._mismatch(record, item, itemTrackBy, index);
+	                    mayBeDirty = true;
 	                }
-	                this._truncate(record);
+	                else {
+	                    if (mayBeDirty) {
+	                        // TODO(misko): can we limit this to duplicates only?
+	                        record = this._verifyReinsertion(record, item, itemTrackBy, index);
+	                    }
+	                    if (!lang_2.looseIdentical(record.item, item))
+	                        this._addIdentityChange(record, item);
+	                }
+	                record = record._next;
 	            }
 	        }
 	        else {
@@ -6780,8 +6772,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                index++;
 	            });
 	            this._length = index;
-	            this._truncate(record);
 	        }
+	        this._truncate(record);
 	        this._collection = collection;
 	        return this.isDirty;
 	    };
