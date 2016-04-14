@@ -318,7 +318,7 @@ export function resolveFactory(provider) {
     }
     else if (isPresent(provider.useFactory)) {
         factoryFn = provider.useFactory;
-        resolvedDeps = constructDependencies(provider.useFactory, provider.dependencies);
+        resolvedDeps = _constructDependencies(provider.useFactory, provider.dependencies);
     }
     else {
         factoryFn = () => provider.useValue;
@@ -398,13 +398,13 @@ function _normalizeProviders(providers, res) {
     });
     return res;
 }
-export function constructDependencies(typeOrFunc, dependencies) {
+function _constructDependencies(factoryFunction, dependencies) {
     if (isBlank(dependencies)) {
-        return _dependenciesFor(typeOrFunc);
+        return _dependenciesFor(factoryFunction);
     }
     else {
         var params = dependencies.map(t => [t]);
-        return dependencies.map(t => _extractToken(typeOrFunc, t, params));
+        return dependencies.map(t => _extractToken(factoryFunction, t, params));
     }
 }
 function _dependenciesFor(typeOrFunc) {

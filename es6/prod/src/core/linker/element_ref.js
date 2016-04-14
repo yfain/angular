@@ -32,9 +32,9 @@ export class ElementRef {
     get nativeElement() { return unimplemented(); }
 }
 export class ElementRef_ {
-    constructor(_element) {
-        this._element = _element;
+    constructor(_appElement) {
+        this._appElement = _appElement;
     }
-    get internalElement() { return this._element; }
-    get nativeElement() { return this._element.nativeElement; }
+    get internalElement() { return this._appElement; }
+    get nativeElement() { return this._appElement.nativeElement; }
 }
