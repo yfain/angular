@@ -16,9 +16,10 @@ import "package:angular2/src/compiler/html_parser.dart" show HtmlParser;
 import "package:angular2/src/i18n/message_extractor.dart"
     show MessageExtractor, removeDuplicates;
 import "package:angular2/src/i18n/message.dart" show Message;
-import "package:angular2/src/compiler/expression_parser/parser.dart"
+import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
-import "package:angular2/src/compiler/expression_parser/lexer.dart" show Lexer;
+import "package:angular2/src/core/change_detection/parser/lexer.dart"
+    show Lexer;
 
 main() {
   describe("MessageExtractor", () {
@@ -90,55 +91,6 @@ main() {
           "<div title='Hi {{one}} and {{two}}' i18n-title></div>", "someurl");
       expect(res.messages).toEqual([
         new Message("Hi <ph name=\"0\"/> and <ph name=\"1\"/>", null, null)
-      ]);
-    });
-    it("should replace interpolation with named placeholders if provided (text nodes)",
-        () {
-      var res = extractor.extract(
-          '''
-        <div i18n>Hi {{one //i18n(ph="FIRST")}} and {{two //i18n(ph="SECOND")}}</div>''',
-          "someurl");
-      expect(res.messages).toEqual([
-        new Message(
-            "<ph name=\"t0\">Hi <ph name=\"FIRST\"/> and <ph name=\"SECOND\"/></ph>",
-            null,
-            null)
-      ]);
-    });
-    it("should replace interpolation with named placeholders if provided (attributes)",
-        () {
-      var res = extractor.extract(
-          '''
-      <div title=\'Hi {{one //i18n(ph="FIRST")}} and {{two //i18n(ph="SECOND")}}\'
-        i18n-title></div>''',
-          "someurl");
-      expect(res.messages).toEqual([
-        new Message(
-            "Hi <ph name=\"FIRST\"/> and <ph name=\"SECOND\"/>", null, null)
-      ]);
-    });
-    it("should match named placeholders with extra spacing", () {
-      var res = extractor.extract(
-          '''
-      <div title=\'Hi {{one // i18n ( ph = "FIRST" )}} and {{two // i18n ( ph = "SECOND" )}}\'
-        i18n-title></div>''',
-          "someurl");
-      expect(res.messages).toEqual([
-        new Message(
-            "Hi <ph name=\"FIRST\"/> and <ph name=\"SECOND\"/>", null, null)
-      ]);
-    });
-    it("should suffix duplicate placeholder names with numbers", () {
-      var res = extractor.extract(
-          '''
-      <div title=\'Hi {{one //i18n(ph="FIRST")}} and {{two //i18n(ph="FIRST")}} and {{three //i18n(ph="FIRST")}}\'
-        i18n-title></div>''',
-          "someurl");
-      expect(res.messages).toEqual([
-        new Message(
-            "Hi <ph name=\"FIRST\"/> and <ph name=\"FIRST_1\"/> and <ph name=\"FIRST_2\"/>",
-            null,
-            null)
       ]);
     });
     it("should handle html content", () {

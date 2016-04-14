@@ -14,9 +14,10 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/i18n/i18n_html_parser.dart" show I18nHtmlParser;
 import "package:angular2/src/i18n/message.dart" show Message, id;
-import "package:angular2/src/compiler/expression_parser/parser.dart"
+import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
-import "package:angular2/src/compiler/expression_parser/lexer.dart" show Lexer;
+import "package:angular2/src/core/change_detection/parser/lexer.dart"
+    show Lexer;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/compiler/html_parser.dart"
     show HtmlParser, HtmlParseTreeResult;
@@ -86,38 +87,6 @@ main() {
           .toEqual([
         [HtmlElementAst, "div", 0],
         [HtmlAttrAst, "value", "{{b}} or {{a}}"]
-      ]);
-    });
-    it("should handle interpolation with custom placeholder names", () {
-      Map<String, String> translations = {};
-      translations[id(new Message(
-              "<ph name=\"FIRST\"/> and <ph name=\"SECOND\"/>", null, null))] =
-          "<ph name=\"SECOND\"/> or <ph name=\"FIRST\"/>";
-      expect(humanizeDom(parse(
-          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="SECOND")}}\' i18n-value></div>''',
-          translations))).toEqual([
-        [HtmlElementAst, "div", 0],
-        [
-          HtmlAttrAst,
-          "value",
-          "{{b //i18n(ph=\"SECOND\")}} or {{a //i18n(ph=\"FIRST\")}}"
-        ]
-      ]);
-    });
-    it("should handle interpolation with duplicate placeholder names", () {
-      Map<String, String> translations = {};
-      translations[id(new Message(
-              "<ph name=\"FIRST\"/> and <ph name=\"FIRST_1\"/>", null, null))] =
-          "<ph name=\"FIRST_1\"/> or <ph name=\"FIRST\"/>";
-      expect(humanizeDom(parse(
-          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="FIRST")}}\' i18n-value></div>''',
-          translations))).toEqual([
-        [HtmlElementAst, "div", 0],
-        [
-          HtmlAttrAst,
-          "value",
-          "{{b //i18n(ph=\"FIRST\")}} or {{a //i18n(ph=\"FIRST\")}}"
-        ]
       ]);
     });
     it("should handle nested html", () {
@@ -241,7 +210,7 @@ main() {
             "hi <ph name=\"99\"/>";
         expect(humanizeErrors(
             parse("<div value='hi {{a}}' i18n-value></div>", translations)
-                .errors)).toEqual(["Invalid interpolation name '99'"]);
+                .errors)).toEqual(["Invalid interpolation index '99'"]);
       });
     });
   });
