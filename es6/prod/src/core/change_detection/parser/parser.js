@@ -17,7 +17,6 @@ import { EmptyExpr, ImplicitReceiver, PropertyRead, PropertyWrite, SafePropertyR
 var _implicitReceiver = new ImplicitReceiver();
 // TODO(tbosch): Cannot make this const/final right now because of the transpiler...
 var INTERPOLATION_REGEXP = /\{\{([\s\S]*?)\}\}/g;
-var COMMENT_REGEX = /\/\//g;
 class ParseException extends BaseException {
     constructor(message, input, errLocation, ctxLocation) {
         super(`Parser Error: ${message} ${errLocation} [${input}] in ${ctxLocation}`);
@@ -36,7 +35,7 @@ export let Parser = class Parser {
     }
     parseAction(input, location) {
         this._checkNoInterpolation(input, location);
-        var tokens = this._lexer.tokenize(this._stripComments(input));
+        var tokens = this._lexer.tokenize(input);
         var ast = new _ParseAST(input, location, tokens, this._reflector, true).parseChain();
         return new ASTWithSource(ast, input, location);
     }
@@ -59,7 +58,7 @@ export let Parser = class Parser {
             return quote;
         }
         this._checkNoInterpolation(input, location);
-        var tokens = this._lexer.tokenize(this._stripComments(input));
+        var tokens = this._lexer.tokenize(input);
         return new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
     }
     _parseQuote(input, location) {
@@ -84,7 +83,7 @@ export let Parser = class Parser {
             return null;
         let expressions = [];
         for (let i = 0; i < split.expressions.length; ++i) {
-            var tokens = this._lexer.tokenize(this._stripComments(split.expressions[i]));
+            var tokens = this._lexer.tokenize(split.expressions[i]);
             var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
             expressions.push(ast);
         }
@@ -114,9 +113,6 @@ export let Parser = class Parser {
     }
     wrapLiteralPrimitive(input, location) {
         return new ASTWithSource(new LiteralPrimitive(input), input, location);
-    }
-    _stripComments(input) {
-        return StringWrapper.split(input, COMMENT_REGEX)[0].trim();
     }
     _checkNoInterpolation(input, location) {
         var parts = StringWrapper.split(input, INTERPOLATION_REGEXP);

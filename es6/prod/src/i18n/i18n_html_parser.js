@@ -4,12 +4,12 @@ import { ListWrapper, StringMapWrapper } from 'angular2/src/facade/collection';
 import { RegExpWrapper, NumberWrapper, isPresent } from 'angular2/src/facade/lang';
 import { BaseException } from 'angular2/src/facade/exceptions';
 import { id } from './message';
-import { messageFromAttribute, I18nError, I18N_ATTR_PREFIX, I18N_ATTR, partition, getPhNameFromBinding, dedupePhName } from './shared';
+import { messageFromAttribute, I18nError, I18N_ATTR_PREFIX, I18N_ATTR, partition } from './shared';
 const _I18N_ATTR = "i18n";
 const _PLACEHOLDER_ELEMENT = "ph";
 const _NAME_ATTR = "name";
 const _I18N_ATTR_PREFIX = "i18n-";
-let _PLACEHOLDER_EXPANDED_REGEXP = RegExpWrapper.create(`\\<ph(\\s)+name=("(\\w)+")\\>\\<\\/ph\\>`);
+let _PLACEHOLDER_EXPANDED_REGEXP = RegExpWrapper.create(`\\<ph(\\s)+name=("(\\d)+")\\>\\<\\/ph\\>`);
 /**
  * Creates an i18n-ed version of the parsed template.
  *
@@ -259,28 +259,19 @@ export class I18nHtmlParser {
     }
     ;
     _replacePlaceholdersWithExpressions(message, exps, sourceSpan) {
-        let expMap = this._buildExprMap(exps);
         return RegExpWrapper.replaceAll(_PLACEHOLDER_EXPANDED_REGEXP, message, (match) => {
             let nameWithQuotes = match[2];
             let name = nameWithQuotes.substring(1, nameWithQuotes.length - 1);
-            return this._convertIntoExpression(name, expMap, sourceSpan);
+            let index = NumberWrapper.parseInt(name, 10);
+            return this._convertIntoExpression(index, exps, sourceSpan);
         });
     }
-    _buildExprMap(exps) {
-        let expMap = new Map();
-        let usedNames = new Map();
-        for (var i = 0; i < exps.length; i++) {
-            let phName = getPhNameFromBinding(exps[i], i);
-            expMap.set(dedupePhName(usedNames, phName), exps[i]);
-        }
-        return expMap;
-    }
-    _convertIntoExpression(name, expMap, sourceSpan) {
-        if (expMap.has(name)) {
-            return `{{${expMap.get(name)}}}`;
+    _convertIntoExpression(index, exps, sourceSpan) {
+        if (index >= 0 && index < exps.length) {
+            return `{{${exps[index]}}}`;
         }
         else {
-            throw new I18nError(sourceSpan, `Invalid interpolation name '${name}'`);
+            throw new I18nError(sourceSpan, `Invalid interpolation index '${index}'`);
         }
     }
 }

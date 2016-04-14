@@ -8877,7 +8877,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _implicitReceiver = new ast_1.ImplicitReceiver();
 	// TODO(tbosch): Cannot make this const/final right now because of the transpiler...
 	var INTERPOLATION_REGEXP = /\{\{([\s\S]*?)\}\}/g;
-	var COMMENT_REGEX = /\/\//g;
 	var ParseException = (function (_super) {
 	    __extends(ParseException, _super);
 	    function ParseException(message, input, errLocation, ctxLocation) {
@@ -8901,7 +8900,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    Parser.prototype.parseAction = function (input, location) {
 	        this._checkNoInterpolation(input, location);
-	        var tokens = this._lexer.tokenize(this._stripComments(input));
+	        var tokens = this._lexer.tokenize(input);
 	        var ast = new _ParseAST(input, location, tokens, this._reflector, true).parseChain();
 	        return new ast_1.ASTWithSource(ast, input, location);
 	    };
@@ -8924,7 +8923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return quote;
 	        }
 	        this._checkNoInterpolation(input, location);
-	        var tokens = this._lexer.tokenize(this._stripComments(input));
+	        var tokens = this._lexer.tokenize(input);
 	        return new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
 	    };
 	    Parser.prototype._parseQuote = function (input, location) {
@@ -8949,7 +8948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return null;
 	        var expressions = [];
 	        for (var i = 0; i < split.expressions.length; ++i) {
-	            var tokens = this._lexer.tokenize(this._stripComments(split.expressions[i]));
+	            var tokens = this._lexer.tokenize(split.expressions[i]);
 	            var ast = new _ParseAST(input, location, tokens, this._reflector, false).parseChain();
 	            expressions.push(ast);
 	        }
@@ -8979,9 +8978,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    Parser.prototype.wrapLiteralPrimitive = function (input, location) {
 	        return new ast_1.ASTWithSource(new ast_1.LiteralPrimitive(input), input, location);
-	    };
-	    Parser.prototype._stripComments = function (input) {
-	        return lang_1.StringWrapper.split(input, COMMENT_REGEX)[0].trim();
 	    };
 	    Parser.prototype._checkNoInterpolation = function (input, location) {
 	        var parts = lang_1.StringWrapper.split(input, INTERPOLATION_REGEXP);
