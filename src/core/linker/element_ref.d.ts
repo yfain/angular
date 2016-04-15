@@ -32,8 +32,8 @@ export declare abstract class ElementRef {
     nativeElement: any;
 }
 export declare class ElementRef_ implements ElementRef {
-    private _element;
-    constructor(_element: AppElement);
+    private _appElement;
+    constructor(_appElement: AppElement);
     internalElement: AppElement;
     nativeElement: any;
 }

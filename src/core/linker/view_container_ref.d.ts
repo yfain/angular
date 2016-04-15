@@ -1,6 +1,6 @@
-import { ResolvedProvider } from 'angular2/src/core/di/provider';
+import { ResolvedProvider } from 'angular2/src/core/di';
 import { AppElement } from './element';
-import { ElementRef } from './element_ref';
+import { ElementRef, ElementRef_ } from './element_ref';
 import { TemplateRef } from './template_ref';
 import { EmbeddedViewRef, HostViewRef, HostViewFactoryRef, ViewRef } from './view_ref';
 /**
@@ -32,7 +32,7 @@ export declare abstract class ViewContainerRef {
     /**
      * Destroys all Views in this container.
      */
-    abstract clear(): void;
+    clear(): void;
     /**
      * Returns the {@link ViewRef} for the View located in this container at the specified index.
      */
@@ -72,7 +72,7 @@ export declare abstract class ViewContainerRef {
      *
      * Returns the inserted {@link ViewRef}.
      */
-    abstract insert(viewRef: ViewRef, index?: number): ViewRef;
+    abstract insert(viewRef: EmbeddedViewRef, index?: number): EmbeddedViewRef;
     /**
      * Returns the index of the View, specified via {@link ViewRef}, within the current container or
      * `-1` if this container doesn't contain the View.
@@ -89,19 +89,18 @@ export declare abstract class ViewContainerRef {
      *
      * If the `index` param is omitted, the last {@link ViewRef} is detached.
      */
-    abstract detach(index?: number): ViewRef;
+    abstract detach(index?: number): EmbeddedViewRef;
 }
-export declare class ViewContainerRef_ implements ViewContainerRef {
+export declare class ViewContainerRef_ extends ViewContainerRef {
     private _element;
     constructor(_element: AppElement);
     get(index: number): EmbeddedViewRef;
     length: number;
-    element: ElementRef;
+    element: ElementRef_;
     createEmbeddedView(templateRef: TemplateRef, index?: number): EmbeddedViewRef;
     createHostView(hostViewFactoryRef: HostViewFactoryRef, index?: number, dynamicallyCreatedProviders?: ResolvedProvider[], projectableNodes?: any[][]): HostViewRef;
-    insert(viewRef: ViewRef, index?: number): ViewRef;
+    insert(viewRef: ViewRef, index?: number): EmbeddedViewRef;
     indexOf(viewRef: ViewRef): number;
     remove(index?: number): void;
-    detach(index?: number): ViewRef;
-    clear(): void;
+    detach(index?: number): EmbeddedViewRef;
 }

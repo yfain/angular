@@ -1,17 +1,17 @@
 import {
   ComponentRef,
+  DirectiveResolver,
   DynamicComponentLoader,
   Injector,
   Injectable,
   ViewMetadata,
   ElementRef,
   EmbeddedViewRef,
+  ViewResolver,
   provide
 } from 'angular2/core';
-import {DirectiveResolver, ViewResolver} from 'angular2/compiler';
 
 import {Type, isPresent, isBlank} from 'angular2/src/facade/lang';
-import {PromiseWrapper} from 'angular2/src/facade/async';
 import {ListWrapper, MapWrapper} from 'angular2/src/facade/collection';
 
 import {ViewRef_} from 'angular2/src/core/linker/view_ref';
@@ -24,7 +24,6 @@ import {DOM} from 'angular2/src/platform/dom/dom_adapter';
 
 import {DebugNode, DebugElement, getDebugNode} from 'angular2/src/core/debug/debug_node';
 
-import {tick} from './fake_async';
 
 /**
  * Fixture for debugging and testing a component.
@@ -53,9 +52,7 @@ export abstract class ComponentFixture {
   /**
    * Trigger a change detection cycle for the component.
    */
-  abstract detectChanges(checkNoChanges?: boolean): void;
-
-  abstract checkNoChanges(): void;
+  abstract detectChanges(): void;
 
   /**
    * Trigger component destruction.
@@ -68,27 +65,23 @@ export class ComponentFixture_ extends ComponentFixture {
   /** @internal */
   _componentRef: ComponentRef;
   /** @internal */
-  _componentParentView: AppView<any>;
+  _componentParentView: AppView;
 
   constructor(componentRef: ComponentRef) {
     super();
     this._componentParentView = (<ViewRef_>componentRef.hostView).internalView;
-    var hostAppElement = this._componentParentView.getHostViewElement();
-    this.elementRef = hostAppElement.ref;
-    this.debugElement = <DebugElement>getDebugNode(hostAppElement.nativeElement);
-    this.componentInstance = hostAppElement.component;
-    this.nativeElement = hostAppElement.nativeElement;
+    this.elementRef = this._componentParentView.appElements[0].ref;
+    this.debugElement = <DebugElement>getDebugNode(
+        this._componentParentView.rootNodesOrAppElements[0].nativeElement);
+    this.componentInstance = this.debugElement.componentInstance;
+    this.nativeElement = this.debugElement.nativeElement;
     this._componentRef = componentRef;
   }
 
-  detectChanges(checkNoChanges: boolean = true): void {
-    this._componentParentView.detectChanges(false);
-    if (checkNoChanges) {
-      this.checkNoChanges();
-    }
+  detectChanges(): void {
+    this._componentParentView.changeDetector.detectChanges();
+    this._componentParentView.changeDetector.checkNoChanges();
   }
-
-  checkNoChanges(): void { this._componentParentView.detectChanges(true); }
 
   destroy(): void { this._componentRef.dispose(); }
 }
@@ -120,8 +113,6 @@ export class TestComponentBuilder {
     clone._viewOverrides = MapWrapper.clone(this._viewOverrides);
     clone._directiveOverrides = MapWrapper.clone(this._directiveOverrides);
     clone._templateOverrides = MapWrapper.clone(this._templateOverrides);
-    clone._bindingsOverrides = MapWrapper.clone(this._bindingsOverrides);
-    clone._viewBindingsOverrides = MapWrapper.clone(this._viewBindingsOverrides);
     return clone;
   }
 
@@ -245,6 +236,7 @@ export class TestComponentBuilder {
       overrides.forEach(
           (to, from) => { mockViewResolver.overrideViewDirective(component, from, to); });
     });
+
     this._bindingsOverrides.forEach((bindings, type) =>
                                         mockDirectiveResolver.setBindingsOverride(type, bindings));
     this._viewBindingsOverrides.forEach(
@@ -266,17 +258,5 @@ export class TestComponentBuilder {
         this._injector.get(DynamicComponentLoader)
             .loadAsRoot(rootComponentType, `#${rootElId}`, this._injector);
     return promise.then((componentRef) => { return new ComponentFixture_(componentRef); });
-  }
-
-  createFakeAsync(rootComponentType: Type): ComponentFixture {
-    var result;
-    var error;
-    PromiseWrapper.then(this.createAsync(rootComponentType), (_result) => { result = _result; },
-                        (_error) => { error = _error; });
-    tick();
-    if (isPresent(error)) {
-      throw error;
-    }
-    return result;
   }
 }
