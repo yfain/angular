@@ -156,6 +156,7 @@ const $BACKSLASH = 92;
 const $RBRACKET = 93;
 const $CARET = 94;
 const $_ = 95;
+const $BT = 96;
 const $a = 97,
     $e = 101,
     $f = 102,
@@ -436,6 +437,10 @@ bool isExponentStart(num code) {
 
 bool isExponentSign(num code) {
   return code == $MINUS || code == $PLUS;
+}
+
+bool isQuote(num code) {
+  return identical(code, $SQ) || identical(code, $DQ) || identical(code, $BT);
 }
 
 num unescape(num code) {
