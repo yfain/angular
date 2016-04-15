@@ -30,16 +30,14 @@ import "shared.dart"
         partition,
         Part,
         stringifyNodes,
-        meaning,
-        getPhNameFromBinding,
-        dedupePhName;
+        meaning;
 
 const _I18N_ATTR = "i18n";
 const _PLACEHOLDER_ELEMENT = "ph";
 const _NAME_ATTR = "name";
 const _I18N_ATTR_PREFIX = "i18n-";
 var _PLACEHOLDER_EXPANDED_REGEXP =
-    RegExpWrapper.create('''\\<ph(\\s)+name=("(\\w)+")\\>\\<\\/ph\\>''');
+    RegExpWrapper.create('''\\<ph(\\s)+name=("(\\d)+")\\>\\<\\/ph\\>''');
 
 /**
  * Creates an i18n-ed version of the parsed template.
@@ -325,32 +323,22 @@ class I18nHtmlParser implements HtmlParser {
 
   String _replacePlaceholdersWithExpressions(
       String message, List<String> exps, ParseSourceSpan sourceSpan) {
-    var expMap = this._buildExprMap(exps);
     return RegExpWrapper.replaceAll(_PLACEHOLDER_EXPANDED_REGEXP, message,
         (match) {
       var nameWithQuotes = match[2];
       var name = nameWithQuotes.substring(1, nameWithQuotes.length - 1);
-      return this._convertIntoExpression(name, expMap, sourceSpan);
+      var index = NumberWrapper.parseInt(name, 10);
+      return this._convertIntoExpression(index, exps, sourceSpan);
     });
   }
 
-  Map<String, String> _buildExprMap(List<String> exps) {
-    var expMap = new Map<String, String>();
-    var usedNames = new Map<String, num>();
-    for (var i = 0; i < exps.length; i++) {
-      var phName = getPhNameFromBinding(exps[i], i);
-      expMap[dedupePhName(usedNames, phName)] = exps[i];
-    }
-    return expMap;
-  }
-
   _convertIntoExpression(
-      String name, Map<String, String> expMap, ParseSourceSpan sourceSpan) {
-    if (expMap.containsKey(name)) {
-      return '''{{${ expMap [ name ]}}}''';
+      num index, List<String> exps, ParseSourceSpan sourceSpan) {
+    if (index >= 0 && index < exps.length) {
+      return '''{{${ exps [ index ]}}}''';
     } else {
       throw new I18nError(
-          sourceSpan, '''Invalid interpolation name \'${ name}\'''');
+          sourceSpan, '''Invalid interpolation index \'${ index}\'''');
     }
   }
 }

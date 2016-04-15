@@ -101,13 +101,6 @@ main() {
       it("should parse grouped expressions", () {
         checkAction("(1 + 2) * 3", "1 + 2 * 3");
       });
-      it("should ignore comments in expressions", () {
-        checkAction("a //comment", "a");
-      });
-      it("should retain // in string literals", () {
-        checkAction(
-            '''"http://www.google.com"''', '''"http://www.google.com"''');
-      });
       it("should parse an empty string", () {
         checkAction("");
       });
@@ -271,16 +264,6 @@ main() {
       it("should parse conditional expression", () {
         checkBinding("a < b ? a : b");
       });
-      it("should ignore comments in bindings", () {
-        checkBinding("a //comment", "a");
-      });
-      it("should retain // in string literals", () {
-        checkBinding(
-            '''"http://www.google.com"''', '''"http://www.google.com"''');
-      });
-      it("should retain // in : microsyntax", () {
-        checkBinding("one:a//b", "one:a//b");
-      });
     });
     describe("parseTemplateBindings", () {
       keys(List<dynamic> templateBindings) {
@@ -423,29 +406,6 @@ main() {
             '''{{ \'foo\' +
  \'bar\' + \'baz\' }}''',
             '''{{ "foo" + "bar" + "baz" }}''');
-      });
-      describe("comments", () {
-        it("should ignore comments in interpolation expressions", () {
-          checkInterpolation("{{a //comment}}", "{{ a }}");
-        });
-        it("should retain // in single quote strings", () {
-          checkInterpolation('''{{ \'http://www.google.com\' }}''',
-              '''{{ "http://www.google.com" }}''');
-        });
-        it("should retain // in double quote strings", () {
-          checkInterpolation('''{{ "http://www.google.com" }}''',
-              '''{{ "http://www.google.com" }}''');
-        });
-        it("should ignore comments after string literals", () {
-          checkInterpolation('''{{ "a//b" //comment }}''', '''{{ "a//b" }}''');
-        });
-        it("should retain // in complex strings", () {
-          checkInterpolation('''{{"//a\'//b`//c`//d\'//e" //comment}}''',
-              '''{{ "//a\'//b`//c`//d\'//e" }}''');
-        });
-        it("should retain // in nested, unterminated strings", () {
-          checkInterpolation('''{{ "a\'b`" //comment}}''', '''{{ "a\'b`" }}''');
-        });
       });
     });
     describe("parseSimpleBinding", () {
