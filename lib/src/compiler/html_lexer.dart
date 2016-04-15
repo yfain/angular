@@ -23,6 +23,11 @@ enum HtmlTokenType {
   ATTR_NAME,
   ATTR_VALUE,
   DOC_TYPE,
+  EXPANSION_FORM_START,
+  EXPANSION_CASE_VALUE,
+  EXPANSION_CASE_EXP_START,
+  EXPANSION_CASE_EXP_END,
+  EXPANSION_FORM_END,
   EOF
 }
 
@@ -47,8 +52,10 @@ class HtmlTokenizeResult {
   HtmlTokenizeResult(this.tokens, this.errors) {}
 }
 
-HtmlTokenizeResult tokenizeHtml(String sourceContent, String sourceUrl) {
-  return new _HtmlTokenizer(new ParseSourceFile(sourceContent, sourceUrl))
+HtmlTokenizeResult tokenizeHtml(String sourceContent, String sourceUrl,
+    [bool tokenizeExpansionForms = false]) {
+  return new _HtmlTokenizer(
+          new ParseSourceFile(sourceContent, sourceUrl), tokenizeExpansionForms)
       .tokenize();
 }
 
@@ -76,6 +83,9 @@ const $GT = 62;
 const $QUESTION = 63;
 const $LBRACKET = 91;
 const $RBRACKET = 93;
+const $LBRACE = 123;
+const $RBRACE = 125;
+const $COMMA = 44;
 const $A = 65;
 const $F = 70;
 const $X = 88;
@@ -104,18 +114,21 @@ class ControlFlowError {
 // See http://www.w3.org/TR/html51/syntax.html#writing
 class _HtmlTokenizer {
   ParseSourceFile file;
+  bool tokenizeExpansionForms;
   String input;
   num length;
   // Note: this is always lowercase!
   num peek = -1;
+  num nextPeek = -1;
   num index = -1;
   num line = 0;
   num column = -1;
   ParseLocation currentTokenStart;
   HtmlTokenType currentTokenType;
+  var expansionCaseStack = [];
   List<HtmlToken> tokens = [];
   List<HtmlTokenError> errors = [];
-  _HtmlTokenizer(this.file) {
+  _HtmlTokenizer(this.file, this.tokenizeExpansionForms) {
     this.input = file.content;
     this.length = file.content.length;
     this._advance();
@@ -149,6 +162,19 @@ class _HtmlTokenizer {
           } else {
             this._consumeTagOpen(start);
           }
+        } else if (isSpecialFormStart(this.peek, this.nextPeek) &&
+            this.tokenizeExpansionForms) {
+          this._consumeExpansionFormStart();
+        } else if (identical(this.peek, $EQ) && this.tokenizeExpansionForms) {
+          this._consumeExpansionCaseStart();
+        } else if (identical(this.peek, $RBRACE) &&
+            this.isInExpansionCase() &&
+            this.tokenizeExpansionForms) {
+          this._consumeExpansionCaseEnd();
+        } else if (identical(this.peek, $RBRACE) &&
+            this.isInExpansionForm() &&
+            this.tokenizeExpansionForms) {
+          this._consumeExpansionFormEnd();
         } else {
           this._consumeText();
         }
@@ -221,6 +247,9 @@ class _HtmlTokenizer {
     this.peek = this.index >= this.length
         ? $EOF
         : StringWrapper.charCodeAt(this.input, this.index);
+    this.nextPeek = this.index + 1 >= this.length
+        ? $EOF
+        : StringWrapper.charCodeAt(this.input, this.index + 1);
   }
 
   bool _attemptCharCode(num charCode) {
@@ -524,18 +553,101 @@ class _HtmlTokenizer {
     this._endToken(prefixAndName);
   }
 
+  _consumeExpansionFormStart() {
+    this._beginToken(HtmlTokenType.EXPANSION_FORM_START, this._getLocation());
+    this._requireCharCode($LBRACE);
+    this._endToken([]);
+    this._beginToken(HtmlTokenType.RAW_TEXT, this._getLocation());
+    var condition = this._readUntil($COMMA);
+    this._endToken([condition], this._getLocation());
+    this._requireCharCode($COMMA);
+    this._attemptCharCodeUntilFn(isNotWhitespace);
+    this._beginToken(HtmlTokenType.RAW_TEXT, this._getLocation());
+    var type = this._readUntil($COMMA);
+    this._endToken([type], this._getLocation());
+    this._requireCharCode($COMMA);
+    this._attemptCharCodeUntilFn(isNotWhitespace);
+    this.expansionCaseStack.add(HtmlTokenType.EXPANSION_FORM_START);
+  }
+
+  _consumeExpansionCaseStart() {
+    this._requireCharCode($EQ);
+    this._beginToken(HtmlTokenType.EXPANSION_CASE_VALUE, this._getLocation());
+    var value = this._readUntil($LBRACE).trim();
+    this._endToken([value], this._getLocation());
+    this._attemptCharCodeUntilFn(isNotWhitespace);
+    this._beginToken(
+        HtmlTokenType.EXPANSION_CASE_EXP_START, this._getLocation());
+    this._requireCharCode($LBRACE);
+    this._endToken([], this._getLocation());
+    this._attemptCharCodeUntilFn(isNotWhitespace);
+    this.expansionCaseStack.add(HtmlTokenType.EXPANSION_CASE_EXP_START);
+  }
+
+  _consumeExpansionCaseEnd() {
+    this._beginToken(HtmlTokenType.EXPANSION_CASE_EXP_END, this._getLocation());
+    this._requireCharCode($RBRACE);
+    this._endToken([], this._getLocation());
+    this._attemptCharCodeUntilFn(isNotWhitespace);
+    this.expansionCaseStack.removeLast();
+  }
+
+  _consumeExpansionFormEnd() {
+    this._beginToken(HtmlTokenType.EXPANSION_FORM_END, this._getLocation());
+    this._requireCharCode($RBRACE);
+    this._endToken([]);
+    this.expansionCaseStack.removeLast();
+  }
+
   _consumeText() {
     var start = this._getLocation();
     this._beginToken(HtmlTokenType.TEXT, start);
-    var parts = [this._readChar(true)];
-    while (!isTextEnd(this.peek)) {
+    var parts = [];
+    var interpolation = false;
+    if (identical(this.peek, $LBRACE) && identical(this.nextPeek, $LBRACE)) {
       parts.add(this._readChar(true));
+      parts.add(this._readChar(true));
+      interpolation = true;
+    } else {
+      parts.add(this._readChar(true));
+    }
+    while (!this.isTextEnd(interpolation)) {
+      if (identical(this.peek, $LBRACE) && identical(this.nextPeek, $LBRACE)) {
+        parts.add(this._readChar(true));
+        parts.add(this._readChar(true));
+        interpolation = true;
+      } else if (identical(this.peek, $RBRACE) &&
+          identical(this.nextPeek, $RBRACE) &&
+          interpolation) {
+        parts.add(this._readChar(true));
+        parts.add(this._readChar(true));
+        interpolation = false;
+      } else {
+        parts.add(this._readChar(true));
+      }
     }
     this._endToken([this._processCarriageReturns(parts.join(""))]);
   }
 
+  bool isTextEnd(bool interpolation) {
+    if (identical(this.peek, $LT) || identical(this.peek, $EOF)) return true;
+    if (this.tokenizeExpansionForms) {
+      if (isSpecialFormStart(this.peek, this.nextPeek)) return true;
+      if (identical(this.peek, $RBRACE) &&
+          !interpolation &&
+          (this.isInExpansionCase() || this.isInExpansionForm())) return true;
+    }
+    return false;
+  }
+
   List<num> _savePosition() {
     return [this.peek, this.index, this.column, this.line, this.tokens.length];
+  }
+
+  String _readUntil(num char) {
+    var start = this.index;
+    this._attemptUntilChar(char);
+    return this.input.substring(start, this.index);
   }
 
   void _restorePosition(List<num> position) {
@@ -548,6 +660,18 @@ class _HtmlTokenizer {
       // remove any extra tokens
       this.tokens = ListWrapper.slice(this.tokens, 0, nbTokens);
     }
+  }
+
+  bool isInExpansionCase() {
+    return this.expansionCaseStack.length > 0 &&
+        identical(this.expansionCaseStack[this.expansionCaseStack.length - 1],
+            HtmlTokenType.EXPANSION_CASE_EXP_START);
+  }
+
+  bool isInExpansionForm() {
+    return this.expansionCaseStack.length > 0 &&
+        identical(this.expansionCaseStack[this.expansionCaseStack.length - 1],
+            HtmlTokenType.EXPANSION_FORM_START);
   }
 }
 
@@ -582,8 +706,8 @@ bool isNamedEntityEnd(num code) {
   return code == $SEMICOLON || code == $EOF || !isAsciiLetter(code);
 }
 
-bool isTextEnd(num code) {
-  return identical(code, $LT) || identical(code, $EOF);
+bool isSpecialFormStart(num peek, num nextPeek) {
+  return identical(peek, $LBRACE) && nextPeek != $LBRACE;
 }
 
 bool isAsciiLetter(num code) {

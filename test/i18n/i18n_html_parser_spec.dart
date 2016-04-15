@@ -14,9 +14,10 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/i18n/i18n_html_parser.dart" show I18nHtmlParser;
 import "package:angular2/src/i18n/message.dart" show Message, id;
-import "package:angular2/src/compiler/expression_parser/parser.dart"
+import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
-import "package:angular2/src/compiler/expression_parser/lexer.dart" show Lexer;
+import "package:angular2/src/core/change_detection/parser/lexer.dart"
+    show Lexer;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/compiler/html_parser.dart"
     show HtmlParser, HtmlParseTreeResult;
@@ -46,7 +47,7 @@ main() {
       var res = deserializeXmb(
           '''<message-bundle>${ msgs}</message-bundle>''', "someUrl");
       return new I18nHtmlParser(htmlParser, parser, res.content, res.messages)
-          .parse(template, "someurl");
+          .parse(template, "someurl", true);
     }
     it("should delegate to the provided parser when no i18n", () {
       expect(humanizeDom(parse("<div>a</div>", {}))).toEqual([
@@ -86,6 +87,38 @@ main() {
           .toEqual([
         [HtmlElementAst, "div", 0],
         [HtmlAttrAst, "value", "{{b}} or {{a}}"]
+      ]);
+    });
+    it("should handle interpolation with custom placeholder names", () {
+      Map<String, String> translations = {};
+      translations[id(new Message(
+              "<ph name=\"FIRST\"/> and <ph name=\"SECOND\"/>", null, null))] =
+          "<ph name=\"SECOND\"/> or <ph name=\"FIRST\"/>";
+      expect(humanizeDom(parse(
+          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="SECOND")}}\' i18n-value></div>''',
+          translations))).toEqual([
+        [HtmlElementAst, "div", 0],
+        [
+          HtmlAttrAst,
+          "value",
+          "{{b //i18n(ph=\"SECOND\")}} or {{a //i18n(ph=\"FIRST\")}}"
+        ]
+      ]);
+    });
+    it("should handle interpolation with duplicate placeholder names", () {
+      Map<String, String> translations = {};
+      translations[id(new Message(
+              "<ph name=\"FIRST\"/> and <ph name=\"FIRST_1\"/>", null, null))] =
+          "<ph name=\"FIRST_1\"/> or <ph name=\"FIRST\"/>";
+      expect(humanizeDom(parse(
+          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="FIRST")}}\' i18n-value></div>''',
+          translations))).toEqual([
+        [HtmlElementAst, "div", 0],
+        [
+          HtmlAttrAst,
+          "value",
+          "{{b //i18n(ph=\"FIRST\")}} or {{a //i18n(ph=\"FIRST\")}}"
+        ]
       ]);
     });
     it("should handle nested html", () {
@@ -168,6 +201,89 @@ main() {
       expect(res[0].sourceSpan.start.offset).toEqual(18);
       expect(res[1].sourceSpan.start.offset).toEqual(10);
     });
+    it("should handle the plural expansion form", () {
+      Map<String, String> translations = {};
+      translations[id(
+              new Message("zero<ph name=\"e1\">bold</ph>", "plural_0", null))] =
+          "ZERO<ph name=\"e1\">BOLD</ph>";
+      var res = parse(
+          '''{messages.length, plural,=0 {zero<b>bold</b>}}''', translations);
+      expect(humanizeDom(res)).toEqual([
+        [HtmlElementAst, "ul", 0],
+        [HtmlAttrAst, "[ngPlural]", "messages.length"],
+        [HtmlElementAst, "template", 1],
+        [HtmlAttrAst, "ngPluralCase", "0"],
+        [HtmlElementAst, "li", 2],
+        [HtmlTextAst, "ZERO", 3],
+        [HtmlElementAst, "b", 3],
+        [HtmlTextAst, "BOLD", 4]
+      ]);
+    });
+    it("should handle nested expansion forms", () {
+      Map<String, String> translations = {};
+      translations[id(new Message("m", "gender_m", null))] = "M";
+      var res = parse(
+          '''{messages.length, plural, =0 { {p.gender, gender, =m {m}} }}''',
+          translations);
+      expect(humanizeDom(res)).toEqual([
+        [HtmlElementAst, "ul", 0],
+        [HtmlAttrAst, "[ngPlural]", "messages.length"],
+        [HtmlElementAst, "template", 1],
+        [HtmlAttrAst, "ngPluralCase", "0"],
+        [HtmlElementAst, "li", 2],
+        [HtmlElementAst, "ul", 3],
+        [HtmlAttrAst, "[ngSwitch]", "p.gender"],
+        [HtmlElementAst, "template", 4],
+        [HtmlAttrAst, "ngSwitchWhen", "m"],
+        [HtmlElementAst, "li", 5],
+        [HtmlTextAst, "M", 6],
+        [HtmlTextAst, " ", 3]
+      ]);
+    });
+    it("should correctly set source code positions", () {
+      Map<String, String> translations = {};
+      translations[
+              id(new Message("<ph name=\"e0\">bold</ph>", "plural_0", null))] =
+          "<ph name=\"e0\">BOLD</ph>";
+      var nodes =
+          parse('''{messages.length, plural,=0 {<b>bold</b>}}''', translations)
+              .rootNodes;
+      HtmlElementAst ul = (nodes[0] as HtmlElementAst);
+      expect(ul.sourceSpan.start.col).toEqual(0);
+      expect(ul.sourceSpan.end.col).toEqual(42);
+      expect(ul.startSourceSpan.start.col).toEqual(0);
+      expect(ul.startSourceSpan.end.col).toEqual(42);
+      expect(ul.endSourceSpan.start.col).toEqual(0);
+      expect(ul.endSourceSpan.end.col).toEqual(42);
+      var switchExp = ul.attrs[0];
+      expect(switchExp.sourceSpan.start.col).toEqual(1);
+      expect(switchExp.sourceSpan.end.col).toEqual(16);
+      HtmlElementAst template = (ul.children[0] as HtmlElementAst);
+      expect(template.sourceSpan.start.col).toEqual(26);
+      expect(template.sourceSpan.end.col).toEqual(41);
+      var switchCheck = template.attrs[0];
+      expect(switchCheck.sourceSpan.start.col).toEqual(26);
+      expect(switchCheck.sourceSpan.end.col).toEqual(28);
+      HtmlElementAst li = (template.children[0] as HtmlElementAst);
+      expect(li.sourceSpan.start.col).toEqual(26);
+      expect(li.sourceSpan.end.col).toEqual(41);
+      HtmlElementAst b = (li.children[0] as HtmlElementAst);
+      expect(b.sourceSpan.start.col).toEqual(29);
+      expect(b.sourceSpan.end.col).toEqual(32);
+    });
+    it("should handle other special forms", () {
+      Map<String, String> translations = {};
+      translations[id(new Message("m", "gender_male", null))] = "M";
+      var res = parse('''{person.gender, gender,=male {m}}''', translations);
+      expect(humanizeDom(res)).toEqual([
+        [HtmlElementAst, "ul", 0],
+        [HtmlAttrAst, "[ngSwitch]", "person.gender"],
+        [HtmlElementAst, "template", 1],
+        [HtmlAttrAst, "ngSwitchWhen", "male"],
+        [HtmlElementAst, "li", 2],
+        [HtmlTextAst, "M", 3]
+      ]);
+    });
     describe("errors", () {
       it("should error when giving an invalid template", () {
         expect(humanizeErrors(parse("<a>a</b>", {}).errors))
@@ -176,14 +292,17 @@ main() {
       it("should error when no matching message (attr)", () {
         var mid = id(new Message("some message", null, null));
         expect(humanizeErrors(
-                parse("<div value='some message' i18n-value></div>", {})
-                    .errors))
-            .toEqual(['''Cannot find message for id \'${ mid}\'''']);
+            parse("<div value='some message' i18n-value></div>", {})
+                .errors)).toEqual([
+          '''Cannot find message for id \'${ mid}\', content \'some message\'.'''
+        ]);
       });
       it("should error when no matching message (text)", () {
         var mid = id(new Message("some message", null, null));
         expect(humanizeErrors(parse("<div i18n>some message</div>", {}).errors))
-            .toEqual(['''Cannot find message for id \'${ mid}\'''']);
+            .toEqual([
+          '''Cannot find message for id \'${ mid}\', content \'some message\'.'''
+        ]);
       });
       it("should error when a non-placeholder element appears in translation",
           () {
@@ -209,7 +328,7 @@ main() {
             "hi <ph name=\"99\"/>";
         expect(humanizeErrors(
             parse("<div value='hi {{a}}' i18n-value></div>", translations)
-                .errors)).toEqual(["Invalid interpolation index '99'"]);
+                .errors)).toEqual(["Invalid interpolation name '99'"]);
       });
     });
   });

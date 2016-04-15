@@ -4,16 +4,16 @@ import "dart:async";
 import "package:angular2/core.dart"
     show
         ComponentRef,
+        DirectiveResolver,
         DynamicComponentLoader,
         Injector,
         Injectable,
         ViewMetadata,
         ElementRef,
         EmbeddedViewRef,
+        ViewResolver,
         provide;
-import "package:angular2/compiler.dart" show DirectiveResolver, ViewResolver;
 import "package:angular2/src/facade/lang.dart" show Type, isPresent, isBlank;
-import "package:angular2/src/facade/async.dart" show PromiseWrapper;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, MapWrapper;
 import "package:angular2/src/core/linker/view_ref.dart" show ViewRef_;
@@ -23,7 +23,6 @@ import "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/core/debug/debug_node.dart"
     show DebugNode, DebugElement, getDebugNode;
-import "fake_async.dart" show tick;
 
 /**
  * Fixture for debugging and testing a component.
@@ -48,8 +47,7 @@ abstract class ComponentFixture {
   /**
    * Trigger a change detection cycle for the component.
    */
-  void detectChanges([bool checkNoChanges]);
-  void checkNoChanges();
+  void detectChanges();
   /**
    * Trigger component destruction.
    */
@@ -60,28 +58,22 @@ class ComponentFixture_ extends ComponentFixture {
   /** @internal */
   ComponentRef _componentRef;
   /** @internal */
-  AppView<dynamic> _componentParentView;
+  AppView _componentParentView;
   ComponentFixture_(ComponentRef componentRef) : super() {
     /* super call moved to initializer */;
     this._componentParentView =
         ((componentRef.hostView as ViewRef_)).internalView;
-    var hostAppElement = this._componentParentView.getHostViewElement();
-    this.elementRef = hostAppElement.ref;
-    this.debugElement =
-        (getDebugNode(hostAppElement.nativeElement) as DebugElement);
-    this.componentInstance = hostAppElement.component;
-    this.nativeElement = hostAppElement.nativeElement;
+    this.elementRef = this._componentParentView.appElements[0].ref;
+    this.debugElement = (getDebugNode(
+            this._componentParentView.rootNodesOrAppElements[0].nativeElement)
+        as DebugElement);
+    this.componentInstance = this.debugElement.componentInstance;
+    this.nativeElement = this.debugElement.nativeElement;
     this._componentRef = componentRef;
   }
-  void detectChanges([bool checkNoChanges = true]) {
-    this._componentParentView.detectChanges(false);
-    if (checkNoChanges) {
-      this.checkNoChanges();
-    }
-  }
-
-  void checkNoChanges() {
-    this._componentParentView.detectChanges(true);
+  void detectChanges() {
+    this._componentParentView.changeDetector.detectChanges();
+    this._componentParentView.changeDetector.checkNoChanges();
   }
 
   void destroy() {
@@ -114,9 +106,6 @@ class TestComponentBuilder {
     clone._viewOverrides = MapWrapper.clone(this._viewOverrides);
     clone._directiveOverrides = MapWrapper.clone(this._directiveOverrides);
     clone._templateOverrides = MapWrapper.clone(this._templateOverrides);
-    clone._bindingsOverrides = MapWrapper.clone(this._bindingsOverrides);
-    clone._viewBindingsOverrides =
-        MapWrapper.clone(this._viewBindingsOverrides);
     return clone;
   }
 
@@ -266,20 +255,5 @@ class TestComponentBuilder {
     return promise.then((componentRef) {
       return new ComponentFixture_(componentRef);
     });
-  }
-
-  ComponentFixture createFakeAsync(Type rootComponentType) {
-    var result;
-    var error;
-    PromiseWrapper.then(this.createAsync(rootComponentType), (_result) {
-      result = _result;
-    }, (_error) {
-      error = _error;
-    });
-    tick();
-    if (isPresent(error)) {
-      throw error;
-    }
-    return result;
   }
 }

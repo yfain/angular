@@ -12,15 +12,18 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper;
 import "package:angular2/src/facade/lang.dart"
     show RegExpWrapper, NumberWrapper, isPresent;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
-import "package:angular2/src/compiler/expression_parser/parser.dart"
+import "package:angular2/src/core/change_detection/parser/parser.dart"
     show Parser;
 import "message.dart" show Message, id;
+import "expander.dart" show expandNodes;
 import "shared.dart"
     show
         messageFromAttribute,
@@ -30,14 +33,16 @@ import "shared.dart"
         partition,
         Part,
         stringifyNodes,
-        meaning;
+        meaning,
+        getPhNameFromBinding,
+        dedupePhName;
 
 const _I18N_ATTR = "i18n";
 const _PLACEHOLDER_ELEMENT = "ph";
 const _NAME_ATTR = "name";
 const _I18N_ATTR_PREFIX = "i18n-";
 var _PLACEHOLDER_EXPANDED_REGEXP =
-    RegExpWrapper.create('''\\<ph(\\s)+name=("(\\d)+")\\>\\<\\/ph\\>''');
+    RegExpWrapper.create('''\\<ph(\\s)+name=("(\\w)+")\\>\\<\\/ph\\>''');
 
 /**
  * Creates an i18n-ed version of the parsed template.
@@ -127,13 +132,14 @@ class I18nHtmlParser implements HtmlParser {
   List<ParseError> errors;
   I18nHtmlParser(
       this._htmlParser, this._parser, this._messagesContent, this._messages) {}
-  HtmlParseTreeResult parse(String sourceContent, String sourceUrl) {
+  HtmlParseTreeResult parse(String sourceContent, String sourceUrl,
+      [bool parseExpansionForms = false]) {
     this.errors = [];
-    var res = this._htmlParser.parse(sourceContent, sourceUrl);
+    var res = this._htmlParser.parse(sourceContent, sourceUrl, true);
     if (res.errors.length > 0) {
       return res;
     } else {
-      var nodes = this._recurse(res.rootNodes);
+      var nodes = this._recurse(expandNodes(res.rootNodes).nodes);
       return this.errors.length > 0
           ? new HtmlParseTreeResult([], this.errors)
           : new HtmlParseTreeResult(nodes, []);
@@ -154,10 +160,11 @@ class I18nHtmlParser implements HtmlParser {
   }
 
   List<HtmlAst> _mergeI18Part(Part p) {
-    var messageId = id(p.createMessage(this._parser));
+    var message = p.createMessage(this._parser);
+    var messageId = id(message);
     if (!StringMapWrapper.contains(this._messages, messageId)) {
-      throw new I18nError(
-          p.sourceSpan, '''Cannot find message for id \'${ messageId}\'''');
+      throw new I18nError(p.sourceSpan,
+          '''Cannot find message for id \'${ messageId}\', content \'${ message . content}\'.''');
     }
     var parsedMessage = this._messages[messageId];
     return this._mergeTrees(p, parsedMessage, p.children);
@@ -293,14 +300,15 @@ class I18nHtmlParser implements HtmlParser {
         return;
       }
       var i18n = i18ns[0];
-      var messageId = id(messageFromAttribute(this._parser, el, i18n));
+      var message = messageFromAttribute(this._parser, el, i18n);
+      var messageId = id(message);
       if (StringMapWrapper.contains(this._messages, messageId)) {
         var updatedMessage =
             this._replaceInterpolationInAttr(attr, this._messages[messageId]);
         res.add(new HtmlAttrAst(attr.name, updatedMessage, attr.sourceSpan));
       } else {
         throw new I18nError(attr.sourceSpan,
-            '''Cannot find message for id \'${ messageId}\'''');
+            '''Cannot find message for id \'${ messageId}\', content \'${ message . content}\'.''');
       }
     });
     return res;
@@ -323,22 +331,32 @@ class I18nHtmlParser implements HtmlParser {
 
   String _replacePlaceholdersWithExpressions(
       String message, List<String> exps, ParseSourceSpan sourceSpan) {
+    var expMap = this._buildExprMap(exps);
     return RegExpWrapper.replaceAll(_PLACEHOLDER_EXPANDED_REGEXP, message,
         (match) {
       var nameWithQuotes = match[2];
       var name = nameWithQuotes.substring(1, nameWithQuotes.length - 1);
-      var index = NumberWrapper.parseInt(name, 10);
-      return this._convertIntoExpression(index, exps, sourceSpan);
+      return this._convertIntoExpression(name, expMap, sourceSpan);
     });
   }
 
+  Map<String, String> _buildExprMap(List<String> exps) {
+    var expMap = new Map<String, String>();
+    var usedNames = new Map<String, num>();
+    for (var i = 0; i < exps.length; i++) {
+      var phName = getPhNameFromBinding(exps[i], i);
+      expMap[dedupePhName(usedNames, phName)] = exps[i];
+    }
+    return expMap;
+  }
+
   _convertIntoExpression(
-      num index, List<String> exps, ParseSourceSpan sourceSpan) {
-    if (index >= 0 && index < exps.length) {
-      return '''{{${ exps [ index ]}}}''';
+      String name, Map<String, String> expMap, ParseSourceSpan sourceSpan) {
+    if (expMap.containsKey(name)) {
+      return '''{{${ expMap [ name ]}}}''';
     } else {
       throw new I18nError(
-          sourceSpan, '''Invalid interpolation index \'${ index}\'''');
+          sourceSpan, '''Invalid interpolation name \'${ name}\'''');
     }
   }
 }
@@ -357,6 +375,14 @@ class _CreateNodeMapping implements HtmlAstVisitor {
 
   dynamic visitText(HtmlTextAst ast, dynamic context) {
     this.mapping.add(ast);
+    return null;
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
     return null;
   }
 
