@@ -10,8 +10,6 @@ import "html_ast.dart"
         HtmlElementAst,
         HtmlTextAst,
         HtmlCommentAst,
-        HtmlExpansionAst,
-        HtmlExpansionCaseAst,
         HtmlAst;
 import "html_parser.dart" show HtmlParser, HtmlParseTreeResult;
 import "util.dart" show dashCaseToCamelCase, camelCaseToDashCase;
@@ -85,16 +83,6 @@ class LegacyHtmlAstTransformer implements HtmlAstVisitor {
   }
 
   HtmlTextAst visitText(HtmlTextAst ast, dynamic context) {
-    return ast;
-  }
-
-  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
-    var cases = ast.cases.map((c) => c.visit(this, null)).toList();
-    return new HtmlExpansionAst(ast.switchValue, ast.type, cases,
-        ast.sourceSpan, ast.switchValueSourceSpan);
-  }
-
-  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
     return ast;
   }
 
@@ -221,11 +209,9 @@ class LegacyHtmlAstTransformer implements HtmlAstVisitor {
 
 @Injectable()
 class LegacyHtmlParser extends HtmlParser {
-  HtmlParseTreeResult parse(String sourceContent, String sourceUrl,
-      [bool parseExpansionForms = false]) {
+  HtmlParseTreeResult parse(String sourceContent, String sourceUrl) {
     var transformer = new LegacyHtmlAstTransformer();
-    var htmlParseTreeResult =
-        super.parse(sourceContent, sourceUrl, parseExpansionForms);
+    var htmlParseTreeResult = super.parse(sourceContent, sourceUrl);
     var rootNodes = htmlParseTreeResult.rootNodes
         .map((node) => node.visit(transformer, null))
         .toList();

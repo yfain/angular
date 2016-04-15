@@ -10,19 +10,14 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
-        HtmlExpansionAst,
-        HtmlExpansionCaseAst,
         htmlVisitAll;
-import "package:angular2/src/facade/lang.dart"
-    show isPresent, isBlank, StringWrapper;
+import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 import "message.dart" show Message;
-import "package:angular2/src/core/change_detection/parser/parser.dart"
+import "package:angular2/src/compiler/expression_parser/parser.dart"
     show Parser;
 
 const I18N_ATTR = "i18n";
 const I18N_ATTR_PREFIX = "i18n-";
-var CUSTOM_PH_EXP = new RegExp(
-    r'\/\/[\s\S]*i18n[\s\S]*\([\s\S]*ph[\s\S]*=[\s\S]*"([\s\S]*?)"[\s\S]*\)');
 
 /**
  * An i18n error.
@@ -129,15 +124,12 @@ String removeInterpolation(
     String value, ParseSourceSpan source, Parser parser) {
   try {
     var parsed = parser.splitInterpolation(value, source.toString());
-    var usedNames = new Map<String, num>();
     if (isPresent(parsed)) {
       var res = "";
       for (var i = 0; i < parsed.strings.length; ++i) {
         res += parsed.strings[i];
         if (i != parsed.strings.length - 1) {
-          var customPhName = getPhNameFromBinding(parsed.expressions[i], i);
-          customPhName = dedupePhName(usedNames, customPhName);
-          res += '''<ph name="${ customPhName}"/>''';
+          res += '''<ph name="${ i}"/>''';
         }
       }
       return res;
@@ -146,22 +138,6 @@ String removeInterpolation(
     }
   } catch (e, e_stack) {
     return value;
-  }
-}
-
-String getPhNameFromBinding(String input, num index) {
-  var customPhMatch = StringWrapper.split(input, CUSTOM_PH_EXP);
-  return customPhMatch.length > 1 ? customPhMatch[1] : '''${ index}''';
-}
-
-String dedupePhName(Map<String, num> usedNames, String name) {
-  var duplicateNameCount = usedNames[name];
-  if (isPresent(duplicateNameCount)) {
-    usedNames[name] = duplicateNameCount + 1;
-    return '''${ name}_${ duplicateNameCount}''';
-  } else {
-    usedNames[name] = 1;
-    return name;
   }
 }
 
@@ -197,14 +173,6 @@ class _StringifyVisitor implements HtmlAstVisitor {
 
   dynamic visitComment(HtmlCommentAst ast, dynamic context) {
     return "";
-  }
-
-  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
-    return null;
-  }
-
-  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
-    return null;
   }
 
   String _join(List<String> strs, String str) {

@@ -11,14 +11,7 @@ import "package:angular2/src/facade/lang.dart"
         serializeEnum;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "html_ast.dart"
-    show
-        HtmlAst,
-        HtmlAttrAst,
-        HtmlTextAst,
-        HtmlCommentAst,
-        HtmlElementAst,
-        HtmlExpansionAst,
-        HtmlExpansionCaseAst;
+    show HtmlAst, HtmlAttrAst, HtmlTextAst, HtmlCommentAst, HtmlElementAst;
 import "package:angular2/src/core/di.dart" show Injectable;
 import "html_lexer.dart" show HtmlToken, HtmlTokenType, tokenizeHtml;
 import "parse_util.dart" show ParseError, ParseLocation, ParseSourceSpan;
@@ -46,10 +39,8 @@ class HtmlParseTreeResult {
 
 @Injectable()
 class HtmlParser {
-  HtmlParseTreeResult parse(String sourceContent, String sourceUrl,
-      [bool parseExpansionForms = false]) {
-    var tokensAndErrors =
-        tokenizeHtml(sourceContent, sourceUrl, parseExpansionForms);
+  HtmlParseTreeResult parse(String sourceContent, String sourceUrl) {
+    var tokensAndErrors = tokenizeHtml(sourceContent, sourceUrl);
     var treeAndErrors = new TreeBuilder(tokensAndErrors.tokens).build();
     return new HtmlParseTreeResult(
         treeAndErrors.rootNodes,
@@ -85,9 +76,6 @@ class TreeBuilder {
           identical(this.peek.type, HtmlTokenType.ESCAPABLE_RAW_TEXT)) {
         this._closeVoidElement();
         this._consumeText(this._advance());
-      } else if (identical(
-          this.peek.type, HtmlTokenType.EXPANSION_FORM_START)) {
-        this._consumeExpansion(this._advance());
       } else {
         // Skip all other tokens...
         this._advance();
@@ -123,96 +111,6 @@ class TreeBuilder {
     this._advanceIf(HtmlTokenType.COMMENT_END);
     var value = isPresent(text) ? text.parts[0].trim() : null;
     this._addToParent(new HtmlCommentAst(value, token.sourceSpan));
-  }
-
-  _consumeExpansion(HtmlToken token) {
-    var switchValue = this._advance();
-    var type = this._advance();
-    var cases = [];
-    // read =
-    while (identical(this.peek.type, HtmlTokenType.EXPANSION_CASE_VALUE)) {
-      var expCase = this._parseExpansionCase();
-      if (isBlank(expCase)) return;
-      cases.add(expCase);
-    }
-    // read the final }
-    if (!identical(this.peek.type, HtmlTokenType.EXPANSION_FORM_END)) {
-      this.errors.add(HtmlTreeError.create(null, this.peek.sourceSpan,
-          '''Invalid expansion form. Missing \'}\'.'''));
-      return;
-    }
-    this._advance();
-    var mainSourceSpan =
-        new ParseSourceSpan(token.sourceSpan.start, this.peek.sourceSpan.end);
-    this._addToParent(new HtmlExpansionAst(switchValue.parts[0], type.parts[0],
-        cases, mainSourceSpan, switchValue.sourceSpan));
-  }
-
-  HtmlExpansionCaseAst _parseExpansionCase() {
-    var value = this._advance();
-    // read {
-    if (!identical(this.peek.type, HtmlTokenType.EXPANSION_CASE_EXP_START)) {
-      this.errors.add(HtmlTreeError.create(null, this.peek.sourceSpan,
-          '''Invalid expansion form. Missing \'{\'.,'''));
-      return null;
-    }
-    // read until }
-    var start = this._advance();
-    var exp = this._collectExpansionExpTokens(start);
-    if (isBlank(exp)) return null;
-    var end = this._advance();
-    exp.add(new HtmlToken(HtmlTokenType.EOF, [], end.sourceSpan));
-    // parse everything in between { and }
-    var parsedExp = new TreeBuilder(exp).build();
-    if (parsedExp.errors.length > 0) {
-      this.errors = (new List.from(this.errors)
-        ..addAll((parsedExp.errors as List<HtmlTreeError>)));
-      return null;
-    }
-    var sourceSpan =
-        new ParseSourceSpan(value.sourceSpan.start, end.sourceSpan.end);
-    var expSourceSpan =
-        new ParseSourceSpan(start.sourceSpan.start, end.sourceSpan.end);
-    return new HtmlExpansionCaseAst(value.parts[0], parsedExp.rootNodes,
-        sourceSpan, value.sourceSpan, expSourceSpan);
-  }
-
-  List<HtmlToken> _collectExpansionExpTokens(HtmlToken start) {
-    var exp = [];
-    var expansionFormStack = [HtmlTokenType.EXPANSION_CASE_EXP_START];
-    while (true) {
-      if (identical(this.peek.type, HtmlTokenType.EXPANSION_FORM_START) ||
-          identical(this.peek.type, HtmlTokenType.EXPANSION_CASE_EXP_START)) {
-        expansionFormStack.add(this.peek.type);
-      }
-      if (identical(this.peek.type, HtmlTokenType.EXPANSION_CASE_EXP_END)) {
-        if (lastOnStack(
-            expansionFormStack, HtmlTokenType.EXPANSION_CASE_EXP_START)) {
-          expansionFormStack.removeLast();
-          if (expansionFormStack.length == 0) return exp;
-        } else {
-          this.errors.add(HtmlTreeError.create(null, start.sourceSpan,
-              '''Invalid expansion form. Missing \'}\'.'''));
-          return null;
-        }
-      }
-      if (identical(this.peek.type, HtmlTokenType.EXPANSION_FORM_END)) {
-        if (lastOnStack(
-            expansionFormStack, HtmlTokenType.EXPANSION_FORM_START)) {
-          expansionFormStack.removeLast();
-        } else {
-          this.errors.add(HtmlTreeError.create(null, start.sourceSpan,
-              '''Invalid expansion form. Missing \'}\'.'''));
-          return null;
-        }
-      }
-      if (identical(this.peek.type, HtmlTokenType.EOF)) {
-        this.errors.add(HtmlTreeError.create(null, start.sourceSpan,
-            '''Invalid expansion form. Missing \'}\'.'''));
-        return null;
-      }
-      exp.add(this._advance());
-    }
   }
 
   _consumeText(HtmlToken token) {
@@ -362,8 +260,4 @@ String getElementFullName(
     }
   }
   return mergeNsAndName(prefix, localName);
-}
-
-bool lastOnStack(List<dynamic> stack, dynamic element) {
-  return stack.length > 0 && identical(stack[stack.length - 1], element);
 }

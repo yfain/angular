@@ -17,32 +17,6 @@ class HtmlTextAst implements HtmlAst {
   }
 }
 
-class HtmlExpansionAst implements HtmlAst {
-  String switchValue;
-  String type;
-  List<HtmlExpansionCaseAst> cases;
-  ParseSourceSpan sourceSpan;
-  ParseSourceSpan switchValueSourceSpan;
-  HtmlExpansionAst(this.switchValue, this.type, this.cases, this.sourceSpan,
-      this.switchValueSourceSpan) {}
-  dynamic visit(HtmlAstVisitor visitor, dynamic context) {
-    return visitor.visitExpansion(this, context);
-  }
-}
-
-class HtmlExpansionCaseAst implements HtmlAst {
-  String value;
-  List<HtmlAst> expression;
-  ParseSourceSpan sourceSpan;
-  ParseSourceSpan valueSourceSpan;
-  ParseSourceSpan expSourceSpan;
-  HtmlExpansionCaseAst(this.value, this.expression, this.sourceSpan,
-      this.valueSourceSpan, this.expSourceSpan) {}
-  dynamic visit(HtmlAstVisitor visitor, dynamic context) {
-    return visitor.visitExpansionCase(this, context);
-  }
-}
-
 class HtmlAttrAst implements HtmlAst {
   String name;
   String value;
@@ -81,8 +55,6 @@ abstract class HtmlAstVisitor {
   dynamic visitAttr(HtmlAttrAst ast, dynamic context);
   dynamic visitText(HtmlTextAst ast, dynamic context);
   dynamic visitComment(HtmlCommentAst ast, dynamic context);
-  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context);
-  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context);
 }
 
 List<dynamic> htmlVisitAll(HtmlAstVisitor visitor, List<HtmlAst> asts,

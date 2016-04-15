@@ -14,10 +14,9 @@ import "package:angular2/src/compiler/html_ast.dart"
         htmlVisitAll;
 import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
-import "package:angular2/src/core/change_detection/parser/parser.dart"
+import "package:angular2/src/compiler/expression_parser/parser.dart"
     show Parser;
 import "message.dart" show Message, id;
-import "expander.dart" show expandNodes;
 import "shared.dart"
     show
         I18nError,
@@ -127,11 +126,11 @@ class MessageExtractor {
   ExtractionResult extract(String template, String sourceUrl) {
     this.messages = [];
     this.errors = [];
-    var res = this._htmlParser.parse(template, sourceUrl, true);
+    var res = this._htmlParser.parse(template, sourceUrl);
     if (res.errors.length > 0) {
       return new ExtractionResult([], res.errors);
     } else {
-      this._recurse(expandNodes(res.rootNodes).nodes);
+      this._recurse(res.rootNodes);
       return new ExtractionResult(this.messages, this.errors);
     }
   }
