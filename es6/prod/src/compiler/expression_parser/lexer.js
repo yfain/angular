@@ -134,6 +134,7 @@ export const $BACKSLASH = 92;
 export const $RBRACKET = 93;
 const $CARET = 94;
 const $_ = 95;
+export const $BT = 96;
 const $a = 97, $e = 101, $f = 102, $n = 110, $r = 114, $t = 116, $u = 117, $v = 118, $z = 122;
 export const $LBRACE = 123;
 export const $BAR = 124;
@@ -386,6 +387,9 @@ function isExponentStart(code) {
 }
 function isExponentSign(code) {
     return code == $MINUS || code == $PLUS;
+}
+export function isQuote(code) {
+    return code === $SQ || code === $DQ || code === $BT;
 }
 function unescape(code) {
     switch (code) {
