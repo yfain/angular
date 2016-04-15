@@ -7,12 +7,6 @@ import "package:angular2/src/facade/lang.dart" show isPresent, NumberWrapper;
 import "package:angular2/src/facade/browser.dart" show window;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 
-class ChangeDetectionPerfRecord {
-  num msPerTick;
-  num numTicks;
-  ChangeDetectionPerfRecord(this.msPerTick, this.numTicks) {}
-}
-
 /**
  * Entry point for all Angular debug tools. This object corresponds to the `ng`
  * global variable accessible in the dev console.
@@ -49,7 +43,7 @@ class AngularProfiler {
    * ng.profiler.timeChangeDetection({record: true})
    * ```
    */
-  ChangeDetectionPerfRecord timeChangeDetection(dynamic config) {
+  timeChangeDetection(dynamic config) {
     var record = isPresent(config) && config["record"];
     var profileName = "Change Detection";
     // Profiler is not available in Android browsers, nor in IE 9 without dev tools opened
@@ -78,6 +72,5 @@ class AngularProfiler {
     window.console.log('''ran ${ numTicks} change detection cycles''');
     window.console
         .log('''${ NumberWrapper . toFixed ( msPerTick , 2 )} ms per check''');
-    return new ChangeDetectionPerfRecord(msPerTick, numTicks);
   }
 }
