@@ -25,6 +25,4 @@ export declare function meaning(i18n: string): string;
 export declare function description(i18n: string): string;
 export declare function messageFromAttribute(parser: Parser, p: HtmlElementAst, attr: HtmlAttrAst): Message;
 export declare function removeInterpolation(value: string, source: ParseSourceSpan, parser: Parser): string;
-export declare function getPhNameFromBinding(input: string, index: number): string;
-export declare function dedupePhName(usedNames: Map<string, number>, name: string): string;
 export declare function stringifyNodes(nodes: HtmlAst[], parser: Parser): string;

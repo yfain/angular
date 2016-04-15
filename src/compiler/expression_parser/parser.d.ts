@@ -17,8 +17,6 @@ export declare class Parser {
     parseInterpolation(input: string, location: any): ASTWithSource;
     splitInterpolation(input: string, location: string): SplitInterpolation;
     wrapLiteralPrimitive(input: string, location: any): ASTWithSource;
-    private _stripComments(input);
-    private _commentStart(input);
     private _checkNoInterpolation(input, location);
     private _findInterpolationErrorColumn(parts, partInErrIdx);
 }

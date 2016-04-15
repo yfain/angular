@@ -105,6 +105,5 @@ export declare class I18nHtmlParser implements HtmlParser {
     private _i18nAttributes(el);
     private _replaceInterpolationInAttr(attr, msg);
     private _replacePlaceholdersWithExpressions(message, exps, sourceSpan);
-    private _buildExprMap(exps);
-    private _convertIntoExpression(name, expMap, sourceSpan);
+    private _convertIntoExpression(index, exps, sourceSpan);
 }
