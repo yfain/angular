@@ -137,6 +137,7 @@ class InjectSetupWrapper {
     return new FunctionWithParamTokens(tokens, fn, false, this._providers);
   }
 
+  /** @Deprecated {use async(withProviders().inject())} */
   FunctionWithParamTokens injectAsync(List<dynamic> tokens, Function fn) {
     return new FunctionWithParamTokens(tokens, fn, true, this._providers);
   }
@@ -147,6 +148,8 @@ withProviders(dynamic /* () => any */ providers) {
 }
 
 /**
+ * @Deprecated {use async(inject())}
+ *
  * Allows injecting dependencies in `beforeEach()` and `it()`. The test must return
  * a promise which will resolve when all asynchronous activity is complete.
  *
@@ -166,6 +169,34 @@ withProviders(dynamic /* () => any */ providers) {
  */
 FunctionWithParamTokens injectAsync(List<dynamic> tokens, Function fn) {
   return new FunctionWithParamTokens(tokens, fn, true);
+}
+
+/**
+ * Wraps a test function in an asynchronous test zone. The test will automatically
+ * complete when all asynchronous calls within this zone are done. Can be used
+ * to wrap an [inject] call.
+ *
+ * Example:
+ *
+ * ```
+ * it('...', async(inject([AClass], (object) => {
+ *   object.doSomething.then(() => {
+ *     expect(...);
+ *   })
+ * });
+ * ```
+ */
+FunctionWithParamTokens async(
+    dynamic /* Function | FunctionWithParamTokens */ fn) {
+  if (fn is FunctionWithParamTokens) {
+    fn.isAsync = true;
+    return fn;
+  } else if (fn is Function) {
+    return new FunctionWithParamTokens([], fn, true);
+  } else {
+    throw new BaseException(
+        "argument to async must be a function or inject(<Function>)");
+  }
 }
 
 List<dynamic> emptyArray() {
