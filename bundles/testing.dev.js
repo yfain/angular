@@ -1995,6 +1995,17 @@ System.register("angular2/src/testing/test_injector", ["angular2/core", "angular
     return new FunctionWithParamTokens(tokens, fn, true);
   }
   exports.injectAsync = injectAsync;
+  function async(fn) {
+    if (fn instanceof FunctionWithParamTokens) {
+      fn.isAsync = true;
+      return fn;
+    } else if (fn instanceof Function) {
+      return new FunctionWithParamTokens([], fn, true);
+    } else {
+      throw new exceptions_1.BaseException('argument to async must be a function or inject(<Function>)');
+    }
+  }
+  exports.async = async;
   function emptyArray() {
     return [];
   }
@@ -2033,6 +2044,7 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
   var test_injector_1 = require("angular2/src/testing/test_injector");
   var test_injector_2 = require("angular2/src/testing/test_injector");
   exports.inject = test_injector_2.inject;
+  exports.async = test_injector_2.async;
   exports.injectAsync = test_injector_2.injectAsync;
   var matchers_1 = require("angular2/src/testing/matchers");
   exports.expect = matchers_1.expect;
@@ -2063,6 +2075,15 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
     });
   }
   exports.beforeEachProviders = beforeEachProviders;
+  function runInAsyncTestZone(fnToExecute, finishCallback, failCallback, testName) {
+    if (testName === void 0) {
+      testName = '';
+    }
+    var AsyncTestZoneSpec = Zone['AsyncTestZoneSpec'];
+    var testZoneSpec = new AsyncTestZoneSpec(finishCallback, failCallback, testName);
+    var testZone = Zone.current.fork(testZoneSpec);
+    return testZone.run(fnToExecute);
+  }
   function _isPromiseLike(input) {
     return input && !!(input.then);
   }
@@ -2071,27 +2092,12 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
     if (testFn instanceof test_injector_1.FunctionWithParamTokens) {
       var testFnT_1 = testFn;
       jsmFn(name, function(done) {
-        var returnedTestValue;
-        try {
-          returnedTestValue = testInjector.execute(testFnT_1);
-        } catch (err) {
-          done.fail(err);
-          return ;
-        }
         if (testFnT_1.isAsync) {
-          if (_isPromiseLike(returnedTestValue)) {
-            returnedTestValue.then(function() {
-              done();
-            }, function(err) {
-              done.fail(err);
-            });
-          } else {
-            done.fail('Error: injectAsync was expected to return a promise, but the ' + ' returned value was: ' + returnedTestValue);
-          }
+          runInAsyncTestZone(function() {
+            return testInjector.execute(testFnT_1);
+          }, done, done.fail, name);
         } else {
-          if (!(returnedTestValue === undefined)) {
-            done.fail('Error: inject returned a value. Did you mean to use injectAsync? Returned ' + 'value was: ' + returnedTestValue);
-          }
+          testInjector.execute(testFnT_1);
           done();
         }
       }, timeOut);
@@ -2103,27 +2109,12 @@ System.register("angular2/src/testing/testing", ["angular2/src/facade/lang", "an
     if (fn instanceof test_injector_1.FunctionWithParamTokens) {
       var fnT_1 = fn;
       jsmBeforeEach(function(done) {
-        var returnedTestValue;
-        try {
-          returnedTestValue = testInjector.execute(fnT_1);
-        } catch (err) {
-          done.fail(err);
-          return ;
-        }
         if (fnT_1.isAsync) {
-          if (_isPromiseLike(returnedTestValue)) {
-            returnedTestValue.then(function() {
-              done();
-            }, function(err) {
-              done.fail(err);
-            });
-          } else {
-            done.fail('Error: injectAsync was expected to return a promise, but the ' + ' returned value was: ' + returnedTestValue);
-          }
+          runInAsyncTestZone(function() {
+            return testInjector.execute(fnT_1);
+          }, done, done.fail, 'beforeEach');
         } else {
-          if (!(returnedTestValue === undefined)) {
-            done.fail('Error: inject returned a value. Did you mean to use injectAsync? Returned ' + 'value was: ' + returnedTestValue);
-          }
+          testInjector.execute(fnT_1);
           done();
         }
       });
