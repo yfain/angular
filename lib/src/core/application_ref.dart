@@ -471,8 +471,10 @@ class ApplicationRef_ extends ApplicationRef {
 
   /** @internal */
   void _loadComponent(ComponentRef componentRef) {
-    var appChangeDetector =
-        ((componentRef.location as ElementRef_)).internalElement.parentView;
+    var appChangeDetector = ((componentRef.location as ElementRef_))
+        .internalElement
+        .parentView
+        .changeDetector;
     this._changeDetectorRefs.add(appChangeDetector.ref);
     this.tick();
     this._rootComponents.add(componentRef);
@@ -487,6 +489,7 @@ class ApplicationRef_ extends ApplicationRef {
     this.unregisterChangeDetector(((componentRef.location as ElementRef_))
         .internalElement
         .parentView
+        .changeDetector
         .ref);
     ListWrapper.remove(this._rootComponents, componentRef);
   }

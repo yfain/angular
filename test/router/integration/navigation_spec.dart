@@ -17,8 +17,7 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/core.dart" show provide, Component, Injector, Inject;
-import "package:angular2/src/facade/async.dart"
-    show PromiseWrapper, TimerWrapper;
+import "package:angular2/src/facade/async.dart" show PromiseWrapper;
 import "package:angular2/router.dart"
     show Router, RouterOutlet, RouterLink, RouteParams, RouteData, Location;
 import "package:angular2/src/router/route_config/route_config_decorator.dart"
@@ -254,31 +253,6 @@ main() {
               .then((_) {
                 fixture.detectChanges();
                 expect(fixture.debugElement.nativeElement).toHaveText("");
-                async.done();
-              });
-        }));
-    it(
-        "should fire an event for each activated component",
-        inject([AsyncTestCompleter], (async) {
-          compile(tcb,
-                  "<router-outlet (activate)=\"activatedCmp = \$event\"></router-outlet>")
-              .then((rtc) {
-                fixture = rtc;
-              })
-              .then((_) =>
-                  rtr.config([new Route(path: "/test", component: HelloCmp)]))
-              .then((_) => rtr.navigateByUrl("/test"))
-              .then((_) {
-                // Note: need a timeout so that all promises are flushed
-                var completer = PromiseWrapper.completer();
-                TimerWrapper.setTimeout(() {
-                  completer.resolve(null);
-                }, 0);
-                return completer.promise;
-              })
-              .then((_) {
-                expect(fixture.componentInstance.activatedCmp)
-                    .toBeAnInstanceOf(HelloCmp);
                 async.done();
               });
         }));
