@@ -20593,6 +20593,14 @@ System.register("angular2/src/platform/browser/tools/common_tools", ["angular2/s
   var lang_1 = require("angular2/src/facade/lang");
   var browser_1 = require("angular2/src/facade/browser");
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
+  var ChangeDetectionPerfRecord = (function() {
+    function ChangeDetectionPerfRecord(msPerTick, numTicks) {
+      this.msPerTick = msPerTick;
+      this.numTicks = numTicks;
+    }
+    return ChangeDetectionPerfRecord;
+  }());
+  exports.ChangeDetectionPerfRecord = ChangeDetectionPerfRecord;
   var AngularTools = (function() {
     function AngularTools(ref) {
       this.profiler = new AngularProfiler(ref);
@@ -20624,6 +20632,7 @@ System.register("angular2/src/platform/browser/tools/common_tools", ["angular2/s
       var msPerTick = (end - start) / numTicks;
       browser_1.window.console.log("ran " + numTicks + " change detection cycles");
       browser_1.window.console.log(lang_1.NumberWrapper.toFixed(msPerTick, 2) + " ms per check");
+      return new ChangeDetectionPerfRecord(msPerTick, numTicks);
     };
     return AngularProfiler;
   }());

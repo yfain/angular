@@ -33707,6 +33707,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var browser_1 = __webpack_require__(228);
 	var dom_adapter_1 = __webpack_require__(196);
+	var ChangeDetectionPerfRecord = (function () {
+	    function ChangeDetectionPerfRecord(msPerTick, numTicks) {
+	        this.msPerTick = msPerTick;
+	        this.numTicks = numTicks;
+	    }
+	    return ChangeDetectionPerfRecord;
+	}());
+	exports.ChangeDetectionPerfRecord = ChangeDetectionPerfRecord;
 	/**
 	 * Entry point for all Angular debug tools. This object corresponds to the `ng`
 	 * global variable accessible in the dev console.
@@ -33767,6 +33775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var msPerTick = (end - start) / numTicks;
 	        browser_1.window.console.log("ran " + numTicks + " change detection cycles");
 	        browser_1.window.console.log(lang_1.NumberWrapper.toFixed(msPerTick, 2) + " ms per check");
+	        return new ChangeDetectionPerfRecord(msPerTick, numTicks);
 	    };
 	    return AngularProfiler;
 	}());
