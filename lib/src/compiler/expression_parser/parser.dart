@@ -11,6 +11,7 @@ import "lexer.dart"
         Lexer,
         EOF,
         isIdentifier,
+        isQuote,
         Token,
         $PERIOD,
         $COLON,
@@ -21,7 +22,8 @@ import "lexer.dart"
         $LBRACE,
         $RBRACE,
         $LPAREN,
-        $RPAREN;
+        $RPAREN,
+        $SLASH;
 import "ast.dart"
     show
         AST,
@@ -74,7 +76,7 @@ class Parser {
   Parser(this._lexer) {}
   ASTWithSource parseAction(String input, dynamic location) {
     this._checkNoInterpolation(input, location);
-    var tokens = this._lexer.tokenize(input);
+    var tokens = this._lexer.tokenize(this._stripComments(input));
     var ast = new _ParseAST(input, location, tokens, true).parseChain();
     return new ASTWithSource(ast, input, location);
   }
@@ -104,7 +106,7 @@ class Parser {
       return quote;
     }
     this._checkNoInterpolation(input, location);
-    var tokens = this._lexer.tokenize(input);
+    var tokens = this._lexer.tokenize(this._stripComments(input));
     return new _ParseAST(input, location, tokens, false).parseChain();
   }
 
@@ -129,7 +131,8 @@ class Parser {
     if (split == null) return null;
     var expressions = [];
     for (var i = 0; i < split.expressions.length; ++i) {
-      var tokens = this._lexer.tokenize(split.expressions[i]);
+      var tokens =
+          this._lexer.tokenize(this._stripComments(split.expressions[i]));
       var ast = new _ParseAST(input, location, tokens, false).parseChain();
       expressions.add(ast);
     }
@@ -164,6 +167,27 @@ class Parser {
 
   ASTWithSource wrapLiteralPrimitive(String input, dynamic location) {
     return new ASTWithSource(new LiteralPrimitive(input), input, location);
+  }
+
+  String _stripComments(String input) {
+    var i = this._commentStart(input);
+    return isPresent(i) ? input.substring(0, i).trim() : input;
+  }
+
+  num _commentStart(String input) {
+    var outerQuote = null;
+    for (var i = 0; i < input.length - 1; i++) {
+      var char = StringWrapper.charCodeAt(input, i);
+      var nextChar = StringWrapper.charCodeAt(input, i + 1);
+      if (identical(char, $SLASH) && nextChar == $SLASH && isBlank(outerQuote))
+        return i;
+      if (identical(outerQuote, char)) {
+        outerQuote = null;
+      } else if (isBlank(outerQuote) && isQuote(char)) {
+        outerQuote = char;
+      }
+    }
+    return null;
   }
 
   void _checkNoInterpolation(String input, dynamic location) {

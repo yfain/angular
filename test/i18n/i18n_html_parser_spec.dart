@@ -88,6 +88,38 @@ main() {
         [HtmlAttrAst, "value", "{{b}} or {{a}}"]
       ]);
     });
+    it("should handle interpolation with custom placeholder names", () {
+      Map<String, String> translations = {};
+      translations[id(new Message(
+              "<ph name=\"FIRST\"/> and <ph name=\"SECOND\"/>", null, null))] =
+          "<ph name=\"SECOND\"/> or <ph name=\"FIRST\"/>";
+      expect(humanizeDom(parse(
+          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="SECOND")}}\' i18n-value></div>''',
+          translations))).toEqual([
+        [HtmlElementAst, "div", 0],
+        [
+          HtmlAttrAst,
+          "value",
+          "{{b //i18n(ph=\"SECOND\")}} or {{a //i18n(ph=\"FIRST\")}}"
+        ]
+      ]);
+    });
+    it("should handle interpolation with duplicate placeholder names", () {
+      Map<String, String> translations = {};
+      translations[id(new Message(
+              "<ph name=\"FIRST\"/> and <ph name=\"FIRST_1\"/>", null, null))] =
+          "<ph name=\"FIRST_1\"/> or <ph name=\"FIRST\"/>";
+      expect(humanizeDom(parse(
+          '''<div value=\'{{a //i18n(ph="FIRST")}} and {{b //i18n(ph="FIRST")}}\' i18n-value></div>''',
+          translations))).toEqual([
+        [HtmlElementAst, "div", 0],
+        [
+          HtmlAttrAst,
+          "value",
+          "{{b //i18n(ph=\"FIRST\")}} or {{a //i18n(ph=\"FIRST\")}}"
+        ]
+      ]);
+    });
     it("should handle nested html", () {
       Map<String, String> translations = {};
       translations[id(new Message(
@@ -209,7 +241,7 @@ main() {
             "hi <ph name=\"99\"/>";
         expect(humanizeErrors(
             parse("<div value='hi {{a}}' i18n-value></div>", translations)
-                .errors)).toEqual(["Invalid interpolation index '99'"]);
+                .errors)).toEqual(["Invalid interpolation name '99'"]);
       });
     });
   });
