@@ -12,6 +12,8 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper;
@@ -21,6 +23,7 @@ import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "package:angular2/src/compiler/expression_parser/parser.dart"
     show Parser;
 import "message.dart" show Message, id;
+import "expander.dart" show expandNodes;
 import "shared.dart"
     show
         messageFromAttribute,
@@ -129,13 +132,14 @@ class I18nHtmlParser implements HtmlParser {
   List<ParseError> errors;
   I18nHtmlParser(
       this._htmlParser, this._parser, this._messagesContent, this._messages) {}
-  HtmlParseTreeResult parse(String sourceContent, String sourceUrl) {
+  HtmlParseTreeResult parse(String sourceContent, String sourceUrl,
+      [bool parseExpansionForms = false]) {
     this.errors = [];
-    var res = this._htmlParser.parse(sourceContent, sourceUrl);
+    var res = this._htmlParser.parse(sourceContent, sourceUrl, true);
     if (res.errors.length > 0) {
       return res;
     } else {
-      var nodes = this._recurse(res.rootNodes);
+      var nodes = this._recurse(expandNodes(res.rootNodes).nodes);
       return this.errors.length > 0
           ? new HtmlParseTreeResult([], this.errors)
           : new HtmlParseTreeResult(nodes, []);
@@ -156,10 +160,11 @@ class I18nHtmlParser implements HtmlParser {
   }
 
   List<HtmlAst> _mergeI18Part(Part p) {
-    var messageId = id(p.createMessage(this._parser));
+    var message = p.createMessage(this._parser);
+    var messageId = id(message);
     if (!StringMapWrapper.contains(this._messages, messageId)) {
-      throw new I18nError(
-          p.sourceSpan, '''Cannot find message for id \'${ messageId}\'''');
+      throw new I18nError(p.sourceSpan,
+          '''Cannot find message for id \'${ messageId}\', content \'${ message . content}\'.''');
     }
     var parsedMessage = this._messages[messageId];
     return this._mergeTrees(p, parsedMessage, p.children);
@@ -295,14 +300,15 @@ class I18nHtmlParser implements HtmlParser {
         return;
       }
       var i18n = i18ns[0];
-      var messageId = id(messageFromAttribute(this._parser, el, i18n));
+      var message = messageFromAttribute(this._parser, el, i18n);
+      var messageId = id(message);
       if (StringMapWrapper.contains(this._messages, messageId)) {
         var updatedMessage =
             this._replaceInterpolationInAttr(attr, this._messages[messageId]);
         res.add(new HtmlAttrAst(attr.name, updatedMessage, attr.sourceSpan));
       } else {
         throw new I18nError(attr.sourceSpan,
-            '''Cannot find message for id \'${ messageId}\'''');
+            '''Cannot find message for id \'${ messageId}\', content \'${ message . content}\'.''');
       }
     });
     return res;
@@ -369,6 +375,14 @@ class _CreateNodeMapping implements HtmlAstVisitor {
 
   dynamic visitText(HtmlTextAst ast, dynamic context) {
     this.mapping.add(ast);
+    return null;
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
     return null;
   }
 

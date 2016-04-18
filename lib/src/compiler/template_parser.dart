@@ -64,6 +64,8 @@ import "html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "util.dart" show splitAtColon;
 import "provider_parser.dart" show ProviderElementContext, ProviderViewContext;
@@ -275,6 +277,14 @@ class TemplateParseVisitor implements HtmlAstVisitor {
         }
       });
     }
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
+    return null;
   }
 
   dynamic visitText(HtmlTextAst ast, ElementContext parent) {
@@ -880,6 +890,14 @@ class NonBindableVisitor implements HtmlAstVisitor {
   TextAst visitText(HtmlTextAst ast, ElementContext parent) {
     var ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
     return new TextAst(ast.value, ngContentIndex, ast.sourceSpan);
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return ast;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
+    return ast;
   }
 }
 

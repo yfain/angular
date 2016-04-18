@@ -10,6 +10,8 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "package:angular2/src/facade/lang.dart"
     show isPresent, isBlank, StringWrapper;
@@ -195,6 +197,14 @@ class _StringifyVisitor implements HtmlAstVisitor {
 
   dynamic visitComment(HtmlCommentAst ast, dynamic context) {
     return "";
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
+    return null;
   }
 
   String _join(List<String> strs, String str) {

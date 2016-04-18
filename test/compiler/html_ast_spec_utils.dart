@@ -10,6 +10,8 @@ import "package:angular2/src/compiler/html_ast.dart"
         HtmlAttrAst,
         HtmlTextAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "package:angular2/src/compiler/parse_util.dart"
     show ParseError, ParseLocation;
@@ -71,6 +73,20 @@ class _Humanizer implements HtmlAstVisitor {
   dynamic visitComment(HtmlCommentAst ast, dynamic context) {
     var res =
         this._appendContext(ast, [HtmlCommentAst, ast.value, this.elDepth]);
+    this.result.add(res);
+    return null;
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    var res =
+        this._appendContext(ast, [HtmlExpansionAst, ast.switchValue, ast.type]);
+    this.result.add(res);
+    htmlVisitAll(this, ast.cases);
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
+    var res = this._appendContext(ast, [HtmlExpansionCaseAst, ast.value]);
     this.result.add(res);
     return null;
   }

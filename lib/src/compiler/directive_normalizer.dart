@@ -24,6 +24,8 @@ import "html_ast.dart"
         HtmlAttrAst,
         HtmlAst,
         HtmlCommentAst,
+        HtmlExpansionAst,
+        HtmlExpansionCaseAst,
         htmlVisitAll;
 import "html_parser.dart" show HtmlParser;
 import "template_preparser.dart"
@@ -179,6 +181,14 @@ class TemplatePreparseVisitor implements HtmlAstVisitor {
   }
 
   dynamic visitText(HtmlTextAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansion(HtmlExpansionAst ast, dynamic context) {
+    return null;
+  }
+
+  dynamic visitExpansionCase(HtmlExpansionCaseAst ast, dynamic context) {
     return null;
   }
 }
