@@ -144,4 +144,6 @@ class TemplatePreparseVisitor {
     visitComment(ast, context) { return null; }
     visitAttr(ast, context) { return null; }
     visitText(ast, context) { return null; }
+    visitExpansion(ast, context) { return null; }
+    visitExpansionCase(ast, context) { return null; }
 }

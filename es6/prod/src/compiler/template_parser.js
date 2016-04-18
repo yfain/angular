@@ -198,6 +198,8 @@ class TemplateParseVisitor {
             });
         }
     }
+    visitExpansion(ast, context) { return null; }
+    visitExpansionCase(ast, context) { return null; }
     visitText(ast, parent) {
         var ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
         var expr = this._parseInterpolation(ast.value, ast.sourceSpan);
@@ -602,6 +604,8 @@ class NonBindableVisitor {
         var ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
         return new TextAst(ast.value, ngContentIndex, ast.sourceSpan);
     }
+    visitExpansion(ast, context) { return ast; }
+    visitExpansionCase(ast, context) { return ast; }
 }
 class BoundElementOrDirectiveProperty {
     constructor(name, expression, isLiteral, sourceSpan) {

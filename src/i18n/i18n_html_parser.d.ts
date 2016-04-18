@@ -91,7 +91,7 @@ export declare class I18nHtmlParser implements HtmlParser {
     constructor(_htmlParser: HtmlParser, _parser: Parser, _messagesContent: string, _messages: {
         [key: string]: HtmlAst[];
     });
-    parse(sourceContent: string, sourceUrl: string): HtmlParseTreeResult;
+    parse(sourceContent: string, sourceUrl: string, parseExpansionForms?: boolean): HtmlParseTreeResult;
     private _processI18nPart(p);
     private _mergeI18Part(p);
     private _recurseIntoI18nPart(p);

@@ -158,6 +158,8 @@ class _StringifyVisitor {
         }
     }
     visitComment(ast, context) { return ""; }
+    visitExpansion(ast, context) { return null; }
+    visitExpansionCase(ast, context) { return null; }
     _join(strs, str) {
         return strs.filter(s => s.length > 0).join(str);
     }

@@ -14465,6 +14465,34 @@ System.register("angular2/src/compiler/html_ast", ["angular2/src/facade/lang"], 
     return HtmlTextAst;
   }());
   exports.HtmlTextAst = HtmlTextAst;
+  var HtmlExpansionAst = (function() {
+    function HtmlExpansionAst(switchValue, type, cases, sourceSpan, switchValueSourceSpan) {
+      this.switchValue = switchValue;
+      this.type = type;
+      this.cases = cases;
+      this.sourceSpan = sourceSpan;
+      this.switchValueSourceSpan = switchValueSourceSpan;
+    }
+    HtmlExpansionAst.prototype.visit = function(visitor, context) {
+      return visitor.visitExpansion(this, context);
+    };
+    return HtmlExpansionAst;
+  }());
+  exports.HtmlExpansionAst = HtmlExpansionAst;
+  var HtmlExpansionCaseAst = (function() {
+    function HtmlExpansionCaseAst(value, expression, sourceSpan, valueSourceSpan, expSourceSpan) {
+      this.value = value;
+      this.expression = expression;
+      this.sourceSpan = sourceSpan;
+      this.valueSourceSpan = valueSourceSpan;
+      this.expSourceSpan = expSourceSpan;
+    }
+    HtmlExpansionCaseAst.prototype.visit = function(visitor, context) {
+      return visitor.visitExpansionCase(this, context);
+    };
+    return HtmlExpansionCaseAst;
+  }());
+  exports.HtmlExpansionCaseAst = HtmlExpansionCaseAst;
   var HtmlAttrAst = (function() {
     function HtmlAttrAst(name, value, sourceSpan) {
       this.name = name;
@@ -17611,6 +17639,12 @@ System.register("angular2/src/compiler/directive_normalizer", ["angular2/src/com
       return null;
     };
     TemplatePreparseVisitor.prototype.visitText = function(ast, context) {
+      return null;
+    };
+    TemplatePreparseVisitor.prototype.visitExpansion = function(ast, context) {
+      return null;
+    };
+    TemplatePreparseVisitor.prototype.visitExpansionCase = function(ast, context) {
       return null;
     };
     return TemplatePreparseVisitor;
@@ -21296,7 +21330,12 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
     HtmlTokenType[HtmlTokenType["ATTR_NAME"] = 11] = "ATTR_NAME";
     HtmlTokenType[HtmlTokenType["ATTR_VALUE"] = 12] = "ATTR_VALUE";
     HtmlTokenType[HtmlTokenType["DOC_TYPE"] = 13] = "DOC_TYPE";
-    HtmlTokenType[HtmlTokenType["EOF"] = 14] = "EOF";
+    HtmlTokenType[HtmlTokenType["EXPANSION_FORM_START"] = 14] = "EXPANSION_FORM_START";
+    HtmlTokenType[HtmlTokenType["EXPANSION_CASE_VALUE"] = 15] = "EXPANSION_CASE_VALUE";
+    HtmlTokenType[HtmlTokenType["EXPANSION_CASE_EXP_START"] = 16] = "EXPANSION_CASE_EXP_START";
+    HtmlTokenType[HtmlTokenType["EXPANSION_CASE_EXP_END"] = 17] = "EXPANSION_CASE_EXP_END";
+    HtmlTokenType[HtmlTokenType["EXPANSION_FORM_END"] = 18] = "EXPANSION_FORM_END";
+    HtmlTokenType[HtmlTokenType["EOF"] = 19] = "EOF";
   })(exports.HtmlTokenType || (exports.HtmlTokenType = {}));
   var HtmlTokenType = exports.HtmlTokenType;
   var HtmlToken = (function() {
@@ -21325,8 +21364,11 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
     return HtmlTokenizeResult;
   }());
   exports.HtmlTokenizeResult = HtmlTokenizeResult;
-  function tokenizeHtml(sourceContent, sourceUrl) {
-    return new _HtmlTokenizer(new parse_util_1.ParseSourceFile(sourceContent, sourceUrl)).tokenize();
+  function tokenizeHtml(sourceContent, sourceUrl, tokenizeExpansionForms) {
+    if (tokenizeExpansionForms === void 0) {
+      tokenizeExpansionForms = false;
+    }
+    return new _HtmlTokenizer(new parse_util_1.ParseSourceFile(sourceContent, sourceUrl), tokenizeExpansionForms).tokenize();
   }
   exports.tokenizeHtml = tokenizeHtml;
   var $EOF = 0;
@@ -21353,6 +21395,9 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
   var $QUESTION = 63;
   var $LBRACKET = 91;
   var $RBRACKET = 93;
+  var $LBRACE = 123;
+  var $RBRACE = 125;
+  var $COMMA = 44;
   var $A = 65;
   var $F = 70;
   var $X = 88;
@@ -21377,12 +21422,15 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
     return ControlFlowError;
   }());
   var _HtmlTokenizer = (function() {
-    function _HtmlTokenizer(file) {
+    function _HtmlTokenizer(file, tokenizeExpansionForms) {
       this.file = file;
+      this.tokenizeExpansionForms = tokenizeExpansionForms;
       this.peek = -1;
+      this.nextPeek = -1;
       this.index = -1;
       this.line = 0;
       this.column = -1;
+      this.expansionCaseStack = [];
       this.tokens = [];
       this.errors = [];
       this.input = file.content;
@@ -21410,6 +21458,14 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
             } else {
               this._consumeTagOpen(start);
             }
+          } else if (isSpecialFormStart(this.peek, this.nextPeek) && this.tokenizeExpansionForms) {
+            this._consumeExpansionFormStart();
+          } else if (this.peek === $EQ && this.tokenizeExpansionForms) {
+            this._consumeExpansionCaseStart();
+          } else if (this.peek === $RBRACE && this.isInExpansionCase() && this.tokenizeExpansionForms) {
+            this._consumeExpansionCaseEnd();
+          } else if (this.peek === $RBRACE && this.isInExpansionForm() && this.tokenizeExpansionForms) {
+            this._consumeExpansionFormEnd();
           } else {
             this._consumeText();
           }
@@ -21478,6 +21534,7 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
       }
       this.index++;
       this.peek = this.index >= this.length ? $EOF : lang_1.StringWrapper.charCodeAt(this.input, this.index);
+      this.nextPeek = this.index + 1 >= this.length ? $EOF : lang_1.StringWrapper.charCodeAt(this.input, this.index + 1);
     };
     _HtmlTokenizer.prototype._attemptCharCode = function(charCode) {
       if (this.peek === charCode) {
@@ -21744,17 +21801,92 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
       this._requireCharCode($GT);
       this._endToken(prefixAndName);
     };
+    _HtmlTokenizer.prototype._consumeExpansionFormStart = function() {
+      this._beginToken(HtmlTokenType.EXPANSION_FORM_START, this._getLocation());
+      this._requireCharCode($LBRACE);
+      this._endToken([]);
+      this._beginToken(HtmlTokenType.RAW_TEXT, this._getLocation());
+      var condition = this._readUntil($COMMA);
+      this._endToken([condition], this._getLocation());
+      this._requireCharCode($COMMA);
+      this._attemptCharCodeUntilFn(isNotWhitespace);
+      this._beginToken(HtmlTokenType.RAW_TEXT, this._getLocation());
+      var type = this._readUntil($COMMA);
+      this._endToken([type], this._getLocation());
+      this._requireCharCode($COMMA);
+      this._attemptCharCodeUntilFn(isNotWhitespace);
+      this.expansionCaseStack.push(HtmlTokenType.EXPANSION_FORM_START);
+    };
+    _HtmlTokenizer.prototype._consumeExpansionCaseStart = function() {
+      this._requireCharCode($EQ);
+      this._beginToken(HtmlTokenType.EXPANSION_CASE_VALUE, this._getLocation());
+      var value = this._readUntil($LBRACE).trim();
+      this._endToken([value], this._getLocation());
+      this._attemptCharCodeUntilFn(isNotWhitespace);
+      this._beginToken(HtmlTokenType.EXPANSION_CASE_EXP_START, this._getLocation());
+      this._requireCharCode($LBRACE);
+      this._endToken([], this._getLocation());
+      this._attemptCharCodeUntilFn(isNotWhitespace);
+      this.expansionCaseStack.push(HtmlTokenType.EXPANSION_CASE_EXP_START);
+    };
+    _HtmlTokenizer.prototype._consumeExpansionCaseEnd = function() {
+      this._beginToken(HtmlTokenType.EXPANSION_CASE_EXP_END, this._getLocation());
+      this._requireCharCode($RBRACE);
+      this._endToken([], this._getLocation());
+      this._attemptCharCodeUntilFn(isNotWhitespace);
+      this.expansionCaseStack.pop();
+    };
+    _HtmlTokenizer.prototype._consumeExpansionFormEnd = function() {
+      this._beginToken(HtmlTokenType.EXPANSION_FORM_END, this._getLocation());
+      this._requireCharCode($RBRACE);
+      this._endToken([]);
+      this.expansionCaseStack.pop();
+    };
     _HtmlTokenizer.prototype._consumeText = function() {
       var start = this._getLocation();
       this._beginToken(HtmlTokenType.TEXT, start);
-      var parts = [this._readChar(true)];
-      while (!isTextEnd(this.peek)) {
+      var parts = [];
+      var interpolation = false;
+      if (this.peek === $LBRACE && this.nextPeek === $LBRACE) {
         parts.push(this._readChar(true));
+        parts.push(this._readChar(true));
+        interpolation = true;
+      } else {
+        parts.push(this._readChar(true));
+      }
+      while (!this.isTextEnd(interpolation)) {
+        if (this.peek === $LBRACE && this.nextPeek === $LBRACE) {
+          parts.push(this._readChar(true));
+          parts.push(this._readChar(true));
+          interpolation = true;
+        } else if (this.peek === $RBRACE && this.nextPeek === $RBRACE && interpolation) {
+          parts.push(this._readChar(true));
+          parts.push(this._readChar(true));
+          interpolation = false;
+        } else {
+          parts.push(this._readChar(true));
+        }
       }
       this._endToken([this._processCarriageReturns(parts.join(''))]);
     };
+    _HtmlTokenizer.prototype.isTextEnd = function(interpolation) {
+      if (this.peek === $LT || this.peek === $EOF)
+        return true;
+      if (this.tokenizeExpansionForms) {
+        if (isSpecialFormStart(this.peek, this.nextPeek))
+          return true;
+        if (this.peek === $RBRACE && !interpolation && (this.isInExpansionCase() || this.isInExpansionForm()))
+          return true;
+      }
+      return false;
+    };
     _HtmlTokenizer.prototype._savePosition = function() {
       return [this.peek, this.index, this.column, this.line, this.tokens.length];
+    };
+    _HtmlTokenizer.prototype._readUntil = function(char) {
+      var start = this.index;
+      this._attemptUntilChar(char);
+      return this.input.substring(start, this.index);
     };
     _HtmlTokenizer.prototype._restorePosition = function(position) {
       this.peek = position[0];
@@ -21765,6 +21897,12 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
       if (nbTokens < this.tokens.length) {
         this.tokens = collection_1.ListWrapper.slice(this.tokens, 0, nbTokens);
       }
+    };
+    _HtmlTokenizer.prototype.isInExpansionCase = function() {
+      return this.expansionCaseStack.length > 0 && this.expansionCaseStack[this.expansionCaseStack.length - 1] === HtmlTokenType.EXPANSION_CASE_EXP_START;
+    };
+    _HtmlTokenizer.prototype.isInExpansionForm = function() {
+      return this.expansionCaseStack.length > 0 && this.expansionCaseStack[this.expansionCaseStack.length - 1] === HtmlTokenType.EXPANSION_FORM_START;
     };
     return _HtmlTokenizer;
   }());
@@ -21786,8 +21924,8 @@ System.register("angular2/src/compiler/html_lexer", ["angular2/src/facade/lang",
   function isNamedEntityEnd(code) {
     return code == $SEMICOLON || code == $EOF || !isAsciiLetter(code);
   }
-  function isTextEnd(code) {
-    return code === $LT || code === $EOF;
+  function isSpecialFormStart(peek, nextPeek) {
+    return peek === $LBRACE && nextPeek != $LBRACE;
   }
   function isAsciiLetter(code) {
     return code >= $a && code <= $z || code >= $A && code <= $Z;
@@ -24976,8 +25114,11 @@ System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang"
   exports.HtmlParseTreeResult = HtmlParseTreeResult;
   var HtmlParser = (function() {
     function HtmlParser() {}
-    HtmlParser.prototype.parse = function(sourceContent, sourceUrl) {
-      var tokensAndErrors = html_lexer_1.tokenizeHtml(sourceContent, sourceUrl);
+    HtmlParser.prototype.parse = function(sourceContent, sourceUrl, parseExpansionForms) {
+      if (parseExpansionForms === void 0) {
+        parseExpansionForms = false;
+      }
+      var tokensAndErrors = html_lexer_1.tokenizeHtml(sourceContent, sourceUrl, parseExpansionForms);
       var treeAndErrors = new TreeBuilder(tokensAndErrors.tokens).build();
       return new HtmlParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors.concat(treeAndErrors.errors));
     };
@@ -25009,6 +25150,8 @@ System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang"
         } else if (this.peek.type === html_lexer_1.HtmlTokenType.TEXT || this.peek.type === html_lexer_1.HtmlTokenType.RAW_TEXT || this.peek.type === html_lexer_1.HtmlTokenType.ESCAPABLE_RAW_TEXT) {
           this._closeVoidElement();
           this._consumeText(this._advance());
+        } else if (this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_FORM_START) {
+          this._consumeExpansion(this._advance());
         } else {
           this._advance();
         }
@@ -25038,6 +25181,77 @@ System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang"
       this._advanceIf(html_lexer_1.HtmlTokenType.COMMENT_END);
       var value = lang_1.isPresent(text) ? text.parts[0].trim() : null;
       this._addToParent(new html_ast_1.HtmlCommentAst(value, token.sourceSpan));
+    };
+    TreeBuilder.prototype._consumeExpansion = function(token) {
+      var switchValue = this._advance();
+      var type = this._advance();
+      var cases = [];
+      while (this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_CASE_VALUE) {
+        var expCase = this._parseExpansionCase();
+        if (lang_1.isBlank(expCase))
+          return ;
+        cases.push(expCase);
+      }
+      if (this.peek.type !== html_lexer_1.HtmlTokenType.EXPANSION_FORM_END) {
+        this.errors.push(HtmlTreeError.create(null, this.peek.sourceSpan, "Invalid expansion form. Missing '}'."));
+        return ;
+      }
+      this._advance();
+      var mainSourceSpan = new parse_util_1.ParseSourceSpan(token.sourceSpan.start, this.peek.sourceSpan.end);
+      this._addToParent(new html_ast_1.HtmlExpansionAst(switchValue.parts[0], type.parts[0], cases, mainSourceSpan, switchValue.sourceSpan));
+    };
+    TreeBuilder.prototype._parseExpansionCase = function() {
+      var value = this._advance();
+      if (this.peek.type !== html_lexer_1.HtmlTokenType.EXPANSION_CASE_EXP_START) {
+        this.errors.push(HtmlTreeError.create(null, this.peek.sourceSpan, "Invalid expansion form. Missing '{'.,"));
+        return null;
+      }
+      var start = this._advance();
+      var exp = this._collectExpansionExpTokens(start);
+      if (lang_1.isBlank(exp))
+        return null;
+      var end = this._advance();
+      exp.push(new html_lexer_1.HtmlToken(html_lexer_1.HtmlTokenType.EOF, [], end.sourceSpan));
+      var parsedExp = new TreeBuilder(exp).build();
+      if (parsedExp.errors.length > 0) {
+        this.errors = this.errors.concat(parsedExp.errors);
+        return null;
+      }
+      var sourceSpan = new parse_util_1.ParseSourceSpan(value.sourceSpan.start, end.sourceSpan.end);
+      var expSourceSpan = new parse_util_1.ParseSourceSpan(start.sourceSpan.start, end.sourceSpan.end);
+      return new html_ast_1.HtmlExpansionCaseAst(value.parts[0], parsedExp.rootNodes, sourceSpan, value.sourceSpan, expSourceSpan);
+    };
+    TreeBuilder.prototype._collectExpansionExpTokens = function(start) {
+      var exp = [];
+      var expansionFormStack = [html_lexer_1.HtmlTokenType.EXPANSION_CASE_EXP_START];
+      while (true) {
+        if (this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_FORM_START || this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_CASE_EXP_START) {
+          expansionFormStack.push(this.peek.type);
+        }
+        if (this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_CASE_EXP_END) {
+          if (lastOnStack(expansionFormStack, html_lexer_1.HtmlTokenType.EXPANSION_CASE_EXP_START)) {
+            expansionFormStack.pop();
+            if (expansionFormStack.length == 0)
+              return exp;
+          } else {
+            this.errors.push(HtmlTreeError.create(null, start.sourceSpan, "Invalid expansion form. Missing '}'."));
+            return null;
+          }
+        }
+        if (this.peek.type === html_lexer_1.HtmlTokenType.EXPANSION_FORM_END) {
+          if (lastOnStack(expansionFormStack, html_lexer_1.HtmlTokenType.EXPANSION_FORM_START)) {
+            expansionFormStack.pop();
+          } else {
+            this.errors.push(HtmlTreeError.create(null, start.sourceSpan, "Invalid expansion form. Missing '}'."));
+            return null;
+          }
+        }
+        if (this.peek.type === html_lexer_1.HtmlTokenType.EOF) {
+          this.errors.push(HtmlTreeError.create(null, start.sourceSpan, "Invalid expansion form. Missing '}'."));
+          return null;
+        }
+        exp.push(this._advance());
+      }
     };
     TreeBuilder.prototype._consumeText = function(token) {
       var text = token.parts[0];
@@ -25160,6 +25374,9 @@ System.register("angular2/src/compiler/html_parser", ["angular2/src/facade/lang"
       }
     }
     return html_tags_1.mergeNsAndName(prefix, localName);
+  }
+  function lastOnStack(stack, element) {
+    return stack.length > 0 && stack[stack.length - 1] === element;
   }
   global.define = __define;
   return module.exports;
@@ -26370,6 +26587,12 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
         });
       }
     };
+    TemplateParseVisitor.prototype.visitExpansion = function(ast, context) {
+      return null;
+    };
+    TemplateParseVisitor.prototype.visitExpansionCase = function(ast, context) {
+      return null;
+    };
     TemplateParseVisitor.prototype.visitText = function(ast, parent) {
       var ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
       var expr = this._parseInterpolation(ast.value, ast.sourceSpan);
@@ -26750,6 +26973,12 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
     NonBindableVisitor.prototype.visitText = function(ast, parent) {
       var ngContentIndex = parent.findNgContentIndex(TEXT_CSS_SELECTOR);
       return new template_ast_1.TextAst(ast.value, ngContentIndex, ast.sourceSpan);
+    };
+    NonBindableVisitor.prototype.visitExpansion = function(ast, context) {
+      return ast;
+    };
+    NonBindableVisitor.prototype.visitExpansionCase = function(ast, context) {
+      return ast;
     };
     return NonBindableVisitor;
   }());
