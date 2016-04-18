@@ -1,6 +1,6 @@
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { AppView, HostViewFactory } from './view';
-export declare abstract class ViewRef extends ChangeDetectorRef {
+export declare abstract class ViewRef {
     destroyed: boolean;
 }
 /**
@@ -81,8 +81,8 @@ export declare abstract class EmbeddedViewRef extends ViewRef {
 }
 export declare class ViewRef_ implements EmbeddedViewRef, HostViewRef {
     private _view;
-    constructor(_view: AppView<any>);
-    internalView: AppView<any>;
+    constructor(_view: AppView);
+    internalView: AppView;
     /**
      * Return `ChangeDetectorRef`
      */
@@ -91,11 +91,6 @@ export declare class ViewRef_ implements EmbeddedViewRef, HostViewRef {
     setLocal(variableName: string, value: any): void;
     hasLocal(variableName: string): boolean;
     destroyed: boolean;
-    markForCheck(): void;
-    detach(): void;
-    detectChanges(): void;
-    checkNoChanges(): void;
-    reattach(): void;
 }
 export declare abstract class HostViewFactoryRef {
 }
