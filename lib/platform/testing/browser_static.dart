@@ -39,7 +39,7 @@ initBrowserTests() {
 }
 
 /**
- * Default platform providers for testing without a compiler.
+ * Default patform providers for testing without a compiler.
  */
 const List<dynamic> TEST_BROWSER_STATIC_PLATFORM_PROVIDERS = const [
   PLATFORM_COMMON_PROVIDERS,
