@@ -21,7 +21,7 @@ function initBrowserTests() {
     BrowserDetection.setup();
 }
 /**
- * Default platform providers for testing without a compiler.
+ * Default patform providers for testing without a compiler.
  */
 export const TEST_BROWSER_STATIC_PLATFORM_PROVIDERS = CONST_EXPR([
     PLATFORM_COMMON_PROVIDERS,

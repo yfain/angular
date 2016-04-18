@@ -26,7 +26,7 @@ function initServerTests() {
     BrowserDetection.setup();
 }
 /**
- * Default platform providers for testing.
+ * Default patform providers for testing.
  */
 export const TEST_SERVER_PLATFORM_PROVIDERS = CONST_EXPR([
     PLATFORM_COMMON_PROVIDERS,
