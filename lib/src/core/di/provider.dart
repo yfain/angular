@@ -350,7 +350,7 @@ class ResolvedFactory {
  * to an existing `token`.
  * See [ProviderBuilder] for more details.
  *
- * The `token` is most commonly a class or [angular2/di/OpaqueToken].
+ * The `token` is most commonly a class or [OpaqueToken-class.html].
  *
  * 
  */
@@ -505,7 +505,7 @@ class ProviderBuilder {
  */
 ResolvedFactory resolveFactory(Provider provider) {
   Function factoryFn;
-  var resolvedDeps;
+  List<Dependency> resolvedDeps;
   if (isPresent(provider.useClass)) {
     var useClass = resolveForwardRef(provider.useClass);
     factoryFn = reflector.factory(useClass);
@@ -516,7 +516,7 @@ ResolvedFactory resolveFactory(Provider provider) {
   } else if (isPresent(provider.useFactory)) {
     factoryFn = provider.useFactory;
     resolvedDeps =
-        constructDependencies(provider.useFactory, provider.dependencies);
+        _constructDependencies(provider.useFactory, provider.dependencies);
   } else {
     factoryFn = () => provider.useValue;
     resolvedDeps = _EMPTY_LIST;
@@ -605,20 +605,20 @@ List<Provider> _normalizeProviders(
   return res;
 }
 
-List<Dependency> constructDependencies(
-    dynamic typeOrFunc, List<dynamic> dependencies) {
+List<Dependency> _constructDependencies(
+    Function factoryFunction, List<dynamic> dependencies) {
   if (isBlank(dependencies)) {
-    return _dependenciesFor(typeOrFunc);
+    return _dependenciesFor(factoryFunction);
   } else {
     List<List<dynamic>> params = dependencies.map((t) => [t]).toList();
     return dependencies
-        .map((t) => _extractToken(typeOrFunc, t, params))
+        .map((t) => _extractToken(factoryFunction, t, params))
         .toList();
   }
 }
 
-List<Dependency> _dependenciesFor(dynamic typeOrFunc) {
-  var params = reflector.parameters(typeOrFunc);
+List<Dependency> _dependenciesFor(typeOrFunc) {
+  List<List<dynamic>> params = reflector.parameters(typeOrFunc);
   if (isBlank(params)) return [];
   if (params.any(isBlank)) {
     throw new NoAnnotationError(typeOrFunc, params);
