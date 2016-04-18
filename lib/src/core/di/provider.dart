@@ -350,7 +350,7 @@ class ResolvedFactory {
  * to an existing `token`.
  * See [ProviderBuilder] for more details.
  *
- * The `token` is most commonly a class or [angular2/di/OpaqueToken].
+ * The `token` is most commonly a class or [OpaqueToken-class.html].
  *
  * 
  */

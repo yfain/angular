@@ -8,7 +8,7 @@ import "package:angular2/src/facade/lang.dart" show Math, StringWrapper;
  */
 const APP_COMPONENT_REF_PROMISE = const OpaqueToken("Promise<ComponentRef>");
 /**
- * An [angular2/di/OpaqueToken] representing the application root type in the {@link
+ * An [OpaqueToken-class.html] representing the application root type in the {@link
  * Injector}.
  *
  * ```

@@ -321,7 +321,7 @@ class RedirectInstruction extends ResolvedInstruction {
  * to route lifecycle hooks, like [CanActivate].
  *
  * `ComponentInstruction`s are [hash consed](https://en.wikipedia.org/wiki/Hash_consing). You should
- * never construct one yourself with "new." Instead, rely on [Router/RouteRecognizer] to
+ * never construct one yourself with "new." Instead, rely on router's internal recognizer to
  * construct `ComponentInstruction`s.
  *
  * You should not modify this object. It should be treated as immutable.
