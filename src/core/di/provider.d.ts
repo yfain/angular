@@ -293,7 +293,7 @@ export declare class ResolvedFactory {
  * to an existing `token`.
  * See {@link ProviderBuilder} for more details.
  *
- * The `token` is most commonly a class or {@link OpaqueToken-class.html}.
+ * The `token` is most commonly a class or {@link angular2/di/OpaqueToken}.
  *
  * @deprecated
  */

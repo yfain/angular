@@ -170,8 +170,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * ## Lifecycle hooks
 	 *
-	 * When the component class implements some {@link ../../guide/lifecycle-hooks.html} the callbacks
-	 * are called by the change detection at defined points in time during the life of the component.
+	 * When the component class implements some {@link angular2/lifecycle_hooks} the callbacks are
+	 * called by the change detection at defined points in time during the life of the component.
 	 *
 	 * ### Example
 	 *
@@ -497,8 +497,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * ## Lifecycle hooks
 	 *
-	 * When the directive class implements some {@link ../../guide/lifecycle-hooks.html} the callbacks
-	 * are called by the change detection at defined points in time during the life of the directive.
+	 * When the directive class implements some {@link angular2/lifecycle_hooks} the callbacks are
+	 * called by the change detection at defined points in time during the life of the directive.
 	 *
 	 * ### Example
 	 *
@@ -4270,7 +4270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * to an existing `token`.
 	 * See {@link ProviderBuilder} for more details.
 	 *
-	 * The `token` is most commonly a class or {@link OpaqueToken-class.html}.
+	 * The `token` is most commonly a class or {@link angular2/di/OpaqueToken}.
 	 *
 	 * @deprecated
 	 */
@@ -6004,8 +6004,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * ## Lifecycle hooks
 	 *
-	 * When the directive class implements some {@link ../../guide/lifecycle-hooks.html} the callbacks
-	 * are called by the change detection at defined points in time during the life of the directive.
+	 * When the directive class implements some {@link angular2/lifecycle_hooks} the callbacks are
+	 * called by the change detection at defined points in time during the life of the directive.
 	 *
 	 * ### Example
 	 *
@@ -6267,8 +6267,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * ## Lifecycle hooks
 	 *
-	 * When the component class implements some {@link ../../guide/lifecycle-hooks.html} the callbacks
-	 * are called by the change detection at defined points in time during the life of the component.
+	 * When the component class implements some {@link angular2/lifecycle_hooks} the callbacks are
+	 * called by the change detection at defined points in time during the life of the component.
 	 *
 	 * ### Example
 	 *
@@ -9949,7 +9949,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.APP_COMPONENT_REF_PROMISE = lang_1.CONST_EXPR(new di_1.OpaqueToken('Promise<ComponentRef>'));
 	/**
-	 * An {@link OpaqueToken-class.html} representing the application root type in the {@link
+	 * An {@link angular2/di/OpaqueToken} representing the application root type in the {@link
 	 * Injector}.
 	 *
 	 * ```
@@ -37575,7 +37575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * to route lifecycle hooks, like {@link CanActivate}.
 	 *
 	 * `ComponentInstruction`s are [hash consed](https://en.wikipedia.org/wiki/Hash_consing). You should
-	 * never construct one yourself with "new." Instead, rely on router's internal recognizer to
+	 * never construct one yourself with "new." Instead, rely on {@link Router/RouteRecognizer} to
 	 * construct `ComponentInstruction`s.
 	 *
 	 * You should not modify this object. It should be treated as immutable.
