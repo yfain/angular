@@ -681,9 +681,8 @@ gulp.task('!checkAndReport.payload.dart', function() {
 });
 
 // JS payload size tracking
-gulp.task('test.payload.js/ci', function(done) {
-  runSequence('build.payload.js', '!checkAndReport.payload.js', sequenceComplete(done));
-});
+gulp.task('test.payload.js/ci',
+          function(done) { runSequence('build.payload.js', sequenceComplete(done)); });
 
 gulp.task('build.payload.js', ['build.js'], function(done) {
   runSequence('!build.payload.js.webpack', '!build.payload.js.systemjs', sequenceComplete(done));
