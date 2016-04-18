@@ -764,15 +764,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Declares a list of child element references.
 	 *
-	 * Angular automatically updates the list when the DOM is updated.
+	 * Angular automatically updates the list when the DOM was updated.
 	 *
 	 * `ViewChildren` takes a argument to select elements.
 	 *
 	 * - If the argument is a type, directives or components with the type will be bound.
 	 *
-	 * - If the argument is a string, the string is interpreted as a list of comma-separated selectors.
-	 * For each selector, an element containing the matching template variable (e.g. `#child`) will be
-	 * bound.
+	 * - If the argument is a string, the string behaviors as comma-separated selectors. For each
+	 * selector, an element matched template variables (e.g. `#child`) will be bound.
 	 *
 	 * View children are set before the `ngAfterViewInit` callback is called.
 	 *
@@ -843,17 +842,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ViewChildren = decorators_1.makePropDecorator(di_2.ViewChildrenMetadata);
 	// TODO(alexeagle): remove the duplication of this doc. It is copied from ViewChildMetadata.
 	/**
-	 * Declares a reference to a child element.
+	 * Declares a reference of child element.
 	 *
 	 * `ViewChildren` takes a argument to select elements.
 	 *
 	 * - If the argument is a type, a directive or a component with the type will be bound.
 	 *
-	 * - If the argument is a string, the string is interpreted as a selector. An element containing the
-	 * matching template variable (e.g. `#child`) will be bound.
+	 * - If the argument is a string, the string behaviors as a selectors. An element matched template
+	 * variables (e.g. `#child`) will be bound.
 	 *
-	 * In either case, `@ViewChild()` assigns the first (looking from above) element if there are
-	 * multiple matches.
+	 * In either case, `@ViewChild()` assigns the first (looking from above) element if the result is
+	 * multiple.
 	 *
 	 * View child is set before the `ngAfterViewInit` callback is called.
 	 *
@@ -1469,15 +1468,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Declares a list of child element references.
 	 *
-	 * Angular automatically updates the list when the DOM is updated.
+	 * Angular automatically updates the list when the DOM was updated.
 	 *
 	 * `ViewChildren` takes an argument to select elements.
 	 *
 	 * - If the argument is a type, directives or components with the type will be bound.
 	 *
-	 * - If the argument is a string, the string is interpreted as a list of comma-separated selectors.
-	 * For each selector, an element containing the matching template variable (e.g. `#child`) will be
-	 * bound.
+	 * - If the argument is a string, the string behaviors as comma-separated selectors. For each
+	 * selector, an element matched template variables (e.g. `#child`) will be bound.
 	 *
 	 * View children are set before the `ngAfterViewInit` callback is called.
 	 *
@@ -1563,11 +1561,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * - If the argument is a type, a directive or a component with the type will be bound.
 	 *
-	 If the argument is a string, the string is interpreted as a selector. An element containing the
-	 matching template variable (e.g. `#child`) will be bound.
+	 * - If the argument is a string, the string behaviors as a selectors. An element matched template
+	 * variables (e.g. `#child`) will be bound.
 	 *
-	 * In either case, `@ViewChild()` assigns the first (looking from above) element if there are
-	 multiple matches.
+	 * In either case, `@ViewChild()` assigns the first (looking from above) element if the result is
+	 * multiple.
 	 *
 	 * View child is set before the `ngAfterViewInit` callback is called.
 	 *
@@ -33444,6 +33442,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var browser_1 = __webpack_require__(228);
 	var dom_adapter_1 = __webpack_require__(196);
+	var ChangeDetectionPerfRecord = (function () {
+	    function ChangeDetectionPerfRecord(msPerTick, numTicks) {
+	        this.msPerTick = msPerTick;
+	        this.numTicks = numTicks;
+	    }
+	    return ChangeDetectionPerfRecord;
+	}());
+	exports.ChangeDetectionPerfRecord = ChangeDetectionPerfRecord;
 	/**
 	 * Entry point for all Angular debug tools. This object corresponds to the `ng`
 	 * global variable accessible in the dev console.
@@ -33504,6 +33510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var msPerTick = (end - start) / numTicks;
 	        browser_1.window.console.log("ran " + numTicks + " change detection cycles");
 	        browser_1.window.console.log(lang_1.NumberWrapper.toFixed(msPerTick, 2) + " ms per check");
+	        return new ChangeDetectionPerfRecord(msPerTick, numTicks);
 	    };
 	    return AngularProfiler;
 	}());
