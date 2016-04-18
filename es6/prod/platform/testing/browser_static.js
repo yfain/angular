@@ -1,5 +1,4 @@
-import { APP_ID, NgZone, Provider, PLATFORM_COMMON_PROVIDERS, PLATFORM_INITIALIZER } from 'angular2/core';
-import { DirectiveResolver, ViewResolver } from 'angular2/compiler';
+import { APP_ID, DirectiveResolver, NgZone, Provider, ViewResolver, PLATFORM_COMMON_PROVIDERS, PLATFORM_INITIALIZER } from 'angular2/core';
 import { BROWSER_APP_COMMON_PROVIDERS } from 'angular2/src/platform/browser_common';
 import { BrowserDomAdapter } from 'angular2/src/platform/browser/browser_adapter';
 import { AnimationBuilder } from 'angular2/src/animate/animation_builder';
@@ -21,7 +20,7 @@ function initBrowserTests() {
     BrowserDetection.setup();
 }
 /**
- * Default patform providers for testing without a compiler.
+ * Default platform providers for testing without a compiler.
  */
 export const TEST_BROWSER_STATIC_PLATFORM_PROVIDERS = CONST_EXPR([
     PLATFORM_COMMON_PROVIDERS,

@@ -76,7 +76,11 @@ export class DomRenderer implements Renderer {
     }
   }
 
-  selectRootElement(selector: string, debugInfo: RenderDebugInfo): Element {
+  renderComponent(componentProto: RenderComponentType): Renderer {
+    return this._rootRenderer.renderComponent(componentProto);
+  }
+
+  selectRootElement(selector: string): Element {
     var el = DOM.querySelector(this._rootRenderer.document, selector);
     if (isBlank(el)) {
       throw new BaseException(`The selector "${selector}" did not match any elements`);
@@ -85,7 +89,7 @@ export class DomRenderer implements Renderer {
     return el;
   }
 
-  createElement(parent: Element, name: string, debugInfo: RenderDebugInfo): Node {
+  createElement(parent: Element, name: string): Node {
     var nsAndName = splitNamespace(name);
     var el = isPresent(nsAndName[0]) ?
                  DOM.createElementNS(NAMESPACE_URIS[nsAndName[0]], nsAndName[1]) :
@@ -116,7 +120,7 @@ export class DomRenderer implements Renderer {
     return nodesParent;
   }
 
-  createTemplateAnchor(parentElement: any, debugInfo: RenderDebugInfo): any {
+  createTemplateAnchor(parentElement: any): any {
     var comment = DOM.createComment(TEMPLATE_COMMENT_TEXT);
     if (isPresent(parentElement)) {
       DOM.appendChild(parentElement, comment);
@@ -124,7 +128,7 @@ export class DomRenderer implements Renderer {
     return comment;
   }
 
-  createText(parentElement: any, value: string, debugInfo: RenderDebugInfo): any {
+  createText(parentElement: any, value: string): any {
     var node = DOM.createTextNode(value);
     if (isPresent(parentElement)) {
       DOM.appendChild(parentElement, node);
@@ -205,6 +209,8 @@ export class DomRenderer implements Renderer {
       this.setElementAttribute(renderElement, propertyName, propertyValue);
     }
   }
+
+  setElementDebugInfo(renderElement: any, info: RenderDebugInfo) {}
 
   setElementClass(renderElement: any, className: string, isAdd: boolean): void {
     if (isAdd) {
