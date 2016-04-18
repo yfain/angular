@@ -62,6 +62,7 @@ export declare const $QUESTION: number;
 export declare const $LBRACKET: number;
 export declare const $BACKSLASH: number;
 export declare const $RBRACKET: number;
+export declare const $BT: number;
 export declare const $LBRACE: number;
 export declare const $BAR: number;
 export declare const $RBRACE: number;
@@ -71,3 +72,4 @@ export declare class ScannerError extends BaseException {
     toString(): string;
 }
 export declare function isIdentifier(input: string): boolean;
+export declare function isQuote(code: number): boolean;

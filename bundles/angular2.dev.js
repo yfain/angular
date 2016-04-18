@@ -14178,6 +14178,7 @@ System.register("angular2/src/compiler/expression_parser/lexer", ["angular2/src/
   exports.$RBRACKET = 93;
   var $CARET = 94;
   var $_ = 95;
+  exports.$BT = 96;
   var $a = 97,
       $e = 101,
       $f = 102,
@@ -14421,6 +14422,10 @@ System.register("angular2/src/compiler/expression_parser/lexer", ["angular2/src/
   function isExponentSign(code) {
     return code == exports.$MINUS || code == exports.$PLUS;
   }
+  function isQuote(code) {
+    return code === exports.$SQ || code === exports.$DQ || code === exports.$BT;
+  }
+  exports.isQuote = isQuote;
   function unescape(code) {
     switch (code) {
       case $n:
@@ -20554,14 +20559,6 @@ System.register("angular2/src/platform/browser/tools/common_tools", ["angular2/s
   var lang_1 = require("angular2/src/facade/lang");
   var browser_1 = require("angular2/src/facade/browser");
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
-  var ChangeDetectionPerfRecord = (function() {
-    function ChangeDetectionPerfRecord(msPerTick, numTicks) {
-      this.msPerTick = msPerTick;
-      this.numTicks = numTicks;
-    }
-    return ChangeDetectionPerfRecord;
-  }());
-  exports.ChangeDetectionPerfRecord = ChangeDetectionPerfRecord;
   var AngularTools = (function() {
     function AngularTools(ref) {
       this.profiler = new AngularProfiler(ref);
@@ -20593,7 +20590,6 @@ System.register("angular2/src/platform/browser/tools/common_tools", ["angular2/s
       var msPerTick = (end - start) / numTicks;
       browser_1.window.console.log("ran " + numTicks + " change detection cycles");
       browser_1.window.console.log(lang_1.NumberWrapper.toFixed(msPerTick, 2) + " ms per check");
-      return new ChangeDetectionPerfRecord(msPerTick, numTicks);
     };
     return AngularProfiler;
   }());
@@ -20661,7 +20657,7 @@ System.register("angular2/src/compiler/expression_parser/parser", ["angular2/src
     }
     Parser.prototype.parseAction = function(input, location) {
       this._checkNoInterpolation(input, location);
-      var tokens = this._lexer.tokenize(input);
+      var tokens = this._lexer.tokenize(this._stripComments(input));
       var ast = new _ParseAST(input, location, tokens, true).parseChain();
       return new ast_1.ASTWithSource(ast, input, location);
     };
@@ -20682,7 +20678,7 @@ System.register("angular2/src/compiler/expression_parser/parser", ["angular2/src
         return quote;
       }
       this._checkNoInterpolation(input, location);
-      var tokens = this._lexer.tokenize(input);
+      var tokens = this._lexer.tokenize(this._stripComments(input));
       return new _ParseAST(input, location, tokens, false).parseChain();
     };
     Parser.prototype._parseQuote = function(input, location) {
@@ -20707,7 +20703,7 @@ System.register("angular2/src/compiler/expression_parser/parser", ["angular2/src
         return null;
       var expressions = [];
       for (var i = 0; i < split.expressions.length; ++i) {
-        var tokens = this._lexer.tokenize(split.expressions[i]);
+        var tokens = this._lexer.tokenize(this._stripComments(split.expressions[i]));
         var ast = new _ParseAST(input, location, tokens, false).parseChain();
         expressions.push(ast);
       }
@@ -20734,6 +20730,25 @@ System.register("angular2/src/compiler/expression_parser/parser", ["angular2/src
     };
     Parser.prototype.wrapLiteralPrimitive = function(input, location) {
       return new ast_1.ASTWithSource(new ast_1.LiteralPrimitive(input), input, location);
+    };
+    Parser.prototype._stripComments = function(input) {
+      var i = this._commentStart(input);
+      return lang_1.isPresent(i) ? input.substring(0, i).trim() : input;
+    };
+    Parser.prototype._commentStart = function(input) {
+      var outerQuote = null;
+      for (var i = 0; i < input.length - 1; i++) {
+        var char = lang_1.StringWrapper.charCodeAt(input, i);
+        var nextChar = lang_1.StringWrapper.charCodeAt(input, i + 1);
+        if (char === lexer_1.$SLASH && nextChar == lexer_1.$SLASH && lang_1.isBlank(outerQuote))
+          return i;
+        if (outerQuote === char) {
+          outerQuote = null;
+        } else if (lang_1.isBlank(outerQuote) && lexer_1.isQuote(char)) {
+          outerQuote = char;
+        }
+      }
+      return null;
     };
     Parser.prototype._checkNoInterpolation = function(input, location) {
       var parts = lang_1.StringWrapper.split(input, INTERPOLATION_REGEXP);
