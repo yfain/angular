@@ -293,7 +293,7 @@ export declare class ResolvedFactory {
  * to an existing `token`.
  * See {@link ProviderBuilder} for more details.
  *
- * The `token` is most commonly a class or {@link angular2/di/OpaqueToken}.
+ * The `token` is most commonly a class or {@link OpaqueToken-class.html}.
  *
  * @deprecated
  */
@@ -434,4 +434,3 @@ export declare function resolveProviders(providers: Array<Type | Provider | any[
  * have been merged.
  */
 export declare function mergeResolvedProviders(providers: ResolvedProvider[], normalizedProvidersMap: Map<number, ResolvedProvider>): Map<number, ResolvedProvider>;
-export declare function constructDependencies(typeOrFunc: any, dependencies: any[]): Dependency[];
