@@ -1,6 +1,6 @@
 import { OpaqueToken, Provider } from 'angular2/src/core/di';
 /**
- * An {@link angular2/di/OpaqueToken} representing the application root type in the {@link
+ * An {@link OpaqueToken-class.html} representing the application root type in the {@link
  * Injector}.
  *
  * ```
