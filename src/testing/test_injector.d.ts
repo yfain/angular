@@ -59,13 +59,10 @@ export declare class InjectSetupWrapper {
     private _providers;
     constructor(_providers: () => any);
     inject(tokens: any[], fn: Function): FunctionWithParamTokens;
-    /** @Deprecated {use async(withProviders().inject())} */
     injectAsync(tokens: any[], fn: Function): FunctionWithParamTokens;
 }
 export declare function withProviders(providers: () => any): InjectSetupWrapper;
 /**
- * @Deprecated {use async(inject())}
- *
  * Allows injecting dependencies in `beforeEach()` and `it()`. The test must return
  * a promise which will resolve when all asynchronous activity is complete.
  *
@@ -84,22 +81,6 @@ export declare function withProviders(providers: () => any): InjectSetupWrapper;
  * @return {FunctionWithParamTokens}
  */
 export declare function injectAsync(tokens: any[], fn: Function): FunctionWithParamTokens;
-/**
- * Wraps a test function in an asynchronous test zone. The test will automatically
- * complete when all asynchronous calls within this zone are done. Can be used
- * to wrap an {@link inject} call.
- *
- * Example:
- *
- * ```
- * it('...', async(inject([AClass], (object) => {
- *   object.doSomething.then(() => {
- *     expect(...);
- *   })
- * });
- * ```
- */
-export declare function async(fn: Function | FunctionWithParamTokens): FunctionWithParamTokens;
 export declare class FunctionWithParamTokens {
     private _tokens;
     private _fn;
