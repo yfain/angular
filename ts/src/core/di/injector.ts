@@ -16,21 +16,43 @@ import {
   InvalidProviderError,
   OutOfBoundsError
 } from './exceptions';
-import {Type, CONST_EXPR} from 'angular2/src/facade/lang';
-import {BaseException, unimplemented} from 'angular2/src/facade/exceptions';
+import {FunctionWrapper, Type, isPresent, isBlank, CONST_EXPR} from 'angular2/src/facade/lang';
+import {BaseException} from 'angular2/src/facade/exceptions';
 import {Key} from './key';
 import {SelfMetadata, HostMetadata, SkipSelfMetadata} from './metadata';
-
-var __unused: Type;  // avoid unused import when Type union types are erased
 
 // Threshold for the dynamic version
 const _MAX_CONSTRUCTION_COUNTER = 10;
 
 export const UNDEFINED: Object = CONST_EXPR(new Object());
 
+/**
+ * Visibility of a {@link Provider}.
+ */
+export enum Visibility {
+  /**
+   * A `Public` {@link Provider} is only visible to regular (as opposed to host) child injectors.
+   */
+  Public,
+  /**
+   * A `Private` {@link Provider} is only visible to host (as opposed to regular) child injectors.
+   */
+  Private,
+  /**
+   * A `PublicAndPrivate` {@link Provider} is visible to both host and regular child injectors.
+   */
+  PublicAndPrivate
+}
+
+function canSee(src: Visibility, dst: Visibility): boolean {
+  return (src === dst) ||
+         (dst === Visibility.PublicAndPrivate || src === Visibility.PublicAndPrivate);
+}
+
+
 export interface ProtoInjectorStrategy {
   getProviderAtIndex(index: number): ResolvedProvider;
-  createInjectorStrategy(inj: Injector_): InjectorStrategy;
+  createInjectorStrategy(inj: Injector): InjectorStrategy;
 }
 
 export class ProtoInjectorInlineStrategy implements ProtoInjectorStrategy {
@@ -56,48 +78,69 @@ export class ProtoInjectorInlineStrategy implements ProtoInjectorStrategy {
   keyId8: number = null;
   keyId9: number = null;
 
-  constructor(protoEI: ProtoInjector, providers: ResolvedProvider[]) {
-    var length = providers.length;
+  visibility0: Visibility = null;
+  visibility1: Visibility = null;
+  visibility2: Visibility = null;
+  visibility3: Visibility = null;
+  visibility4: Visibility = null;
+  visibility5: Visibility = null;
+  visibility6: Visibility = null;
+  visibility7: Visibility = null;
+  visibility8: Visibility = null;
+  visibility9: Visibility = null;
+
+  constructor(protoEI: ProtoInjector, bwv: ProviderWithVisibility[]) {
+    var length = bwv.length;
 
     if (length > 0) {
-      this.provider0 = providers[0];
-      this.keyId0 = providers[0].key.id;
+      this.provider0 = bwv[0].provider;
+      this.keyId0 = bwv[0].getKeyId();
+      this.visibility0 = bwv[0].visibility;
     }
     if (length > 1) {
-      this.provider1 = providers[1];
-      this.keyId1 = providers[1].key.id;
+      this.provider1 = bwv[1].provider;
+      this.keyId1 = bwv[1].getKeyId();
+      this.visibility1 = bwv[1].visibility;
     }
     if (length > 2) {
-      this.provider2 = providers[2];
-      this.keyId2 = providers[2].key.id;
+      this.provider2 = bwv[2].provider;
+      this.keyId2 = bwv[2].getKeyId();
+      this.visibility2 = bwv[2].visibility;
     }
     if (length > 3) {
-      this.provider3 = providers[3];
-      this.keyId3 = providers[3].key.id;
+      this.provider3 = bwv[3].provider;
+      this.keyId3 = bwv[3].getKeyId();
+      this.visibility3 = bwv[3].visibility;
     }
     if (length > 4) {
-      this.provider4 = providers[4];
-      this.keyId4 = providers[4].key.id;
+      this.provider4 = bwv[4].provider;
+      this.keyId4 = bwv[4].getKeyId();
+      this.visibility4 = bwv[4].visibility;
     }
     if (length > 5) {
-      this.provider5 = providers[5];
-      this.keyId5 = providers[5].key.id;
+      this.provider5 = bwv[5].provider;
+      this.keyId5 = bwv[5].getKeyId();
+      this.visibility5 = bwv[5].visibility;
     }
     if (length > 6) {
-      this.provider6 = providers[6];
-      this.keyId6 = providers[6].key.id;
+      this.provider6 = bwv[6].provider;
+      this.keyId6 = bwv[6].getKeyId();
+      this.visibility6 = bwv[6].visibility;
     }
     if (length > 7) {
-      this.provider7 = providers[7];
-      this.keyId7 = providers[7].key.id;
+      this.provider7 = bwv[7].provider;
+      this.keyId7 = bwv[7].getKeyId();
+      this.visibility7 = bwv[7].visibility;
     }
     if (length > 8) {
-      this.provider8 = providers[8];
-      this.keyId8 = providers[8].key.id;
+      this.provider8 = bwv[8].provider;
+      this.keyId8 = bwv[8].getKeyId();
+      this.visibility8 = bwv[8].visibility;
     }
     if (length > 9) {
-      this.provider9 = providers[9];
-      this.keyId9 = providers[9].key.id;
+      this.provider9 = bwv[9].provider;
+      this.keyId9 = bwv[9].getKeyId();
+      this.visibility9 = bwv[9].visibility;
     }
   }
 
@@ -115,21 +158,27 @@ export class ProtoInjectorInlineStrategy implements ProtoInjectorStrategy {
     throw new OutOfBoundsError(index);
   }
 
-  createInjectorStrategy(injector: Injector_): InjectorStrategy {
+  createInjectorStrategy(injector: Injector): InjectorStrategy {
     return new InjectorInlineStrategy(injector, this);
   }
 }
 
 export class ProtoInjectorDynamicStrategy implements ProtoInjectorStrategy {
+  providers: ResolvedProvider[];
   keyIds: number[];
+  visibilities: Visibility[];
 
-  constructor(protoInj: ProtoInjector, public providers: ResolvedProvider[]) {
-    var len = providers.length;
+  constructor(protoInj: ProtoInjector, bwv: ProviderWithVisibility[]) {
+    var len = bwv.length;
 
+    this.providers = ListWrapper.createFixedSize(len);
     this.keyIds = ListWrapper.createFixedSize(len);
+    this.visibilities = ListWrapper.createFixedSize(len);
 
     for (var i = 0; i < len; i++) {
-      this.keyIds[i] = providers[i].key.id;
+      this.providers[i] = bwv[i].provider;
+      this.keyIds[i] = bwv[i].getKeyId();
+      this.visibilities[i] = bwv[i].visibility;
     }
   }
 
@@ -140,25 +189,26 @@ export class ProtoInjectorDynamicStrategy implements ProtoInjectorStrategy {
     return this.providers[index];
   }
 
-  createInjectorStrategy(ei: Injector_): InjectorStrategy {
+  createInjectorStrategy(ei: Injector): InjectorStrategy {
     return new InjectorDynamicStrategy(this, ei);
   }
 }
 
 export class ProtoInjector {
   static fromResolvedProviders(providers: ResolvedProvider[]): ProtoInjector {
-    return new ProtoInjector(providers);
+    var bd = providers.map(b => new ProviderWithVisibility(b, Visibility.Public));
+    return new ProtoInjector(bd);
   }
 
   /** @internal */
   _strategy: ProtoInjectorStrategy;
   numberOfProviders: number;
 
-  constructor(providers: ResolvedProvider[]) {
-    this.numberOfProviders = providers.length;
-    this._strategy = providers.length > _MAX_CONSTRUCTION_COUNTER ?
-                         new ProtoInjectorDynamicStrategy(this, providers) :
-                         new ProtoInjectorInlineStrategy(this, providers);
+  constructor(bwv: ProviderWithVisibility[]) {
+    this.numberOfProviders = bwv.length;
+    this._strategy = bwv.length > _MAX_CONSTRUCTION_COUNTER ?
+                         new ProtoInjectorDynamicStrategy(this, bwv) :
+                         new ProtoInjectorInlineStrategy(this, bwv);
   }
 
   getProviderAtIndex(index: number): ResolvedProvider {
@@ -169,12 +219,12 @@ export class ProtoInjector {
 
 
 export interface InjectorStrategy {
-  getObjByKeyId(keyId: number): any;
+  getObjByKeyId(keyId: number, visibility: Visibility): any;
   getObjAtIndex(index: number): any;
   getMaxNumberOfObjects(): number;
 
   resetConstructionCounter(): void;
-  instantiateProvider(provider: ResolvedProvider): any;
+  instantiateProvider(provider: ResolvedProvider, visibility: Visibility): any;
 }
 
 export class InjectorInlineStrategy implements InjectorStrategy {
@@ -189,73 +239,75 @@ export class InjectorInlineStrategy implements InjectorStrategy {
   obj8: any = UNDEFINED;
   obj9: any = UNDEFINED;
 
-  constructor(public injector: Injector_, public protoStrategy: ProtoInjectorInlineStrategy) {}
+  constructor(public injector: Injector, public protoStrategy: ProtoInjectorInlineStrategy) {}
 
   resetConstructionCounter(): void { this.injector._constructionCounter = 0; }
 
-  instantiateProvider(provider: ResolvedProvider): any { return this.injector._new(provider); }
+  instantiateProvider(provider: ResolvedProvider, visibility: Visibility): any {
+    return this.injector._new(provider, visibility);
+  }
 
-  getObjByKeyId(keyId: number): any {
+  getObjByKeyId(keyId: number, visibility: Visibility): any {
     var p = this.protoStrategy;
     var inj = this.injector;
 
-    if (p.keyId0 === keyId) {
+    if (p.keyId0 === keyId && canSee(p.visibility0, visibility)) {
       if (this.obj0 === UNDEFINED) {
-        this.obj0 = inj._new(p.provider0);
+        this.obj0 = inj._new(p.provider0, p.visibility0);
       }
       return this.obj0;
     }
-    if (p.keyId1 === keyId) {
+    if (p.keyId1 === keyId && canSee(p.visibility1, visibility)) {
       if (this.obj1 === UNDEFINED) {
-        this.obj1 = inj._new(p.provider1);
+        this.obj1 = inj._new(p.provider1, p.visibility1);
       }
       return this.obj1;
     }
-    if (p.keyId2 === keyId) {
+    if (p.keyId2 === keyId && canSee(p.visibility2, visibility)) {
       if (this.obj2 === UNDEFINED) {
-        this.obj2 = inj._new(p.provider2);
+        this.obj2 = inj._new(p.provider2, p.visibility2);
       }
       return this.obj2;
     }
-    if (p.keyId3 === keyId) {
+    if (p.keyId3 === keyId && canSee(p.visibility3, visibility)) {
       if (this.obj3 === UNDEFINED) {
-        this.obj3 = inj._new(p.provider3);
+        this.obj3 = inj._new(p.provider3, p.visibility3);
       }
       return this.obj3;
     }
-    if (p.keyId4 === keyId) {
+    if (p.keyId4 === keyId && canSee(p.visibility4, visibility)) {
       if (this.obj4 === UNDEFINED) {
-        this.obj4 = inj._new(p.provider4);
+        this.obj4 = inj._new(p.provider4, p.visibility4);
       }
       return this.obj4;
     }
-    if (p.keyId5 === keyId) {
+    if (p.keyId5 === keyId && canSee(p.visibility5, visibility)) {
       if (this.obj5 === UNDEFINED) {
-        this.obj5 = inj._new(p.provider5);
+        this.obj5 = inj._new(p.provider5, p.visibility5);
       }
       return this.obj5;
     }
-    if (p.keyId6 === keyId) {
+    if (p.keyId6 === keyId && canSee(p.visibility6, visibility)) {
       if (this.obj6 === UNDEFINED) {
-        this.obj6 = inj._new(p.provider6);
+        this.obj6 = inj._new(p.provider6, p.visibility6);
       }
       return this.obj6;
     }
-    if (p.keyId7 === keyId) {
+    if (p.keyId7 === keyId && canSee(p.visibility7, visibility)) {
       if (this.obj7 === UNDEFINED) {
-        this.obj7 = inj._new(p.provider7);
+        this.obj7 = inj._new(p.provider7, p.visibility7);
       }
       return this.obj7;
     }
-    if (p.keyId8 === keyId) {
+    if (p.keyId8 === keyId && canSee(p.visibility8, visibility)) {
       if (this.obj8 === UNDEFINED) {
-        this.obj8 = inj._new(p.provider8);
+        this.obj8 = inj._new(p.provider8, p.visibility8);
       }
       return this.obj8;
     }
-    if (p.keyId9 === keyId) {
+    if (p.keyId9 === keyId && canSee(p.visibility9, visibility)) {
       if (this.obj9 === UNDEFINED) {
-        this.obj9 = inj._new(p.provider9);
+        this.obj9 = inj._new(p.provider9, p.visibility9);
       }
       return this.obj9;
     }
@@ -284,22 +336,24 @@ export class InjectorInlineStrategy implements InjectorStrategy {
 export class InjectorDynamicStrategy implements InjectorStrategy {
   objs: any[];
 
-  constructor(public protoStrategy: ProtoInjectorDynamicStrategy, public injector: Injector_) {
+  constructor(public protoStrategy: ProtoInjectorDynamicStrategy, public injector: Injector) {
     this.objs = ListWrapper.createFixedSize(protoStrategy.providers.length);
     ListWrapper.fill(this.objs, UNDEFINED);
   }
 
   resetConstructionCounter(): void { this.injector._constructionCounter = 0; }
 
-  instantiateProvider(provider: ResolvedProvider): any { return this.injector._new(provider); }
+  instantiateProvider(provider: ResolvedProvider, visibility: Visibility): any {
+    return this.injector._new(provider, visibility);
+  }
 
-  getObjByKeyId(keyId: number): any {
+  getObjByKeyId(keyId: number, visibility: Visibility): any {
     var p = this.protoStrategy;
 
     for (var i = 0; i < p.keyIds.length; i++) {
-      if (p.keyIds[i] === keyId) {
+      if (p.keyIds[i] === keyId && canSee(p.visibilities[i], visibility)) {
         if (this.objs[i] === UNDEFINED) {
-          this.objs[i] = this.injector._new(p.providers[i]);
+          this.objs[i] = this.injector._new(p.providers[i], p.visibilities[i]);
         }
 
         return this.objs[i];
@@ -320,6 +374,12 @@ export class InjectorDynamicStrategy implements InjectorStrategy {
   getMaxNumberOfObjects(): number { return this.objs.length; }
 }
 
+export class ProviderWithVisibility {
+  constructor(public provider: ResolvedProvider, public visibility: Visibility){};
+
+  getKeyId(): number { return this.provider.key.id; }
+}
+
 /**
  * Used to provide dependencies that cannot be easily expressed as providers.
  */
@@ -327,7 +387,39 @@ export interface DependencyProvider {
   getDependency(injector: Injector, provider: ResolvedProvider, dependency: Dependency): any;
 }
 
-export abstract class Injector {
+/**
+ * A dependency injection container used for instantiating objects and resolving dependencies.
+ *
+ * An `Injector` is a replacement for a `new` operator, which can automatically resolve the
+ * constructor dependencies.
+ *
+ * In typical use, application code asks for the dependencies in the constructor and they are
+ * resolved by the `Injector`.
+ *
+ * ### Example ([live demo](http://plnkr.co/edit/jzjec0?p=preview))
+ *
+ * The following example creates an `Injector` configured to create `Engine` and `Car`.
+ *
+ * ```typescript
+ * @Injectable()
+ * class Engine {
+ * }
+ *
+ * @Injectable()
+ * class Car {
+ *   constructor(public engine:Engine) {}
+ * }
+ *
+ * var injector = Injector.resolveAndCreate([Car, Engine]);
+ * var car = injector.get(Car);
+ * expect(car instanceof Car).toBe(true);
+ * expect(car.engine instanceof Engine).toBe(true);
+ * ```
+ *
+ * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
+ * resolve all of the object's dependencies automatically.
+ */
+export class Injector {
   /**
    * Turns an array of provider definitions into an array of resolved providers.
    *
@@ -419,7 +511,7 @@ export abstract class Injector {
    * ```
    */
   static fromResolvedProviders(providers: ResolvedProvider[]): Injector {
-    return new Injector_(ProtoInjector.fromResolvedProviders(providers));
+    return new Injector(ProtoInjector.fromResolvedProviders(providers));
   }
 
   /**
@@ -428,6 +520,37 @@ export abstract class Injector {
   static fromResolvedBindings(providers: ResolvedProvider[]): Injector {
     return Injector.fromResolvedProviders(providers);
   }
+
+  /** @internal */
+  _strategy: InjectorStrategy;
+  /** @internal */
+  _constructionCounter: number = 0;
+  /** @internal */
+  public _proto: any /* ProtoInjector */;
+  /** @internal */
+  public _parent: Injector;
+  /**
+   * Private
+   */
+  constructor(_proto: any /* ProtoInjector */, _parent: Injector = null,
+              private _isHostBoundary: boolean = false,
+              private _depProvider: any /* DependencyProvider */ = null,
+              private _debugContext: Function = null) {
+    this._proto = _proto;
+    this._parent = _parent;
+    this._strategy = _proto._strategy.createInjectorStrategy(this);
+  }
+
+  /**
+   * Whether this injector is a boundary to a host.
+   * @internal
+   */
+  get hostBoundary() { return this._isHostBoundary; }
+
+  /**
+   * @internal
+   */
+  debugContext(): any { return this._debugContext(); }
 
   /**
    * Retrieves an instance from the injector based on the provided token.
@@ -450,7 +573,9 @@ export abstract class Injector {
    * expect(injector.get(Injector)).toBe(injector);
    * ```
    */
-  get(token: any): any { return unimplemented(); }
+  get(token: any): any {
+    return this._getByKey(Key.get(token), null, null, false, Visibility.PublicAndPrivate);
+  }
 
   /**
    * Retrieves an instance from the injector based on the provided token.
@@ -473,7 +598,14 @@ export abstract class Injector {
    * expect(injector.getOptional(Injector)).toBe(injector);
    * ```
    */
-  getOptional(token: any): any { return unimplemented(); }
+  getOptional(token: any): any {
+    return this._getByKey(Key.get(token), null, null, true, Visibility.PublicAndPrivate);
+  }
+
+  /**
+   * @internal
+   */
+  getAt(index: number): any { return this._strategy.getObjAtIndex(index); }
 
   /**
    * Parent of this injector.
@@ -489,12 +621,14 @@ export abstract class Injector {
    * expect(child.parent).toBe(parent);
    * ```
    */
-  get parent(): Injector { return unimplemented(); }
+  get parent(): Injector { return this._parent; }
 
   /**
    * @internal
+   * Internal. Do not use.
+   * We return `any` not to export the InjectorStrategy type.
    */
-  debugContext(): any { return null; }
+  get internalStrategy(): any { return this._strategy; }
 
   /**
    * Resolves an array of providers and creates a child injector from those providers.
@@ -524,7 +658,8 @@ export abstract class Injector {
    * See {@link Injector#resolve} and {@link Injector#createChildFromResolved}.
    */
   resolveAndCreateChild(providers: Array<Type | Provider | any[]>): Injector {
-    return unimplemented();
+    var resolvedProviders = Injector.resolve(providers);
+    return this.createChildFromResolved(resolvedProviders);
   }
 
   /**
@@ -552,7 +687,13 @@ export abstract class Injector {
    * expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));
    * ```
    */
-  createChildFromResolved(providers: ResolvedProvider[]): Injector { return unimplemented(); }
+  createChildFromResolved(providers: ResolvedProvider[]): Injector {
+    var bd = providers.map(b => new ProviderWithVisibility(b, Visibility.Public));
+    var proto = new ProtoInjector(bd);
+    var inj = new Injector(proto);
+    inj._parent = this;
+    return inj;
+  }
 
   /**
    * Resolves a provider and instantiates an object in the context of the injector.
@@ -578,7 +719,9 @@ export abstract class Injector {
    * expect(car).not.toBe(injector.resolveAndInstantiate(Car));
    * ```
    */
-  resolveAndInstantiate(provider: Type | Provider): any { return unimplemented(); }
+  resolveAndInstantiate(provider: Type | Provider): any {
+    return this.instantiateResolved(Injector.resolve([provider])[0]);
+  }
 
   /**
    * Instantiates an object using a resolved provider in the context of the injector.
@@ -604,121 +747,32 @@ export abstract class Injector {
    * expect(car).not.toBe(injector.instantiateResolved(carProvider));
    * ```
    */
-  instantiateResolved(provider: ResolvedProvider): any { return unimplemented(); }
-}
-
-/**
- * A dependency injection container used for instantiating objects and resolving dependencies.
- *
- * An `Injector` is a replacement for a `new` operator, which can automatically resolve the
- * constructor dependencies.
- *
- * In typical use, application code asks for the dependencies in the constructor and they are
- * resolved by the `Injector`.
- *
- * ### Example ([live demo](http://plnkr.co/edit/jzjec0?p=preview))
- *
- * The following example creates an `Injector` configured to create `Engine` and `Car`.
- *
- * ```typescript
- * @Injectable()
- * class Engine {
- * }
- *
- * @Injectable()
- * class Car {
- *   constructor(public engine:Engine) {}
- * }
- *
- * var injector = Injector.resolveAndCreate([Car, Engine]);
- * var car = injector.get(Car);
- * expect(car instanceof Car).toBe(true);
- * expect(car.engine instanceof Engine).toBe(true);
- * ```
- *
- * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
- * resolve all of the object's dependencies automatically.
- */
-export class Injector_ implements Injector {
-  /** @internal */
-  _strategy: InjectorStrategy;
-  /** @internal */
-  _constructionCounter: number = 0;
-  /** @internal */
-  public _proto: any /* ProtoInjector */;
-  /** @internal */
-  public _parent: Injector;
-  /**
-   * Private
-   */
-  constructor(_proto: any /* ProtoInjector */, _parent: Injector = null,
-              private _debugContext: Function = null) {
-    this._proto = _proto;
-    this._parent = _parent;
-    this._strategy = _proto._strategy.createInjectorStrategy(this);
-  }
-
-  /**
-   * @internal
-   */
-  debugContext(): any { return this._debugContext(); }
-
-  get(token: any): any { return this._getByKey(Key.get(token), null, null, false); }
-
-  getOptional(token: any): any { return this._getByKey(Key.get(token), null, null, true); }
-
-  getAt(index: number): any { return this._strategy.getObjAtIndex(index); }
-
-  get parent(): Injector { return this._parent; }
-
-  /**
-   * @internal
-   * Internal. Do not use.
-   * We return `any` not to export the InjectorStrategy type.
-   */
-  get internalStrategy(): any { return this._strategy; }
-
-  resolveAndCreateChild(providers: Array<Type | Provider | any[]>): Injector {
-    var resolvedProviders = Injector.resolve(providers);
-    return this.createChildFromResolved(resolvedProviders);
-  }
-
-  createChildFromResolved(providers: ResolvedProvider[]): Injector {
-    var proto = new ProtoInjector(providers);
-    var inj = new Injector_(proto);
-    inj._parent = this;
-    return inj;
-  }
-
-  resolveAndInstantiate(provider: Type | Provider): any {
-    return this.instantiateResolved(Injector.resolve([provider])[0]);
-  }
-
   instantiateResolved(provider: ResolvedProvider): any {
-    return this._instantiateProvider(provider);
+    return this._instantiateProvider(provider, Visibility.PublicAndPrivate);
   }
 
   /** @internal */
-  _new(provider: ResolvedProvider): any {
+  _new(provider: ResolvedProvider, visibility: Visibility): any {
     if (this._constructionCounter++ > this._strategy.getMaxNumberOfObjects()) {
       throw new CyclicDependencyError(this, provider.key);
     }
-    return this._instantiateProvider(provider);
+    return this._instantiateProvider(provider, visibility);
   }
 
-  private _instantiateProvider(provider: ResolvedProvider): any {
+  private _instantiateProvider(provider: ResolvedProvider, visibility: Visibility): any {
     if (provider.multiProvider) {
       var res = ListWrapper.createFixedSize(provider.resolvedFactories.length);
       for (var i = 0; i < provider.resolvedFactories.length; ++i) {
-        res[i] = this._instantiate(provider, provider.resolvedFactories[i]);
+        res[i] = this._instantiate(provider, provider.resolvedFactories[i], visibility);
       }
       return res;
     } else {
-      return this._instantiate(provider, provider.resolvedFactories[0]);
+      return this._instantiate(provider, provider.resolvedFactories[0], visibility);
     }
   }
 
-  private _instantiate(provider: ResolvedProvider, resolvedFactory: ResolvedFactory): any {
+  private _instantiate(provider: ResolvedProvider, resolvedFactory: ResolvedFactory,
+                       visibility: Visibility): any {
     var factory = resolvedFactory.factory;
     var deps = resolvedFactory.dependencies;
     var length = deps.length;
@@ -744,26 +798,26 @@ export class Injector_ implements Injector {
     var d18: any;
     var d19: any;
     try {
-      d0 = length > 0 ? this._getByDependency(provider, deps[0]) : null;
-      d1 = length > 1 ? this._getByDependency(provider, deps[1]) : null;
-      d2 = length > 2 ? this._getByDependency(provider, deps[2]) : null;
-      d3 = length > 3 ? this._getByDependency(provider, deps[3]) : null;
-      d4 = length > 4 ? this._getByDependency(provider, deps[4]) : null;
-      d5 = length > 5 ? this._getByDependency(provider, deps[5]) : null;
-      d6 = length > 6 ? this._getByDependency(provider, deps[6]) : null;
-      d7 = length > 7 ? this._getByDependency(provider, deps[7]) : null;
-      d8 = length > 8 ? this._getByDependency(provider, deps[8]) : null;
-      d9 = length > 9 ? this._getByDependency(provider, deps[9]) : null;
-      d10 = length > 10 ? this._getByDependency(provider, deps[10]) : null;
-      d11 = length > 11 ? this._getByDependency(provider, deps[11]) : null;
-      d12 = length > 12 ? this._getByDependency(provider, deps[12]) : null;
-      d13 = length > 13 ? this._getByDependency(provider, deps[13]) : null;
-      d14 = length > 14 ? this._getByDependency(provider, deps[14]) : null;
-      d15 = length > 15 ? this._getByDependency(provider, deps[15]) : null;
-      d16 = length > 16 ? this._getByDependency(provider, deps[16]) : null;
-      d17 = length > 17 ? this._getByDependency(provider, deps[17]) : null;
-      d18 = length > 18 ? this._getByDependency(provider, deps[18]) : null;
-      d19 = length > 19 ? this._getByDependency(provider, deps[19]) : null;
+      d0 = length > 0 ? this._getByDependency(provider, deps[0], visibility) : null;
+      d1 = length > 1 ? this._getByDependency(provider, deps[1], visibility) : null;
+      d2 = length > 2 ? this._getByDependency(provider, deps[2], visibility) : null;
+      d3 = length > 3 ? this._getByDependency(provider, deps[3], visibility) : null;
+      d4 = length > 4 ? this._getByDependency(provider, deps[4], visibility) : null;
+      d5 = length > 5 ? this._getByDependency(provider, deps[5], visibility) : null;
+      d6 = length > 6 ? this._getByDependency(provider, deps[6], visibility) : null;
+      d7 = length > 7 ? this._getByDependency(provider, deps[7], visibility) : null;
+      d8 = length > 8 ? this._getByDependency(provider, deps[8], visibility) : null;
+      d9 = length > 9 ? this._getByDependency(provider, deps[9], visibility) : null;
+      d10 = length > 10 ? this._getByDependency(provider, deps[10], visibility) : null;
+      d11 = length > 11 ? this._getByDependency(provider, deps[11], visibility) : null;
+      d12 = length > 12 ? this._getByDependency(provider, deps[12], visibility) : null;
+      d13 = length > 13 ? this._getByDependency(provider, deps[13], visibility) : null;
+      d14 = length > 14 ? this._getByDependency(provider, deps[14], visibility) : null;
+      d15 = length > 15 ? this._getByDependency(provider, deps[15], visibility) : null;
+      d16 = length > 16 ? this._getByDependency(provider, deps[16], visibility) : null;
+      d17 = length > 17 ? this._getByDependency(provider, deps[17], visibility) : null;
+      d18 = length > 18 ? this._getByDependency(provider, deps[18], visibility) : null;
+      d19 = length > 19 ? this._getByDependency(provider, deps[19], visibility) : null;
     } catch (e) {
       if (e instanceof AbstractProviderError || e instanceof InstantiationError) {
         e.addKey(this, provider.key);
@@ -850,22 +904,33 @@ export class Injector_ implements Injector {
     return obj;
   }
 
-  private _getByDependency(provider: ResolvedProvider, dep: Dependency): any {
-    return this._getByKey(dep.key, dep.lowerBoundVisibility, dep.upperBoundVisibility,
-                          dep.optional);
+  private _getByDependency(provider: ResolvedProvider, dep: Dependency,
+                           providerVisibility: Visibility): any {
+    var special = isPresent(this._depProvider) ?
+                      this._depProvider.getDependency(this, provider, dep) :
+                      UNDEFINED;
+    if (special !== UNDEFINED) {
+      return special;
+    } else {
+      return this._getByKey(dep.key, dep.lowerBoundVisibility, dep.upperBoundVisibility,
+                            dep.optional, providerVisibility);
+    }
   }
 
   private _getByKey(key: Key, lowerBoundVisibility: Object, upperBoundVisibility: Object,
-                    optional: boolean): any {
+                    optional: boolean, providerVisibility: Visibility): any {
     if (key === INJECTOR_KEY) {
       return this;
     }
 
     if (upperBoundVisibility instanceof SelfMetadata) {
-      return this._getByKeySelf(key, optional);
+      return this._getByKeySelf(key, optional, providerVisibility);
+
+    } else if (upperBoundVisibility instanceof HostMetadata) {
+      return this._getByKeyHost(key, optional, providerVisibility, lowerBoundVisibility);
 
     } else {
-      return this._getByKeyDefault(key, optional, lowerBoundVisibility);
+      return this._getByKeyDefault(key, optional, providerVisibility, lowerBoundVisibility);
     }
   }
 
@@ -879,36 +944,63 @@ export class Injector_ implements Injector {
   }
 
   /** @internal */
-  _getByKeySelf(key: Key, optional: boolean): any {
-    var obj = this._strategy.getObjByKeyId(key.id);
+  _getByKeySelf(key: Key, optional: boolean, providerVisibility: Visibility): any {
+    var obj = this._strategy.getObjByKeyId(key.id, providerVisibility);
     return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, optional);
   }
 
   /** @internal */
-  _getByKeyDefault(key: Key, optional: boolean, lowerBoundVisibility: Object): any {
-    var inj: Injector;
+  _getByKeyHost(key: Key, optional: boolean, providerVisibility: Visibility,
+                lowerBoundVisibility: Object): any {
+    var inj: Injector = this;
 
     if (lowerBoundVisibility instanceof SkipSelfMetadata) {
-      inj = this._parent;
-    } else {
-      inj = this;
+      if (inj._isHostBoundary) {
+        return this._getPrivateDependency(key, optional, inj);
+      } else {
+        inj = inj._parent;
+      }
     }
 
-    while (inj instanceof Injector_) {
-      var inj_ = <Injector_>inj;
-      var obj = inj_._strategy.getObjByKeyId(key.id);
+    while (inj != null) {
+      var obj = inj._strategy.getObjByKeyId(key.id, providerVisibility);
       if (obj !== UNDEFINED) return obj;
-      inj = inj_._parent;
-    }
-    if (inj !== null) {
-      if (optional) {
-        return inj.getOptional(key.token);
+
+      if (isPresent(inj._parent) && inj._isHostBoundary) {
+        return this._getPrivateDependency(key, optional, inj);
       } else {
-        return inj.get(key.token);
+        inj = inj._parent;
       }
-    } else {
-      return this._throwOrNull(key, optional);
     }
+
+    return this._throwOrNull(key, optional);
+  }
+
+  /** @internal */
+  _getPrivateDependency(key: Key, optional: boolean, inj: Injector): any {
+    var obj = inj._parent._strategy.getObjByKeyId(key.id, Visibility.Private);
+    return (obj !== UNDEFINED) ? obj : this._throwOrNull(key, optional);
+  }
+
+  /** @internal */
+  _getByKeyDefault(key: Key, optional: boolean, providerVisibility: Visibility,
+                   lowerBoundVisibility: Object): any {
+    var inj: Injector = this;
+
+    if (lowerBoundVisibility instanceof SkipSelfMetadata) {
+      providerVisibility = inj._isHostBoundary ? Visibility.PublicAndPrivate : Visibility.Public;
+      inj = inj._parent;
+    }
+
+    while (inj != null) {
+      var obj = inj._strategy.getObjByKeyId(key.id, providerVisibility);
+      if (obj !== UNDEFINED) return obj;
+
+      providerVisibility = inj._isHostBoundary ? Visibility.PublicAndPrivate : Visibility.Public;
+      inj = inj._parent;
+    }
+
+    return this._throwOrNull(key, optional);
   }
 
   get displayName(): string {
@@ -920,7 +1012,8 @@ export class Injector_ implements Injector {
 
 var INJECTOR_KEY = Key.get(Injector);
 
-function _mapProviders(injector: Injector_, fn: Function): any[] {
+
+function _mapProviders(injector: Injector, fn: Function): any[] {
   var res = [];
   for (var i = 0; i < injector._proto.numberOfProviders; ++i) {
     res.push(fn(injector._proto.getProviderAtIndex(i)));

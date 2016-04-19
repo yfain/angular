@@ -1,12 +1,6 @@
-import {AST} from './expression_parser/ast';
+import {AST} from 'angular2/src/core/change_detection/change_detection';
 import {isPresent} from 'angular2/src/facade/lang';
-import {
-  CompileDirectiveMetadata,
-  CompileTokenMetadata,
-  CompileProviderMetadata,
-  CompileTokenMap,
-  CompileQueryMetadata
-} from './compile_metadata';
+import {CompileDirectiveMetadata} from './directive_metadata';
 import {ParseSourceSpan} from './parse_util';
 
 /**
@@ -98,9 +92,8 @@ export class ElementAst implements TemplateAst {
   constructor(public name: string, public attrs: AttrAst[],
               public inputs: BoundElementPropertyAst[], public outputs: BoundEventAst[],
               public exportAsVars: VariableAst[], public directives: DirectiveAst[],
-              public providers: ProviderAst[], public children: TemplateAst[],
-              public ngContentIndex: number, public sourceSpan: ParseSourceSpan) {}
-
+              public children: TemplateAst[], public ngContentIndex: number,
+              public sourceSpan: ParseSourceSpan) {}
   visit(visitor: TemplateAstVisitor, context: any): any {
     return visitor.visitElement(this, context);
   }
@@ -128,10 +121,8 @@ export class ElementAst implements TemplateAst {
  */
 export class EmbeddedTemplateAst implements TemplateAst {
   constructor(public attrs: AttrAst[], public outputs: BoundEventAst[], public vars: VariableAst[],
-              public directives: DirectiveAst[], public providers: ProviderAst[],
-              public children: TemplateAst[], public ngContentIndex: number,
-              public sourceSpan: ParseSourceSpan) {}
-
+              public directives: DirectiveAst[], public children: TemplateAst[],
+              public ngContentIndex: number, public sourceSpan: ParseSourceSpan) {}
   visit(visitor: TemplateAstVisitor, context: any): any {
     return visitor.visitEmbeddedTemplate(this, context);
   }
@@ -159,28 +150,6 @@ export class DirectiveAst implements TemplateAst {
   visit(visitor: TemplateAstVisitor, context: any): any {
     return visitor.visitDirective(this, context);
   }
-}
-
-/**
- * A provider declared on an element
- */
-export class ProviderAst implements TemplateAst {
-  constructor(public token: CompileTokenMetadata, public multiProvider: boolean,
-              public eager: boolean, public providers: CompileProviderMetadata[],
-              public providerType: ProviderAstType, public sourceSpan: ParseSourceSpan) {}
-
-  visit(visitor: TemplateAstVisitor, context: any): any {
-    // No visit method in the visitor for now...
-    return null;
-  }
-}
-
-export enum ProviderAstType {
-  PublicService,
-  PrivateService,
-  Component,
-  Directive,
-  Builtin
 }
 
 /**

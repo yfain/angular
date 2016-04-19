@@ -67,7 +67,10 @@ export class DomRenderer {
             this._hostAttr = null;
         }
     }
-    selectRootElement(selector, debugInfo) {
+    renderComponent(componentProto) {
+        return this._rootRenderer.renderComponent(componentProto);
+    }
+    selectRootElement(selector) {
         var el = DOM.querySelector(this._rootRenderer.document, selector);
         if (isBlank(el)) {
             throw new BaseException(`The selector "${selector}" did not match any elements`);
@@ -75,7 +78,7 @@ export class DomRenderer {
         DOM.clearNodes(el);
         return el;
     }
-    createElement(parent, name, debugInfo) {
+    createElement(parent, name) {
         var nsAndName = splitNamespace(name);
         var el = isPresent(nsAndName[0]) ?
             DOM.createElementNS(NAMESPACE_URIS[nsAndName[0]], nsAndName[1]) :
@@ -105,14 +108,14 @@ export class DomRenderer {
         }
         return nodesParent;
     }
-    createTemplateAnchor(parentElement, debugInfo) {
+    createTemplateAnchor(parentElement) {
         var comment = DOM.createComment(TEMPLATE_COMMENT_TEXT);
         if (isPresent(parentElement)) {
             DOM.appendChild(parentElement, comment);
         }
         return comment;
     }
-    createText(parentElement, value, debugInfo) {
+    createText(parentElement, value) {
         var node = DOM.createTextNode(value);
         if (isPresent(parentElement)) {
             DOM.appendChild(parentElement, node);
@@ -186,6 +189,7 @@ export class DomRenderer {
             this.setElementAttribute(renderElement, propertyName, propertyValue);
         }
     }
+    setElementDebugInfo(renderElement, info) { }
     setElementClass(renderElement, className, isAdd) {
         if (isAdd) {
             DOM.addClass(renderElement, className);

@@ -35,9 +35,9 @@ export abstract class ElementRef {
 }
 
 export class ElementRef_ implements ElementRef {
-  constructor(private _element: AppElement) {}
+  constructor(private _appElement: AppElement) {}
 
-  get internalElement(): AppElement { return this._element; }
+  get internalElement(): AppElement { return this._appElement; }
 
-  get nativeElement() { return this._element.nativeElement; }
+  get nativeElement() { return this._appElement.nativeElement; }
 }
