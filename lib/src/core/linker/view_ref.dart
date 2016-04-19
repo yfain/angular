@@ -3,10 +3,8 @@ library angular2.src.core.linker.view_ref;
 import "package:angular2/src/facade/exceptions.dart" show unimplemented;
 import "../change_detection/change_detector_ref.dart" show ChangeDetectorRef;
 import "view.dart" show AppView, HostViewFactory;
-import "package:angular2/src/core/change_detection/constants.dart"
-    show ChangeDetectionStrategy;
 
-abstract class ViewRef extends ChangeDetectorRef {
+abstract class ViewRef {
   /**
    * @internal
    */
@@ -102,11 +100,11 @@ abstract class EmbeddedViewRef extends ViewRef {
 }
 
 class ViewRef_ implements EmbeddedViewRef, HostViewRef {
-  AppView<dynamic> _view;
+  AppView _view;
   ViewRef_(this._view) {
     this._view = _view;
   }
-  AppView<dynamic> get internalView {
+  AppView get internalView {
     return this._view;
   }
 
@@ -114,7 +112,7 @@ class ViewRef_ implements EmbeddedViewRef, HostViewRef {
    * Return `ChangeDetectorRef`
    */
   ChangeDetectorRef get changeDetectorRef {
-    return this;
+    return this._view.changeDetector.ref;
   }
 
   List<dynamic> get rootNodes {
@@ -131,27 +129,6 @@ class ViewRef_ implements EmbeddedViewRef, HostViewRef {
 
   bool get destroyed {
     return this._view.destroyed;
-  }
-
-  void markForCheck() {
-    this._view.markPathToRootAsCheckOnce();
-  }
-
-  void detach() {
-    this._view.cdMode = ChangeDetectionStrategy.Detached;
-  }
-
-  void detectChanges() {
-    this._view.detectChanges(false);
-  }
-
-  void checkNoChanges() {
-    this._view.detectChanges(true);
-  }
-
-  void reattach() {
-    this._view.cdMode = ChangeDetectionStrategy.CheckAlways;
-    this.markForCheck();
   }
 }
 
