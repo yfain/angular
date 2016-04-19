@@ -1,10 +1,8 @@
 import { Type } from 'angular2/src/facade/lang';
-import * as cpl from './compile_metadata';
-import * as dimd from 'angular2/src/core/metadata/di';
-import { DirectiveResolver } from './directive_resolver';
-import { PipeResolver } from './pipe_resolver';
-import { ViewResolver } from './view_resolver';
-import { Provider } from 'angular2/src/core/di/provider';
+import * as cpl from './directive_metadata';
+import { DirectiveResolver } from 'angular2/src/core/linker/directive_resolver';
+import { PipeResolver } from 'angular2/src/core/linker/pipe_resolver';
+import { ViewResolver } from 'angular2/src/core/linker/view_resolver';
 export declare class RuntimeMetadataResolver {
     private _directiveResolver;
     private _pipeResolver;
@@ -21,18 +19,7 @@ export declare class RuntimeMetadataResolver {
      */
     private sanitizeName(obj);
     getDirectiveMetadata(directiveType: Type): cpl.CompileDirectiveMetadata;
-    getTypeMetadata(type: Type, moduleUrl: string): cpl.CompileTypeMetadata;
-    getFactoryMetadata(factory: Function, moduleUrl: string): cpl.CompileFactoryMetadata;
     getPipeMetadata(pipeType: Type): cpl.CompilePipeMetadata;
     getViewDirectivesMetadata(component: Type): cpl.CompileDirectiveMetadata[];
     getViewPipesMetadata(component: Type): cpl.CompilePipeMetadata[];
-    getDependenciesMetadata(typeOrFunc: Type | Function, dependencies: any[]): cpl.CompileDiDependencyMetadata[];
-    getRuntimeIdentifier(value: any): cpl.CompileIdentifierMetadata;
-    getTokenMetadata(token: any): cpl.CompileTokenMetadata;
-    getProvidersMetadata(providers: any[]): Array<cpl.CompileProviderMetadata | cpl.CompileTypeMetadata | any[]>;
-    getProviderMetadata(provider: Provider): cpl.CompileProviderMetadata;
-    getQueriesMetadata(queries: {
-        [key: string]: dimd.QueryMetadata;
-    }, isViewQuery: boolean): cpl.CompileQueryMetadata[];
-    getQueryMetadata(q: dimd.QueryMetadata, propertyName: string): cpl.CompileQueryMetadata;
 }

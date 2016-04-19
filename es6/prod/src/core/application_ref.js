@@ -309,7 +309,7 @@ export class ApplicationRef_ extends ApplicationRef {
     }
     /** @internal */
     _loadComponent(componentRef) {
-        var appChangeDetector = componentRef.location.internalElement.parentView;
+        var appChangeDetector = componentRef.location.internalElement.parentView.changeDetector;
         this._changeDetectorRefs.push(appChangeDetector.ref);
         this.tick();
         this._rootComponents.push(componentRef);
@@ -320,7 +320,7 @@ export class ApplicationRef_ extends ApplicationRef {
         if (!ListWrapper.contains(this._rootComponents, componentRef)) {
             return;
         }
-        this.unregisterChangeDetector(componentRef.location.internalElement.parentView.ref);
+        this.unregisterChangeDetector(componentRef.location.internalElement.parentView.changeDetector.ref);
         ListWrapper.remove(this._rootComponents, componentRef);
     }
     get injector() { return this._injector; }
