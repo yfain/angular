@@ -40516,7 +40516,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DowngradeNg2ComponentAdapter.prototype.registerCleanup = function () {
 	        var _this = this;
-	        this.element.bind('$destroy', function () { return _this.viewManager.destroyRootHostView(_this.hostViewRef); });
+	        this.element.bind('$destroy', function () {
+	            _this.componentScope.$destroy();
+	            _this.viewManager.destroyRootHostView(_this.hostViewRef);
+	        });
 	    };
 	    return DowngradeNg2ComponentAdapter;
 	}());

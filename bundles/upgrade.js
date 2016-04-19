@@ -251,7 +251,8 @@ System.register("angular2/src/upgrade/downgrade_ng2_adapter", ["angular2/core", 
     DowngradeNg2ComponentAdapter.prototype.registerCleanup = function() {
       var _this = this;
       this.element.bind('$destroy', function() {
-        return _this.viewManager.destroyRootHostView(_this.hostViewRef);
+        _this.componentScope.$destroy();
+        _this.viewManager.destroyRootHostView(_this.hostViewRef);
       });
     };
     return DowngradeNg2ComponentAdapter;
