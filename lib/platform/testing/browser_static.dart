@@ -3,12 +3,11 @@ library angular2.platform.testing.browser_static;
 import "package:angular2/core.dart"
     show
         APP_ID,
-        DirectiveResolver,
         NgZone,
         Provider,
-        ViewResolver,
         PLATFORM_COMMON_PROVIDERS,
         PLATFORM_INITIALIZER;
+import "package:angular2/compiler.dart" show DirectiveResolver, ViewResolver;
 import "package:angular2/src/platform/browser_common.dart"
     show BROWSER_APP_COMMON_PROVIDERS;
 import "package:angular2/src/platform/browser/browser_adapter.dart"
@@ -40,7 +39,7 @@ initBrowserTests() {
 }
 
 /**
- * Default platform providers for testing without a compiler.
+ * Default patform providers for testing without a compiler.
  */
 const List<dynamic> TEST_BROWSER_STATIC_PLATFORM_PROVIDERS = const [
   PLATFORM_COMMON_PROVIDERS,
