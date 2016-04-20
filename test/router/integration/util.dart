@@ -21,7 +21,7 @@ import "package:angular2/src/router/router.dart" show RootRouter;
 import "package:angular2/router.dart"
     show Router, ROUTER_DIRECTIVES, ROUTER_PRIMARY_COMPONENT;
 import "package:angular2/src/mock/location_mock.dart" show SpyLocation;
-import "package:angular2/src/router/location/location.dart" show Location;
+import "package:angular2/platform/common.dart" show Location;
 import "package:angular2/src/router/route_registry.dart" show RouteRegistry;
 import "package:angular2/src/core/linker/directive_resolver.dart"
     show DirectiveResolver;

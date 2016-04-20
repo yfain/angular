@@ -17,9 +17,11 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/core.dart" show provide, Component, Injector, Inject;
-import "package:angular2/src/facade/async.dart" show PromiseWrapper;
+import "package:angular2/platform/common.dart" show Location;
+import "package:angular2/src/facade/async.dart"
+    show PromiseWrapper, TimerWrapper;
 import "package:angular2/router.dart"
-    show Router, RouterOutlet, RouterLink, RouteParams, RouteData, Location;
+    show Router, RouterOutlet, RouterLink, RouteParams, RouteData;
 import "package:angular2/src/router/route_config/route_config_decorator.dart"
     show RouteConfig, Route, AuxRoute, AsyncRoute, Redirect;
 import "util.dart" show TEST_ROUTER_PROVIDERS, RootCmp, compile;

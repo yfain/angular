@@ -14,12 +14,12 @@ import "package:angular2/testing_internal.dart"
         beforeEachProviders,
         SpyObject;
 import "package:angular2/core.dart" show Injector, provide;
-import "package:angular2/src/router/location/platform_location.dart"
-    show PlatformLocation;
-import "package:angular2/src/router/location/location_strategy.dart"
-    show LocationStrategy, APP_BASE_HREF;
-import "package:angular2/src/router/location/path_location_strategy.dart"
-    show PathLocationStrategy;
+import "package:angular2/platform/common.dart"
+    show
+        PlatformLocation,
+        LocationStrategy,
+        PathLocationStrategy,
+        APP_BASE_HREF;
 import "../spies.dart" show SpyPlatformLocation;
 
 main() {

@@ -17,9 +17,10 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/platform/common_dom.dart" show By;
+import "package:angular2/platform/common.dart" show Location;
 import "package:angular2/core.dart" show provide, Component, Injector, Inject;
 import "package:angular2/router.dart"
-    show Router, ROUTER_DIRECTIVES, RouteParams, RouteData, Location;
+    show Router, ROUTER_DIRECTIVES, RouteParams, RouteData;
 import "package:angular2/src/router/route_config/route_config_decorator.dart"
     show RouteConfig, Route, AuxRoute, Redirect;
 import "../util.dart" show specs, compile, clickOnElement, getHref;

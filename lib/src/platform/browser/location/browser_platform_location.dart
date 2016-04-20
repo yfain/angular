@@ -1,9 +1,8 @@
-library angular2.src.router.location.browser_platform_location;
+library angular2.src.platform.browser.location.browser_platform_location;
 
-import "package:angular2/core.dart" show Injectable;
+import "package:angular2/src/core/di/decorators.dart" show Injectable;
+import "platform_location.dart" show UrlChangeListener, PlatformLocation;
 import "package:angular2/src/facade/browser.dart" show History, Location;
-import "platform_location.dart" show UrlChangeListener;
-import "platform_location.dart" show PlatformLocation;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 
 /**

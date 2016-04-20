@@ -19,6 +19,7 @@ import "package:angular2/testing_internal.dart"
         proxy,
         SpyObject;
 import "package:angular2/platform/common_dom.dart" show By;
+import "package:angular2/platform/common.dart" show Location;
 import "package:angular2/src/facade/lang.dart" show NumberWrapper;
 import "package:angular2/src/facade/async.dart" show PromiseWrapper;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
@@ -26,7 +27,6 @@ import "package:angular2/core.dart" show provide, Component, DirectiveResolver;
 import "package:angular2/src/mock/location_mock.dart" show SpyLocation;
 import "package:angular2/router.dart"
     show
-        Location,
         Router,
         RouteRegistry,
         RouterLink,

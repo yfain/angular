@@ -76,6 +76,7 @@ var NG_COMMON = [
   "NgFormControl",
   "NgFormModel",
   "NgIf",
+  "NgTemplateOutlet",
   "NgModel",
   "NgSelectOption",
   "NgStyle",
@@ -309,6 +310,16 @@ var NG_PLATFORM_BROWSER = [
   "enableDebugTools",
   "inspectNativeElement"
 ];
+var NG_PLATFORM_COMMON = [
+  "APP_BASE_HREF",
+  "HashLocationStrategy",
+  "Location",
+  "LocationStrategy",
+  "PathLocationStrategy",
+  "PlatformLocation",
+  "UrlChangeEvent:dart",
+  "UrlChangeListener:dart"
+];
 var NG_UPGRADE = ["UpgradeAdapter", "UpgradeAdapterRef"];
 var NG_API = {
   "ngCommon": NG_COMMON,
@@ -316,6 +327,7 @@ var NG_API = {
   "ngCore": NG_CORE,
   "ngInstrumentation": NG_INSTRUMENTATION,
   "ngPlatformBrowser": NG_PLATFORM_BROWSER,
+  "ngPlatformCommon": NG_PLATFORM_COMMON,
   "ngUpgrade": NG_UPGRADE
 };
 main() {
@@ -334,6 +346,7 @@ main() {
       "ngCore",
       "ngInstrumentation",
       "ngPlatformBrowser",
+      "ngPlatformCommon",
       "ngUpgrade"
     ];
     if (IS_DART) {

@@ -17,13 +17,12 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/facade/lang.dart"
     show IS_DART, isPresent, stringify;
-import "package:angular2/platform/browser.dart" show bootstrap;
+import "package:angular2/platform/browser.dart"
+    show bootstrap, BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
 import "package:angular2/src/core/application_ref.dart" show ApplicationRef;
 import "package:angular2/src/core/console.dart" show Console;
 import "package:angular2/core.dart"
     show Component, Directive, OnDestroy, platform;
-import "package:angular2/platform/browser.dart"
-    show BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 import "package:angular2/src/facade/async.dart"

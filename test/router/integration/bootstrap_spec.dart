@@ -16,6 +16,8 @@ import "package:angular2/testing_internal.dart"
         TestComponentBuilder,
         xit;
 import "package:angular2/platform/browser.dart" show bootstrap;
+import "package:angular2/platform/common.dart"
+    show APP_BASE_HREF, LocationStrategy;
 import "package:angular2/src/core/metadata.dart" show Component, Directive;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/core/console.dart" show Console;
@@ -32,9 +34,7 @@ import "package:angular2/router.dart"
         ROUTER_PRIMARY_COMPONENT,
         RouteParams,
         Router,
-        APP_BASE_HREF,
-        ROUTER_DIRECTIVES,
-        LocationStrategy;
+        ROUTER_DIRECTIVES;
 import "package:angular2/src/mock/mock_location_strategy.dart"
     show MockLocationStrategy;
 import "package:angular2/src/core/application_ref.dart" show ApplicationRef;
