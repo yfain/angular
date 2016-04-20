@@ -6902,7 +6902,7 @@ System.register("angular2/src/common/forms/directives/number_value_accessor", ["
     };
     NumberValueAccessor.prototype.registerOnChange = function(fn) {
       this.onChange = function(value) {
-        fn(lang_1.NumberWrapper.parseFloat(value));
+        fn(value == '' ? null : lang_1.NumberWrapper.parseFloat(value));
       };
     };
     NumberValueAccessor.prototype.registerOnTouched = function(fn) {
@@ -7609,7 +7609,7 @@ System.register("angular2/src/common/forms/directives/ng_control_group", ["angul
   return module.exports;
 });
 
-System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/facade/async", "angular2/core", "angular2/src/common/forms/directives/control_container", "angular2/src/common/forms/directives/shared", "angular2/src/common/forms/validators"], true, function(require, exports, module) {
+System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/async", "angular2/core", "angular2/src/common/forms/directives/control_container", "angular2/src/common/forms/directives/shared", "angular2/src/common/forms/validators"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -7646,7 +7646,6 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
   };
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
   var async_1 = require("angular2/src/facade/async");
   var core_1 = require("angular2/core");
   var control_container_1 = require("angular2/src/common/forms/directives/control_container");
@@ -7666,7 +7665,6 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
       this.ngSubmit = new async_1.EventEmitter();
     }
     NgFormModel.prototype.ngOnChanges = function(changes) {
-      this._checkFormPresent();
       if (collection_1.StringMapWrapper.contains(changes, "form")) {
         var sync = shared_1.composeValidators(this._validators);
         this.form.validator = validators_1.Validators.compose([this.form.validator, sync]);
@@ -7735,11 +7733,6 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
         var ctrl = _this.form.find(dir.path);
         dir.valueAccessor.writeValue(ctrl.value);
       });
-    };
-    NgFormModel.prototype._checkFormPresent = function() {
-      if (lang_1.isBlank(this.form)) {
-        throw new exceptions_1.BaseException("ngFormModel expects a form. Please pass one in. Example: <form [ngFormModel]=\"myCoolForm\">");
-      }
     };
     NgFormModel = __decorate([core_1.Directive({
       selector: '[ngFormModel]',
