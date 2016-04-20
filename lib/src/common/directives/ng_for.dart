@@ -22,7 +22,7 @@ import "../../facade/exceptions.dart" show BaseException;
  * each instantiated template inherits from the outer context with the given loop variable set
  * to the current item from the iterable.
  *
- * ### Local Variables
+ * # Local Variables
  *
  * `NgFor` provides several exported values that can be aliased to local variables:
  *
@@ -34,7 +34,7 @@ import "../../facade/exceptions.dart" show BaseException;
  * * `even` will be set to a boolean value indicating whether this item has an even index.
  * * `odd` will be set to a boolean value indicating whether this item has an odd index.
  *
- * ### Change Propagation
+ * # Change Propagation
  *
  * When the contents of the iterator changes, `NgFor` makes the corresponding changes to the DOM:
  *
@@ -57,7 +57,7 @@ import "../../facade/exceptions.dart" show BaseException;
  * elements were deleted and all new elements inserted). This is an expensive operation and should
  * be avoided if possible.
  *
- * ### Syntax
+ * # Syntax
  *
  * - `<li *ngFor="#item of items; #i = index">...</li>`
  * - `<li template="ngFor #item of items; #i = index">...</li>`
@@ -158,7 +158,8 @@ class NgFor implements DoCheck {
       var tuple = tuples[i];
       // separate moved views from removed views.
       if (isPresent(tuple.record.currentIndex)) {
-        tuple.view = this._viewContainer.detach(tuple.record.previousIndex);
+        tuple.view = (this._viewContainer.detach(tuple.record.previousIndex)
+            as EmbeddedViewRef);
         movedTuples.add(tuple);
       } else {
         this._viewContainer.remove(tuple.record.previousIndex);
