@@ -15469,7 +15469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', value);
 	    };
 	    NumberValueAccessor.prototype.registerOnChange = function (fn) {
-	        this.onChange = function (value) { fn(lang_1.NumberWrapper.parseFloat(value)); };
+	        this.onChange = function (value) { fn(value == '' ? null : lang_1.NumberWrapper.parseFloat(value)); };
 	    };
 	    NumberValueAccessor.prototype.registerOnTouched = function (fn) { this.onTouched = fn; };
 	    NumberValueAccessor = __decorate([

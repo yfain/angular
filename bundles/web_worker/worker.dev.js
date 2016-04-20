@@ -6902,7 +6902,7 @@ System.register("angular2/src/common/forms/directives/number_value_accessor", ["
     };
     NumberValueAccessor.prototype.registerOnChange = function(fn) {
       this.onChange = function(value) {
-        fn(lang_1.NumberWrapper.parseFloat(value));
+        fn(value == '' ? null : lang_1.NumberWrapper.parseFloat(value));
       };
     };
     NumberValueAccessor.prototype.registerOnTouched = function(fn) {
