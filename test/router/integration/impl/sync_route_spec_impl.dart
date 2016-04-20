@@ -16,8 +16,7 @@ import "package:angular2/testing_internal.dart"
 import "../util.dart"
     show specs, compile, TEST_ROUTER_PROVIDERS, clickOnElement, getHref;
 import "package:angular2/platform/common_dom.dart" show By;
-import "package:angular2/platform/common.dart" show Location;
-import "package:angular2/router.dart" show Router, Route;
+import "package:angular2/router.dart" show Router, Route, Location;
 import "fixture_components.dart"
     show
         HelloCmp,

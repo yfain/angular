@@ -17,10 +17,9 @@ import "package:angular2/testing_internal.dart"
         it,
         xit;
 import "package:angular2/router.dart"
-    show Router, RouterOutlet, RouterLink, RouteParams, RouteData;
+    show Router, RouterOutlet, RouterLink, RouteParams, RouteData, Location;
 import "package:angular2/src/router/route_config/route_config_decorator.dart"
     show RouteConfig, Route, AuxRoute, AsyncRoute, Redirect;
-import "package:angular2/platform/common.dart" show Location;
 import "util.dart" show TEST_ROUTER_PROVIDERS, RootCmp, compile;
 import "impl/fixture_components.dart"
     show HelloCmp, GoodbyeCmp, RedirectToParentCmp;

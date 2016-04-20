@@ -23,8 +23,7 @@ const LIB_MAP = const {
   'ngCompiler': 'angular2.compiler',
   'ngCore': 'angular2.core',
   'ngInstrumentation': 'angular2.instrumentation',
-  'ngPlatformBrowser': 'angular2.platform.browser',
-  'ngPlatformCommon': 'angular2.platform.common'
+  'ngPlatformBrowser': 'angular2.platform.browser'
 };
 
 // Have this list here to trick dart to force import.

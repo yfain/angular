@@ -9,11 +9,11 @@ import "package:angular2/src/facade/lang.dart"
     show isBlank, isString, isPresent, Type, isArray;
 import "package:angular2/src/facade/exceptions.dart"
     show BaseException, WrappedException;
-import "package:angular2/platform/common.dart" show Location;
 import "package:angular2/core.dart" show Inject, Injectable;
 import "route_registry.dart" show RouteRegistry, ROUTER_PRIMARY_COMPONENT;
 import "instruction.dart" show ComponentInstruction, Instruction;
 import "directives/router_outlet.dart" show RouterOutlet;
+import "location/location.dart" show Location;
 import "lifecycle/route_lifecycle_reflector.dart" show getCanActivateHook;
 import "route_config/route_config_impl.dart" show RouteDefinition;
 
