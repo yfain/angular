@@ -5779,54 +5779,6 @@ System.register("angular2/src/common/directives/ng_if", ["angular2/core", "angul
   return module.exports;
 });
 
-System.register("angular2/src/common/directives/ng_template_outlet", ["angular2/core", "angular2/src/facade/lang"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var core_1 = require("angular2/core");
-  var lang_1 = require("angular2/src/facade/lang");
-  var NgTemplateOutlet = (function() {
-    function NgTemplateOutlet(_viewContainerRef) {
-      this._viewContainerRef = _viewContainerRef;
-    }
-    Object.defineProperty(NgTemplateOutlet.prototype, "ngTemplateOutlet", {
-      set: function(templateRef) {
-        if (lang_1.isPresent(this._insertedViewRef)) {
-          this._viewContainerRef.remove(this._viewContainerRef.indexOf(this._insertedViewRef));
-        }
-        if (lang_1.isPresent(templateRef)) {
-          this._insertedViewRef = this._viewContainerRef.createEmbeddedView(templateRef);
-        }
-      },
-      enumerable: true,
-      configurable: true
-    });
-    __decorate([core_1.Input(), __metadata('design:type', core_1.TemplateRef), __metadata('design:paramtypes', [core_1.TemplateRef])], NgTemplateOutlet.prototype, "ngTemplateOutlet", null);
-    NgTemplateOutlet = __decorate([core_1.Directive({selector: '[ngTemplateOutlet]'}), __metadata('design:paramtypes', [core_1.ViewContainerRef])], NgTemplateOutlet);
-    return NgTemplateOutlet;
-  }());
-  exports.NgTemplateOutlet = NgTemplateOutlet;
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/common/directives/ng_style", ["angular2/core", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -6173,7 +6125,7 @@ System.register("angular2/src/common/directives/observable_list_diff", [], true,
   return module.exports;
 });
 
-System.register("angular2/src/common/directives/core_directives", ["angular2/src/facade/lang", "angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_template_outlet", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural"], true, function(require, exports, module) {
+System.register("angular2/src/common/directives/core_directives", ["angular2/src/facade/lang", "angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -6182,11 +6134,10 @@ System.register("angular2/src/common/directives/core_directives", ["angular2/src
   var ng_class_1 = require("angular2/src/common/directives/ng_class");
   var ng_for_1 = require("angular2/src/common/directives/ng_for");
   var ng_if_1 = require("angular2/src/common/directives/ng_if");
-  var ng_template_outlet_1 = require("angular2/src/common/directives/ng_template_outlet");
   var ng_style_1 = require("angular2/src/common/directives/ng_style");
   var ng_switch_1 = require("angular2/src/common/directives/ng_switch");
   var ng_plural_1 = require("angular2/src/common/directives/ng_plural");
-  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_template_outlet_1.NgTemplateOutlet, ng_style_1.NgStyle, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault, ng_plural_1.NgPlural, ng_plural_1.NgPluralCase]);
+  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_style_1.NgStyle, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault, ng_plural_1.NgPlural, ng_plural_1.NgPluralCase]);
   global.define = __define;
   return module.exports;
 });
@@ -23831,7 +23782,7 @@ System.register("angular2/src/common/pipes/date_pipe", ["angular2/src/facade/lan
   return module.exports;
 });
 
-System.register("angular2/src/common/directives", ["angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_template_outlet", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural", "angular2/src/common/directives/observable_list_diff", "angular2/src/common/directives/core_directives"], true, function(require, exports, module) {
+System.register("angular2/src/common/directives", ["angular2/src/common/directives/ng_class", "angular2/src/common/directives/ng_for", "angular2/src/common/directives/ng_if", "angular2/src/common/directives/ng_style", "angular2/src/common/directives/ng_switch", "angular2/src/common/directives/ng_plural", "angular2/src/common/directives/observable_list_diff", "angular2/src/common/directives/core_directives"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -23847,8 +23798,6 @@ System.register("angular2/src/common/directives", ["angular2/src/common/directiv
   exports.NgFor = ng_for_1.NgFor;
   var ng_if_1 = require("angular2/src/common/directives/ng_if");
   exports.NgIf = ng_if_1.NgIf;
-  var ng_template_outlet_1 = require("angular2/src/common/directives/ng_template_outlet");
-  exports.NgTemplateOutlet = ng_template_outlet_1.NgTemplateOutlet;
   var ng_style_1 = require("angular2/src/common/directives/ng_style");
   exports.NgStyle = ng_style_1.NgStyle;
   var ng_switch_1 = require("angular2/src/common/directives/ng_switch");
