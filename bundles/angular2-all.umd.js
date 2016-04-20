@@ -70,9 +70,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	exports.http = __webpack_require__(229);
 	exports.router = __webpack_require__(244);
-	exports.router_link_dsl = __webpack_require__(275);
-	exports.instrumentation = __webpack_require__(277);
-	exports.upgrade = __webpack_require__(278);
+	exports.router_link_dsl = __webpack_require__(273);
+	exports.instrumentation = __webpack_require__(275);
+	exports.upgrade = __webpack_require__(276);
 
 
 /***/ },
@@ -13947,7 +13947,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * each instantiated template inherits from the outer context with the given loop variable set
 	 * to the current item from the iterable.
 	 *
-	 * # Local Variables
+	 * ### Local Variables
 	 *
 	 * `NgFor` provides several exported values that can be aliased to local variables:
 	 *
@@ -13959,7 +13959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * * `even` will be set to a boolean value indicating whether this item has an even index.
 	 * * `odd` will be set to a boolean value indicating whether this item has an odd index.
 	 *
-	 * # Change Propagation
+	 * ### Change Propagation
 	 *
 	 * When the contents of the iterator changes, `NgFor` makes the corresponding changes to the DOM:
 	 *
@@ -13982,7 +13982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * elements were deleted and all new elements inserted). This is an expensive operation and should
 	 * be avoided if possible.
 	 *
-	 * # Syntax
+	 * ### Syntax
 	 *
 	 * - `<li *ngFor="#item of items; #i = index">...</li>`
 	 * - `<li template="ngFor #item of items; #i = index">...</li>`
@@ -14335,7 +14335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * `NgSwitch` simply inserts nested elements based on which match expression matches the value
 	 * obtained from the evaluated switch expression. In other words, you define a container element
 	 * (where you place the directive with a switch expression on the
-	 * **`[ngSwitch]="..."` attribute**), define any inner elements inside of the directive and
+	 * `[ngSwitch]="..."` attribute), define any inner elements inside of the directive and
 	 * place a `[ngSwitchWhen]` attribute per element.
 	 *
 	 * The `ngSwitchWhen` property is used to inform `NgSwitch` which element to display when the
@@ -16471,7 +16471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * }
 	 *  ```
 	 *
-	 * ###ngModel
+	 * ### ngModel
 	 *
 	 * We can also use `ngModel` to bind a domain model to the form.
 	 *
@@ -33395,8 +33395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	/**
-	 * This is a set of DOM related classes and objects that can be used both in the browser and on the
-	 * server.
+	 * This is a set of classes and objects that can be used both in the browser and on the server.
 	 */
 	var dom_adapter_1 = __webpack_require__(196);
 	exports.DOM = dom_adapter_1.DOM;
@@ -35575,31 +35574,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	var router_1 = __webpack_require__(245);
 	exports.Router = router_1.Router;
-	var router_outlet_1 = __webpack_require__(269);
+	var router_outlet_1 = __webpack_require__(264);
 	exports.RouterOutlet = router_outlet_1.RouterOutlet;
-	var router_link_1 = __webpack_require__(271);
+	var router_link_1 = __webpack_require__(266);
 	exports.RouterLink = router_link_1.RouterLink;
-	var instruction_1 = __webpack_require__(257);
+	var instruction_1 = __webpack_require__(250);
 	exports.RouteParams = instruction_1.RouteParams;
 	exports.RouteData = instruction_1.RouteData;
-	var route_registry_1 = __webpack_require__(253);
+	var platform_location_1 = __webpack_require__(267);
+	exports.PlatformLocation = platform_location_1.PlatformLocation;
+	var route_registry_1 = __webpack_require__(246);
 	exports.RouteRegistry = route_registry_1.RouteRegistry;
 	exports.ROUTER_PRIMARY_COMPONENT = route_registry_1.ROUTER_PRIMARY_COMPONENT;
-	__export(__webpack_require__(266));
-	var lifecycle_annotations_1 = __webpack_require__(270);
+	var location_strategy_1 = __webpack_require__(261);
+	exports.LocationStrategy = location_strategy_1.LocationStrategy;
+	exports.APP_BASE_HREF = location_strategy_1.APP_BASE_HREF;
+	var hash_location_strategy_1 = __webpack_require__(268);
+	exports.HashLocationStrategy = hash_location_strategy_1.HashLocationStrategy;
+	var path_location_strategy_1 = __webpack_require__(269);
+	exports.PathLocationStrategy = path_location_strategy_1.PathLocationStrategy;
+	var location_1 = __webpack_require__(260);
+	exports.Location = location_1.Location;
+	__export(__webpack_require__(259));
+	var lifecycle_annotations_1 = __webpack_require__(265);
 	exports.CanActivate = lifecycle_annotations_1.CanActivate;
-	var instruction_2 = __webpack_require__(257);
+	var instruction_2 = __webpack_require__(250);
 	exports.Instruction = instruction_2.Instruction;
 	exports.ComponentInstruction = instruction_2.ComponentInstruction;
 	var core_1 = __webpack_require__(2);
 	exports.OpaqueToken = core_1.OpaqueToken;
-	var router_providers_common_1 = __webpack_require__(272);
+	var router_providers_common_1 = __webpack_require__(270);
 	exports.ROUTER_PROVIDERS_COMMON = router_providers_common_1.ROUTER_PROVIDERS_COMMON;
-	var router_providers_1 = __webpack_require__(273);
+	var router_providers_1 = __webpack_require__(271);
 	exports.ROUTER_PROVIDERS = router_providers_1.ROUTER_PROVIDERS;
 	exports.ROUTER_BINDINGS = router_providers_1.ROUTER_BINDINGS;
-	var router_outlet_2 = __webpack_require__(269);
-	var router_link_2 = __webpack_require__(271);
+	var router_outlet_2 = __webpack_require__(264);
+	var router_link_2 = __webpack_require__(266);
 	var lang_1 = __webpack_require__(5);
 	/**
 	 * A list of directives. To use the router directives like {@link RouterOutlet} and
@@ -35652,10 +35662,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var collection_1 = __webpack_require__(12);
 	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(14);
-	var common_1 = __webpack_require__(246);
 	var core_1 = __webpack_require__(2);
-	var route_registry_1 = __webpack_require__(253);
-	var route_lifecycle_reflector_1 = __webpack_require__(267);
+	var route_registry_1 = __webpack_require__(246);
+	var location_1 = __webpack_require__(260);
+	var route_lifecycle_reflector_1 = __webpack_require__(262);
 	var _resolveToTrue = async_1.PromiseWrapper.resolve(true);
 	var _resolveToFalse = async_1.PromiseWrapper.resolve(false);
 	/**
@@ -36129,7 +36139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    RootRouter = __decorate([
 	        core_1.Injectable(),
 	        __param(2, core_1.Inject(route_registry_1.ROUTER_PRIMARY_COMPONENT)), 
-	        __metadata('design:paramtypes', [route_registry_1.RouteRegistry, common_1.Location, lang_1.Type])
+	        __metadata('design:paramtypes', [route_registry_1.RouteRegistry, location_1.Location, lang_1.Type])
 	    ], RootRouter);
 	    return RootRouter;
 	}(Router));
@@ -36181,583 +36191,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	/**
-	 * Platform agnostic services.
-	 * Can be used both in the browser and on the server.
-	 */
-	__export(__webpack_require__(247));
-
-
-/***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(248));
-	__export(__webpack_require__(249));
-	__export(__webpack_require__(250));
-	__export(__webpack_require__(252));
-	__export(__webpack_require__(251));
-
-
-/***/ },
-/* 248 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * This class should not be used directly by an application developer. Instead, use
-	 * {@link Location}.
-	 *
-	 * `PlatformLocation` encapsulates all calls to DOM apis, which allows the Router to be platform
-	 * agnostic.
-	 * This means that we can have different implementation of `PlatformLocation` for the different
-	 * platforms
-	 * that angular supports. For example, the default `PlatformLocation` is {@link
-	 * BrowserPlatformLocation},
-	 * however when you run your app in a WebWorker you use {@link WebWorkerPlatformLocation}.
-	 *
-	 * The `PlatformLocation` class is used directly by all implementations of {@link LocationStrategy}
-	 * when
-	 * they need to interact with the DOM apis like pushState, popState, etc...
-	 *
-	 * {@link LocationStrategy} in turn is used by the {@link Location} service which is used directly
-	 * by
-	 * the {@link Router} in order to navigate between routes. Since all interactions between {@link
-	 * Router} /
-	 * {@link Location} / {@link LocationStrategy} and DOM apis flow through the `PlatformLocation`
-	 * class
-	 * they are all platform independent.
-	 */
-	var PlatformLocation = (function () {
-	    function PlatformLocation() {
-	    }
-	    Object.defineProperty(PlatformLocation.prototype, "pathname", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(PlatformLocation.prototype, "search", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(PlatformLocation.prototype, "hash", {
-	        /* abstract */ get: function () { return null; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    return PlatformLocation;
-	}());
-	exports.PlatformLocation = PlatformLocation;
-
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var lang_1 = __webpack_require__(5);
-	var core_1 = __webpack_require__(2);
-	/**
-	 * `LocationStrategy` is responsible for representing and reading route state
-	 * from the browser's URL. Angular provides two strategies:
-	 * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
-	 *
-	 * This is used under the hood of the {@link Location} service.
-	 *
-	 * Applications should use the {@link Router} or {@link Location} services to
-	 * interact with application route state.
-	 *
-	 * For instance, {@link HashLocationStrategy} produces URLs like
-	 * `http://example.com#/foo`, and {@link PathLocationStrategy} produces
-	 * `http://example.com/foo` as an equivalent URL.
-	 *
-	 * See these two classes for more.
-	 */
-	var LocationStrategy = (function () {
-	    function LocationStrategy() {
-	    }
-	    return LocationStrategy;
-	}());
-	exports.LocationStrategy = LocationStrategy;
-	/**
-	 * The `APP_BASE_HREF` token represents the base href to be used with the
-	 * {@link PathLocationStrategy}.
-	 *
-	 * If you're using {@link PathLocationStrategy}, you must provide a provider to a string
-	 * representing the URL prefix that should be preserved when generating and recognizing
-	 * URLs.
-	 *
-	 * ### Example
-	 *
-	 * ```
-	 * import {Component} from 'angular2/core';
-	 * import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig} from 'angular2/router';
-	 * import {APP_BASE_HREF} from 'angular2/platform/common';
-	 *
-	 * @Component({directives: [ROUTER_DIRECTIVES]})
-	 * @RouteConfig([
-	 *  {...},
-	 * ])
-	 * class AppCmp {
-	 *   // ...
-	 * }
-	 *
-	 * bootstrap(AppCmp, [
-	 *   ROUTER_PROVIDERS,
-	 *   provide(APP_BASE_HREF, {useValue: '/my/app'})
-	 * ]);
-	 * ```
-	 */
-	exports.APP_BASE_HREF = lang_1.CONST_EXPR(new core_1.OpaqueToken('appBaseHref'));
-
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var __param = (this && this.__param) || function (paramIndex, decorator) {
-	    return function (target, key) { decorator(target, key, paramIndex); }
-	};
-	var core_1 = __webpack_require__(2);
-	var location_strategy_1 = __webpack_require__(249);
-	var location_1 = __webpack_require__(251);
-	var platform_location_1 = __webpack_require__(248);
-	var lang_1 = __webpack_require__(5);
-	/**
-	 * `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
-	 * {@link Location} service to represent its state in the
-	 * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
-	 * of the browser's URL.
-	 *
-	 * For instance, if you call `location.go('/foo')`, the browser's URL will become
-	 * `example.com#/foo`.
-	 *
-	 * ### Example
-	 *
-	 * ```
-	 * import {Component, provide} from 'angular2/core';
-	 * import {
-	 *   Location,
-	 *   LocationStrategy,
-	 *   HashLocationStrategy
-	 * } from 'angular2/platform/common';
-	 * import {
-	 *   ROUTER_DIRECTIVES,
-	 *   ROUTER_PROVIDERS,
-	 *   RouteConfig
-	 * } from 'angular2/router';
-	 *
-	 * @Component({directives: [ROUTER_DIRECTIVES]})
-	 * @RouteConfig([
-	 *  {...},
-	 * ])
-	 * class AppCmp {
-	 *   constructor(location: Location) {
-	 *     location.go('/foo');
-	 *   }
-	 * }
-	 *
-	 * bootstrap(AppCmp, [
-	 *   ROUTER_PROVIDERS,
-	 *   provide(LocationStrategy, {useClass: HashLocationStrategy})
-	 * ]);
-	 * ```
-	 */
-	var HashLocationStrategy = (function (_super) {
-	    __extends(HashLocationStrategy, _super);
-	    function HashLocationStrategy(_platformLocation, _baseHref) {
-	        _super.call(this);
-	        this._platformLocation = _platformLocation;
-	        this._baseHref = '';
-	        if (lang_1.isPresent(_baseHref)) {
-	            this._baseHref = _baseHref;
-	        }
-	    }
-	    HashLocationStrategy.prototype.onPopState = function (fn) {
-	        this._platformLocation.onPopState(fn);
-	        this._platformLocation.onHashChange(fn);
-	    };
-	    HashLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
-	    HashLocationStrategy.prototype.path = function () {
-	        // the hash value is always prefixed with a `#`
-	        // and if it is empty then it will stay empty
-	        var path = this._platformLocation.hash;
-	        if (!lang_1.isPresent(path))
-	            path = '#';
-	        // Dart will complain if a call to substring is
-	        // executed with a position value that extends the
-	        // length of string.
-	        return (path.length > 0 ? path.substring(1) : path);
-	    };
-	    HashLocationStrategy.prototype.prepareExternalUrl = function (internal) {
-	        var url = location_1.Location.joinWithSlash(this._baseHref, internal);
-	        return url.length > 0 ? ('#' + url) : url;
-	    };
-	    HashLocationStrategy.prototype.pushState = function (state, title, path, queryParams) {
-	        var url = this.prepareExternalUrl(path + location_1.Location.normalizeQueryParams(queryParams));
-	        if (url.length == 0) {
-	            url = this._platformLocation.pathname;
-	        }
-	        this._platformLocation.pushState(state, title, url);
-	    };
-	    HashLocationStrategy.prototype.replaceState = function (state, title, path, queryParams) {
-	        var url = this.prepareExternalUrl(path + location_1.Location.normalizeQueryParams(queryParams));
-	        if (url.length == 0) {
-	            url = this._platformLocation.pathname;
-	        }
-	        this._platformLocation.replaceState(state, title, url);
-	    };
-	    HashLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
-	    HashLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-	    HashLocationStrategy = __decorate([
-	        core_1.Injectable(),
-	        __param(1, core_1.Optional()),
-	        __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), 
-	        __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])
-	    ], HashLocationStrategy);
-	    return HashLocationStrategy;
-	}(location_strategy_1.LocationStrategy));
-	exports.HashLocationStrategy = HashLocationStrategy;
-
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var async_1 = __webpack_require__(38);
-	var core_1 = __webpack_require__(2);
-	var location_strategy_1 = __webpack_require__(249);
-	/**
-	 * `Location` is a service that applications can use to interact with a browser's URL.
-	 * Depending on which {@link LocationStrategy} is used, `Location` will either persist
-	 * to the URL's path or the URL's hash segment.
-	 *
-	 * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
-	 * `Location` only if you need to interact with or create normalized URLs outside of
-	 * routing.
-	 *
-	 * `Location` is responsible for normalizing the URL against the application's base href.
-	 * A normalized URL is absolute from the URL host, includes the application's base href, and has no
-	 * trailing slash:
-	 * - `/my/app/user/123` is normalized
-	 * - `my/app/user/123` **is not** normalized
-	 * - `/my/app/user/123/` **is not** normalized
-	 *
-	 * ### Example
-	 *
-	 * ```
-	 * import {Component} from 'angular2/core';
-	 * import {Location} from 'angular2/platform/common';
-	 * import {
-	 *   ROUTER_DIRECTIVES,
-	 *   ROUTER_PROVIDERS,
-	 *   RouteConfig
-	 * } from 'angular2/router';
-	 *
-	 * @Component({directives: [ROUTER_DIRECTIVES]})
-	 * @RouteConfig([
-	 *  {...},
-	 * ])
-	 * class AppCmp {
-	 *   constructor(location: Location) {
-	 *     location.go('/foo');
-	 *   }
-	 * }
-	 *
-	 * bootstrap(AppCmp, [ROUTER_PROVIDERS]);
-	 * ```
-	 */
-	var Location = (function () {
-	    function Location(platformStrategy) {
-	        var _this = this;
-	        this.platformStrategy = platformStrategy;
-	        /** @internal */
-	        this._subject = new async_1.EventEmitter();
-	        var browserBaseHref = this.platformStrategy.getBaseHref();
-	        this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
-	        this.platformStrategy.onPopState(function (ev) {
-	            async_1.ObservableWrapper.callEmit(_this._subject, { 'url': _this.path(), 'pop': true, 'type': ev.type });
-	        });
-	    }
-	    /**
-	     * Returns the normalized URL path.
-	     */
-	    Location.prototype.path = function () { return this.normalize(this.platformStrategy.path()); };
-	    /**
-	     * Given a string representing a URL, returns the normalized URL path without leading or
-	     * trailing slashes
-	     */
-	    Location.prototype.normalize = function (url) {
-	        return Location.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
-	    };
-	    /**
-	     * Given a string representing a URL, returns the platform-specific external URL path.
-	     * If the given URL doesn't begin with a leading slash (`'/'`), this method adds one
-	     * before normalizing. This method will also add a hash if `HashLocationStrategy` is
-	     * used, or the `APP_BASE_HREF` if the `PathLocationStrategy` is in use.
-	     */
-	    Location.prototype.prepareExternalUrl = function (url) {
-	        if (url.length > 0 && !url.startsWith('/')) {
-	            url = '/' + url;
-	        }
-	        return this.platformStrategy.prepareExternalUrl(url);
-	    };
-	    // TODO: rename this method to pushState
-	    /**
-	     * Changes the browsers URL to the normalized version of the given URL, and pushes a
-	     * new item onto the platform's history.
-	     */
-	    Location.prototype.go = function (path, query) {
-	        if (query === void 0) { query = ''; }
-	        this.platformStrategy.pushState(null, '', path, query);
-	    };
-	    /**
-	     * Changes the browsers URL to the normalized version of the given URL, and replaces
-	     * the top item on the platform's history stack.
-	     */
-	    Location.prototype.replaceState = function (path, query) {
-	        if (query === void 0) { query = ''; }
-	        this.platformStrategy.replaceState(null, '', path, query);
-	    };
-	    /**
-	     * Navigates forward in the platform's history.
-	     */
-	    Location.prototype.forward = function () { this.platformStrategy.forward(); };
-	    /**
-	     * Navigates back in the platform's history.
-	     */
-	    Location.prototype.back = function () { this.platformStrategy.back(); };
-	    /**
-	     * Subscribe to the platform's `popState` events.
-	     */
-	    Location.prototype.subscribe = function (onNext, onThrow, onReturn) {
-	        if (onThrow === void 0) { onThrow = null; }
-	        if (onReturn === void 0) { onReturn = null; }
-	        return async_1.ObservableWrapper.subscribe(this._subject, onNext, onThrow, onReturn);
-	    };
-	    /**
-	     * Given a string of url parameters, prepend with '?' if needed, otherwise return parameters as
-	     * is.
-	     */
-	    Location.normalizeQueryParams = function (params) {
-	        return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
-	    };
-	    /**
-	     * Given 2 parts of a url, join them with a slash if needed.
-	     */
-	    Location.joinWithSlash = function (start, end) {
-	        if (start.length == 0) {
-	            return end;
-	        }
-	        if (end.length == 0) {
-	            return start;
-	        }
-	        var slashes = 0;
-	        if (start.endsWith('/')) {
-	            slashes++;
-	        }
-	        if (end.startsWith('/')) {
-	            slashes++;
-	        }
-	        if (slashes == 2) {
-	            return start + end.substring(1);
-	        }
-	        if (slashes == 1) {
-	            return start + end;
-	        }
-	        return start + '/' + end;
-	    };
-	    /**
-	     * If url has a trailing slash, remove it, otherwise return url as is.
-	     */
-	    Location.stripTrailingSlash = function (url) {
-	        if (/\/$/g.test(url)) {
-	            url = url.substring(0, url.length - 1);
-	        }
-	        return url;
-	    };
-	    Location = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [location_strategy_1.LocationStrategy])
-	    ], Location);
-	    return Location;
-	}());
-	exports.Location = Location;
-	function _stripBaseHref(baseHref, url) {
-	    if (baseHref.length > 0 && url.startsWith(baseHref)) {
-	        return url.substring(baseHref.length);
-	    }
-	    return url;
-	}
-	function _stripIndexHtml(url) {
-	    if (/\/index.html$/g.test(url)) {
-	        // '/index.html'.length == 11
-	        return url.substring(0, url.length - 11);
-	    }
-	    return url;
-	}
-
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var __param = (this && this.__param) || function (paramIndex, decorator) {
-	    return function (target, key) { decorator(target, key, paramIndex); }
-	};
-	var core_1 = __webpack_require__(2);
-	var lang_1 = __webpack_require__(5);
-	var exceptions_1 = __webpack_require__(14);
-	var platform_location_1 = __webpack_require__(248);
-	var location_strategy_1 = __webpack_require__(249);
-	var location_1 = __webpack_require__(251);
-	/**
-	 * `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
-	 * {@link Location} service to represent its state in the
-	 * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
-	 * browser's URL.
-	 *
-	 * `PathLocationStrategy` is the default binding for {@link LocationStrategy}
-	 * provided in {@link ROUTER_PROVIDERS}.
-	 *
-	 * If you're using `PathLocationStrategy`, you must provide a provider for
-	 * {@link APP_BASE_HREF} to a string representing the URL prefix that should
-	 * be preserved when generating and recognizing URLs.
-	 *
-	 * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
-	 * `location.go('/foo')`, the browser's URL will become
-	 * `example.com/my/app/foo`.
-	 *
-	 * ### Example
-	 *
-	 * ```
-	 * import {Component, provide} from 'angular2/core';
-	 * import {bootstrap} from 'angular2/platform/browser';
-	 * import {
-	 *   Location,
-	 *   APP_BASE_HREF
-	 * } from 'angular2/platform/common';
-	 * import {
-	 *   ROUTER_DIRECTIVES,
-	 *   ROUTER_PROVIDERS,
-	 *   RouteConfig
-	 * } from 'angular2/router';
-	 *
-	 * @Component({directives: [ROUTER_DIRECTIVES]})
-	 * @RouteConfig([
-	 *  {...},
-	 * ])
-	 * class AppCmp {
-	 *   constructor(location: Location) {
-	 *     location.go('/foo');
-	 *   }
-	 * }
-	 *
-	 * bootstrap(AppCmp, [
-	 *   ROUTER_PROVIDERS, // includes binding to PathLocationStrategy
-	 *   provide(APP_BASE_HREF, {useValue: '/my/app'})
-	 * ]);
-	 * ```
-	 */
-	var PathLocationStrategy = (function (_super) {
-	    __extends(PathLocationStrategy, _super);
-	    function PathLocationStrategy(_platformLocation, href) {
-	        _super.call(this);
-	        this._platformLocation = _platformLocation;
-	        if (lang_1.isBlank(href)) {
-	            href = this._platformLocation.getBaseHrefFromDOM();
-	        }
-	        if (lang_1.isBlank(href)) {
-	            throw new exceptions_1.BaseException("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
-	        }
-	        this._baseHref = href;
-	    }
-	    PathLocationStrategy.prototype.onPopState = function (fn) {
-	        this._platformLocation.onPopState(fn);
-	        this._platformLocation.onHashChange(fn);
-	    };
-	    PathLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
-	    PathLocationStrategy.prototype.prepareExternalUrl = function (internal) {
-	        return location_1.Location.joinWithSlash(this._baseHref, internal);
-	    };
-	    PathLocationStrategy.prototype.path = function () {
-	        return this._platformLocation.pathname +
-	            location_1.Location.normalizeQueryParams(this._platformLocation.search);
-	    };
-	    PathLocationStrategy.prototype.pushState = function (state, title, url, queryParams) {
-	        var externalUrl = this.prepareExternalUrl(url + location_1.Location.normalizeQueryParams(queryParams));
-	        this._platformLocation.pushState(state, title, externalUrl);
-	    };
-	    PathLocationStrategy.prototype.replaceState = function (state, title, url, queryParams) {
-	        var externalUrl = this.prepareExternalUrl(url + location_1.Location.normalizeQueryParams(queryParams));
-	        this._platformLocation.replaceState(state, title, externalUrl);
-	    };
-	    PathLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
-	    PathLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
-	    PathLocationStrategy = __decorate([
-	        core_1.Injectable(),
-	        __param(1, core_1.Optional()),
-	        __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), 
-	        __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])
-	    ], PathLocationStrategy);
-	    return PathLocationStrategy;
-	}(location_strategy_1.LocationStrategy));
-	exports.PathLocationStrategy = PathLocationStrategy;
-
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -36776,12 +36209,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var exceptions_1 = __webpack_require__(14);
 	var reflection_1 = __webpack_require__(17);
 	var core_1 = __webpack_require__(2);
-	var route_config_impl_1 = __webpack_require__(254);
-	var rules_1 = __webpack_require__(255);
-	var rule_set_1 = __webpack_require__(258);
-	var instruction_1 = __webpack_require__(257);
-	var route_config_normalizer_1 = __webpack_require__(265);
-	var url_parser_1 = __webpack_require__(256);
+	var route_config_impl_1 = __webpack_require__(247);
+	var rules_1 = __webpack_require__(248);
+	var rule_set_1 = __webpack_require__(251);
+	var instruction_1 = __webpack_require__(250);
+	var route_config_normalizer_1 = __webpack_require__(258);
+	var url_parser_1 = __webpack_require__(249);
 	var _resolveToNull = async_1.PromiseWrapper.resolve(null);
 	// A LinkItemArray is an array, which describes a set of routes
 	// The items in the array are found in groups:
@@ -37225,7 +36658,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 254 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37454,7 +36887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 255 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37467,8 +36900,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var exceptions_1 = __webpack_require__(14);
 	var promise_1 = __webpack_require__(39);
 	var collection_1 = __webpack_require__(12);
-	var url_parser_1 = __webpack_require__(256);
-	var instruction_1 = __webpack_require__(257);
+	var url_parser_1 = __webpack_require__(249);
+	var instruction_1 = __webpack_require__(250);
 	// RouteMatch objects hold information about a match between a rule and a URL
 	var RouteMatch = (function () {
 	    function RouteMatch() {
@@ -37581,7 +37014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 256 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37821,7 +37254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 257 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38169,7 +37602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 258 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38177,12 +37610,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var exceptions_1 = __webpack_require__(14);
 	var collection_1 = __webpack_require__(12);
 	var async_1 = __webpack_require__(38);
-	var rules_1 = __webpack_require__(255);
-	var route_config_impl_1 = __webpack_require__(254);
-	var async_route_handler_1 = __webpack_require__(259);
-	var sync_route_handler_1 = __webpack_require__(260);
-	var param_route_path_1 = __webpack_require__(261);
-	var regex_route_path_1 = __webpack_require__(264);
+	var rules_1 = __webpack_require__(248);
+	var route_config_impl_1 = __webpack_require__(247);
+	var async_route_handler_1 = __webpack_require__(252);
+	var sync_route_handler_1 = __webpack_require__(253);
+	var param_route_path_1 = __webpack_require__(254);
+	var regex_route_path_1 = __webpack_require__(257);
 	/**
 	 * A `RuleSet` is responsible for recognizing routes for a particular component.
 	 * It is consumed by `RouteRegistry`, which knows how to recognize an entire hierarchy of
@@ -38327,12 +37760,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 259 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var lang_1 = __webpack_require__(5);
-	var instruction_1 = __webpack_require__(257);
+	var instruction_1 = __webpack_require__(250);
 	var AsyncRouteHandler = (function () {
 	    function AsyncRouteHandler(_loader, data) {
 	        if (data === void 0) { data = null; }
@@ -38357,13 +37790,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 260 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var async_1 = __webpack_require__(38);
 	var lang_1 = __webpack_require__(5);
-	var instruction_1 = __webpack_require__(257);
+	var instruction_1 = __webpack_require__(250);
 	var SyncRouteHandler = (function () {
 	    function SyncRouteHandler(componentType, data) {
 	        this.componentType = componentType;
@@ -38379,16 +37812,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 261 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(14);
 	var collection_1 = __webpack_require__(12);
-	var utils_1 = __webpack_require__(262);
-	var url_parser_1 = __webpack_require__(256);
-	var route_path_1 = __webpack_require__(263);
+	var utils_1 = __webpack_require__(255);
+	var url_parser_1 = __webpack_require__(249);
+	var route_path_1 = __webpack_require__(256);
 	/**
 	 * Identified by a `...` URL segment. This indicates that the
 	 * Route will continue to be matched by child `Router`s.
@@ -38651,7 +38084,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 262 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38695,7 +38128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 263 */
+/* 256 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38721,12 +38154,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 264 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var lang_1 = __webpack_require__(5);
-	var route_path_1 = __webpack_require__(263);
+	var route_path_1 = __webpack_require__(256);
 	var RegexRoutePath = (function () {
 	    function RegexRoutePath(_reString, _serializer) {
 	        this._reString = _reString;
@@ -38757,11 +38190,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 265 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var route_config_decorator_1 = __webpack_require__(266);
+	var route_config_decorator_1 = __webpack_require__(259);
 	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(14);
 	/**
@@ -38857,13 +38290,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 266 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var route_config_impl_1 = __webpack_require__(254);
+	var route_config_impl_1 = __webpack_require__(247);
 	var decorators_1 = __webpack_require__(9);
-	var route_config_impl_2 = __webpack_require__(254);
+	var route_config_impl_2 = __webpack_require__(247);
 	exports.Route = route_config_impl_2.Route;
 	exports.Redirect = route_config_impl_2.Redirect;
 	exports.AuxRoute = route_config_impl_2.AuxRoute;
@@ -38878,12 +38311,252 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 267 */
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var location_strategy_1 = __webpack_require__(261);
+	var async_1 = __webpack_require__(38);
+	var core_1 = __webpack_require__(2);
+	/**
+	 * `Location` is a service that applications can use to interact with a browser's URL.
+	 * Depending on which {@link LocationStrategy} is used, `Location` will either persist
+	 * to the URL's path or the URL's hash segment.
+	 *
+	 * Note: it's better to use {@link Router#navigate} service to trigger route changes. Use
+	 * `Location` only if you need to interact with or create normalized URLs outside of
+	 * routing.
+	 *
+	 * `Location` is responsible for normalizing the URL against the application's base href.
+	 * A normalized URL is absolute from the URL host, includes the application's base href, and has no
+	 * trailing slash:
+	 * - `/my/app/user/123` is normalized
+	 * - `my/app/user/123` **is not** normalized
+	 * - `/my/app/user/123/` **is not** normalized
+	 *
+	 * ### Example
+	 *
+	 * ```
+	 * import {Component} from 'angular2/core';
+	 * import {
+	 *   ROUTER_DIRECTIVES,
+	 *   ROUTER_PROVIDERS,
+	 *   RouteConfig,
+	 *   Location
+	 * } from 'angular2/router';
+	 *
+	 * @Component({directives: [ROUTER_DIRECTIVES]})
+	 * @RouteConfig([
+	 *  {...},
+	 * ])
+	 * class AppCmp {
+	 *   constructor(location: Location) {
+	 *     location.go('/foo');
+	 *   }
+	 * }
+	 *
+	 * bootstrap(AppCmp, [ROUTER_PROVIDERS]);
+	 * ```
+	 */
+	var Location = (function () {
+	    function Location(platformStrategy) {
+	        var _this = this;
+	        this.platformStrategy = platformStrategy;
+	        /** @internal */
+	        this._subject = new async_1.EventEmitter();
+	        var browserBaseHref = this.platformStrategy.getBaseHref();
+	        this._baseHref = stripTrailingSlash(stripIndexHtml(browserBaseHref));
+	        this.platformStrategy.onPopState(function (ev) {
+	            async_1.ObservableWrapper.callEmit(_this._subject, { 'url': _this.path(), 'pop': true, 'type': ev.type });
+	        });
+	    }
+	    /**
+	     * Returns the normalized URL path.
+	     */
+	    Location.prototype.path = function () { return this.normalize(this.platformStrategy.path()); };
+	    /**
+	     * Given a string representing a URL, returns the normalized URL path without leading or
+	     * trailing slashes
+	     */
+	    Location.prototype.normalize = function (url) {
+	        return stripTrailingSlash(_stripBaseHref(this._baseHref, stripIndexHtml(url)));
+	    };
+	    /**
+	     * Given a string representing a URL, returns the platform-specific external URL path.
+	     * If the given URL doesn't begin with a leading slash (`'/'`), this method adds one
+	     * before normalizing. This method will also add a hash if `HashLocationStrategy` is
+	     * used, or the `APP_BASE_HREF` if the `PathLocationStrategy` is in use.
+	     */
+	    Location.prototype.prepareExternalUrl = function (url) {
+	        if (url.length > 0 && !url.startsWith('/')) {
+	            url = '/' + url;
+	        }
+	        return this.platformStrategy.prepareExternalUrl(url);
+	    };
+	    // TODO: rename this method to pushState
+	    /**
+	     * Changes the browsers URL to the normalized version of the given URL, and pushes a
+	     * new item onto the platform's history.
+	     */
+	    Location.prototype.go = function (path, query) {
+	        if (query === void 0) { query = ''; }
+	        this.platformStrategy.pushState(null, '', path, query);
+	    };
+	    /**
+	     * Changes the browsers URL to the normalized version of the given URL, and replaces
+	     * the top item on the platform's history stack.
+	     */
+	    Location.prototype.replaceState = function (path, query) {
+	        if (query === void 0) { query = ''; }
+	        this.platformStrategy.replaceState(null, '', path, query);
+	    };
+	    /**
+	     * Navigates forward in the platform's history.
+	     */
+	    Location.prototype.forward = function () { this.platformStrategy.forward(); };
+	    /**
+	     * Navigates back in the platform's history.
+	     */
+	    Location.prototype.back = function () { this.platformStrategy.back(); };
+	    /**
+	     * Subscribe to the platform's `popState` events.
+	     */
+	    Location.prototype.subscribe = function (onNext, onThrow, onReturn) {
+	        if (onThrow === void 0) { onThrow = null; }
+	        if (onReturn === void 0) { onReturn = null; }
+	        return async_1.ObservableWrapper.subscribe(this._subject, onNext, onThrow, onReturn);
+	    };
+	    Location = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [location_strategy_1.LocationStrategy])
+	    ], Location);
+	    return Location;
+	}());
+	exports.Location = Location;
+	function _stripBaseHref(baseHref, url) {
+	    if (baseHref.length > 0 && url.startsWith(baseHref)) {
+	        return url.substring(baseHref.length);
+	    }
+	    return url;
+	}
+	function stripIndexHtml(url) {
+	    if (/\/index.html$/g.test(url)) {
+	        // '/index.html'.length == 11
+	        return url.substring(0, url.length - 11);
+	    }
+	    return url;
+	}
+	function stripTrailingSlash(url) {
+	    if (/\/$/g.test(url)) {
+	        url = url.substring(0, url.length - 1);
+	    }
+	    return url;
+	}
+
+
+/***/ },
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var lang_1 = __webpack_require__(5);
-	var lifecycle_annotations_impl_1 = __webpack_require__(268);
+	var core_1 = __webpack_require__(2);
+	/**
+	 * `LocationStrategy` is responsible for representing and reading route state
+	 * from the browser's URL. Angular provides two strategies:
+	 * {@link HashLocationStrategy} and {@link PathLocationStrategy} (default).
+	 *
+	 * This is used under the hood of the {@link Location} service.
+	 *
+	 * Applications should use the {@link Router} or {@link Location} services to
+	 * interact with application route state.
+	 *
+	 * For instance, {@link HashLocationStrategy} produces URLs like
+	 * `http://example.com#/foo`, and {@link PathLocationStrategy} produces
+	 * `http://example.com/foo` as an equivalent URL.
+	 *
+	 * See these two classes for more.
+	 */
+	var LocationStrategy = (function () {
+	    function LocationStrategy() {
+	    }
+	    return LocationStrategy;
+	}());
+	exports.LocationStrategy = LocationStrategy;
+	/**
+	 * The `APP_BASE_HREF` token represents the base href to be used with the
+	 * {@link PathLocationStrategy}.
+	 *
+	 * If you're using {@link PathLocationStrategy}, you must provide a provider to a string
+	 * representing the URL prefix that should be preserved when generating and recognizing
+	 * URLs.
+	 *
+	 * ### Example
+	 *
+	 * ```
+	 * import {Component} from 'angular2/core';
+	 * import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig} from 'angular2/router';
+	 *
+	 * @Component({directives: [ROUTER_DIRECTIVES]})
+	 * @RouteConfig([
+	 *  {...},
+	 * ])
+	 * class AppCmp {
+	 *   // ...
+	 * }
+	 *
+	 * bootstrap(AppCmp, [
+	 *   ROUTER_PROVIDERS,
+	 *   provide(APP_BASE_HREF, {useValue: '/my/app'})
+	 * ]);
+	 * ```
+	 */
+	exports.APP_BASE_HREF = lang_1.CONST_EXPR(new core_1.OpaqueToken('appBaseHref'));
+	function normalizeQueryParams(params) {
+	    return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
+	}
+	exports.normalizeQueryParams = normalizeQueryParams;
+	function joinWithSlash(start, end) {
+	    if (start.length == 0) {
+	        return end;
+	    }
+	    if (end.length == 0) {
+	        return start;
+	    }
+	    var slashes = 0;
+	    if (start.endsWith('/')) {
+	        slashes++;
+	    }
+	    if (end.startsWith('/')) {
+	        slashes++;
+	    }
+	    if (slashes == 2) {
+	        return start + end.substring(1);
+	    }
+	    if (slashes == 1) {
+	        return start + end;
+	    }
+	    return start + '/' + end;
+	}
+	exports.joinWithSlash = joinWithSlash;
+
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var lang_1 = __webpack_require__(5);
+	var lifecycle_annotations_impl_1 = __webpack_require__(263);
 	var reflection_1 = __webpack_require__(17);
 	function hasLifecycleHook(e, type) {
 	    if (!(type instanceof lang_1.Type))
@@ -38905,7 +38578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 268 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38949,7 +38622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 269 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38970,9 +38643,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var core_1 = __webpack_require__(2);
 	var routerMod = __webpack_require__(245);
-	var instruction_1 = __webpack_require__(257);
-	var hookMod = __webpack_require__(270);
-	var route_lifecycle_reflector_1 = __webpack_require__(267);
+	var instruction_1 = __webpack_require__(250);
+	var hookMod = __webpack_require__(265);
+	var route_lifecycle_reflector_1 = __webpack_require__(262);
 	var _resolveToTrue = async_1.PromiseWrapper.resolve(true);
 	/**
 	 * A router outlet is a placeholder that Angular dynamically fills based on the application's route.
@@ -39141,7 +38814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 270 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39150,8 +38823,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 	var decorators_1 = __webpack_require__(9);
-	var lifecycle_annotations_impl_1 = __webpack_require__(268);
-	var lifecycle_annotations_impl_2 = __webpack_require__(268);
+	var lifecycle_annotations_impl_1 = __webpack_require__(263);
+	var lifecycle_annotations_impl_2 = __webpack_require__(263);
 	exports.routerCanReuse = lifecycle_annotations_impl_2.routerCanReuse;
 	exports.routerCanDeactivate = lifecycle_annotations_impl_2.routerCanDeactivate;
 	exports.routerOnActivate = lifecycle_annotations_impl_2.routerOnActivate;
@@ -39187,7 +38860,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 271 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39201,9 +38874,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var core_1 = __webpack_require__(2);
-	var common_1 = __webpack_require__(246);
 	var lang_1 = __webpack_require__(5);
 	var router_1 = __webpack_require__(245);
+	var location_1 = __webpack_require__(260);
 	/**
 	 * The RouterLink directive lets you link to specific parts of your app.
 	 *
@@ -39279,7 +38952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                '[class.router-link-active]': 'isRouteActive'
 	            }
 	        }), 
-	        __metadata('design:paramtypes', [router_1.Router, common_1.Location])
+	        __metadata('design:paramtypes', [router_1.Router, location_1.Location])
 	    ], RouterLink);
 	    return RouterLink;
 	}());
@@ -39287,13 +38960,303 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 272 */
+/* 267 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * This class should not be used directly by an application developer. Instead, use
+	 * {@link Location}.
+	 *
+	 * `PlatformLocation` encapsulates all calls to DOM apis, which allows the Router to be platform
+	 * agnostic.
+	 * This means that we can have different implementation of `PlatformLocation` for the different
+	 * platforms
+	 * that angular supports. For example, the default `PlatformLocation` is {@link
+	 * BrowserPlatformLocation},
+	 * however when you run your app in a WebWorker you use {@link WebWorkerPlatformLocation}.
+	 *
+	 * The `PlatformLocation` class is used directly by all implementations of {@link LocationStrategy}
+	 * when
+	 * they need to interact with the DOM apis like pushState, popState, etc...
+	 *
+	 * {@link LocationStrategy} in turn is used by the {@link Location} service which is used directly
+	 * by
+	 * the {@link Router} in order to navigate between routes. Since all interactions between {@link
+	 * Router} /
+	 * {@link Location} / {@link LocationStrategy} and DOM apis flow through the `PlatformLocation`
+	 * class
+	 * they are all platform independent.
+	 */
+	var PlatformLocation = (function () {
+	    function PlatformLocation() {
+	    }
+	    Object.defineProperty(PlatformLocation.prototype, "pathname", {
+	        /* abstract */ get: function () { return null; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(PlatformLocation.prototype, "search", {
+	        /* abstract */ get: function () { return null; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(PlatformLocation.prototype, "hash", {
+	        /* abstract */ get: function () { return null; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return PlatformLocation;
+	}());
+	exports.PlatformLocation = PlatformLocation;
+
+
+/***/ },
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var common_1 = __webpack_require__(246);
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var __param = (this && this.__param) || function (paramIndex, decorator) {
+	    return function (target, key) { decorator(target, key, paramIndex); }
+	};
+	var core_1 = __webpack_require__(2);
+	var location_strategy_1 = __webpack_require__(261);
+	var lang_1 = __webpack_require__(5);
+	var platform_location_1 = __webpack_require__(267);
+	/**
+	 * `HashLocationStrategy` is a {@link LocationStrategy} used to configure the
+	 * {@link Location} service to represent its state in the
+	 * [hash fragment](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax)
+	 * of the browser's URL.
+	 *
+	 * For instance, if you call `location.go('/foo')`, the browser's URL will become
+	 * `example.com#/foo`.
+	 *
+	 * ### Example
+	 *
+	 * ```
+	 * import {Component, provide} from 'angular2/core';
+	 * import {
+	 *   ROUTER_DIRECTIVES,
+	 *   ROUTER_PROVIDERS,
+	 *   RouteConfig,
+	 *   Location,
+	 *   LocationStrategy,
+	 *   HashLocationStrategy
+	 * } from 'angular2/router';
+	 *
+	 * @Component({directives: [ROUTER_DIRECTIVES]})
+	 * @RouteConfig([
+	 *  {...},
+	 * ])
+	 * class AppCmp {
+	 *   constructor(location: Location) {
+	 *     location.go('/foo');
+	 *   }
+	 * }
+	 *
+	 * bootstrap(AppCmp, [
+	 *   ROUTER_PROVIDERS,
+	 *   provide(LocationStrategy, {useClass: HashLocationStrategy})
+	 * ]);
+	 * ```
+	 */
+	var HashLocationStrategy = (function (_super) {
+	    __extends(HashLocationStrategy, _super);
+	    function HashLocationStrategy(_platformLocation, _baseHref) {
+	        _super.call(this);
+	        this._platformLocation = _platformLocation;
+	        this._baseHref = '';
+	        if (lang_1.isPresent(_baseHref)) {
+	            this._baseHref = _baseHref;
+	        }
+	    }
+	    HashLocationStrategy.prototype.onPopState = function (fn) {
+	        this._platformLocation.onPopState(fn);
+	        this._platformLocation.onHashChange(fn);
+	    };
+	    HashLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
+	    HashLocationStrategy.prototype.path = function () {
+	        // the hash value is always prefixed with a `#`
+	        // and if it is empty then it will stay empty
+	        var path = this._platformLocation.hash;
+	        if (!lang_1.isPresent(path))
+	            path = '#';
+	        // Dart will complain if a call to substring is
+	        // executed with a position value that extends the
+	        // length of string.
+	        return (path.length > 0 ? path.substring(1) : path);
+	    };
+	    HashLocationStrategy.prototype.prepareExternalUrl = function (internal) {
+	        var url = location_strategy_1.joinWithSlash(this._baseHref, internal);
+	        return url.length > 0 ? ('#' + url) : url;
+	    };
+	    HashLocationStrategy.prototype.pushState = function (state, title, path, queryParams) {
+	        var url = this.prepareExternalUrl(path + location_strategy_1.normalizeQueryParams(queryParams));
+	        if (url.length == 0) {
+	            url = this._platformLocation.pathname;
+	        }
+	        this._platformLocation.pushState(state, title, url);
+	    };
+	    HashLocationStrategy.prototype.replaceState = function (state, title, path, queryParams) {
+	        var url = this.prepareExternalUrl(path + location_strategy_1.normalizeQueryParams(queryParams));
+	        if (url.length == 0) {
+	            url = this._platformLocation.pathname;
+	        }
+	        this._platformLocation.replaceState(state, title, url);
+	    };
+	    HashLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
+	    HashLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
+	    HashLocationStrategy = __decorate([
+	        core_1.Injectable(),
+	        __param(1, core_1.Optional()),
+	        __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), 
+	        __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])
+	    ], HashLocationStrategy);
+	    return HashLocationStrategy;
+	}(location_strategy_1.LocationStrategy));
+	exports.HashLocationStrategy = HashLocationStrategy;
+
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var __param = (this && this.__param) || function (paramIndex, decorator) {
+	    return function (target, key) { decorator(target, key, paramIndex); }
+	};
+	var core_1 = __webpack_require__(2);
+	var lang_1 = __webpack_require__(5);
+	var exceptions_1 = __webpack_require__(14);
+	var location_strategy_1 = __webpack_require__(261);
+	var platform_location_1 = __webpack_require__(267);
+	/**
+	 * `PathLocationStrategy` is a {@link LocationStrategy} used to configure the
+	 * {@link Location} service to represent its state in the
+	 * [path](https://en.wikipedia.org/wiki/Uniform_Resource_Locator#Syntax) of the
+	 * browser's URL.
+	 *
+	 * `PathLocationStrategy` is the default binding for {@link LocationStrategy}
+	 * provided in {@link ROUTER_PROVIDERS}.
+	 *
+	 * If you're using `PathLocationStrategy`, you must provide a provider for
+	 * {@link APP_BASE_HREF} to a string representing the URL prefix that should
+	 * be preserved when generating and recognizing URLs.
+	 *
+	 * For instance, if you provide an `APP_BASE_HREF` of `'/my/app'` and call
+	 * `location.go('/foo')`, the browser's URL will become
+	 * `example.com/my/app/foo`.
+	 *
+	 * ### Example
+	 *
+	 * ```
+	 * import {Component, provide} from 'angular2/core';
+	 * import {
+	 *   APP_BASE_HREF
+	 *   ROUTER_DIRECTIVES,
+	 *   ROUTER_PROVIDERS,
+	 *   RouteConfig,
+	 *   Location
+	 * } from 'angular2/router';
+	 *
+	 * @Component({directives: [ROUTER_DIRECTIVES]})
+	 * @RouteConfig([
+	 *  {...},
+	 * ])
+	 * class AppCmp {
+	 *   constructor(location: Location) {
+	 *     location.go('/foo');
+	 *   }
+	 * }
+	 *
+	 * bootstrap(AppCmp, [
+	 *   ROUTER_PROVIDERS, // includes binding to PathLocationStrategy
+	 *   provide(APP_BASE_HREF, {useValue: '/my/app'})
+	 * ]);
+	 * ```
+	 */
+	var PathLocationStrategy = (function (_super) {
+	    __extends(PathLocationStrategy, _super);
+	    function PathLocationStrategy(_platformLocation, href) {
+	        _super.call(this);
+	        this._platformLocation = _platformLocation;
+	        if (lang_1.isBlank(href)) {
+	            href = this._platformLocation.getBaseHrefFromDOM();
+	        }
+	        if (lang_1.isBlank(href)) {
+	            throw new exceptions_1.BaseException("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
+	        }
+	        this._baseHref = href;
+	    }
+	    PathLocationStrategy.prototype.onPopState = function (fn) {
+	        this._platformLocation.onPopState(fn);
+	        this._platformLocation.onHashChange(fn);
+	    };
+	    PathLocationStrategy.prototype.getBaseHref = function () { return this._baseHref; };
+	    PathLocationStrategy.prototype.prepareExternalUrl = function (internal) { return location_strategy_1.joinWithSlash(this._baseHref, internal); };
+	    PathLocationStrategy.prototype.path = function () {
+	        return this._platformLocation.pathname + location_strategy_1.normalizeQueryParams(this._platformLocation.search);
+	    };
+	    PathLocationStrategy.prototype.pushState = function (state, title, url, queryParams) {
+	        var externalUrl = this.prepareExternalUrl(url + location_strategy_1.normalizeQueryParams(queryParams));
+	        this._platformLocation.pushState(state, title, externalUrl);
+	    };
+	    PathLocationStrategy.prototype.replaceState = function (state, title, url, queryParams) {
+	        var externalUrl = this.prepareExternalUrl(url + location_strategy_1.normalizeQueryParams(queryParams));
+	        this._platformLocation.replaceState(state, title, externalUrl);
+	    };
+	    PathLocationStrategy.prototype.forward = function () { this._platformLocation.forward(); };
+	    PathLocationStrategy.prototype.back = function () { this._platformLocation.back(); };
+	    PathLocationStrategy = __decorate([
+	        core_1.Injectable(),
+	        __param(1, core_1.Optional()),
+	        __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), 
+	        __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])
+	    ], PathLocationStrategy);
+	    return PathLocationStrategy;
+	}(location_strategy_1.LocationStrategy));
+	exports.PathLocationStrategy = PathLocationStrategy;
+
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var location_strategy_1 = __webpack_require__(261);
+	var path_location_strategy_1 = __webpack_require__(269);
 	var router_1 = __webpack_require__(245);
-	var route_registry_1 = __webpack_require__(253);
+	var route_registry_1 = __webpack_require__(246);
+	var location_1 = __webpack_require__(260);
 	var lang_1 = __webpack_require__(5);
 	var core_1 = __webpack_require__(2);
 	var exceptions_1 = __webpack_require__(14);
@@ -39302,11 +39265,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.ROUTER_PROVIDERS_COMMON = lang_1.CONST_EXPR([
 	    route_registry_1.RouteRegistry,
-	    lang_1.CONST_EXPR(new core_1.Provider(common_1.LocationStrategy, { useClass: common_1.PathLocationStrategy })),
-	    common_1.Location,
+	    lang_1.CONST_EXPR(new core_1.Provider(location_strategy_1.LocationStrategy, { useClass: path_location_strategy_1.PathLocationStrategy })),
+	    location_1.Location,
 	    lang_1.CONST_EXPR(new core_1.Provider(router_1.Router, {
 	        useFactory: routerFactory,
-	        deps: lang_1.CONST_EXPR([route_registry_1.RouteRegistry, common_1.Location, route_registry_1.ROUTER_PRIMARY_COMPONENT, core_1.ApplicationRef])
+	        deps: lang_1.CONST_EXPR([route_registry_1.RouteRegistry, location_1.Location, route_registry_1.ROUTER_PRIMARY_COMPONENT, core_1.ApplicationRef])
 	    })),
 	    lang_1.CONST_EXPR(new core_1.Provider(route_registry_1.ROUTER_PRIMARY_COMPONENT, { useFactory: routerPrimaryComponentFactory, deps: lang_1.CONST_EXPR([core_1.ApplicationRef]) }))
 	]);
@@ -39324,15 +39287,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 273 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var router_providers_common_1 = __webpack_require__(272);
+	var router_providers_common_1 = __webpack_require__(270);
 	var core_1 = __webpack_require__(2);
-	var browser_platform_location_1 = __webpack_require__(274);
-	var common_1 = __webpack_require__(246);
 	var lang_1 = __webpack_require__(5);
+	var browser_platform_location_1 = __webpack_require__(272);
+	var platform_location_1 = __webpack_require__(267);
 	/**
 	 * A list of {@link Provider}s. To use the router, you must add this to your application.
 	 *
@@ -39359,7 +39322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.ROUTER_PROVIDERS = lang_1.CONST_EXPR([
 	    router_providers_common_1.ROUTER_PROVIDERS_COMMON,
-	    lang_1.CONST_EXPR(new core_1.Provider(common_1.PlatformLocation, { useClass: browser_platform_location_1.BrowserPlatformLocation })),
+	    lang_1.CONST_EXPR(new core_1.Provider(platform_location_1.PlatformLocation, { useClass: browser_platform_location_1.BrowserPlatformLocation })),
 	]);
 	/**
 	 * Use {@link ROUTER_PROVIDERS} instead.
@@ -39370,7 +39333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 274 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39388,8 +39351,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var decorators_1 = __webpack_require__(8);
-	var platform_location_1 = __webpack_require__(248);
+	var core_1 = __webpack_require__(2);
+	var platform_location_1 = __webpack_require__(267);
 	var dom_adapter_1 = __webpack_require__(196);
 	/**
 	 * `PlatformLocation` encapsulates all of the direct calls to platform APIs.
@@ -39446,7 +39409,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    BrowserPlatformLocation.prototype.forward = function () { this._history.forward(); };
 	    BrowserPlatformLocation.prototype.back = function () { this._history.back(); };
 	    BrowserPlatformLocation = __decorate([
-	        decorators_1.Injectable(), 
+	        core_1.Injectable(), 
 	        __metadata('design:paramtypes', [])
 	    ], BrowserPlatformLocation);
 	    return BrowserPlatformLocation;
@@ -39455,15 +39418,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 275 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var compiler_1 = __webpack_require__(137);
 	var core_1 = __webpack_require__(2);
-	var router_link_transform_1 = __webpack_require__(276);
+	var router_link_transform_1 = __webpack_require__(274);
 	var lang_1 = __webpack_require__(5);
-	var router_link_transform_2 = __webpack_require__(276);
+	var router_link_transform_2 = __webpack_require__(274);
 	exports.RouterLinkTransform = router_link_transform_2.RouterLinkTransform;
 	/**
 	 * Enables the router link DSL.
@@ -39495,7 +39458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 276 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39708,7 +39671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 277 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39720,7 +39683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 278 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39729,13 +39692,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @description
 	 * Adapter allowing AngularJS v1 and Angular v2 to run side by side in the same application.
 	 */
-	var upgrade_adapter_1 = __webpack_require__(279);
+	var upgrade_adapter_1 = __webpack_require__(277);
 	exports.UpgradeAdapter = upgrade_adapter_1.UpgradeAdapter;
 	exports.UpgradeAdapterRef = upgrade_adapter_1.UpgradeAdapterRef;
 
 
 /***/ },
-/* 279 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39743,12 +39706,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var async_1 = __webpack_require__(38);
 	var browser_1 = __webpack_require__(197);
-	var metadata_1 = __webpack_require__(280);
-	var util_1 = __webpack_require__(281);
-	var constants_1 = __webpack_require__(282);
-	var downgrade_ng2_adapter_1 = __webpack_require__(283);
-	var upgrade_ng1_adapter_1 = __webpack_require__(284);
-	var angular = __webpack_require__(285);
+	var metadata_1 = __webpack_require__(278);
+	var util_1 = __webpack_require__(279);
+	var constants_1 = __webpack_require__(280);
+	var downgrade_ng2_adapter_1 = __webpack_require__(281);
+	var upgrade_ng1_adapter_1 = __webpack_require__(282);
+	var angular = __webpack_require__(283);
 	var upgradeCount = 0;
 	/**
 	 * Use `UpgradeAdapter` to allow AngularJS v1 and Angular v2 to coexist in a single application.
@@ -40308,7 +40271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 280 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -40357,7 +40320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 281 */
+/* 279 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -40380,7 +40343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 282 */
+/* 280 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -40402,12 +40365,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 283 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var core_1 = __webpack_require__(2);
-	var constants_1 = __webpack_require__(282);
+	var constants_1 = __webpack_require__(280);
 	var INITIAL_VALUE = {
 	    __UNINITIALIZED__: true
 	};
@@ -40572,14 +40535,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 284 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var core_1 = __webpack_require__(2);
-	var constants_1 = __webpack_require__(282);
-	var util_1 = __webpack_require__(281);
-	var angular = __webpack_require__(285);
+	var constants_1 = __webpack_require__(280);
+	var util_1 = __webpack_require__(279);
+	var angular = __webpack_require__(283);
 	var CAMEL_CASE = /([A-Z])/g;
 	var INITIAL_VALUE = {
 	    __UNINITIALIZED__: true
@@ -40872,7 +40835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 285 */
+/* 283 */
 /***/ function(module, exports) {
 
 	"use strict";
