@@ -15469,7 +15469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', value);
 	    };
 	    NumberValueAccessor.prototype.registerOnChange = function (fn) {
-	        this.onChange = function (value) { fn(value == '' ? null : lang_1.NumberWrapper.parseFloat(value)); };
+	        this.onChange = function (value) { fn(lang_1.NumberWrapper.parseFloat(value)); };
 	    };
 	    NumberValueAccessor.prototype.registerOnTouched = function (fn) { this.onTouched = fn; };
 	    NumberValueAccessor = __decorate([
@@ -16282,6 +16282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(15);
+	var exceptions_1 = __webpack_require__(12);
 	var async_1 = __webpack_require__(40);
 	var core_1 = __webpack_require__(2);
 	var control_container_1 = __webpack_require__(115);
@@ -16371,6 +16372,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.ngSubmit = new async_1.EventEmitter();
 	    }
 	    NgFormModel.prototype.ngOnChanges = function (changes) {
+	        this._checkFormPresent();
 	        if (collection_1.StringMapWrapper.contains(changes, "form")) {
 	            var sync = shared_1.composeValidators(this._validators);
 	            this.form.validator = validators_1.Validators.compose([this.form.validator, sync]);
@@ -16427,6 +16429,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var ctrl = _this.form.find(dir.path);
 	            dir.valueAccessor.writeValue(ctrl.value);
 	        });
+	    };
+	    NgFormModel.prototype._checkFormPresent = function () {
+	        if (lang_1.isBlank(this.form)) {
+	            throw new exceptions_1.BaseException("ngFormModel expects a form. Please pass one in. Example: <form [ngFormModel]=\"myCoolForm\">");
+	        }
 	    };
 	    NgFormModel = __decorate([
 	        core_1.Directive({
