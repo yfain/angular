@@ -1,9 +1,9 @@
-library angular2.src.platform.browser.location.location;
+library angular2.src.router.location.location;
 
+import "location_strategy.dart" show LocationStrategy;
 import "package:angular2/src/facade/async.dart"
     show EventEmitter, ObservableWrapper;
 import "package:angular2/core.dart" show Injectable, Inject;
-import "location_strategy.dart" show LocationStrategy;
 
 /**
  * `Location` is a service that applications can use to interact with a browser's URL.
@@ -25,11 +25,11 @@ import "location_strategy.dart" show LocationStrategy;
  *
  * ```
  * import {Component} from 'angular2/core';
- * import {Location} from 'angular2/platform/common';
  * import {
  *   ROUTER_DIRECTIVES,
  *   ROUTER_PROVIDERS,
- *   RouteConfig
+ *   RouteConfig,
+ *   Location
  * } from 'angular2/router';
  *
  * @Component({directives: [ROUTER_DIRECTIVES]})
@@ -54,8 +54,7 @@ class Location {
   String _baseHref;
   Location(this.platformStrategy) {
     var browserBaseHref = this.platformStrategy.getBaseHref();
-    this._baseHref =
-        Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
+    this._baseHref = stripTrailingSlash(stripIndexHtml(browserBaseHref));
     this.platformStrategy.onPopState((ev) {
       ObservableWrapper.callEmit(
           this._subject, {"url": this.path(), "pop": true, "type": ev.type});
@@ -73,8 +72,8 @@ class Location {
    * trailing slashes
    */
   String normalize(String url) {
-    return Location.stripTrailingSlash(
-        _stripBaseHref(this._baseHref, _stripIndexHtml(url)));
+    return stripTrailingSlash(
+        _stripBaseHref(this._baseHref, stripIndexHtml(url)));
   }
 
   /**
@@ -130,52 +129,6 @@ class Location {
     return ObservableWrapper.subscribe(
         this._subject, onNext, onThrow, onReturn);
   }
-
-  /**
-   * Given a string of url parameters, prepend with '?' if needed, otherwise return parameters as
-   * is.
-   */
-  static String normalizeQueryParams(String params) {
-    return (params.length > 0 && params.substring(0, 1) != "?")
-        ? ("?" + params)
-        : params;
-  }
-
-  /**
-   * Given 2 parts of a url, join them with a slash if needed.
-   */
-  static String joinWithSlash(String start, String end) {
-    if (start.length == 0) {
-      return end;
-    }
-    if (end.length == 0) {
-      return start;
-    }
-    var slashes = 0;
-    if (start.endsWith("/")) {
-      slashes++;
-    }
-    if (end.startsWith("/")) {
-      slashes++;
-    }
-    if (slashes == 2) {
-      return start + end.substring(1);
-    }
-    if (slashes == 1) {
-      return start + end;
-    }
-    return start + "/" + end;
-  }
-
-  /**
-   * If url has a trailing slash, remove it, otherwise return url as is.
-   */
-  static String stripTrailingSlash(String url) {
-    if (new RegExp(r'\/$').hasMatch(url)) {
-      url = url.substring(0, url.length - 1);
-    }
-    return url;
-  }
 }
 
 String _stripBaseHref(String baseHref, String url) {
@@ -185,10 +138,17 @@ String _stripBaseHref(String baseHref, String url) {
   return url;
 }
 
-String _stripIndexHtml(String url) {
+String stripIndexHtml(String url) {
   if (new RegExp(r'\/index.html$').hasMatch(url)) {
     // '/index.html'.length == 11
     return url.substring(0, url.length - 11);
+  }
+  return url;
+}
+
+String stripTrailingSlash(String url) {
+  if (new RegExp(r'\/$').hasMatch(url)) {
+    url = url.substring(0, url.length - 1);
   }
   return url;
 }

@@ -1,10 +1,11 @@
-library angular2.src.platform.browser.location.hash_location_strategy;
+library angular2.src.router.location.hash_location_strategy;
 
 import "package:angular2/core.dart" show Injectable, Inject, Optional;
-import "location_strategy.dart" show LocationStrategy, APP_BASE_HREF;
-import "location.dart" show Location;
-import "platform_location.dart" show UrlChangeListener, PlatformLocation;
+import "location_strategy.dart"
+    show LocationStrategy, joinWithSlash, APP_BASE_HREF, normalizeQueryParams;
+import "platform_location.dart" show UrlChangeListener;
 import "package:angular2/src/facade/lang.dart" show isPresent;
+import "platform_location.dart" show PlatformLocation;
 
 /**
  * `HashLocationStrategy` is a [LocationStrategy] used to configure the
@@ -20,14 +21,12 @@ import "package:angular2/src/facade/lang.dart" show isPresent;
  * ```
  * import {Component, provide} from 'angular2/core';
  * import {
+ *   ROUTER_DIRECTIVES,
+ *   ROUTER_PROVIDERS,
+ *   RouteConfig,
  *   Location,
  *   LocationStrategy,
  *   HashLocationStrategy
- * } from 'angular2/platform/common';
- * import {
- *   ROUTER_DIRECTIVES,
- *   ROUTER_PROVIDERS,
- *   RouteConfig
  * } from 'angular2/router';
  *
  * @Component({directives: [ROUTER_DIRECTIVES]})
@@ -82,13 +81,12 @@ class HashLocationStrategy extends LocationStrategy {
   }
 
   String prepareExternalUrl(String internal) {
-    var url = Location.joinWithSlash(this._baseHref, internal);
+    var url = joinWithSlash(this._baseHref, internal);
     return url.length > 0 ? ("#" + url) : url;
   }
 
   pushState(dynamic state, String title, String path, String queryParams) {
-    var url = this
-        .prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
+    var url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams));
     if (url.length == 0) {
       url = this._platformLocation.pathname;
     }
@@ -96,8 +94,7 @@ class HashLocationStrategy extends LocationStrategy {
   }
 
   replaceState(dynamic state, String title, String path, String queryParams) {
-    var url = this
-        .prepareExternalUrl(path + Location.normalizeQueryParams(queryParams));
+    var url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams));
     if (url.length == 0) {
       url = this._platformLocation.pathname;
     }
