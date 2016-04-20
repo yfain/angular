@@ -9,7 +9,6 @@ import "package:angular2/core.dart"
         PLATFORM_DIRECTIVES,
         PLATFORM_PIPES,
         ComponentRef,
-        platform,
         ExceptionHandler,
         Reflector,
         reflector,
@@ -52,12 +51,12 @@ import "package:angular2/src/web_workers/ui/renderer.dart"
     show MessageBasedRenderer;
 import "package:angular2/src/web_workers/ui/xhr_impl.dart"
     show MessageBasedXHRImpl;
-import "package:angular2/src/router/location/browser_platform_location.dart"
-    show BrowserPlatformLocation;
 import "package:angular2/src/web_workers/shared/service_message_broker.dart"
     show ServiceMessageBrokerFactory, ServiceMessageBrokerFactory_;
 import "package:angular2/src/web_workers/shared/client_message_broker.dart"
     show ClientMessageBrokerFactory, ClientMessageBrokerFactory_;
+import "package:angular2/src/platform/browser/location/browser_platform_location.dart"
+    show BrowserPlatformLocation;
 import "package:angular2/src/web_workers/shared/serializer.dart"
     show Serializer;
 import "package:angular2/src/web_workers/shared/api.dart" show ON_WEB_WORKER;
@@ -72,8 +71,11 @@ const List<dynamic> WORKER_RENDER_MESSAGING_PROVIDERS = const [
   MessageBasedRenderer,
   MessageBasedXHRImpl
 ];
+const WORKER_RENDER_PLATFORM_MARKER =
+    const OpaqueToken("WorkerRenderPlatformMarker");
 const List<dynamic> WORKER_RENDER_PLATFORM = const [
   PLATFORM_COMMON_PROVIDERS,
+  const Provider(WORKER_RENDER_PLATFORM_MARKER, useValue: true),
   const Provider(PLATFORM_INITIALIZER,
       useValue: initWebWorkerRenderPlatform, multi: true)
 ];
@@ -118,7 +120,7 @@ initializeGenericWorkerRenderer(Injector injector) {
   var bus = injector.get(MessageBus);
   var zone = injector.get(NgZone);
   bus.attachToZone(zone);
-  zone.run(() {
+  zone.runGuarded(() {
     WORKER_RENDER_MESSAGING_PROVIDERS.forEach((token) {
       injector.get(token).start();
     });

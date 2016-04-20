@@ -13,10 +13,9 @@ import "package:angular2/testing_internal.dart"
         beforeEach,
         beforeEachProviders,
         SpyObject;
-import "package:angular2/core.dart" show Injector, provide;
-import "package:angular2/src/router/location/location.dart" show Location;
-import "package:angular2/src/router/location/location_strategy.dart"
-    show LocationStrategy, APP_BASE_HREF;
+import "package:angular2/core.dart" show Injector, provide, ReflectiveInjector;
+import "package:angular2/platform/common.dart"
+    show Location, LocationStrategy, APP_BASE_HREF;
 import "package:angular2/src/mock/mock_location_strategy.dart"
     show MockLocationStrategy;
 
@@ -27,7 +26,7 @@ main() {
         [String baseHref = "/my/app", dynamic provider = const []]) {
       locationStrategy = new MockLocationStrategy();
       locationStrategy.internalBaseHref = baseHref;
-      var injector = Injector.resolveAndCreate([
+      var injector = ReflectiveInjector.resolveAndCreate([
         Location,
         provide(LocationStrategy, useValue: locationStrategy),
         provider

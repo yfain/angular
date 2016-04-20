@@ -33,10 +33,11 @@ o.Expression getPropertyInView(
 
 o.Expression injectFromViewParentInjector(
     CompileTokenMetadata token, bool optional) {
-  var method = optional ? "getOptional" : "get";
-  return o.THIS_EXPR
-      .prop("parentInjector")
-      .callMethod(method, [createDiTokenExpression(token)]);
+  var args = [createDiTokenExpression(token)];
+  if (optional) {
+    args.add(o.NULL_EXPR);
+  }
+  return o.THIS_EXPR.prop("parentInjector").callMethod("get", args);
 }
 
 String getViewFactoryName(

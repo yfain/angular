@@ -84,10 +84,8 @@ class CompileQuery {
 List<o.Expression> createQueryValues(ViewQueryValues viewValues) {
   return ListWrapper.flatten(viewValues.values.map((entry) {
     if (entry is ViewQueryValues) {
-      return mapNestedViews(
-          entry.view.declarationElement.getOrCreateAppElement(),
-          entry.view,
-          createQueryValues(entry));
+      return mapNestedViews(entry.view.declarationElement.appElement,
+          entry.view, createQueryValues(entry));
     } else {
       return (entry as o.Expression);
     }

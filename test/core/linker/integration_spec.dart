@@ -49,7 +49,8 @@ import "package:angular2/core.dart"
         Host,
         SkipSelf,
         SkipSelfMetadata,
-        OnDestroy;
+        OnDestroy,
+        ReflectiveInjector;
 import "package:angular2/common.dart" show NgIf, NgFor;
 import "package:angular2/common.dart" show AsyncPipe;
 import "package:angular2/src/core/change_detection/change_detection.dart"
@@ -71,7 +72,8 @@ import "package:angular2/src/core/linker/query_list.dart" show QueryList;
 import "package:angular2/src/core/linker/view_container_ref.dart"
     show ViewContainerRef;
 import "package:angular2/src/core/linker/view_ref.dart" show EmbeddedViewRef;
-import "package:angular2/src/core/linker/compiler.dart" show Compiler;
+import "package:angular2/src/core/linker/component_resolver.dart"
+    show ComponentResolver;
 import "package:angular2/src/core/linker/element_ref.dart" show ElementRef;
 import "package:angular2/src/core/linker/template_ref.dart" show TemplateRef;
 import "package:angular2/src/core/render.dart" show Renderer;
@@ -1234,7 +1236,8 @@ declareTests(bool isJit) {
       describe("dynamic ViewContainers", () {
         it(
             "should allow to create a ViewContainerRef at any bound location",
-            inject([TestComponentBuilder, AsyncTestCompleter, Compiler],
+            inject(
+                [TestComponentBuilder, AsyncTestCompleter, ComponentResolver],
                 (TestComponentBuilder tcb, async, compiler) {
               tcb
                   .overrideView(
@@ -1502,7 +1505,7 @@ declareTests(bool isJit) {
               var c = e.context;
               expect(DOM.nodeName(c.componentRenderElement).toUpperCase())
                   .toEqual("DIV");
-              expect(c.injector.getOptional).toBeTruthy();
+              expect(((c.injector as Injector)).get).toBeTruthy();
               async.done();
               return null;
             });
@@ -1525,7 +1528,7 @@ declareTests(bool isJit) {
                     .toEqual("INPUT");
                 expect(DOM.nodeName(c.componentRenderElement).toUpperCase())
                     .toEqual("DIV");
-                expect(c.injector.getOptional).toBeTruthy();
+                expect(((c.injector as Injector)).get).toBeTruthy();
                 expect(c.source).toContain(":0:7");
                 expect(c.context).toBe(fixture.debugElement.componentInstance);
                 expect(c.locals["local"]).toBeDefined();
@@ -1582,7 +1585,7 @@ declareTests(bool isJit) {
                     .toEqual("SPAN");
                 expect(DOM.nodeName(c.componentRenderElement).toUpperCase())
                     .toEqual("DIV");
-                expect(c.injector.getOptional).toBeTruthy();
+                expect(((c.injector as Injector)).get).toBeTruthy();
                 expect(c.context).toBe(fixture.debugElement.componentInstance);
                 expect(c.locals["local"]).toBeDefined();
               }
@@ -2083,13 +2086,14 @@ class SimpleImperativeViewComponent {
 @Injectable()
 class DynamicViewport {
   Future<dynamic> done;
-  DynamicViewport(ViewContainerRef vc, Compiler compiler) {
+  DynamicViewport(ViewContainerRef vc, ComponentResolver compiler) {
     var myService = new MyService();
     myService.greeting = "dynamic greet";
-    var bindings = Injector.resolve([provide(MyService, useValue: myService)]);
-    this.done = compiler.compileInHost(ChildCompUsingService).then((hostPv) {
-      vc.createHostView(hostPv, 0, bindings);
-    });
+    var injector = ReflectiveInjector.resolveAndCreate(
+        [provide(MyService, useValue: myService)], vc.injector);
+    this.done = compiler.resolveComponent(ChildCompUsingService).then(
+        (componentFactory) =>
+            vc.createComponent(componentFactory, 0, injector));
   }
 }
 

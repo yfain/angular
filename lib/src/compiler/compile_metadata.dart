@@ -16,7 +16,7 @@ import "package:angular2/src/facade/lang.dart"
 import "package:angular2/src/facade/exceptions.dart"
     show unimplemented, BaseException;
 import "package:angular2/src/facade/collection.dart"
-    show StringMapWrapper, MapWrapper, SetWrapper;
+    show StringMapWrapper, MapWrapper, SetWrapper, ListWrapper;
 import "package:angular2/src/core/change_detection/change_detection.dart"
     show ChangeDetectionStrategy, CHANGE_DETECTION_STRATEGY_VALUES;
 import "package:angular2/src/core/metadata/view.dart"
@@ -404,11 +404,13 @@ class CompileQueryMetadata {
   bool descendants;
   bool first;
   String propertyName;
-  CompileQueryMetadata({selectors, descendants, first, propertyName}) {
+  CompileTokenMetadata read;
+  CompileQueryMetadata({selectors, descendants, first, propertyName, read}) {
     this.selectors = selectors;
     this.descendants = normalizeBool(descendants);
     this.first = normalizeBool(first);
     this.propertyName = propertyName;
+    this.read = read;
   }
   static CompileQueryMetadata fromJson(Map<String, dynamic> data) {
     return new CompileQueryMetadata(
@@ -416,7 +418,8 @@ class CompileQueryMetadata {
             _arrayFromJson(data["selectors"], CompileTokenMetadata.fromJson),
         descendants: data["descendants"],
         first: data["first"],
-        propertyName: data["propertyName"]);
+        propertyName: data["propertyName"],
+        read: _objFromJson(data["read"], CompileTokenMetadata.fromJson));
   }
 
   Map<String, dynamic> toJson() {
@@ -424,7 +427,8 @@ class CompileQueryMetadata {
       "selectors": _arrayToJson(this.selectors),
       "descendants": this.descendants,
       "first": this.first,
-      "propertyName": this.propertyName
+      "propertyName": this.propertyName,
+      "read": _objToJson(this.read)
     };
   }
 }

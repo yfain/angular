@@ -22,8 +22,7 @@ import "package:angular2/src/mock/view_resolver_mock.dart"
     show MockViewResolver;
 import "package:angular2/src/mock/mock_location_strategy.dart"
     show MockLocationStrategy;
-import "package:angular2/src/router/location/location_strategy.dart"
-    show LocationStrategy;
+import "package:angular2/platform/common.dart" show LocationStrategy;
 import "package:angular2/src/mock/ng_zone_mock.dart" show MockNgZone;
 import "package:angular2/src/platform/browser/xhr_impl.dart" show XHRImpl;
 import "package:angular2/compiler.dart" show XHR;

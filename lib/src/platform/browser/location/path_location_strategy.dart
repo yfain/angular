@@ -1,11 +1,11 @@
-library angular2.src.router.location.path_location_strategy;
+library angular2.src.platform.browser.location.path_location_strategy;
 
 import "package:angular2/core.dart" show Injectable, Inject, Optional;
 import "package:angular2/src/facade/lang.dart" show isBlank;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
-import "location_strategy.dart"
-    show LocationStrategy, APP_BASE_HREF, normalizeQueryParams, joinWithSlash;
 import "platform_location.dart" show PlatformLocation, UrlChangeListener;
+import "location_strategy.dart" show LocationStrategy, APP_BASE_HREF;
+import "location.dart" show Location;
 
 /**
  * `PathLocationStrategy` is a [LocationStrategy] used to configure the
@@ -28,12 +28,15 @@ import "platform_location.dart" show PlatformLocation, UrlChangeListener;
  *
  * ```
  * import {Component, provide} from 'angular2/core';
+ * import {bootstrap} from 'angular2/platform/browser';
  * import {
+ *   Location,
  *   APP_BASE_HREF
+ * } from 'angular2/platform/common';
+ * import {
  *   ROUTER_DIRECTIVES,
  *   ROUTER_PROVIDERS,
- *   RouteConfig,
- *   Location
+ *   RouteConfig
  * } from 'angular2/router';
  *
  * @Component({directives: [ROUTER_DIRECTIVES]})
@@ -79,23 +82,23 @@ class PathLocationStrategy extends LocationStrategy {
   }
 
   String prepareExternalUrl(String internal) {
-    return joinWithSlash(this._baseHref, internal);
+    return Location.joinWithSlash(this._baseHref, internal);
   }
 
   String path() {
     return this._platformLocation.pathname +
-        normalizeQueryParams(this._platformLocation.search);
+        Location.normalizeQueryParams(this._platformLocation.search);
   }
 
   pushState(dynamic state, String title, String url, String queryParams) {
-    var externalUrl =
-        this.prepareExternalUrl(url + normalizeQueryParams(queryParams));
+    var externalUrl = this
+        .prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
     this._platformLocation.pushState(state, title, externalUrl);
   }
 
   replaceState(dynamic state, String title, String url, String queryParams) {
-    var externalUrl =
-        this.prepareExternalUrl(url + normalizeQueryParams(queryParams));
+    var externalUrl = this
+        .prepareExternalUrl(url + Location.normalizeQueryParams(queryParams));
     this._platformLocation.replaceState(state, title, externalUrl);
   }
 

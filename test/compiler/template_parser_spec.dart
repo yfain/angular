@@ -1703,8 +1703,8 @@ class FooAstTransformer implements TemplateAstVisitor {
 
   dynamic visitElement(ElementAst ast, dynamic context) {
     if (ast.name != "div") return ast;
-    return new ElementAst(
-        "foo", [], [], [], [], [], [], [], ast.ngContentIndex, ast.sourceSpan);
+    return new ElementAst("foo", [], [], [], [], [], [], false, [],
+        ast.ngContentIndex, ast.sourceSpan);
   }
 
   dynamic visitVariable(VariableAst ast, dynamic context) {
@@ -1744,7 +1744,7 @@ class FooAstTransformer implements TemplateAstVisitor {
 class BarAstTransformer extends FooAstTransformer {
   dynamic visitElement(ElementAst ast, dynamic context) {
     if (ast.name != "foo") return ast;
-    return new ElementAst(
-        "bar", [], [], [], [], [], [], [], ast.ngContentIndex, ast.sourceSpan);
+    return new ElementAst("bar", [], [], [], [], [], [], false, [],
+        ast.ngContentIndex, ast.sourceSpan);
   }
 }

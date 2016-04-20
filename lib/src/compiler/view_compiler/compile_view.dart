@@ -42,8 +42,8 @@ class CompileView implements NameResolver {
   List<List<String>> templateVariableBindings;
   ViewType viewType;
   CompileTokenMap<List<CompileQuery>> viewQueries;
-  List<List<dynamic /* String | o . Expression */ >> namedAppElements = [];
   List<CompileNode> nodes = [];
+  // root nodes or AppElements for ViewContainers
   List<o.Expression> rootNodesOrAppElements = [];
   List<CompileBinding> bindings = [];
   List<o.Statement> classStatements = [];

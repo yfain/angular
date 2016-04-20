@@ -1,5 +1,6 @@
 /**
- * This is a set of classes and objects that can be used both in the browser and on the server.
+ * This is a set of DOM related classes and objects that can be used both in the browser and on the
+ * server.
  */
 library angular2.platform.common_dom;
 

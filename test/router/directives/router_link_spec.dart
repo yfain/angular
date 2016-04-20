@@ -18,9 +18,9 @@ import "package:angular2/testing_internal.dart"
 import "../spies.dart" show SpyRouter, SpyLocation;
 import "package:angular2/core.dart" show provide, Component;
 import "package:angular2/platform/common_dom.dart" show By;
+import "package:angular2/platform/common.dart" show Location;
 import "package:angular2/router.dart"
     show
-        Location,
         Router,
         RouteRegistry,
         RouterLink,

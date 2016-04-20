@@ -17,26 +17,33 @@ import "package:angular2/testing_internal.dart"
         xit;
 import "package:angular2/src/facade/lang.dart"
     show IS_DART, isPresent, stringify;
-import "package:angular2/platform/browser.dart" show bootstrap;
-import "package:angular2/src/core/application_ref.dart" show ApplicationRef;
-import "package:angular2/src/core/console.dart" show Console;
-import "package:angular2/core.dart"
-    show Component, Directive, OnDestroy, platform;
 import "package:angular2/platform/browser.dart"
-    show BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
+    show bootstrap, BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
+import "package:angular2/src/core/application_ref.dart"
+    show ApplicationRef, PlatformRef;
+import "package:angular2/src/core/console.dart" show Console;
+import "package:angular2/core.dart" show Component, Directive, OnDestroy;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 import "package:angular2/src/facade/async.dart"
     show PromiseWrapper, TimerWrapper;
 import "package:angular2/core.dart"
-    show provide, Inject, Injector, PLATFORM_INITIALIZER, APP_INITIALIZER;
+    show
+        provide,
+        Inject,
+        Injector,
+        PLATFORM_INITIALIZER,
+        APP_INITIALIZER,
+        coreLoadAndBootstrap,
+        createPlatform,
+        ReflectiveInjector;
 import "package:angular2/src/core/application_ref.dart" show disposePlatform;
 import "package:angular2/src/facade/exceptions.dart"
     show ExceptionHandler, BaseException;
 import "package:angular2/src/core/testability/testability.dart"
     show Testability, TestabilityRegistry;
-import "package:angular2/src/core/linker/dynamic_component_loader.dart"
-    show ComponentRef_, ComponentRef;
+import "package:angular2/src/core/linker/component_factory.dart"
+    show ComponentRef;
 
 @Component(selector: "hello-app", template: "{{greeting}} world!")
 class HelloRootCmp {
@@ -119,6 +126,7 @@ main() {
   var fakeDoc, el, el2, testProviders, lightDom;
   describe("bootstrap factory method", () {
     beforeEach(() {
+      disposePlatform();
       fakeDoc = DOM.createHtmlDocument();
       el = DOM.createElement("hello-app", fakeDoc);
       el2 = DOM.createElement("hello-app-2", fakeDoc);
@@ -133,22 +141,19 @@ main() {
       ];
     });
     afterEach(disposePlatform);
-    it(
-        "should throw if bootstrapped Directive is not a Component",
-        inject([AsyncTestCompleter], (async) {
-          var logger = new _ArrayLogger();
-          var exceptionHandler = new ExceptionHandler(logger, false);
-          var refPromise = bootstrap(HelloRootDirectiveIsNotCmp, [
-            testProviders,
-            provide(ExceptionHandler, useValue: exceptionHandler)
-          ]);
-          PromiseWrapper.then(refPromise, null, (exception) {
-            expect(exception).toContainError(
-                '''Could not compile \'${ stringify ( HelloRootDirectiveIsNotCmp )}\' because it is not a component.''');
-            expect(logger.res.join("")).toContain("Could not compile");
-            async.done();
-          });
-        }));
+    it("should throw if bootstrapped Directive is not a Component", () {
+      var logger = new _ArrayLogger();
+      var exceptionHandler = new ExceptionHandler(logger, false);
+      expect(
+          () =>
+              bootstrap(
+                  HelloRootDirectiveIsNotCmp, [
+                testProviders,
+                provide(ExceptionHandler, useValue: exceptionHandler)
+              ])).toThrowError(
+          '''Could not compile \'${ stringify ( HelloRootDirectiveIsNotCmp )}\' because it is not a component.''');
+      expect(logger.res.join("")).toContain("Could not compile");
+    });
     it(
         "should throw if no element is found",
         inject([AsyncTestCompleter], (async) {
@@ -221,17 +226,20 @@ main() {
         "should not crash if change detection is invoked when the root component is disposed",
         inject([AsyncTestCompleter], (async) {
           bootstrap(HelloOnDestroyTickCmp, testProviders).then((ref) {
-            expect(() => ref.dispose()).not.toThrow();
+            expect(() => ref.destroy()).not.toThrow();
             async.done();
           });
         }));
     it(
         "should unregister change detectors when components are disposed",
         inject([AsyncTestCompleter], (async) {
-          var app = platform(BROWSER_PROVIDERS)
-              .application([BROWSER_APP_PROVIDERS, testProviders]);
-          app.bootstrap(HelloRootCmp).then((ref) {
-            ref.dispose();
+          var platform = createPlatform(
+              ReflectiveInjector.resolveAndCreate(BROWSER_PROVIDERS));
+          var app = ReflectiveInjector.resolveAndCreate(
+              [BROWSER_APP_PROVIDERS, testProviders],
+              platform.injector).get(ApplicationRef);
+          coreLoadAndBootstrap(app.injector, HelloRootCmp).then((ref) {
+            ref.destroy();
             expect(() => app.tick()).not.toThrow();
             async.done();
           });
@@ -242,7 +250,7 @@ main() {
           var refPromise = bootstrap(HelloRootCmp3,
               [testProviders, provide("appBinding", useValue: "BoundValue")]);
           refPromise.then((ref) {
-            expect(ref.hostComponent.appBinding).toEqual("BoundValue");
+            expect(ref.instance.appBinding).toEqual("BoundValue");
             async.done();
           });
         }));
@@ -251,29 +259,29 @@ main() {
         inject([AsyncTestCompleter], (async) {
           var refPromise = bootstrap(HelloRootCmp4, testProviders);
           refPromise.then((ref) {
-            expect(ref.hostComponent.appRef)
-                .toBe(((ref as ComponentRef_)).injector.get(ApplicationRef));
+            expect(ref.instance.appRef).toBe(ref.injector.get(ApplicationRef));
             async.done();
           });
         }));
     it(
         "should run platform initializers",
         inject([Log], (Log log) {
-          var p = platform([
+          var p = createPlatform(ReflectiveInjector.resolveAndCreate([
             BROWSER_PROVIDERS,
             provide(PLATFORM_INITIALIZER,
                 useValue: log.fn("platform_init1"), multi: true),
             provide(PLATFORM_INITIALIZER,
                 useValue: log.fn("platform_init2"), multi: true)
-          ]);
+          ]));
           expect(log.result()).toEqual("platform_init1; platform_init2");
           log.clear();
-          p.application([
+          var a = ReflectiveInjector.resolveAndCreate([
             BROWSER_APP_PROVIDERS,
             provide(APP_INITIALIZER,
                 useValue: log.fn("app_init1"), multi: true),
             provide(APP_INITIALIZER, useValue: log.fn("app_init2"), multi: true)
-          ]);
+          ], p.injector);
+          a.get(ApplicationRef);
           expect(log.result()).toEqual("app_init1; app_init2");
         }));
     it(

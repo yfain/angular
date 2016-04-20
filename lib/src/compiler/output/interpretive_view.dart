@@ -2,6 +2,7 @@ library angular2.src.compiler.output.interpretive_view;
 
 import "package:angular2/src/facade/lang.dart" show isPresent;
 import "package:angular2/src/core/linker/view.dart" show AppView;
+import "package:angular2/src/core/linker/element.dart" show AppElement;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "output_interpreter.dart" show InstanceFactory, DynamicInstance;
 
@@ -31,12 +32,12 @@ class _InterpretiveAppView extends AppView<dynamic> implements DynamicInstance {
             args[7], args[8], args[9], args[10]) {
     /* super call moved to initializer */;
   }
-  void createInternal(String rootSelector) {
+  AppElement createInternal(dynamic /* String | dynamic */ rootSelector) {
     var m = this.methods["createInternal"];
     if (isPresent(m)) {
-      m(rootSelector);
+      return m(rootSelector);
     } else {
-      super.createInternal(rootSelector);
+      return super.createInternal(rootSelector);
     }
   }
 

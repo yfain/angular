@@ -2,29 +2,20 @@ library angular2.src.core.linker.view_container_ref;
 
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "package:angular2/src/facade/exceptions.dart" show unimplemented;
-import "package:angular2/src/core/di/injector.dart"
-    show Injector, Injector_, ProtoInjector;
-import "package:angular2/src/core/di/provider.dart" show ResolvedProvider;
+import "package:angular2/src/core/di/injector.dart" show Injector;
 import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 import "../profile/profile.dart" show wtfCreateScope, wtfLeave, WtfScopeFn;
 import "element.dart" show AppElement;
-import "element_ref.dart" show ElementRef, ElementRef_;
+import "element_ref.dart" show ElementRef;
 import "template_ref.dart" show TemplateRef, TemplateRef_;
-import "view_ref.dart"
-    show
-        EmbeddedViewRef,
-        HostViewRef,
-        HostViewFactoryRef,
-        HostViewFactoryRef_,
-        ViewRef,
-        ViewRef_;
-import "view.dart" show AppView;
+import "view_ref.dart" show EmbeddedViewRef, ViewRef, ViewRef_;
+import "component_factory.dart" show ComponentFactory, ComponentRef;
 
 /**
  * Represents a container where one or more Views can be attached.
  *
  * The container can contain two kinds of Views. Host Views, created by instantiating a
- * [Component] via [#createHostView], and Embedded Views, created by instantiating an
+ * [Component] via [#createComponent], and Embedded Views, created by instantiating an
  * [TemplateRef Embedded Template] via [#createEmbeddedView].
  *
  * The location of the View Container within the containing View is specified by the Anchor
@@ -35,10 +26,7 @@ import "view.dart" show AppView;
  * the Rendered View.
  *
  * To access a `ViewContainerRef` of an Element, you can either place a [Directive] injected
- * with `ViewContainerRef` on the Element, or you obtain it via
- * [AppViewManager#getViewContainer].
- *
- * <!-- TODO(i): we are also considering ElementRef#viewContainer api -->
+ * with `ViewContainerRef` on the Element, or you obtain it via a [ViewChild] query.
  */
 abstract class ViewContainerRef {
   /**
@@ -47,6 +35,14 @@ abstract class ViewContainerRef {
    */
   ElementRef get element {
     return (unimplemented() as ElementRef);
+  }
+
+  Injector get injector {
+    return (unimplemented() as Injector);
+  }
+
+  Injector get parentInjector {
+    return (unimplemented() as Injector);
   }
 
   /**
@@ -77,20 +73,17 @@ abstract class ViewContainerRef {
    * Instantiates a single [Component] and inserts its Host View into this container at the
    * specified `index`.
    *
-   * The component is instantiated using its [ProtoViewRef `protoView`] which can be
-   * obtained via [Compiler#compileInHost].
+   * The component is instantiated using its [ComponentFactory] which can be
+   * obtained via [ComponentResolver#resolveComponent].
    *
    * If `index` is not specified, the new View will be inserted as the last View in the container.
    *
-   * You can optionally specify `dynamicallyCreatedProviders`, which configure the [Injector]
-   * that will be created for the Host View.
+   * You can optionally specify the [Injector] that will be used as parent for the Component.
    *
-   * Returns the [HostViewRef] of the Host View created for the newly instantiated Component.
+   * Returns the [ComponentRef] of the Host View created for the newly instantiated Component.
    */
-  HostViewRef createHostView(HostViewFactoryRef hostViewFactoryRef,
-      [num index,
-      List<ResolvedProvider> dynamicallyCreatedProviders,
-      List<List<dynamic>> projectableNodes]);
+  ComponentRef createComponent(ComponentFactory componentFactory,
+      [num index, Injector injector, List<List<dynamic>> projectableNodes]);
   /**
    * Inserts a View identified by a [ViewRef] into the container at the specified `index`.
    *
@@ -131,49 +124,40 @@ class ViewContainerRef_ implements ViewContainerRef {
   }
 
   ElementRef get element {
-    return this._element.ref;
+    return this._element.elementRef;
   }
 
-  /** @internal */
-  WtfScopeFn _createEmbeddedViewInContainerScope =
-      wtfCreateScope("ViewContainerRef#createEmbeddedView()");
+  Injector get injector {
+    return this._element.injector;
+  }
+
+  Injector get parentInjector {
+    return this._element.parentInjector;
+  }
   // TODO(rado): profile and decide whether bounds checks should be added
 
   // to the methods below.
   EmbeddedViewRef createEmbeddedView(TemplateRef templateRef,
       [num index = -1]) {
-    var s = this._createEmbeddedViewInContainerScope();
-    if (index == -1) index = this.length;
-    var templateRef_ = ((templateRef as TemplateRef_));
-    AppView<dynamic> view = templateRef_.createEmbeddedView();
-    this._element.attachView(view, index);
-    return wtfLeave(s, view.ref);
+    EmbeddedViewRef viewRef = templateRef.createEmbeddedView();
+    this.insert(viewRef, index);
+    return viewRef;
   }
 
   /** @internal */
-  WtfScopeFn _createHostViewInContainerScope =
-      wtfCreateScope("ViewContainerRef#createHostView()");
-  HostViewRef createHostView(HostViewFactoryRef hostViewFactoryRef,
+  WtfScopeFn _createComponentInContainerScope =
+      wtfCreateScope("ViewContainerRef#createComponent()");
+  ComponentRef createComponent(ComponentFactory componentFactory,
       [num index = -1,
-      List<ResolvedProvider> dynamicallyCreatedProviders = null,
+      Injector injector = null,
       List<List<dynamic>> projectableNodes = null]) {
-    var s = this._createHostViewInContainerScope();
-    if (index == -1) index = this.length;
-    var contextEl = this._element;
-    var contextInjector = this._element.parentInjector;
-    var hostViewFactory =
-        ((hostViewFactoryRef as HostViewFactoryRef_)).internalHostViewFactory;
-    var childInjector = isPresent(dynamicallyCreatedProviders) &&
-            dynamicallyCreatedProviders.length > 0
-        ? new Injector_(
-            ProtoInjector.fromResolvedProviders(dynamicallyCreatedProviders),
-            contextInjector)
-        : contextInjector;
-    var view = hostViewFactory.viewFactory(
-        contextEl.parentView.viewManager, childInjector, contextEl);
-    view.create(projectableNodes, null);
-    this._element.attachView(view, index);
-    return wtfLeave(s, view.ref);
+    var s = this._createComponentInContainerScope();
+    var contextInjector =
+        isPresent(injector) ? injector : this._element.parentInjector;
+    var componentRef =
+        componentFactory.create(contextInjector, projectableNodes);
+    this.insert(componentRef.hostView, index);
+    return wtfLeave(s, componentRef);
   }
 
   /** @internal */

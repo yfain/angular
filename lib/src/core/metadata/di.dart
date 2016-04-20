@@ -158,9 +158,15 @@ class QueryMetadata extends DependencyMetadata {
    */
   final bool descendants;
   final bool first;
-  const QueryMetadata(this._selector, {descendants: false, first: false})
+  /**
+   * The DI token to read from an element that matches the selector.
+   */
+  final dynamic read;
+  const QueryMetadata(this._selector,
+      {descendants: false, first: false, read: null})
       : descendants = descendants,
         first = first,
+        read = read,
         super();
   /**
    * always `false` to differentiate it with [ViewQueryMetadata].
@@ -219,8 +225,8 @@ class QueryMetadata extends DependencyMetadata {
  */
 class ContentChildrenMetadata extends QueryMetadata {
   const ContentChildrenMetadata(dynamic /* Type | String */ _selector,
-      {descendants: false})
-      : super(_selector, descendants: descendants);
+      {descendants: false, read: null})
+      : super(_selector, descendants: descendants, read: read);
 }
 // TODO: add an example after ContentChild and ViewChild are in master
 
@@ -245,8 +251,9 @@ class ContentChildrenMetadata extends QueryMetadata {
  * ```
  */
 class ContentChildMetadata extends QueryMetadata {
-  const ContentChildMetadata(dynamic /* Type | String */ _selector)
-      : super(_selector, descendants: true, first: true);
+  const ContentChildMetadata(dynamic /* Type | String */ _selector,
+      {read: null})
+      : super(_selector, descendants: true, first: true, read: read);
 }
 
 /**
@@ -286,8 +293,8 @@ class ContentChildMetadata extends QueryMetadata {
  */
 class ViewQueryMetadata extends QueryMetadata {
   const ViewQueryMetadata(dynamic /* Type | String */ _selector,
-      {descendants: false, first: false})
-      : super(_selector, descendants: descendants, first: first);
+      {descendants: false, first: false, read: null})
+      : super(_selector, descendants: descendants, first: first, read: read);
   /**
    * always `true` to differentiate it with [QueryMetadata].
    */
@@ -378,8 +385,9 @@ class ViewQueryMetadata extends QueryMetadata {
  * ```
  */
 class ViewChildrenMetadata extends ViewQueryMetadata {
-  const ViewChildrenMetadata(dynamic /* Type | String */ _selector)
-      : super(_selector, descendants: true);
+  const ViewChildrenMetadata(dynamic /* Type | String */ _selector,
+      {read: null})
+      : super(_selector, descendants: true, read: read);
 }
 
 /**
@@ -453,6 +461,6 @@ class ViewChildrenMetadata extends ViewQueryMetadata {
  * ```
  */
 class ViewChildMetadata extends ViewQueryMetadata {
-  const ViewChildMetadata(dynamic /* Type | String */ _selector)
-      : super(_selector, descendants: true, first: true);
+  const ViewChildMetadata(dynamic /* Type | String */ _selector, {read: null})
+      : super(_selector, descendants: true, first: true, read: read);
 }

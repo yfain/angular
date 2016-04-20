@@ -1,8 +1,9 @@
 library angular2.src.core.linker.view_ref;
 
 import "package:angular2/src/facade/exceptions.dart" show unimplemented;
+import "package:angular2/src/facade/lang.dart" show isPresent;
 import "../change_detection/change_detector_ref.dart" show ChangeDetectorRef;
-import "view.dart" show AppView, HostViewFactory;
+import "view.dart" show AppView;
 import "package:angular2/src/core/change_detection/constants.dart"
     show ChangeDetectionStrategy;
 
@@ -17,21 +18,8 @@ abstract class ViewRef extends ChangeDetectorRef {
   bool get destroyed {
     return (unimplemented() as bool);
   }
-}
 
-/**
- * Represents a View containing a single Element that is the Host Element of a [Component]
- * instance.
- *
- * A Host View is created for every dynamically created Component that was compiled on its own (as
- * opposed to as a part of another Component's Template) via [Compiler#compileInHost] or one
- * of the higher-level APIs: [AppViewManager#createRootHostView],
- * [AppViewManager#createHostViewInContainer], [ViewContainerRef#createHostView].
- */
-abstract class HostViewRef extends ViewRef {
-  List<dynamic> get rootNodes {
-    return (unimplemented() as List<dynamic>);
-  }
+  onDestroy(Function callback);
 }
 
 /**
@@ -99,9 +87,14 @@ abstract class EmbeddedViewRef extends ViewRef {
   List<dynamic> get rootNodes {
     return (unimplemented() as List<dynamic>);
   }
+
+  /**
+   * Destroys the view and all of the data structures associated with it.
+   */
+  destroy();
 }
 
-class ViewRef_ implements EmbeddedViewRef, HostViewRef {
+class ViewRef_ implements EmbeddedViewRef {
   AppView<dynamic> _view;
   ViewRef_(this._view) {
     this._view = _view;
@@ -153,14 +146,12 @@ class ViewRef_ implements EmbeddedViewRef, HostViewRef {
     this._view.cdMode = ChangeDetectionStrategy.CheckAlways;
     this.markForCheck();
   }
-}
 
-abstract class HostViewFactoryRef {}
+  onDestroy(Function callback) {
+    this._view.disposables.add(callback);
+  }
 
-class HostViewFactoryRef_ implements HostViewFactoryRef {
-  HostViewFactory _hostViewFactory;
-  HostViewFactoryRef_(this._hostViewFactory) {}
-  HostViewFactory get internalHostViewFactory {
-    return this._hostViewFactory;
+  destroy() {
+    this._view.destroy();
   }
 }

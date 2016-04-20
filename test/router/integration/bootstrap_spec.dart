@@ -16,6 +16,8 @@ import "package:angular2/testing_internal.dart"
         TestComponentBuilder,
         xit;
 import "package:angular2/platform/browser.dart" show bootstrap;
+import "package:angular2/platform/common.dart"
+    show APP_BASE_HREF, LocationStrategy;
 import "package:angular2/src/core/metadata.dart" show Component, Directive;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/core/console.dart" show Console;
@@ -32,9 +34,7 @@ import "package:angular2/router.dart"
         ROUTER_PRIMARY_COMPONENT,
         RouteParams,
         Router,
-        APP_BASE_HREF,
-        ROUTER_DIRECTIVES,
-        LocationStrategy;
+        ROUTER_DIRECTIVES;
 import "package:angular2/src/mock/mock_location_strategy.dart"
     show MockLocationStrategy;
 import "package:angular2/src/core/application_ref.dart" show ApplicationRef;
@@ -54,7 +54,7 @@ main() {
         ]);
     // do not refactor out the `bootstrap` functionality. We still want to
 
-    // keep this test around so we can ensure that bootstrapping a router works
+    // keep this test around so we can ensure that bootstrap a router works
     it(
         "should bootstrap a simple app",
         inject([AsyncTestCompleter], (async) {
@@ -68,10 +68,10 @@ main() {
             provide(DOCUMENT, useValue: fakeDoc),
             provide(Console, useClass: DummyConsole)
           ]).then((applicationRef) {
-            var router = applicationRef.hostComponent.router;
+            var router = applicationRef.instance.router;
             router.subscribe((_) {
               expect(el).toHaveText("outer { hello }");
-              expect(applicationRef.hostComponent.location.path()).toEqual("");
+              expect(applicationRef.instance.location.path()).toEqual("");
               async.done();
             });
           });
