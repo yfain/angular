@@ -84,7 +84,7 @@ System.register("angular2/src/mock/animation_builder_mock", ["angular2/src/core/
   return module.exports;
 });
 
-System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/core/metadata", "angular2/src/core/linker/directive_resolver"], true, function(require, exports, module) {
+System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/core/metadata", "angular2/src/compiler/directive_resolver"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -118,7 +118,7 @@ System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core
   var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
   var metadata_1 = require("angular2/src/core/metadata");
-  var directive_resolver_1 = require("angular2/src/core/linker/directive_resolver");
+  var directive_resolver_1 = require("angular2/src/compiler/directive_resolver");
   var MockDirectiveResolver = (function(_super) {
     __extends(MockDirectiveResolver, _super);
     function MockDirectiveResolver() {
@@ -132,12 +132,14 @@ System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core
       var viewProviderOverrides = this.viewProviderOverrides.get(type);
       var providers = dm.providers;
       if (lang_1.isPresent(providerOverrides)) {
-        providers = dm.providers.concat(providerOverrides);
+        var originalViewProviders = lang_1.isPresent(dm.providers) ? dm.providers : [];
+        providers = originalViewProviders.concat(providerOverrides);
       }
       if (dm instanceof metadata_1.ComponentMetadata) {
         var viewProviders = dm.viewProviders;
         if (lang_1.isPresent(viewProviderOverrides)) {
-          viewProviders = dm.viewProviders.concat(viewProviderOverrides);
+          var originalViewProviders = lang_1.isPresent(dm.viewProviders) ? dm.viewProviders : [];
+          viewProviders = originalViewProviders.concat(viewProviderOverrides);
         }
         return new metadata_1.ComponentMetadata({
           selector: dm.selector,
@@ -182,7 +184,7 @@ System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core
   return module.exports;
 });
 
-System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/core/metadata", "angular2/src/core/linker/view_resolver"], true, function(require, exports, module) {
+System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/core/metadata", "angular2/src/compiler/view_resolver"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -217,7 +219,7 @@ System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di",
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var metadata_1 = require("angular2/src/core/metadata");
-  var view_resolver_1 = require("angular2/src/core/linker/view_resolver");
+  var view_resolver_1 = require("angular2/src/compiler/view_resolver");
   var MockViewResolver = (function(_super) {
     __extends(MockViewResolver, _super);
     function MockViewResolver() {
@@ -833,6 +835,159 @@ System.register("angular2/src/testing/utils", ["angular2/core", "angular2/src/fa
   return module.exports;
 });
 
+System.register("angular2/src/testing/fake_async", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var lang_1 = require("angular2/src/facade/lang");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
+  var collection_1 = require("angular2/src/facade/collection");
+  var _scheduler;
+  var _microtasks = [];
+  var _pendingPeriodicTimers = [];
+  var _pendingTimers = [];
+  var FakeAsyncZoneSpec = (function() {
+    function FakeAsyncZoneSpec() {
+      this.name = 'fakeAsync';
+      this.properties = {'inFakeAsyncZone': true};
+    }
+    FakeAsyncZoneSpec.assertInZone = function() {
+      if (!Zone.current.get('inFakeAsyncZone')) {
+        throw new Error('The code should be running in the fakeAsync zone to call this function');
+      }
+    };
+    FakeAsyncZoneSpec.prototype.onScheduleTask = function(delegate, current, target, task) {
+      switch (task.type) {
+        case 'microTask':
+          _microtasks.push(task.invoke);
+          break;
+        case 'macroTask':
+          switch (task.source) {
+            case 'setTimeout':
+              task.data['handleId'] = _setTimeout(task.invoke, task.data['delay'], task.data['args']);
+              break;
+            case 'setInterval':
+              task.data['handleId'] = _setInterval(task.invoke, task.data['delay'], task.data['args']);
+              break;
+            default:
+              task = delegate.scheduleTask(target, task);
+          }
+          break;
+        case 'eventTask':
+          task = delegate.scheduleTask(target, task);
+          break;
+      }
+      return task;
+    };
+    FakeAsyncZoneSpec.prototype.onCancelTask = function(delegate, current, target, task) {
+      switch (task.source) {
+        case 'setTimeout':
+          return _clearTimeout(task.data['handleId']);
+        case 'setInterval':
+          return _clearInterval(task.data['handleId']);
+        default:
+          return delegate.scheduleTask(target, task);
+      }
+    };
+    return FakeAsyncZoneSpec;
+  }());
+  function fakeAsync(fn) {
+    if (Zone.current.get('inFakeAsyncZone')) {
+      throw new Error('fakeAsync() calls can not be nested');
+    }
+    var fakeAsyncZone = Zone.current.fork(new FakeAsyncZoneSpec());
+    return function() {
+      var args = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i - 0] = arguments[_i];
+      }
+      _scheduler = new jasmine.DelayedFunctionScheduler();
+      clearPendingTimers();
+      var res = fakeAsyncZone.run(function() {
+        var res = fn.apply(void 0, args);
+        flushMicrotasks();
+        return res;
+      });
+      if (_pendingPeriodicTimers.length > 0) {
+        throw new exceptions_1.BaseException(_pendingPeriodicTimers.length + " periodic timer(s) still in the queue.");
+      }
+      if (_pendingTimers.length > 0) {
+        throw new exceptions_1.BaseException(_pendingTimers.length + " timer(s) still in the queue.");
+      }
+      _scheduler = null;
+      collection_1.ListWrapper.clear(_microtasks);
+      return res;
+    };
+  }
+  exports.fakeAsync = fakeAsync;
+  function clearPendingTimers() {
+    collection_1.ListWrapper.clear(_microtasks);
+    collection_1.ListWrapper.clear(_pendingPeriodicTimers);
+    collection_1.ListWrapper.clear(_pendingTimers);
+  }
+  exports.clearPendingTimers = clearPendingTimers;
+  function tick(millis) {
+    if (millis === void 0) {
+      millis = 0;
+    }
+    FakeAsyncZoneSpec.assertInZone();
+    flushMicrotasks();
+    _scheduler.tick(millis);
+  }
+  exports.tick = tick;
+  function flushMicrotasks() {
+    FakeAsyncZoneSpec.assertInZone();
+    while (_microtasks.length > 0) {
+      var microtask = collection_1.ListWrapper.removeAt(_microtasks, 0);
+      microtask();
+    }
+  }
+  exports.flushMicrotasks = flushMicrotasks;
+  function _setTimeout(fn, delay, args) {
+    var cb = _fnAndFlush(fn);
+    var id = _scheduler.scheduleFunction(cb, delay, args);
+    _pendingTimers.push(id);
+    _scheduler.scheduleFunction(_dequeueTimer(id), delay);
+    return id;
+  }
+  function _clearTimeout(id) {
+    _dequeueTimer(id);
+    return _scheduler.removeFunctionWithId(id);
+  }
+  function _setInterval(fn, interval) {
+    var args = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+      args[_i - 2] = arguments[_i];
+    }
+    var cb = _fnAndFlush(fn);
+    var id = _scheduler.scheduleFunction(cb, interval, args, true);
+    _pendingPeriodicTimers.push(id);
+    return id;
+  }
+  function _clearInterval(id) {
+    collection_1.ListWrapper.remove(_pendingPeriodicTimers, id);
+    return _scheduler.removeFunctionWithId(id);
+  }
+  function _fnAndFlush(fn) {
+    return function() {
+      var args = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i - 0] = arguments[_i];
+      }
+      fn.apply(lang_1.global, args);
+      flushMicrotasks();
+    };
+  }
+  function _dequeueTimer(id) {
+    return function() {
+      collection_1.ListWrapper.remove(_pendingTimers, id);
+    };
+  }
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("angular2/src/platform/browser/location/hash_location_strategy", ["angular2/core", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/location", "angular2/src/platform/browser/location/platform_location", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -928,20 +1083,11 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
   return module.exports;
 });
 
-System.register("angular2/src/testing/test_component_builder", ["angular2/core", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/testing/utils", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_adapter", "angular2/src/core/debug/debug_node"], true, function(require, exports, module) {
+System.register("angular2/src/testing/test_component_builder", ["angular2/core", "angular2/compiler", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/testing/utils", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_adapter", "angular2/src/core/debug/debug_node", "angular2/src/testing/fake_async"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
     var c = arguments.length,
         r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -959,38 +1105,42 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
       return Reflect.metadata(k, v);
   };
   var core_1 = require("angular2/core");
+  var compiler_1 = require("angular2/compiler");
   var lang_1 = require("angular2/src/facade/lang");
+  var async_1 = require("angular2/src/facade/async");
   var collection_1 = require("angular2/src/facade/collection");
   var utils_1 = require("angular2/src/testing/utils");
   var dom_tokens_1 = require("angular2/src/platform/dom/dom_tokens");
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
   var debug_node_1 = require("angular2/src/core/debug/debug_node");
+  var fake_async_1 = require("angular2/src/testing/fake_async");
   var ComponentFixture = (function() {
-    function ComponentFixture() {}
+    function ComponentFixture(componentRef) {
+      this.changeDetectorRef = componentRef.changeDetectorRef;
+      this.elementRef = componentRef.location;
+      this.debugElement = debug_node_1.getDebugNode(this.elementRef.nativeElement);
+      this.componentInstance = componentRef.instance;
+      this.nativeElement = this.elementRef.nativeElement;
+      this.componentRef = componentRef;
+    }
+    ComponentFixture.prototype.detectChanges = function(checkNoChanges) {
+      if (checkNoChanges === void 0) {
+        checkNoChanges = true;
+      }
+      this.changeDetectorRef.detectChanges();
+      if (checkNoChanges) {
+        this.checkNoChanges();
+      }
+    };
+    ComponentFixture.prototype.checkNoChanges = function() {
+      this.changeDetectorRef.checkNoChanges();
+    };
+    ComponentFixture.prototype.destroy = function() {
+      this.componentRef.destroy();
+    };
     return ComponentFixture;
   }());
   exports.ComponentFixture = ComponentFixture;
-  var ComponentFixture_ = (function(_super) {
-    __extends(ComponentFixture_, _super);
-    function ComponentFixture_(componentRef) {
-      _super.call(this);
-      this._componentParentView = componentRef.hostView.internalView;
-      this.elementRef = this._componentParentView.appElements[0].ref;
-      this.debugElement = debug_node_1.getDebugNode(this._componentParentView.rootNodesOrAppElements[0].nativeElement);
-      this.componentInstance = this.debugElement.componentInstance;
-      this.nativeElement = this.debugElement.nativeElement;
-      this._componentRef = componentRef;
-    }
-    ComponentFixture_.prototype.detectChanges = function() {
-      this._componentParentView.changeDetector.detectChanges();
-      this._componentParentView.changeDetector.checkNoChanges();
-    };
-    ComponentFixture_.prototype.destroy = function() {
-      this._componentRef.dispose();
-    };
-    return ComponentFixture_;
-  }(ComponentFixture));
-  exports.ComponentFixture_ = ComponentFixture_;
   var _nextRootElementId = 0;
   var TestComponentBuilder = (function() {
     function TestComponentBuilder(_injector) {
@@ -1006,6 +1156,8 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
       clone._viewOverrides = collection_1.MapWrapper.clone(this._viewOverrides);
       clone._directiveOverrides = collection_1.MapWrapper.clone(this._directiveOverrides);
       clone._templateOverrides = collection_1.MapWrapper.clone(this._templateOverrides);
+      clone._bindingsOverrides = collection_1.MapWrapper.clone(this._bindingsOverrides);
+      clone._viewBindingsOverrides = collection_1.MapWrapper.clone(this._viewBindingsOverrides);
       return clone;
     };
     TestComponentBuilder.prototype.overrideTemplate = function(componentType, template) {
@@ -1045,8 +1197,8 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
       return this.overrideViewProviders(type, providers);
     };
     TestComponentBuilder.prototype.createAsync = function(rootComponentType) {
-      var mockDirectiveResolver = this._injector.get(core_1.DirectiveResolver);
-      var mockViewResolver = this._injector.get(core_1.ViewResolver);
+      var mockDirectiveResolver = this._injector.get(compiler_1.DirectiveResolver);
+      var mockViewResolver = this._injector.get(compiler_1.ViewResolver);
       this._viewOverrides.forEach(function(view, type) {
         return mockViewResolver.setView(type, view);
       });
@@ -1074,8 +1226,22 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
       dom_adapter_1.DOM.appendChild(doc.body, rootEl);
       var promise = this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector);
       return promise.then(function(componentRef) {
-        return new ComponentFixture_(componentRef);
+        return new ComponentFixture(componentRef);
       });
+    };
+    TestComponentBuilder.prototype.createFakeAsync = function(rootComponentType) {
+      var result;
+      var error;
+      async_1.PromiseWrapper.then(this.createAsync(rootComponentType), function(_result) {
+        result = _result;
+      }, function(_error) {
+        error = _error;
+      });
+      fake_async_1.tick();
+      if (lang_1.isPresent(error)) {
+        throw error;
+      }
+      return result;
     };
     TestComponentBuilder = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [core_1.Injector])], TestComponentBuilder);
     return TestComponentBuilder;
@@ -1221,12 +1387,13 @@ System.register("angular2/src/mock/mock_location_strategy", ["angular2/src/core/
   return module.exports;
 });
 
-System.register("angular2/platform/testing/browser_static", ["angular2/core", "angular2/src/platform/browser_common", "angular2/src/platform/browser/browser_adapter", "angular2/src/animate/animation_builder", "angular2/src/mock/animation_builder_mock", "angular2/src/mock/directive_resolver_mock", "angular2/src/mock/view_resolver_mock", "angular2/src/mock/mock_location_strategy", "angular2/platform/common", "angular2/src/mock/ng_zone_mock", "angular2/src/platform/browser/xhr_impl", "angular2/compiler", "angular2/src/testing/test_component_builder", "angular2/src/testing/utils", "angular2/platform/common_dom", "angular2/src/facade/lang", "angular2/src/testing/utils"], true, function(require, exports, module) {
+System.register("angular2/platform/testing/browser_static", ["angular2/core", "angular2/compiler", "angular2/src/platform/browser_common", "angular2/src/platform/browser/browser_adapter", "angular2/src/animate/animation_builder", "angular2/src/mock/animation_builder_mock", "angular2/src/mock/directive_resolver_mock", "angular2/src/mock/view_resolver_mock", "angular2/src/mock/mock_location_strategy", "angular2/platform/common", "angular2/src/mock/ng_zone_mock", "angular2/src/platform/browser/xhr_impl", "angular2/compiler", "angular2/src/testing/test_component_builder", "angular2/src/testing/utils", "angular2/platform/common_dom", "angular2/src/facade/lang", "angular2/src/testing/utils"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var core_1 = require("angular2/core");
+  var compiler_1 = require("angular2/compiler");
   var browser_common_1 = require("angular2/src/platform/browser_common");
   var browser_adapter_1 = require("angular2/src/platform/browser/browser_adapter");
   var animation_builder_1 = require("angular2/src/animate/animation_builder");
@@ -1237,7 +1404,7 @@ System.register("angular2/platform/testing/browser_static", ["angular2/core", "a
   var common_1 = require("angular2/platform/common");
   var ng_zone_mock_1 = require("angular2/src/mock/ng_zone_mock");
   var xhr_impl_1 = require("angular2/src/platform/browser/xhr_impl");
-  var compiler_1 = require("angular2/compiler");
+  var compiler_2 = require("angular2/compiler");
   var test_component_builder_1 = require("angular2/src/testing/test_component_builder");
   var utils_1 = require("angular2/src/testing/utils");
   var common_dom_1 = require("angular2/platform/common_dom");
@@ -1251,8 +1418,8 @@ System.register("angular2/platform/testing/browser_static", ["angular2/core", "a
     useValue: initBrowserTests,
     multi: true
   })]);
-  exports.ADDITIONAL_TEST_BROWSER_PROVIDERS = lang_1.CONST_EXPR([new core_1.Provider(core_1.APP_ID, {useValue: 'a'}), common_dom_1.ELEMENT_PROBE_PROVIDERS, new core_1.Provider(core_1.DirectiveResolver, {useClass: directive_resolver_mock_1.MockDirectiveResolver}), new core_1.Provider(core_1.ViewResolver, {useClass: view_resolver_mock_1.MockViewResolver}), utils_2.Log, test_component_builder_1.TestComponentBuilder, new core_1.Provider(core_1.NgZone, {useClass: ng_zone_mock_1.MockNgZone}), new core_1.Provider(common_1.LocationStrategy, {useClass: mock_location_strategy_1.MockLocationStrategy}), new core_1.Provider(animation_builder_1.AnimationBuilder, {useClass: animation_builder_mock_1.MockAnimationBuilder})]);
-  exports.TEST_BROWSER_STATIC_APPLICATION_PROVIDERS = lang_1.CONST_EXPR([browser_common_1.BROWSER_APP_COMMON_PROVIDERS, new core_1.Provider(compiler_1.XHR, {useClass: xhr_impl_1.XHRImpl}), exports.ADDITIONAL_TEST_BROWSER_PROVIDERS]);
+  exports.ADDITIONAL_TEST_BROWSER_PROVIDERS = lang_1.CONST_EXPR([new core_1.Provider(core_1.APP_ID, {useValue: 'a'}), common_dom_1.ELEMENT_PROBE_PROVIDERS, new core_1.Provider(compiler_1.DirectiveResolver, {useClass: directive_resolver_mock_1.MockDirectiveResolver}), new core_1.Provider(compiler_1.ViewResolver, {useClass: view_resolver_mock_1.MockViewResolver}), utils_2.Log, test_component_builder_1.TestComponentBuilder, new core_1.Provider(core_1.NgZone, {useClass: ng_zone_mock_1.MockNgZone}), new core_1.Provider(common_1.LocationStrategy, {useClass: mock_location_strategy_1.MockLocationStrategy}), new core_1.Provider(animation_builder_1.AnimationBuilder, {useClass: animation_builder_mock_1.MockAnimationBuilder})]);
+  exports.TEST_BROWSER_STATIC_APPLICATION_PROVIDERS = lang_1.CONST_EXPR([browser_common_1.BROWSER_APP_COMMON_PROVIDERS, new core_1.Provider(compiler_2.XHR, {useClass: xhr_impl_1.XHRImpl}), exports.ADDITIONAL_TEST_BROWSER_PROVIDERS]);
   global.define = __define;
   return module.exports;
 });
@@ -1708,155 +1875,108 @@ System.register("angular2/http/testing", ["angular2/src/http/backends/mock_backe
   return module.exports;
 });
 
-System.register("angular2/src/testing/fake_async", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/xhr_mock", ["angular2/src/compiler/xhr", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/async"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var xhr_1 = require("angular2/src/compiler/xhr");
+  var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
-  var collection_1 = require("angular2/src/facade/collection");
-  var _scheduler;
-  var _microtasks = [];
-  var _pendingPeriodicTimers = [];
-  var _pendingTimers = [];
-  var FakeAsyncZoneSpec = (function() {
-    function FakeAsyncZoneSpec() {
-      this.name = 'fakeAsync';
-      this.properties = {'inFakeAsyncZone': true};
+  var async_1 = require("angular2/src/facade/async");
+  var MockXHR = (function(_super) {
+    __extends(MockXHR, _super);
+    function MockXHR() {
+      _super.apply(this, arguments);
+      this._expectations = [];
+      this._definitions = new collection_1.Map();
+      this._requests = [];
     }
-    FakeAsyncZoneSpec.assertInZone = function() {
-      if (!Zone.current.get('inFakeAsyncZone')) {
-        throw new Error('The code should be running in the fakeAsync zone to call this function');
+    MockXHR.prototype.get = function(url) {
+      var request = new _PendingRequest(url);
+      this._requests.push(request);
+      return request.getPromise();
+    };
+    MockXHR.prototype.expect = function(url, response) {
+      var expectation = new _Expectation(url, response);
+      this._expectations.push(expectation);
+    };
+    MockXHR.prototype.when = function(url, response) {
+      this._definitions.set(url, response);
+    };
+    MockXHR.prototype.flush = function() {
+      if (this._requests.length === 0) {
+        throw new exceptions_1.BaseException('No pending requests to flush');
+      }
+      do {
+        this._processRequest(this._requests.shift());
+      } while (this._requests.length > 0);
+      this.verifyNoOutstandingExpectations();
+    };
+    MockXHR.prototype.verifyNoOutstandingExpectations = function() {
+      if (this._expectations.length === 0)
+        return ;
+      var urls = [];
+      for (var i = 0; i < this._expectations.length; i++) {
+        var expectation = this._expectations[i];
+        urls.push(expectation.url);
+      }
+      throw new exceptions_1.BaseException("Unsatisfied requests: " + urls.join(', '));
+    };
+    MockXHR.prototype._processRequest = function(request) {
+      var url = request.url;
+      if (this._expectations.length > 0) {
+        var expectation = this._expectations[0];
+        if (expectation.url == url) {
+          collection_1.ListWrapper.remove(this._expectations, expectation);
+          request.complete(expectation.response);
+          return ;
+        }
+      }
+      if (this._definitions.has(url)) {
+        var response = this._definitions.get(url);
+        request.complete(lang_1.normalizeBlank(response));
+        return ;
+      }
+      throw new exceptions_1.BaseException("Unexpected request " + url);
+    };
+    return MockXHR;
+  }(xhr_1.XHR));
+  exports.MockXHR = MockXHR;
+  var _PendingRequest = (function() {
+    function _PendingRequest(url) {
+      this.url = url;
+      this.completer = async_1.PromiseWrapper.completer();
+    }
+    _PendingRequest.prototype.complete = function(response) {
+      if (lang_1.isBlank(response)) {
+        this.completer.reject("Failed to load " + this.url, null);
+      } else {
+        this.completer.resolve(response);
       }
     };
-    FakeAsyncZoneSpec.prototype.onScheduleTask = function(delegate, current, target, task) {
-      switch (task.type) {
-        case 'microTask':
-          _microtasks.push(task.invoke);
-          break;
-        case 'macroTask':
-          switch (task.source) {
-            case 'setTimeout':
-              task.data['handleId'] = _setTimeout(task.invoke, task.data['delay'], task.data['args']);
-              break;
-            case 'setInterval':
-              task.data['handleId'] = _setInterval(task.invoke, task.data['delay'], task.data['args']);
-              break;
-            default:
-              task = delegate.scheduleTask(target, task);
-          }
-          break;
-        case 'eventTask':
-          task = delegate.scheduleTask(target, task);
-          break;
-      }
-      return task;
+    _PendingRequest.prototype.getPromise = function() {
+      return this.completer.promise;
     };
-    FakeAsyncZoneSpec.prototype.onCancelTask = function(delegate, current, target, task) {
-      switch (task.source) {
-        case 'setTimeout':
-          return _clearTimeout(task.data['handleId']);
-        case 'setInterval':
-          return _clearInterval(task.data['handleId']);
-        default:
-          return delegate.scheduleTask(target, task);
-      }
-    };
-    return FakeAsyncZoneSpec;
+    return _PendingRequest;
   }());
-  function fakeAsync(fn) {
-    if (Zone.current.get('inFakeAsyncZone')) {
-      throw new Error('fakeAsync() calls can not be nested');
+  var _Expectation = (function() {
+    function _Expectation(url, response) {
+      this.url = url;
+      this.response = response;
     }
-    var fakeAsyncZone = Zone.current.fork(new FakeAsyncZoneSpec());
-    return function() {
-      var args = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
-      }
-      _scheduler = new jasmine.DelayedFunctionScheduler();
-      clearPendingTimers();
-      var res = fakeAsyncZone.run(function() {
-        var res = fn.apply(void 0, args);
-        flushMicrotasks();
-        return res;
-      });
-      if (_pendingPeriodicTimers.length > 0) {
-        throw new exceptions_1.BaseException(_pendingPeriodicTimers.length + " periodic timer(s) still in the queue.");
-      }
-      if (_pendingTimers.length > 0) {
-        throw new exceptions_1.BaseException(_pendingTimers.length + " timer(s) still in the queue.");
-      }
-      _scheduler = null;
-      collection_1.ListWrapper.clear(_microtasks);
-      return res;
-    };
-  }
-  exports.fakeAsync = fakeAsync;
-  function clearPendingTimers() {
-    collection_1.ListWrapper.clear(_microtasks);
-    collection_1.ListWrapper.clear(_pendingPeriodicTimers);
-    collection_1.ListWrapper.clear(_pendingTimers);
-  }
-  exports.clearPendingTimers = clearPendingTimers;
-  function tick(millis) {
-    if (millis === void 0) {
-      millis = 0;
-    }
-    FakeAsyncZoneSpec.assertInZone();
-    flushMicrotasks();
-    _scheduler.tick(millis);
-  }
-  exports.tick = tick;
-  function flushMicrotasks() {
-    FakeAsyncZoneSpec.assertInZone();
-    while (_microtasks.length > 0) {
-      var microtask = collection_1.ListWrapper.removeAt(_microtasks, 0);
-      microtask();
-    }
-  }
-  exports.flushMicrotasks = flushMicrotasks;
-  function _setTimeout(fn, delay, args) {
-    var cb = _fnAndFlush(fn);
-    var id = _scheduler.scheduleFunction(cb, delay, args);
-    _pendingTimers.push(id);
-    _scheduler.scheduleFunction(_dequeueTimer(id), delay);
-    return id;
-  }
-  function _clearTimeout(id) {
-    _dequeueTimer(id);
-    return _scheduler.removeFunctionWithId(id);
-  }
-  function _setInterval(fn, interval) {
-    var args = [];
-    for (var _i = 2; _i < arguments.length; _i++) {
-      args[_i - 2] = arguments[_i];
-    }
-    var cb = _fnAndFlush(fn);
-    var id = _scheduler.scheduleFunction(cb, interval, args, true);
-    _pendingPeriodicTimers.push(id);
-    return id;
-  }
-  function _clearInterval(id) {
-    collection_1.ListWrapper.remove(_pendingPeriodicTimers, id);
-    return _scheduler.removeFunctionWithId(id);
-  }
-  function _fnAndFlush(fn) {
-    return function() {
-      var args = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
-      }
-      fn.apply(lang_1.global, args);
-      flushMicrotasks();
-    };
-  }
-  function _dequeueTimer(id) {
-    return function() {
-      collection_1.ListWrapper.remove(_pendingTimers, id);
-    };
-  }
+    return _Expectation;
+  }());
   global.define = __define;
   return module.exports;
 });
@@ -1900,7 +2020,7 @@ System.register("angular2/src/mock/mock_application_ref", ["angular2/src/core/ap
     }
     MockApplicationRef.prototype.registerBootstrapListener = function(listener) {};
     MockApplicationRef.prototype.registerDisposeListener = function(dispose) {};
-    MockApplicationRef.prototype.bootstrap = function(componentType, bindings) {
+    MockApplicationRef.prototype.bootstrap = function(componentFactory) {
       return null;
     };
     Object.defineProperty(MockApplicationRef.prototype, "injector", {
@@ -1919,6 +2039,12 @@ System.register("angular2/src/mock/mock_application_ref", ["angular2/src/core/ap
       configurable: true
     });
     ;
+    MockApplicationRef.prototype.run = function(callback) {
+      return null;
+    };
+    MockApplicationRef.prototype.waitForAsyncInitializers = function() {
+      return null;
+    };
     MockApplicationRef.prototype.dispose = function() {};
     MockApplicationRef.prototype.tick = function() {};
     Object.defineProperty(MockApplicationRef.prototype, "componentTypes", {
@@ -2140,112 +2266,6 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
   return module.exports;
 });
 
-System.register("angular2/src/compiler/xhr_mock", ["angular2/src/compiler/xhr", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/async"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var xhr_1 = require("angular2/src/compiler/xhr");
-  var collection_1 = require("angular2/src/facade/collection");
-  var lang_1 = require("angular2/src/facade/lang");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
-  var async_1 = require("angular2/src/facade/async");
-  var MockXHR = (function(_super) {
-    __extends(MockXHR, _super);
-    function MockXHR() {
-      _super.apply(this, arguments);
-      this._expectations = [];
-      this._definitions = new collection_1.Map();
-      this._requests = [];
-    }
-    MockXHR.prototype.get = function(url) {
-      var request = new _PendingRequest(url);
-      this._requests.push(request);
-      return request.getPromise();
-    };
-    MockXHR.prototype.expect = function(url, response) {
-      var expectation = new _Expectation(url, response);
-      this._expectations.push(expectation);
-    };
-    MockXHR.prototype.when = function(url, response) {
-      this._definitions.set(url, response);
-    };
-    MockXHR.prototype.flush = function() {
-      if (this._requests.length === 0) {
-        throw new exceptions_1.BaseException('No pending requests to flush');
-      }
-      do {
-        this._processRequest(this._requests.shift());
-      } while (this._requests.length > 0);
-      this.verifyNoOutstandingExpectations();
-    };
-    MockXHR.prototype.verifyNoOutstandingExpectations = function() {
-      if (this._expectations.length === 0)
-        return ;
-      var urls = [];
-      for (var i = 0; i < this._expectations.length; i++) {
-        var expectation = this._expectations[i];
-        urls.push(expectation.url);
-      }
-      throw new exceptions_1.BaseException("Unsatisfied requests: " + urls.join(', '));
-    };
-    MockXHR.prototype._processRequest = function(request) {
-      var url = request.url;
-      if (this._expectations.length > 0) {
-        var expectation = this._expectations[0];
-        if (expectation.url == url) {
-          collection_1.ListWrapper.remove(this._expectations, expectation);
-          request.complete(expectation.response);
-          return ;
-        }
-      }
-      if (this._definitions.has(url)) {
-        var response = this._definitions.get(url);
-        request.complete(lang_1.normalizeBlank(response));
-        return ;
-      }
-      throw new exceptions_1.BaseException("Unexpected request " + url);
-    };
-    return MockXHR;
-  }(xhr_1.XHR));
-  exports.MockXHR = MockXHR;
-  var _PendingRequest = (function() {
-    function _PendingRequest(url) {
-      this.url = url;
-      this.completer = async_1.PromiseWrapper.completer();
-    }
-    _PendingRequest.prototype.complete = function(response) {
-      if (lang_1.isBlank(response)) {
-        this.completer.reject("Failed to load " + this.url, null);
-      } else {
-        this.completer.resolve(response);
-      }
-    };
-    _PendingRequest.prototype.getPromise = function() {
-      return this.completer.promise;
-    };
-    return _PendingRequest;
-  }());
-  var _Expectation = (function() {
-    function _Expectation(url, response) {
-      this.url = url;
-      this.response = response;
-    }
-    return _Expectation;
-  }());
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/testing/test_injector", ["angular2/core", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -2275,7 +2295,7 @@ System.register("angular2/src/testing/test_injector", ["angular2/core", "angular
       this._providers = collection_1.ListWrapper.concat(this._providers, providers);
     };
     TestInjector.prototype.createInjector = function() {
-      var rootInjector = core_1.Injector.resolveAndCreate(this.platformProviders);
+      var rootInjector = core_1.ReflectiveInjector.resolveAndCreate(this.platformProviders);
       this._injector = rootInjector.resolveAndCreateChild(collection_1.ListWrapper.concat(this.applicationProviders, this._providers));
       this._instantiated = true;
       return this._injector;
@@ -2309,7 +2329,7 @@ System.register("angular2/src/testing/test_injector", ["angular2/core", "angular
     testInjector.platformProviders = platformProviders;
     testInjector.applicationProviders = applicationProviders;
     var injector = testInjector.createInjector();
-    var inits = injector.getOptional(core_1.PLATFORM_INITIALIZER);
+    var inits = injector.get(core_1.PLATFORM_INITIALIZER, null);
     if (lang_1.isPresent(inits)) {
       inits.forEach(function(init) {
         return init();
