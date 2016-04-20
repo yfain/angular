@@ -63,19 +63,6 @@ main() {
           });
         }));
     it(
-        "should throw if a form isn't passed into ngFormModel",
-        inject([TestComponentBuilder, AsyncTestCompleter],
-            (TestComponentBuilder tcb, async) {
-          var t = '''<div [ngFormModel]="form">
-                <input type="text" ngControl="login">
-               </div>''';
-          tcb.overrideTemplate(MyComp, t).createAsync(MyComp).then((fixture) {
-            expect(() => fixture.detectChanges()).toThrowError(new RegExp(
-                '''ngFormModel expects a form. Please pass one in.'''));
-            async.done();
-          });
-        }));
-    it(
         "should update the control group values on DOM change",
         inject([TestComponentBuilder, AsyncTestCompleter],
             (TestComponentBuilder tcb, async) {
@@ -306,6 +293,50 @@ main() {
               dispatchEvent(input.nativeElement, "input");
               expect(fixture.debugElement.componentInstance.form.value)
                   .toEqual({"num": 20});
+              async.done();
+            });
+          }));
+      it(
+          "should support <type=number> when value is cleared in the UI",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var t = '''<div [ngFormModel]="form">
+                  <input type="number" ngControl="num" required>
+                </div>''';
+            tcb.overrideTemplate(MyComp, t).createAsync(MyComp).then((fixture) {
+              fixture.debugElement.componentInstance.form =
+                  new ControlGroup({"num": new Control(10)});
+              fixture.detectChanges();
+              var input = fixture.debugElement.query(By.css("input"));
+              input.nativeElement.value = "";
+              dispatchEvent(input.nativeElement, "input");
+              expect(fixture.debugElement.componentInstance.form.valid)
+                  .toBe(false);
+              expect(fixture.debugElement.componentInstance.form.value)
+                  .toEqual({"num": null});
+              input.nativeElement.value = "0";
+              dispatchEvent(input.nativeElement, "input");
+              expect(fixture.debugElement.componentInstance.form.valid)
+                  .toBe(true);
+              expect(fixture.debugElement.componentInstance.form.value)
+                  .toEqual({"num": 0});
+              async.done();
+            });
+          }));
+      it(
+          "should support <type=number> when value is cleared programmatically",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var form = new ControlGroup({"num": new Control(10)});
+            var t = '''<div [ngFormModel]="form">
+                  <input type="number" ngControl="num" [(ngModel)]="data">
+                </div>''';
+            tcb.overrideTemplate(MyComp, t).createAsync(MyComp).then((fixture) {
+              fixture.debugElement.componentInstance.form = form;
+              fixture.debugElement.componentInstance.data = null;
+              fixture.detectChanges();
+              var input = fixture.debugElement.query(By.css("input"));
+              expect(input.nativeElement.value).toEqual("");
               async.done();
             });
           }));
