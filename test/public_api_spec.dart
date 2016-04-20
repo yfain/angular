@@ -76,7 +76,6 @@ var NG_COMMON = [
   "NgFormControl",
   "NgFormModel",
   "NgIf",
-  "NgTemplateOutlet",
   "NgModel",
   "NgSelectOption",
   "NgStyle",

@@ -4,7 +4,6 @@ import "package:angular2/src/facade/lang.dart" show Type;
 import "ng_class.dart" show NgClass;
 import "ng_for.dart" show NgFor;
 import "ng_if.dart" show NgIf;
-import "ng_template_outlet.dart" show NgTemplateOutlet;
 import "ng_style.dart" show NgStyle;
 import "ng_switch.dart" show NgSwitch, NgSwitchWhen, NgSwitchDefault;
 import "ng_plural.dart" show NgPlural, NgPluralCase;
@@ -53,7 +52,6 @@ const List<Type> CORE_DIRECTIVES = const [
   NgClass,
   NgFor,
   NgIf,
-  NgTemplateOutlet,
   NgStyle,
   NgSwitch,
   NgSwitchWhen,
