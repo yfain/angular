@@ -43,7 +43,7 @@ class NumberValueAccessor implements ControlValueAccessor {
 
   void registerOnChange(dynamic /* (_: number) => void */ fn) {
     this.onChange = (value) {
-      fn(NumberWrapper.parseFloat(value));
+      fn(value == "" ? null : NumberWrapper.parseFloat(value));
     };
   }
 
