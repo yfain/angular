@@ -2,11 +2,10 @@ import { Injector } from 'angular2/src/core/di';
 import { AppElement } from './element';
 import { Renderer, RenderComponentType } from 'angular2/src/core/render/api';
 import { ViewRef_ } from './view_ref';
-import { AppViewManager_ } from './view_manager';
 import { ViewType } from './view_type';
+import { ViewUtils } from './view_utils';
 import { ChangeDetectorRef, ChangeDetectionStrategy, ChangeDetectorState } from 'angular2/src/core/change_detection/change_detection';
 import { StaticNodeDebugInfo, DebugContext } from './debug_context';
-export declare const HOST_VIEW_ELEMENT_NAME: string;
 /**
  * Cost of making objects: http://jsperf.com/instantiate-size-of-object
  *
@@ -18,7 +17,7 @@ export declare abstract class AppView<T> {
     locals: {
         [key: string]: any;
     };
-    viewManager: AppViewManager_;
+    viewUtils: ViewUtils;
     parentInjector: Injector;
     declarationAppElement: AppElement;
     cdMode: ChangeDetectionStrategy;
@@ -28,12 +27,10 @@ export declare abstract class AppView<T> {
     allNodes: any[];
     disposables: Function[];
     subscriptions: any[];
-    namedAppElements: {
-        [key: string]: AppElement;
-    };
     contentChildren: AppView<any>[];
     viewChildren: AppView<any>[];
     renderParent: AppView<any>;
+    viewContainerElement: AppElement;
     private _literalArrayCache;
     private _literalMapCache;
     cdState: ChangeDetectorState;
@@ -46,18 +43,18 @@ export declare abstract class AppView<T> {
     destroyed: boolean;
     renderer: Renderer;
     private _currentDebugContext;
+    private _hasExternalHostElement;
     constructor(clazz: any, componentType: RenderComponentType, type: ViewType, locals: {
         [key: string]: any;
-    }, viewManager: AppViewManager_, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy, literalArrayCacheSize: number, literalMapCacheSize: number, staticNodeDebugInfos: StaticNodeDebugInfo[]);
-    create(givenProjectableNodes: Array<any | any[]>, rootSelector: string): void;
+    }, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy, literalArrayCacheSize: number, literalMapCacheSize: number, staticNodeDebugInfos: StaticNodeDebugInfo[]);
+    create(givenProjectableNodes: Array<any | any[]>, rootSelectorOrNode: string | any): AppElement;
     /**
-     * Overwritten by implementations
+     * Overwritten by implementations.
+     * Returns the AppElement for the host element for ViewType.HOST.
      */
-    createInternal(rootSelector: string): void;
-    init(rootNodesOrAppElements: any[], allNodes: any[], appElements: {
-        [key: string]: AppElement;
-    }, disposables: Function[], subscriptions: any[]): void;
-    getHostViewElement(): AppElement;
+    createInternal(rootSelectorOrNode: string | any): AppElement;
+    init(rootNodesOrAppElements: any[], allNodes: any[], disposables: Function[], subscriptions: any[]): void;
+    selectOrCreateHostElement(elementName: string, rootSelectorOrNode: string | any, debugCtx: DebugContext): any;
     injectorGet(token: any, nodeIndex: number, notFoundResult: any): any;
     /**
      * Overwritten by implementations
@@ -65,6 +62,7 @@ export declare abstract class AppView<T> {
     injectorGetInternal(token: any, nodeIndex: number, notFoundResult: any): any;
     injector(nodeIndex: number): Injector;
     destroy(): void;
+    private _destroyRecurse();
     private _destroyLocal();
     /**
      * Overwritten by implementations
@@ -89,6 +87,8 @@ export declare abstract class AppView<T> {
     detectChangesInternal(throwOnChange: boolean): void;
     detectContentChildrenChanges(throwOnChange: boolean): void;
     detectViewChildrenChanges(throwOnChange: boolean): void;
+    addToContentChildren(renderAppElement: AppElement): void;
+    removeFromContentChildren(renderAppElement: AppElement): void;
     literalArray(id: number, value: any[]): any[];
     literalMap(id: number, value: {
         [key: string]: any;
@@ -102,9 +102,4 @@ export declare abstract class AppView<T> {
     private _rethrowWithContext(e, stack);
     eventHandler(cb: Function): Function;
     throwDestroyedError(details: string): void;
-}
-export declare class HostViewFactory {
-    selector: string;
-    viewFactory: Function;
-    constructor(selector: string, viewFactory: Function);
 }

@@ -19,10 +19,10 @@ class _InterpretiveAppView extends AppView {
     createInternal(rootSelector) {
         var m = this.methods.get('createInternal');
         if (isPresent(m)) {
-            m(rootSelector);
+            return m(rootSelector);
         }
         else {
-            super.createInternal(rootSelector);
+            return super.createInternal(rootSelector);
         }
     }
     injectorGetInternal(token, nodeIndex, notFoundResult) {

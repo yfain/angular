@@ -89,10 +89,11 @@ export declare class ElementAst implements TemplateAst {
     exportAsVars: VariableAst[];
     directives: DirectiveAst[];
     providers: ProviderAst[];
+    hasViewContainer: boolean;
     children: TemplateAst[];
     ngContentIndex: number;
     sourceSpan: ParseSourceSpan;
-    constructor(name: string, attrs: AttrAst[], inputs: BoundElementPropertyAst[], outputs: BoundEventAst[], exportAsVars: VariableAst[], directives: DirectiveAst[], providers: ProviderAst[], children: TemplateAst[], ngContentIndex: number, sourceSpan: ParseSourceSpan);
+    constructor(name: string, attrs: AttrAst[], inputs: BoundElementPropertyAst[], outputs: BoundEventAst[], exportAsVars: VariableAst[], directives: DirectiveAst[], providers: ProviderAst[], hasViewContainer: boolean, children: TemplateAst[], ngContentIndex: number, sourceSpan: ParseSourceSpan);
     visit(visitor: TemplateAstVisitor, context: any): any;
     /**
      * Whether the element has any active bindings (inputs, outputs, vars, or directives).
@@ -112,10 +113,11 @@ export declare class EmbeddedTemplateAst implements TemplateAst {
     vars: VariableAst[];
     directives: DirectiveAst[];
     providers: ProviderAst[];
+    hasViewContainer: boolean;
     children: TemplateAst[];
     ngContentIndex: number;
     sourceSpan: ParseSourceSpan;
-    constructor(attrs: AttrAst[], outputs: BoundEventAst[], vars: VariableAst[], directives: DirectiveAst[], providers: ProviderAst[], children: TemplateAst[], ngContentIndex: number, sourceSpan: ParseSourceSpan);
+    constructor(attrs: AttrAst[], outputs: BoundEventAst[], vars: VariableAst[], directives: DirectiveAst[], providers: ProviderAst[], hasViewContainer: boolean, children: TemplateAst[], ngContentIndex: number, sourceSpan: ParseSourceSpan);
     visit(visitor: TemplateAstVisitor, context: any): any;
 }
 /**

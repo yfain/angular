@@ -1,19 +1,8 @@
 import { ChangeDetectorRef } from '../change_detection/change_detector_ref';
-import { AppView, HostViewFactory } from './view';
+import { AppView } from './view';
 export declare abstract class ViewRef extends ChangeDetectorRef {
     destroyed: boolean;
-}
-/**
- * Represents a View containing a single Element that is the Host Element of a {@link Component}
- * instance.
- *
- * A Host View is created for every dynamically created Component that was compiled on its own (as
- * opposed to as a part of another Component's Template) via {@link Compiler#compileInHost} or one
- * of the higher-level APIs: {@link AppViewManager#createRootHostView},
- * {@link AppViewManager#createHostViewInContainer}, {@link ViewContainerRef#createHostView}.
- */
-export declare abstract class HostViewRef extends ViewRef {
-    rootNodes: any[];
+    abstract onDestroy(callback: Function): any;
 }
 /**
  * Represents an Angular View.
@@ -78,8 +67,12 @@ export declare abstract class EmbeddedViewRef extends ViewRef {
      */
     abstract hasLocal(variableName: string): boolean;
     rootNodes: any[];
+    /**
+     * Destroys the view and all of the data structures associated with it.
+     */
+    abstract destroy(): any;
 }
-export declare class ViewRef_ implements EmbeddedViewRef, HostViewRef {
+export declare class ViewRef_ implements EmbeddedViewRef {
     private _view;
     constructor(_view: AppView<any>);
     internalView: AppView<any>;
@@ -96,11 +89,6 @@ export declare class ViewRef_ implements EmbeddedViewRef, HostViewRef {
     detectChanges(): void;
     checkNoChanges(): void;
     reattach(): void;
-}
-export declare abstract class HostViewFactoryRef {
-}
-export declare class HostViewFactoryRef_ implements HostViewFactoryRef {
-    private _hostViewFactory;
-    constructor(_hostViewFactory: HostViewFactory);
-    internalHostViewFactory: HostViewFactory;
+    onDestroy(callback: Function): void;
+    destroy(): void;
 }

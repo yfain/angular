@@ -22,8 +22,11 @@ export function getPropertyInView(property, viewPath) {
     }
 }
 export function injectFromViewParentInjector(token, optional) {
-    var method = optional ? 'getOptional' : 'get';
-    return o.THIS_EXPR.prop('parentInjector').callMethod(method, [createDiTokenExpression(token)]);
+    var args = [createDiTokenExpression(token)];
+    if (optional) {
+        args.push(o.NULL_EXPR);
+    }
+    return o.THIS_EXPR.prop('parentInjector').callMethod('get', args);
 }
 export function getViewFactoryName(component, embeddedTemplateIndex) {
     return `viewFactory_${component.type.name}${embeddedTemplateIndex}`;

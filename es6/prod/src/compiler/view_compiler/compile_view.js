@@ -22,8 +22,8 @@ export class CompileView {
         this.viewIndex = viewIndex;
         this.declarationElement = declarationElement;
         this.templateVariableBindings = templateVariableBindings;
-        this.namedAppElements = [];
         this.nodes = [];
+        // root nodes or AppElements for ViewContainers
         this.rootNodesOrAppElements = [];
         this.bindings = [];
         this.classStatements = [];
