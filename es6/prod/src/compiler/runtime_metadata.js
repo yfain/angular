@@ -11,28 +11,21 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { resolveForwardRef } from 'angular2/src/core/di';
-import { Type, isBlank, isPresent, isArray, stringify, isString, StringWrapper } from 'angular2/src/facade/lang';
-import { StringMapWrapper } from 'angular2/src/facade/collection';
+import { Type, isBlank, isPresent, isArray, stringify } from 'angular2/src/facade/lang';
 import { BaseException } from 'angular2/src/facade/exceptions';
-import { NoAnnotationError } from 'angular2/src/core/di/reflective_exceptions';
-import * as cpl from './compile_metadata';
+import * as cpl from './directive_metadata';
 import * as md from 'angular2/src/core/metadata/directives';
-import * as dimd from 'angular2/src/core/metadata/di';
-import { DirectiveResolver } from './directive_resolver';
-import { PipeResolver } from './pipe_resolver';
-import { ViewResolver } from './view_resolver';
-import { hasLifecycleHook } from './directive_lifecycle_reflector';
-import { LIFECYCLE_HOOKS_VALUES } from 'angular2/src/core/metadata/lifecycle_hooks';
+import { DirectiveResolver } from 'angular2/src/core/linker/directive_resolver';
+import { PipeResolver } from 'angular2/src/core/linker/pipe_resolver';
+import { ViewResolver } from 'angular2/src/core/linker/view_resolver';
+import { hasLifecycleHook } from 'angular2/src/core/linker/directive_lifecycle_reflector';
+import { LIFECYCLE_HOOKS_VALUES } from 'angular2/src/core/linker/interfaces';
 import { reflector } from 'angular2/src/core/reflection/reflection';
 import { Injectable, Inject, Optional } from 'angular2/src/core/di';
 import { PLATFORM_DIRECTIVES, PLATFORM_PIPES } from 'angular2/src/core/platform_directives_and_pipes';
 import { MODULE_SUFFIX } from './util';
 import { assertArrayOfStrings } from './assertions';
 import { getUrlScheme } from 'angular2/src/compiler/url_resolver';
-import { Provider } from 'angular2/src/core/di/provider';
-import { constructDependencies } from 'angular2/src/core/di/reflective_provider';
-import { SelfMetadata, HostMetadata, SkipSelfMetadata } from 'angular2/src/core/di/metadata';
-import { AttributeMetadata } from 'angular2/src/core/metadata/di';
 export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
     constructor(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes) {
         this._directiveResolver = _directiveResolver;
@@ -49,12 +42,12 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
      * Wrap the stringify method to avoid naming things `function (arg1...) {`
      */
     sanitizeName(obj) {
-        let result = StringWrapper.replaceAll(stringify(obj), /[\s-]/g, '_');
+        let result = stringify(obj);
         if (result.indexOf('(') < 0) {
             return result;
         }
         let found = this._anonymousTypes.get(obj);
-        if (isBlank(found)) {
+        if (!found) {
             this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
             found = this._anonymousTypes.get(obj);
         }
@@ -67,7 +60,6 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             var moduleUrl = null;
             var templateMeta = null;
             var changeDetectionStrategy = null;
-            var viewProviders = [];
             if (dirMeta instanceof md.ComponentMetadata) {
                 assertArrayOfStrings('styles', dirMeta.styles);
                 var cmpMeta = dirMeta;
@@ -82,55 +74,23 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
                     styleUrls: viewMeta.styleUrls
                 });
                 changeDetectionStrategy = cmpMeta.changeDetection;
-                if (isPresent(dirMeta.viewProviders)) {
-                    viewProviders = this.getProvidersMetadata(dirMeta.viewProviders);
-                }
-            }
-            var providers = [];
-            if (isPresent(dirMeta.providers)) {
-                providers = this.getProvidersMetadata(dirMeta.providers);
-            }
-            var queries = [];
-            var viewQueries = [];
-            if (isPresent(dirMeta.queries)) {
-                queries = this.getQueriesMetadata(dirMeta.queries, false);
-                viewQueries = this.getQueriesMetadata(dirMeta.queries, true);
             }
             meta = cpl.CompileDirectiveMetadata.create({
                 selector: dirMeta.selector,
                 exportAs: dirMeta.exportAs,
                 isComponent: isPresent(templateMeta),
-                type: this.getTypeMetadata(directiveType, moduleUrl),
+                dynamicLoadable: true,
+                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(directiveType), moduleUrl: moduleUrl, runtime: directiveType }),
                 template: templateMeta,
                 changeDetection: changeDetectionStrategy,
                 inputs: dirMeta.inputs,
                 outputs: dirMeta.outputs,
                 host: dirMeta.host,
-                lifecycleHooks: LIFECYCLE_HOOKS_VALUES.filter(hook => hasLifecycleHook(hook, directiveType)),
-                providers: providers,
-                viewProviders: viewProviders,
-                queries: queries,
-                viewQueries: viewQueries
+                lifecycleHooks: LIFECYCLE_HOOKS_VALUES.filter(hook => hasLifecycleHook(hook, directiveType))
             });
             this._directiveCache.set(directiveType, meta);
         }
         return meta;
-    }
-    getTypeMetadata(type, moduleUrl) {
-        return new cpl.CompileTypeMetadata({
-            name: this.sanitizeName(type),
-            moduleUrl: moduleUrl,
-            runtime: type,
-            diDeps: this.getDependenciesMetadata(type, null)
-        });
-    }
-    getFactoryMetadata(factory, moduleUrl) {
-        return new cpl.CompileFactoryMetadata({
-            name: this.sanitizeName(factory),
-            moduleUrl: moduleUrl,
-            runtime: factory,
-            diDeps: this.getDependenciesMetadata(factory, null)
-        });
     }
     getPipeMetadata(pipeType) {
         var meta = this._pipeCache.get(pipeType);
@@ -138,10 +98,9 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             var pipeMeta = this._pipeResolver.resolve(pipeType);
             var moduleUrl = reflector.importUri(pipeType);
             meta = new cpl.CompilePipeMetadata({
-                type: this.getTypeMetadata(pipeType, moduleUrl),
+                type: new cpl.CompileTypeMetadata({ name: this.sanitizeName(pipeType), moduleUrl: moduleUrl, runtime: pipeType }),
                 name: pipeMeta.name,
-                pure: pipeMeta.pure,
-                lifecycleHooks: LIFECYCLE_HOOKS_VALUES.filter(hook => hasLifecycleHook(hook, pipeType)),
+                pure: pipeMeta.pure
             });
             this._pipeCache.set(pipeType, meta);
         }
@@ -166,121 +125,6 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             }
         }
         return pipes.map(type => this.getPipeMetadata(type));
-    }
-    getDependenciesMetadata(typeOrFunc, dependencies) {
-        var deps;
-        try {
-            deps = constructDependencies(typeOrFunc, dependencies);
-        }
-        catch (e) {
-            if (e instanceof NoAnnotationError) {
-                deps = [];
-            }
-            else {
-                throw e;
-            }
-        }
-        return deps.map((dep) => {
-            var compileToken;
-            var p = dep.properties.find(p => p instanceof AttributeMetadata);
-            var isAttribute = false;
-            if (isPresent(p)) {
-                compileToken = this.getTokenMetadata(p.attributeName);
-                isAttribute = true;
-            }
-            else {
-                compileToken = this.getTokenMetadata(dep.key.token);
-            }
-            var compileQuery = null;
-            var q = dep.properties.find(p => p instanceof dimd.QueryMetadata);
-            if (isPresent(q)) {
-                compileQuery = this.getQueryMetadata(q, null);
-            }
-            return new cpl.CompileDiDependencyMetadata({
-                isAttribute: isAttribute,
-                isHost: dep.upperBoundVisibility instanceof HostMetadata,
-                isSelf: dep.upperBoundVisibility instanceof SelfMetadata,
-                isSkipSelf: dep.lowerBoundVisibility instanceof SkipSelfMetadata,
-                isOptional: dep.optional,
-                query: isPresent(q) && !q.isViewQuery ? compileQuery : null,
-                viewQuery: isPresent(q) && q.isViewQuery ? compileQuery : null,
-                token: compileToken
-            });
-        });
-    }
-    getRuntimeIdentifier(value) {
-        return new cpl.CompileIdentifierMetadata({ runtime: value, name: this.sanitizeName(value) });
-    }
-    getTokenMetadata(token) {
-        token = resolveForwardRef(token);
-        var compileToken;
-        if (isString(token)) {
-            compileToken = new cpl.CompileTokenMetadata({ value: token });
-        }
-        else {
-            compileToken = new cpl.CompileTokenMetadata({ identifier: this.getRuntimeIdentifier(token) });
-        }
-        return compileToken;
-    }
-    getProvidersMetadata(providers) {
-        return providers.map((provider) => {
-            provider = resolveForwardRef(provider);
-            if (isArray(provider)) {
-                return this.getProvidersMetadata(provider);
-            }
-            else if (provider instanceof Provider) {
-                return this.getProviderMetadata(provider);
-            }
-            else {
-                return this.getTypeMetadata(provider, null);
-            }
-        });
-    }
-    getProviderMetadata(provider) {
-        var compileDeps;
-        if (isPresent(provider.useClass)) {
-            compileDeps = this.getDependenciesMetadata(provider.useClass, provider.dependencies);
-        }
-        else if (isPresent(provider.useFactory)) {
-            compileDeps = this.getDependenciesMetadata(provider.useFactory, provider.dependencies);
-        }
-        return new cpl.CompileProviderMetadata({
-            token: this.getTokenMetadata(provider.token),
-            useClass: isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, null) : null,
-            useValue: isPresent(provider.useValue) ? this.getRuntimeIdentifier(provider.useValue) : null,
-            useFactory: isPresent(provider.useFactory) ?
-                this.getFactoryMetadata(provider.useFactory, null) :
-                null,
-            useExisting: isPresent(provider.useExisting) ? this.getTokenMetadata(provider.useExisting) :
-                null,
-            deps: compileDeps,
-            multi: provider.multi
-        });
-    }
-    getQueriesMetadata(queries, isViewQuery) {
-        var compileQueries = [];
-        StringMapWrapper.forEach(queries, (query, propertyName) => {
-            if (query.isViewQuery === isViewQuery) {
-                compileQueries.push(this.getQueryMetadata(query, propertyName));
-            }
-        });
-        return compileQueries;
-    }
-    getQueryMetadata(q, propertyName) {
-        var selectors;
-        if (q.isVarBindingQuery) {
-            selectors = q.varBindings.map(varName => this.getTokenMetadata(varName));
-        }
-        else {
-            selectors = [this.getTokenMetadata(q.selector)];
-        }
-        return new cpl.CompileQueryMetadata({
-            selectors: selectors,
-            first: q.first,
-            descendants: q.descendants,
-            propertyName: propertyName,
-            read: isPresent(q.read) ? this.getTokenMetadata(q.read) : null
-        });
     }
 };
 RuntimeMetadataResolver = __decorate([
