@@ -594,72 +594,27 @@ System.register("rxjs/util/root", [], true, function(require, exports, module) {
   return module.exports;
 });
 
-System.register("rxjs/util/SymbolShim", ["rxjs/util/root"], true, function(require, exports, module) {
+System.register("rxjs/symbol/observable", ["rxjs/util/root"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var root_1 = require("rxjs/util/root");
-  function polyfillSymbol(root) {
-    var Symbol = ensureSymbol(root);
-    ensureIterator(Symbol, root);
-    ensureObservable(Symbol);
-    ensureFor(Symbol);
-    return Symbol;
-  }
-  exports.polyfillSymbol = polyfillSymbol;
-  function ensureFor(Symbol) {
-    if (!Symbol.for) {
-      Symbol.for = symbolForPolyfill;
-    }
-  }
-  exports.ensureFor = ensureFor;
-  var id = 0;
-  function ensureSymbol(root) {
-    if (!root.Symbol) {
-      root.Symbol = function symbolFuncPolyfill(description) {
-        return "@@Symbol(" + description + "):" + id++;
-      };
-    }
-    return root.Symbol;
-  }
-  exports.ensureSymbol = ensureSymbol;
-  function symbolForPolyfill(key) {
-    return '@@' + key;
-  }
-  exports.symbolForPolyfill = symbolForPolyfill;
-  function ensureIterator(Symbol, root) {
-    if (!Symbol.iterator) {
+  var Symbol = root_1.root.Symbol;
+  if (typeof Symbol === 'function') {
+    if (Symbol.observable) {
+      exports.$$observable = Symbol.observable;
+    } else {
       if (typeof Symbol.for === 'function') {
-        Symbol.iterator = Symbol.for('iterator');
-      } else if (root.Set && typeof new root.Set()['@@iterator'] === 'function') {
-        Symbol.iterator = '@@iterator';
-      } else if (root.Map) {
-        var keys = Object.getOwnPropertyNames(root.Map.prototype);
-        for (var i = 0; i < keys.length; ++i) {
-          var key = keys[i];
-          if (key !== 'entries' && key !== 'size' && root.Map.prototype[key] === root.Map.prototype['entries']) {
-            Symbol.iterator = key;
-            break;
-          }
-        }
+        exports.$$observable = Symbol.for('observable');
       } else {
-        Symbol.iterator = '@@iterator';
+        exports.$$observable = Symbol('observable');
       }
+      Symbol.observable = exports.$$observable;
     }
+  } else {
+    exports.$$observable = '@@observable';
   }
-  exports.ensureIterator = ensureIterator;
-  function ensureObservable(Symbol) {
-    if (!Symbol.observable) {
-      if (typeof Symbol.for === 'function') {
-        Symbol.observable = Symbol.for('observable');
-      } else {
-        Symbol.observable = '@@observable';
-      }
-    }
-  }
-  exports.ensureObservable = ensureObservable;
-  exports.SymbolShim = polyfillSymbol(root_1.root);
   global.define = __define;
   return module.exports;
 });
@@ -712,13 +667,45 @@ System.register("rxjs/util/errorObject", [], true, function(require, exports, mo
   return module.exports;
 });
 
-System.register("rxjs/symbol/rxSubscriber", ["rxjs/util/SymbolShim"], true, function(require, exports, module) {
+System.register("rxjs/util/UnsubscriptionError", [], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
-  var SymbolShim_1 = require("rxjs/util/SymbolShim");
-  exports.rxSubscriber = SymbolShim_1.SymbolShim.for('rxSubscriber');
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var UnsubscriptionError = (function(_super) {
+    __extends(UnsubscriptionError, _super);
+    function UnsubscriptionError(errors) {
+      _super.call(this);
+      this.errors = errors;
+      this.name = 'UnsubscriptionError';
+      this.message = errors ? errors.length + " errors occurred during unsubscription:\n" + errors.map(function(err, i) {
+        return ((i + 1) + ") " + err.toString());
+      }).join('\n') : '';
+    }
+    return UnsubscriptionError;
+  }(Error));
+  exports.UnsubscriptionError = UnsubscriptionError;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("rxjs/symbol/rxSubscriber", ["rxjs/util/root"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var root_1 = require("rxjs/util/root");
+  var Symbol = root_1.root.Symbol;
+  exports.$$rxSubscriber = (typeof Symbol === 'function' && typeof Symbol.for === 'function') ? Symbol.for('rxSubscriber') : '@@rxSubscriber';
   global.define = __define;
   return module.exports;
 });
@@ -740,7 +727,7 @@ System.register("rxjs/Observer", [], true, function(require, exports, module) {
   return module.exports;
 });
 
-System.register("rxjs/subject/SubjectSubscription", ["rxjs/Subscription"], true, function(require, exports, module) {
+System.register("rxjs/SubjectSubscription", ["rxjs/Subscription"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -922,17 +909,17 @@ System.register("rxjs/observable/PromiseObservable", ["rxjs/util/root", "rxjs/Ob
     return PromiseObservable;
   }(Observable_1.Observable));
   exports.PromiseObservable = PromiseObservable;
-  function dispatchNext(_a) {
-    var value = _a.value,
-        subscriber = _a.subscriber;
+  function dispatchNext(arg) {
+    var value = arg.value,
+        subscriber = arg.subscriber;
     if (!subscriber.isUnsubscribed) {
       subscriber.next(value);
       subscriber.complete();
     }
   }
-  function dispatchError(_a) {
-    var err = _a.err,
-        subscriber = _a.subscriber;
+  function dispatchError(arg) {
+    var err = arg.err,
+        subscriber = arg.subscriber;
     if (!subscriber.isUnsubscribed) {
       subscriber.error(err);
     }
@@ -11646,41 +11633,6 @@ System.register("angular2/src/web_workers/ui/xhr_impl", ["angular2/src/core/di",
   return module.exports;
 });
 
-System.register("angular2/src/router/location/platform_location", [], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var PlatformLocation = (function() {
-    function PlatformLocation() {}
-    Object.defineProperty(PlatformLocation.prototype, "pathname", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "search", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "hash", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return PlatformLocation;
-  }());
-  exports.PlatformLocation = PlatformLocation;
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/web_workers/shared/client_message_broker", ["angular2/src/web_workers/shared/message_bus", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/web_workers/shared/serializer", "angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -11862,6 +11814,41 @@ System.register("angular2/src/web_workers/shared/client_message_broker", ["angul
     return UiArguments;
   }());
   exports.UiArguments = UiArguments;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/platform/browser/location/platform_location", [], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var PlatformLocation = (function() {
+    function PlatformLocation() {}
+    Object.defineProperty(PlatformLocation.prototype, "pathname", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(PlatformLocation.prototype, "search", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(PlatformLocation.prototype, "hash", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    return PlatformLocation;
+  }());
+  exports.PlatformLocation = PlatformLocation;
   global.define = __define;
   return module.exports;
 });
@@ -12054,7 +12041,7 @@ System.register("angular2/src/web_workers/shared/post_message_bus", ["angular2/s
   return module.exports;
 });
 
-System.register("angular2/src/web_workers/ui/platform_location", ["angular2/src/router/location/browser_platform_location", "angular2/src/core/di", "angular2/src/web_workers/shared/messaging_api", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/ui/bind", "angular2/src/web_workers/shared/serialized_types", "angular2/src/web_workers/shared/message_bus", "angular2/src/facade/async"], true, function(require, exports, module) {
+System.register("angular2/src/web_workers/ui/platform_location", ["angular2/src/platform/browser/location/browser_platform_location", "angular2/src/core/di", "angular2/src/web_workers/shared/messaging_api", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/ui/bind", "angular2/src/web_workers/shared/serialized_types", "angular2/src/web_workers/shared/message_bus", "angular2/src/facade/async"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -12075,7 +12062,7 @@ System.register("angular2/src/web_workers/ui/platform_location", ["angular2/src/
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
       return Reflect.metadata(k, v);
   };
-  var browser_platform_location_1 = require("angular2/src/router/location/browser_platform_location");
+  var browser_platform_location_1 = require("angular2/src/platform/browser/location/browser_platform_location");
   var di_1 = require("angular2/src/core/di");
   var messaging_api_1 = require("angular2/src/web_workers/shared/messaging_api");
   var service_message_broker_1 = require("angular2/src/web_workers/shared/service_message_broker");
@@ -16779,7 +16766,7 @@ System.register("angular2/src/web_workers/ui/event_dispatcher", ["angular2/src/w
   return module.exports;
 });
 
-System.register("angular2/src/router/location/browser_platform_location", ["angular2/core", "angular2/src/router/location/platform_location", "angular2/src/platform/dom/dom_adapter"], true, function(require, exports, module) {
+System.register("angular2/src/platform/browser/location/browser_platform_location", ["angular2/src/core/di/decorators", "angular2/src/platform/browser/location/platform_location", "angular2/src/platform/dom/dom_adapter"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -16809,8 +16796,8 @@ System.register("angular2/src/router/location/browser_platform_location", ["angu
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
       return Reflect.metadata(k, v);
   };
-  var core_1 = require("angular2/core");
-  var platform_location_1 = require("angular2/src/router/location/platform_location");
+  var decorators_1 = require("angular2/src/core/di/decorators");
+  var platform_location_1 = require("angular2/src/platform/browser/location/platform_location");
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
   var BrowserPlatformLocation = (function(_super) {
     __extends(BrowserPlatformLocation, _super);
@@ -16874,7 +16861,7 @@ System.register("angular2/src/router/location/browser_platform_location", ["angu
     BrowserPlatformLocation.prototype.back = function() {
       this._history.back();
     };
-    BrowserPlatformLocation = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [])], BrowserPlatformLocation);
+    BrowserPlatformLocation = __decorate([decorators_1.Injectable(), __metadata('design:paramtypes', [])], BrowserPlatformLocation);
     return BrowserPlatformLocation;
   }(platform_location_1.PlatformLocation));
   exports.BrowserPlatformLocation = BrowserPlatformLocation;
@@ -16956,14 +16943,14 @@ System.register("angular2/src/platform/worker_render", ["angular2/src/web_worker
   return module.exports;
 });
 
-System.register("angular2/src/web_workers/ui/router_providers", ["angular2/src/web_workers/ui/platform_location", "angular2/src/facade/lang", "angular2/src/router/location/browser_platform_location", "angular2/core"], true, function(require, exports, module) {
+System.register("angular2/src/web_workers/ui/router_providers", ["angular2/src/web_workers/ui/platform_location", "angular2/src/facade/lang", "angular2/src/platform/browser/location/browser_platform_location", "angular2/core"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var platform_location_1 = require("angular2/src/web_workers/ui/platform_location");
   var lang_1 = require("angular2/src/facade/lang");
-  var browser_platform_location_1 = require("angular2/src/router/location/browser_platform_location");
+  var browser_platform_location_1 = require("angular2/src/platform/browser/location/browser_platform_location");
   var core_1 = require("angular2/core");
   exports.WORKER_RENDER_ROUTER = lang_1.CONST_EXPR([platform_location_1.MessageBasedPlatformLocation, browser_platform_location_1.BrowserPlatformLocation, lang_1.CONST_EXPR(new core_1.Provider(core_1.APP_INITIALIZER, {
     useFactory: initRouterListeners,
@@ -16982,30 +16969,22 @@ System.register("angular2/src/web_workers/ui/router_providers", ["angular2/src/w
   return module.exports;
 });
 
-System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject", "rxjs/util/isFunction", "rxjs/util/tryCatch", "rxjs/util/errorObject"], true, function(require, exports, module) {
+System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject", "rxjs/util/isFunction", "rxjs/util/tryCatch", "rxjs/util/errorObject", "rxjs/util/UnsubscriptionError"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
   var isArray_1 = require("rxjs/util/isArray");
   var isObject_1 = require("rxjs/util/isObject");
   var isFunction_1 = require("rxjs/util/isFunction");
   var tryCatch_1 = require("rxjs/util/tryCatch");
   var errorObject_1 = require("rxjs/util/errorObject");
+  var UnsubscriptionError_1 = require("rxjs/util/UnsubscriptionError");
   var Subscription = (function() {
-    function Subscription(_unsubscribe) {
+    function Subscription(unsubscribe) {
       this.isUnsubscribed = false;
-      if (_unsubscribe) {
-        this._unsubscribe = _unsubscribe;
+      if (unsubscribe) {
+        this._unsubscribe = unsubscribe;
       }
     }
     Subscription.prototype.unsubscribe = function() {
@@ -17037,7 +17016,7 @@ System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject",
               hasErrors = true;
               errors = errors || [];
               var err = errorObject_1.errorObject.e;
-              if (err instanceof UnsubscriptionError) {
+              if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
                 errors = errors.concat(err.errors);
               } else {
                 errors.push(err);
@@ -17047,17 +17026,17 @@ System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject",
         }
       }
       if (hasErrors) {
-        throw new UnsubscriptionError(errors);
+        throw new UnsubscriptionError_1.UnsubscriptionError(errors);
       }
     };
-    Subscription.prototype.add = function(subscription) {
-      if (!subscription || (subscription === this) || (subscription === Subscription.EMPTY)) {
+    Subscription.prototype.add = function(teardown) {
+      if (!teardown || (teardown === this) || (teardown === Subscription.EMPTY)) {
         return ;
       }
-      var sub = subscription;
-      switch (typeof subscription) {
+      var sub = teardown;
+      switch (typeof teardown) {
         case 'function':
-          sub = new Subscription(subscription);
+          sub = new Subscription(teardown);
         case 'object':
           if (sub.isUnsubscribed || typeof sub.unsubscribe !== 'function') {
             break;
@@ -17068,8 +17047,9 @@ System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject",
           }
           break;
         default:
-          throw new Error('Unrecognized subscription ' + subscription + ' added to Subscription.');
+          throw new Error('Unrecognized teardown ' + teardown + ' added to Subscription.');
       }
+      return sub;
     };
     Subscription.prototype.remove = function(subscription) {
       if (subscription == null || (subscription === this) || (subscription === Subscription.EMPTY)) {
@@ -17090,16 +17070,6 @@ System.register("rxjs/Subscription", ["rxjs/util/isArray", "rxjs/util/isObject",
     return Subscription;
   }());
   exports.Subscription = Subscription;
-  var UnsubscriptionError = (function(_super) {
-    __extends(UnsubscriptionError, _super);
-    function UnsubscriptionError(errors) {
-      _super.call(this, 'unsubscriptoin error(s)');
-      this.errors = errors;
-      this.name = 'UnsubscriptionError';
-    }
-    return UnsubscriptionError;
-  }(Error));
-  exports.UnsubscriptionError = UnsubscriptionError;
   global.define = __define;
   return module.exports;
 });
@@ -19149,6 +19119,7 @@ System.register("rxjs/Subscriber", ["rxjs/util/isFunction", "rxjs/Subscription",
           if (typeof destinationOrNext === 'object') {
             if (destinationOrNext instanceof Subscriber) {
               this.destination = destinationOrNext;
+              this.destination.add(this);
             } else {
               this.syncErrorThrowable = true;
               this.destination = new SafeSubscriber(this, destinationOrNext);
@@ -19201,7 +19172,7 @@ System.register("rxjs/Subscriber", ["rxjs/util/isFunction", "rxjs/Subscription",
       this.destination.complete();
       this.unsubscribe();
     };
-    Subscriber.prototype[rxSubscriber_1.rxSubscriber] = function() {
+    Subscriber.prototype[rxSubscriber_1.$$rxSubscriber] = function() {
       return this;
     };
     return Subscriber;
@@ -19221,6 +19192,10 @@ System.register("rxjs/Subscriber", ["rxjs/util/isFunction", "rxjs/Subscription",
         next = observerOrNext.next;
         error = observerOrNext.error;
         complete = observerOrNext.complete;
+        if (isFunction_1.isFunction(context.unsubscribe)) {
+          this.add(context.unsubscribe.bind(context));
+        }
+        context.unsubscribe = this.unsubscribe.bind(this);
       }
       this._context = context;
       this._next = next;
@@ -20874,8 +20849,8 @@ System.register("rxjs/util/toSubscriber", ["rxjs/Subscriber", "rxjs/symbol/rxSub
     if (nextOrObserver && typeof nextOrObserver === 'object') {
       if (nextOrObserver instanceof Subscriber_1.Subscriber) {
         return nextOrObserver;
-      } else if (typeof nextOrObserver[rxSubscriber_1.rxSubscriber] === 'function') {
-        return nextOrObserver[rxSubscriber_1.rxSubscriber]();
+      } else if (typeof nextOrObserver[rxSubscriber_1.$$rxSubscriber] === 'function') {
+        return nextOrObserver[rxSubscriber_1.$$rxSubscriber]();
       }
     }
     return new Subscriber_1.Subscriber(nextOrObserver, error, complete);
@@ -22667,16 +22642,14 @@ System.register("angular2/src/compiler/template_compiler", ["angular2/src/facade
   return module.exports;
 });
 
-System.register("rxjs/Observable", ["rxjs/util/root", "rxjs/util/SymbolShim", "rxjs/util/toSubscriber", "rxjs/util/tryCatch", "rxjs/util/errorObject"], true, function(require, exports, module) {
+System.register("rxjs/Observable", ["rxjs/util/root", "rxjs/symbol/observable", "rxjs/util/toSubscriber"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var root_1 = require("rxjs/util/root");
-  var SymbolShim_1 = require("rxjs/util/SymbolShim");
+  var observable_1 = require("rxjs/symbol/observable");
   var toSubscriber_1 = require("rxjs/util/toSubscriber");
-  var tryCatch_1 = require("rxjs/util/tryCatch");
-  var errorObject_1 = require("rxjs/util/errorObject");
   var Observable = (function() {
     function Observable(subscribe) {
       this._isScalar = false;
@@ -22692,21 +22665,18 @@ System.register("rxjs/Observable", ["rxjs/util/root", "rxjs/util/SymbolShim", "r
     };
     Observable.prototype.subscribe = function(observerOrNext, error, complete) {
       var operator = this.operator;
-      var subscriber = toSubscriber_1.toSubscriber(observerOrNext, error, complete);
-      if (operator) {
-        subscriber.add(this._subscribe(operator.call(subscriber)));
-      } else {
-        subscriber.add(this._subscribe(subscriber));
-      }
-      if (subscriber.syncErrorThrowable) {
-        subscriber.syncErrorThrowable = false;
-        if (subscriber.syncErrorThrown) {
-          throw subscriber.syncErrorValue;
+      var sink = toSubscriber_1.toSubscriber(observerOrNext, error, complete);
+      sink.add(operator ? operator.call(sink, this) : this._subscribe(sink));
+      if (sink.syncErrorThrowable) {
+        sink.syncErrorThrowable = false;
+        if (sink.syncErrorThrown) {
+          throw sink.syncErrorValue;
         }
       }
-      return subscriber;
+      return sink;
     };
-    Observable.prototype.forEach = function(next, thisArg, PromiseCtor) {
+    Observable.prototype.forEach = function(next, PromiseCtor) {
+      var _this = this;
       if (!PromiseCtor) {
         if (root_1.root.Rx && root_1.root.Rx.config && root_1.root.Rx.config.Promise) {
           PromiseCtor = root_1.root.Rx.config.Promise;
@@ -22717,12 +22687,17 @@ System.register("rxjs/Observable", ["rxjs/util/root", "rxjs/util/SymbolShim", "r
       if (!PromiseCtor) {
         throw new Error('no Promise impl found');
       }
-      var source = this;
       return new PromiseCtor(function(resolve, reject) {
-        source.subscribe(function(value) {
-          var result = tryCatch_1.tryCatch(next).call(thisArg, value);
-          if (result === errorObject_1.errorObject) {
-            reject(errorObject_1.errorObject.e);
+        var subscription = _this.subscribe(function(value) {
+          if (subscription) {
+            try {
+              next(value);
+            } catch (err) {
+              reject(err);
+              subscription.unsubscribe();
+            }
+          } else {
+            next(value);
           }
         }, reject, resolve);
       });
@@ -22730,7 +22705,7 @@ System.register("rxjs/Observable", ["rxjs/util/root", "rxjs/util/SymbolShim", "r
     Observable.prototype._subscribe = function(subscriber) {
       return this.source.subscribe(subscriber);
     };
-    Observable.prototype[SymbolShim_1.SymbolShim.observable] = function() {
+    Observable.prototype[observable_1.$$observable] = function() {
       return this;
     };
     Observable.create = function(subscribe) {
@@ -22958,7 +22933,7 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/core/li
   return module.exports;
 });
 
-System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Subscription", "rxjs/subject/SubjectSubscription", "rxjs/symbol/rxSubscriber", "rxjs/util/throwError", "rxjs/util/ObjectUnsubscribedError"], true, function(require, exports, module) {
+System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Subscription", "rxjs/SubjectSubscription", "rxjs/symbol/rxSubscriber", "rxjs/util/throwError", "rxjs/util/ObjectUnsubscribedError"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -22975,7 +22950,7 @@ System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Sub
   var Observable_1 = require("rxjs/Observable");
   var Subscriber_1 = require("rxjs/Subscriber");
   var Subscription_1 = require("rxjs/Subscription");
-  var SubjectSubscription_1 = require("rxjs/subject/SubjectSubscription");
+  var SubjectSubscription_1 = require("rxjs/SubjectSubscription");
   var rxSubscriber_1 = require("rxjs/symbol/rxSubscriber");
   var throwError_1 = require("rxjs/util/throwError");
   var ObjectUnsubscribedError_1 = require("rxjs/util/ObjectUnsubscribedError");
@@ -22991,6 +22966,7 @@ System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Sub
       this.hasErrored = false;
       this.dispatching = false;
       this.hasCompleted = false;
+      this.source = source;
     }
     Subject.prototype.lift = function(operator) {
       var subject = new Subject(this.destination || this, this);
@@ -22998,7 +22974,7 @@ System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Sub
       return subject;
     };
     Subject.prototype.add = function(subscription) {
-      Subscription_1.Subscription.prototype.add.call(this, subscription);
+      return Subscription_1.Subscription.prototype.add.call(this, subscription);
     };
     Subject.prototype.remove = function(subscription) {
       Subscription_1.Subscription.prototype.remove.call(this, subscription);
@@ -23134,7 +23110,7 @@ System.register("rxjs/Subject", ["rxjs/Observable", "rxjs/Subscriber", "rxjs/Sub
         throwError_1.throwError(new ObjectUnsubscribedError_1.ObjectUnsubscribedError());
       }
     };
-    Subject.prototype[rxSubscriber_1.rxSubscriber] = function() {
+    Subject.prototype[rxSubscriber_1.$$rxSubscriber] = function() {
       return new Subscriber_1.Subscriber(this);
     };
     Subject.create = function(destination, source) {
@@ -23925,7 +23901,7 @@ System.register("angular2/src/core/linker/dynamic_component_loader", ["angular2/
   return module.exports;
 });
 
-System.register("angular2/src/platform/worker_render_common", ["angular2/src/facade/lang", "angular2/src/web_workers/shared/message_bus", "angular2/src/core/zone/ng_zone", "angular2/core", "angular2/platform/common_dom", "angular2/src/core/di", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/compiler", "angular2/src/platform/browser/xhr_impl", "angular2/src/core/testability/testability", "angular2/src/platform/browser/testability", "angular2/src/platform/browser/browser_adapter", "angular2/src/core/profile/wtf_init", "angular2/src/web_workers/ui/renderer", "angular2/src/web_workers/ui/xhr_impl", "angular2/src/router/location/browser_platform_location", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/client_message_broker", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/shared/api", "angular2/src/web_workers/shared/render_store", "angular2/src/platform/dom/events/hammer_gestures"], true, function(require, exports, module) {
+System.register("angular2/src/platform/worker_render_common", ["angular2/src/facade/lang", "angular2/src/web_workers/shared/message_bus", "angular2/src/core/zone/ng_zone", "angular2/core", "angular2/platform/common_dom", "angular2/src/core/di", "angular2/src/platform/dom/dom_adapter", "angular2/src/platform/dom/events/dom_events", "angular2/src/platform/dom/events/key_events", "angular2/src/platform/dom/events/hammer_gestures", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_renderer", "angular2/src/platform/dom/shared_styles_host", "angular2/src/platform/dom/shared_styles_host", "angular2/src/animate/browser_details", "angular2/src/animate/animation_builder", "angular2/compiler", "angular2/src/platform/browser/xhr_impl", "angular2/src/core/testability/testability", "angular2/src/platform/browser/testability", "angular2/src/platform/browser/browser_adapter", "angular2/src/core/profile/wtf_init", "angular2/src/web_workers/ui/renderer", "angular2/src/web_workers/ui/xhr_impl", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/client_message_broker", "angular2/src/platform/browser/location/browser_platform_location", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/shared/api", "angular2/src/web_workers/shared/render_store", "angular2/src/platform/dom/events/hammer_gestures"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -23954,9 +23930,9 @@ System.register("angular2/src/platform/worker_render_common", ["angular2/src/fac
   var wtf_init_1 = require("angular2/src/core/profile/wtf_init");
   var renderer_1 = require("angular2/src/web_workers/ui/renderer");
   var xhr_impl_2 = require("angular2/src/web_workers/ui/xhr_impl");
-  var browser_platform_location_1 = require("angular2/src/router/location/browser_platform_location");
   var service_message_broker_1 = require("angular2/src/web_workers/shared/service_message_broker");
   var client_message_broker_1 = require("angular2/src/web_workers/shared/client_message_broker");
+  var browser_platform_location_1 = require("angular2/src/platform/browser/location/browser_platform_location");
   var serializer_1 = require("angular2/src/web_workers/shared/serializer");
   var api_1 = require("angular2/src/web_workers/shared/api");
   var render_store_1 = require("angular2/src/web_workers/shared/render_store");

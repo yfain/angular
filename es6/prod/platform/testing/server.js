@@ -5,7 +5,6 @@ import { MockAnimationBuilder } from 'angular2/src/mock/animation_builder_mock';
 import { MockDirectiveResolver } from 'angular2/src/mock/directive_resolver_mock';
 import { MockViewResolver } from 'angular2/src/mock/view_resolver_mock';
 import { MockLocationStrategy } from 'angular2/src/mock/mock_location_strategy';
-import { LocationStrategy } from 'angular2/src/router/location/location_strategy';
 import { MockNgZone } from 'angular2/src/mock/ng_zone_mock';
 import { TestComponentBuilder } from 'angular2/src/testing/test_component_builder';
 import { XHR } from 'angular2/src/compiler/xhr';
@@ -18,6 +17,7 @@ import { DomRootRenderer, DomRootRenderer_ } from 'angular2/src/platform/dom/dom
 import { DomSharedStylesHost } from 'angular2/src/platform/dom/shared_styles_host';
 import { EventManager, EVENT_MANAGER_PLUGINS, ELEMENT_PROBE_PROVIDERS } from 'angular2/platform/common_dom';
 import { DomEventsPlugin } from 'angular2/src/platform/dom/events/dom_events';
+import { LocationStrategy } from 'angular2/platform/common';
 import { CONST_EXPR } from 'angular2/src/facade/lang';
 import { Log } from 'angular2/src/testing/utils';
 function initServerTests() {
