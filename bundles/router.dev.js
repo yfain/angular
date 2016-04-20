@@ -242,259 +242,6 @@ System.register("angular2/router/router_link_dsl", ["angular2/compiler", "angula
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/location/platform_location", [], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var PlatformLocation = (function() {
-    function PlatformLocation() {}
-    Object.defineProperty(PlatformLocation.prototype, "pathname", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "search", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(PlatformLocation.prototype, "hash", {
-      get: function() {
-        return null;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    return PlatformLocation;
-  }());
-  exports.PlatformLocation = PlatformLocation;
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/browser/location/location", ["angular2/src/facade/async", "angular2/core", "angular2/src/platform/browser/location/location_strategy"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var async_1 = require("angular2/src/facade/async");
-  var core_1 = require("angular2/core");
-  var location_strategy_1 = require("angular2/src/platform/browser/location/location_strategy");
-  var Location = (function() {
-    function Location(platformStrategy) {
-      var _this = this;
-      this.platformStrategy = platformStrategy;
-      this._subject = new async_1.EventEmitter();
-      var browserBaseHref = this.platformStrategy.getBaseHref();
-      this._baseHref = Location.stripTrailingSlash(_stripIndexHtml(browserBaseHref));
-      this.platformStrategy.onPopState(function(ev) {
-        async_1.ObservableWrapper.callEmit(_this._subject, {
-          'url': _this.path(),
-          'pop': true,
-          'type': ev.type
-        });
-      });
-    }
-    Location.prototype.path = function() {
-      return this.normalize(this.platformStrategy.path());
-    };
-    Location.prototype.normalize = function(url) {
-      return Location.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
-    };
-    Location.prototype.prepareExternalUrl = function(url) {
-      if (url.length > 0 && !url.startsWith('/')) {
-        url = '/' + url;
-      }
-      return this.platformStrategy.prepareExternalUrl(url);
-    };
-    Location.prototype.go = function(path, query) {
-      if (query === void 0) {
-        query = '';
-      }
-      this.platformStrategy.pushState(null, '', path, query);
-    };
-    Location.prototype.replaceState = function(path, query) {
-      if (query === void 0) {
-        query = '';
-      }
-      this.platformStrategy.replaceState(null, '', path, query);
-    };
-    Location.prototype.forward = function() {
-      this.platformStrategy.forward();
-    };
-    Location.prototype.back = function() {
-      this.platformStrategy.back();
-    };
-    Location.prototype.subscribe = function(onNext, onThrow, onReturn) {
-      if (onThrow === void 0) {
-        onThrow = null;
-      }
-      if (onReturn === void 0) {
-        onReturn = null;
-      }
-      return async_1.ObservableWrapper.subscribe(this._subject, onNext, onThrow, onReturn);
-    };
-    Location.normalizeQueryParams = function(params) {
-      return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
-    };
-    Location.joinWithSlash = function(start, end) {
-      if (start.length == 0) {
-        return end;
-      }
-      if (end.length == 0) {
-        return start;
-      }
-      var slashes = 0;
-      if (start.endsWith('/')) {
-        slashes++;
-      }
-      if (end.startsWith('/')) {
-        slashes++;
-      }
-      if (slashes == 2) {
-        return start + end.substring(1);
-      }
-      if (slashes == 1) {
-        return start + end;
-      }
-      return start + '/' + end;
-    };
-    Location.stripTrailingSlash = function(url) {
-      if (/\/$/g.test(url)) {
-        url = url.substring(0, url.length - 1);
-      }
-      return url;
-    };
-    Location = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [location_strategy_1.LocationStrategy])], Location);
-    return Location;
-  }());
-  exports.Location = Location;
-  function _stripBaseHref(baseHref, url) {
-    if (baseHref.length > 0 && url.startsWith(baseHref)) {
-      return url.substring(baseHref.length);
-    }
-    return url;
-  }
-  function _stripIndexHtml(url) {
-    if (/\/index.html$/g.test(url)) {
-      return url.substring(0, url.length - 11);
-    }
-    return url;
-  }
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/browser/location/path_location_strategy", ["angular2/core", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/platform/browser/location/platform_location", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/location"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var core_1 = require("angular2/core");
-  var lang_1 = require("angular2/src/facade/lang");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
-  var platform_location_1 = require("angular2/src/platform/browser/location/platform_location");
-  var location_strategy_1 = require("angular2/src/platform/browser/location/location_strategy");
-  var location_1 = require("angular2/src/platform/browser/location/location");
-  var PathLocationStrategy = (function(_super) {
-    __extends(PathLocationStrategy, _super);
-    function PathLocationStrategy(_platformLocation, href) {
-      _super.call(this);
-      this._platformLocation = _platformLocation;
-      if (lang_1.isBlank(href)) {
-        href = this._platformLocation.getBaseHrefFromDOM();
-      }
-      if (lang_1.isBlank(href)) {
-        throw new exceptions_1.BaseException("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
-      }
-      this._baseHref = href;
-    }
-    PathLocationStrategy.prototype.onPopState = function(fn) {
-      this._platformLocation.onPopState(fn);
-      this._platformLocation.onHashChange(fn);
-    };
-    PathLocationStrategy.prototype.getBaseHref = function() {
-      return this._baseHref;
-    };
-    PathLocationStrategy.prototype.prepareExternalUrl = function(internal) {
-      return location_1.Location.joinWithSlash(this._baseHref, internal);
-    };
-    PathLocationStrategy.prototype.path = function() {
-      return this._platformLocation.pathname + location_1.Location.normalizeQueryParams(this._platformLocation.search);
-    };
-    PathLocationStrategy.prototype.pushState = function(state, title, url, queryParams) {
-      var externalUrl = this.prepareExternalUrl(url + location_1.Location.normalizeQueryParams(queryParams));
-      this._platformLocation.pushState(state, title, externalUrl);
-    };
-    PathLocationStrategy.prototype.replaceState = function(state, title, url, queryParams) {
-      var externalUrl = this.prepareExternalUrl(url + location_1.Location.normalizeQueryParams(queryParams));
-      this._platformLocation.replaceState(state, title, externalUrl);
-    };
-    PathLocationStrategy.prototype.forward = function() {
-      this._platformLocation.forward();
-    };
-    PathLocationStrategy.prototype.back = function() {
-      this._platformLocation.back();
-    };
-    PathLocationStrategy = __decorate([core_1.Injectable(), __param(1, core_1.Optional()), __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])], PathLocationStrategy);
-    return PathLocationStrategy;
-  }(location_strategy_1.LocationStrategy));
-  exports.PathLocationStrategy = PathLocationStrategy;
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/router/route_config/route_config_impl", ["angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -1349,6 +1096,50 @@ System.register("angular2/src/router/route_config/route_config_decorator", ["ang
   return module.exports;
 });
 
+System.register("angular2/src/router/location/location_strategy", ["angular2/src/facade/lang", "angular2/core"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var lang_1 = require("angular2/src/facade/lang");
+  var core_1 = require("angular2/core");
+  var LocationStrategy = (function() {
+    function LocationStrategy() {}
+    return LocationStrategy;
+  }());
+  exports.LocationStrategy = LocationStrategy;
+  exports.APP_BASE_HREF = lang_1.CONST_EXPR(new core_1.OpaqueToken('appBaseHref'));
+  function normalizeQueryParams(params) {
+    return (params.length > 0 && params.substring(0, 1) != '?') ? ('?' + params) : params;
+  }
+  exports.normalizeQueryParams = normalizeQueryParams;
+  function joinWithSlash(start, end) {
+    if (start.length == 0) {
+      return end;
+    }
+    if (end.length == 0) {
+      return start;
+    }
+    var slashes = 0;
+    if (start.endsWith('/')) {
+      slashes++;
+    }
+    if (end.startsWith('/')) {
+      slashes++;
+    }
+    if (slashes == 2) {
+      return start + end.substring(1);
+    }
+    if (slashes == 1) {
+      return start + end;
+    }
+    return start + '/' + end;
+  }
+  exports.joinWithSlash = joinWithSlash;
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("angular2/src/router/lifecycle/lifecycle_annotations_impl", ["angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -1414,7 +1205,7 @@ System.register("angular2/src/router/lifecycle/lifecycle_annotations", ["angular
   return module.exports;
 });
 
-System.register("angular2/src/router/directives/router_link", ["angular2/core", "angular2/platform/common", "angular2/src/facade/lang", "angular2/src/router/router"], true, function(require, exports, module) {
+System.register("angular2/src/router/directives/router_link", ["angular2/core", "angular2/src/facade/lang", "angular2/src/router/router", "angular2/src/router/location/location"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -1436,9 +1227,9 @@ System.register("angular2/src/router/directives/router_link", ["angular2/core", 
       return Reflect.metadata(k, v);
   };
   var core_1 = require("angular2/core");
-  var common_1 = require("angular2/platform/common");
   var lang_1 = require("angular2/src/facade/lang");
   var router_1 = require("angular2/src/router/router");
+  var location_1 = require("angular2/src/router/location/location");
   var RouterLink = (function() {
     function RouterLink(_router, _location) {
       var _this = this;
@@ -1483,7 +1274,7 @@ System.register("angular2/src/router/directives/router_link", ["angular2/core", 
         '[attr.href]': 'visibleHref',
         '[class.router-link-active]': 'isRouteActive'
       }
-    }), __metadata('design:paramtypes', [router_1.Router, common_1.Location])], RouterLink);
+    }), __metadata('design:paramtypes', [router_1.Router, location_1.Location])], RouterLink);
     return RouterLink;
   }());
   exports.RouterLink = RouterLink;
@@ -1491,42 +1282,42 @@ System.register("angular2/src/router/directives/router_link", ["angular2/core", 
   return module.exports;
 });
 
-System.register("angular2/src/router/router_providers_common", ["angular2/platform/common", "angular2/src/router/router", "angular2/src/router/route_registry", "angular2/src/facade/lang", "angular2/core", "angular2/src/facade/exceptions"], true, function(require, exports, module) {
+System.register("angular2/src/router/location/platform_location", [], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
-  var common_1 = require("angular2/platform/common");
-  var router_1 = require("angular2/src/router/router");
-  var route_registry_1 = require("angular2/src/router/route_registry");
-  var lang_1 = require("angular2/src/facade/lang");
-  var core_1 = require("angular2/core");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
-  exports.ROUTER_PROVIDERS_COMMON = lang_1.CONST_EXPR([route_registry_1.RouteRegistry, lang_1.CONST_EXPR(new core_1.Provider(common_1.LocationStrategy, {useClass: common_1.PathLocationStrategy})), common_1.Location, lang_1.CONST_EXPR(new core_1.Provider(router_1.Router, {
-    useFactory: routerFactory,
-    deps: lang_1.CONST_EXPR([route_registry_1.RouteRegistry, common_1.Location, route_registry_1.ROUTER_PRIMARY_COMPONENT, core_1.ApplicationRef])
-  })), lang_1.CONST_EXPR(new core_1.Provider(route_registry_1.ROUTER_PRIMARY_COMPONENT, {
-    useFactory: routerPrimaryComponentFactory,
-    deps: lang_1.CONST_EXPR([core_1.ApplicationRef])
-  }))]);
-  function routerFactory(registry, location, primaryComponent, appRef) {
-    var rootRouter = new router_1.RootRouter(registry, location, primaryComponent);
-    appRef.registerDisposeListener(function() {
-      return rootRouter.dispose();
+  var PlatformLocation = (function() {
+    function PlatformLocation() {}
+    Object.defineProperty(PlatformLocation.prototype, "pathname", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
     });
-    return rootRouter;
-  }
-  function routerPrimaryComponentFactory(app) {
-    if (app.componentTypes.length == 0) {
-      throw new exceptions_1.BaseException("Bootstrap at least one component before injecting Router.");
-    }
-    return app.componentTypes[0];
-  }
+    Object.defineProperty(PlatformLocation.prototype, "search", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(PlatformLocation.prototype, "hash", {
+      get: function() {
+        return null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    return PlatformLocation;
+  }());
+  exports.PlatformLocation = PlatformLocation;
   global.define = __define;
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/location/hash_location_strategy", ["angular2/core", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/location", "angular2/src/platform/browser/location/platform_location", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/router/location/hash_location_strategy", ["angular2/core", "angular2/src/router/location/location_strategy", "angular2/src/facade/lang", "angular2/src/router/location/platform_location"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -1562,10 +1353,9 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
     };
   };
   var core_1 = require("angular2/core");
-  var location_strategy_1 = require("angular2/src/platform/browser/location/location_strategy");
-  var location_1 = require("angular2/src/platform/browser/location/location");
-  var platform_location_1 = require("angular2/src/platform/browser/location/platform_location");
+  var location_strategy_1 = require("angular2/src/router/location/location_strategy");
   var lang_1 = require("angular2/src/facade/lang");
+  var platform_location_1 = require("angular2/src/router/location/platform_location");
   var HashLocationStrategy = (function(_super) {
     __extends(HashLocationStrategy, _super);
     function HashLocationStrategy(_platformLocation, _baseHref) {
@@ -1590,18 +1380,18 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
       return (path.length > 0 ? path.substring(1) : path);
     };
     HashLocationStrategy.prototype.prepareExternalUrl = function(internal) {
-      var url = location_1.Location.joinWithSlash(this._baseHref, internal);
+      var url = location_strategy_1.joinWithSlash(this._baseHref, internal);
       return url.length > 0 ? ('#' + url) : url;
     };
     HashLocationStrategy.prototype.pushState = function(state, title, path, queryParams) {
-      var url = this.prepareExternalUrl(path + location_1.Location.normalizeQueryParams(queryParams));
+      var url = this.prepareExternalUrl(path + location_strategy_1.normalizeQueryParams(queryParams));
       if (url.length == 0) {
         url = this._platformLocation.pathname;
       }
       this._platformLocation.pushState(state, title, url);
     };
     HashLocationStrategy.prototype.replaceState = function(state, title, path, queryParams) {
-      var url = this.prepareExternalUrl(path + location_1.Location.normalizeQueryParams(queryParams));
+      var url = this.prepareExternalUrl(path + location_strategy_1.normalizeQueryParams(queryParams));
       if (url.length == 0) {
         url = this._platformLocation.pathname;
       }
@@ -1617,6 +1407,131 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
     return HashLocationStrategy;
   }(location_strategy_1.LocationStrategy));
   exports.HashLocationStrategy = HashLocationStrategy;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/router/location/path_location_strategy", ["angular2/core", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/router/location/location_strategy", "angular2/src/router/location/platform_location"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var core_1 = require("angular2/core");
+  var lang_1 = require("angular2/src/facade/lang");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
+  var location_strategy_1 = require("angular2/src/router/location/location_strategy");
+  var platform_location_1 = require("angular2/src/router/location/platform_location");
+  var PathLocationStrategy = (function(_super) {
+    __extends(PathLocationStrategy, _super);
+    function PathLocationStrategy(_platformLocation, href) {
+      _super.call(this);
+      this._platformLocation = _platformLocation;
+      if (lang_1.isBlank(href)) {
+        href = this._platformLocation.getBaseHrefFromDOM();
+      }
+      if (lang_1.isBlank(href)) {
+        throw new exceptions_1.BaseException("No base href set. Please provide a value for the APP_BASE_HREF token or add a base element to the document.");
+      }
+      this._baseHref = href;
+    }
+    PathLocationStrategy.prototype.onPopState = function(fn) {
+      this._platformLocation.onPopState(fn);
+      this._platformLocation.onHashChange(fn);
+    };
+    PathLocationStrategy.prototype.getBaseHref = function() {
+      return this._baseHref;
+    };
+    PathLocationStrategy.prototype.prepareExternalUrl = function(internal) {
+      return location_strategy_1.joinWithSlash(this._baseHref, internal);
+    };
+    PathLocationStrategy.prototype.path = function() {
+      return this._platformLocation.pathname + location_strategy_1.normalizeQueryParams(this._platformLocation.search);
+    };
+    PathLocationStrategy.prototype.pushState = function(state, title, url, queryParams) {
+      var externalUrl = this.prepareExternalUrl(url + location_strategy_1.normalizeQueryParams(queryParams));
+      this._platformLocation.pushState(state, title, externalUrl);
+    };
+    PathLocationStrategy.prototype.replaceState = function(state, title, url, queryParams) {
+      var externalUrl = this.prepareExternalUrl(url + location_strategy_1.normalizeQueryParams(queryParams));
+      this._platformLocation.replaceState(state, title, externalUrl);
+    };
+    PathLocationStrategy.prototype.forward = function() {
+      this._platformLocation.forward();
+    };
+    PathLocationStrategy.prototype.back = function() {
+      this._platformLocation.back();
+    };
+    PathLocationStrategy = __decorate([core_1.Injectable(), __param(1, core_1.Optional()), __param(1, core_1.Inject(location_strategy_1.APP_BASE_HREF)), __metadata('design:paramtypes', [platform_location_1.PlatformLocation, String])], PathLocationStrategy);
+    return PathLocationStrategy;
+  }(location_strategy_1.LocationStrategy));
+  exports.PathLocationStrategy = PathLocationStrategy;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/router/router_providers_common", ["angular2/src/router/location/location_strategy", "angular2/src/router/location/path_location_strategy", "angular2/src/router/router", "angular2/src/router/route_registry", "angular2/src/router/location/location", "angular2/src/facade/lang", "angular2/core", "angular2/src/facade/exceptions"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var location_strategy_1 = require("angular2/src/router/location/location_strategy");
+  var path_location_strategy_1 = require("angular2/src/router/location/path_location_strategy");
+  var router_1 = require("angular2/src/router/router");
+  var route_registry_1 = require("angular2/src/router/route_registry");
+  var location_1 = require("angular2/src/router/location/location");
+  var lang_1 = require("angular2/src/facade/lang");
+  var core_1 = require("angular2/core");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
+  exports.ROUTER_PROVIDERS_COMMON = lang_1.CONST_EXPR([route_registry_1.RouteRegistry, lang_1.CONST_EXPR(new core_1.Provider(location_strategy_1.LocationStrategy, {useClass: path_location_strategy_1.PathLocationStrategy})), location_1.Location, lang_1.CONST_EXPR(new core_1.Provider(router_1.Router, {
+    useFactory: routerFactory,
+    deps: lang_1.CONST_EXPR([route_registry_1.RouteRegistry, location_1.Location, route_registry_1.ROUTER_PRIMARY_COMPONENT, core_1.ApplicationRef])
+  })), lang_1.CONST_EXPR(new core_1.Provider(route_registry_1.ROUTER_PRIMARY_COMPONENT, {
+    useFactory: routerPrimaryComponentFactory,
+    deps: lang_1.CONST_EXPR([core_1.ApplicationRef])
+  }))]);
+  function routerFactory(registry, location, primaryComponent, appRef) {
+    var rootRouter = new router_1.RootRouter(registry, location, primaryComponent);
+    appRef.registerDisposeListener(function() {
+      return rootRouter.dispose();
+    });
+    return rootRouter;
+  }
+  function routerPrimaryComponentFactory(app) {
+    if (app.componentTypes.length == 0) {
+      throw new exceptions_1.BaseException("Bootstrap at least one component before injecting Router.");
+    }
+    return app.componentTypes[0];
+  }
   global.define = __define;
   return module.exports;
 });
@@ -2100,6 +2015,110 @@ System.register("angular2/src/router/route_config/route_config_normalizer", ["an
   return module.exports;
 });
 
+System.register("angular2/src/router/location/location", ["angular2/src/router/location/location_strategy", "angular2/src/facade/async", "angular2/core"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var location_strategy_1 = require("angular2/src/router/location/location_strategy");
+  var async_1 = require("angular2/src/facade/async");
+  var core_1 = require("angular2/core");
+  var Location = (function() {
+    function Location(platformStrategy) {
+      var _this = this;
+      this.platformStrategy = platformStrategy;
+      this._subject = new async_1.EventEmitter();
+      var browserBaseHref = this.platformStrategy.getBaseHref();
+      this._baseHref = stripTrailingSlash(stripIndexHtml(browserBaseHref));
+      this.platformStrategy.onPopState(function(ev) {
+        async_1.ObservableWrapper.callEmit(_this._subject, {
+          'url': _this.path(),
+          'pop': true,
+          'type': ev.type
+        });
+      });
+    }
+    Location.prototype.path = function() {
+      return this.normalize(this.platformStrategy.path());
+    };
+    Location.prototype.normalize = function(url) {
+      return stripTrailingSlash(_stripBaseHref(this._baseHref, stripIndexHtml(url)));
+    };
+    Location.prototype.prepareExternalUrl = function(url) {
+      if (url.length > 0 && !url.startsWith('/')) {
+        url = '/' + url;
+      }
+      return this.platformStrategy.prepareExternalUrl(url);
+    };
+    Location.prototype.go = function(path, query) {
+      if (query === void 0) {
+        query = '';
+      }
+      this.platformStrategy.pushState(null, '', path, query);
+    };
+    Location.prototype.replaceState = function(path, query) {
+      if (query === void 0) {
+        query = '';
+      }
+      this.platformStrategy.replaceState(null, '', path, query);
+    };
+    Location.prototype.forward = function() {
+      this.platformStrategy.forward();
+    };
+    Location.prototype.back = function() {
+      this.platformStrategy.back();
+    };
+    Location.prototype.subscribe = function(onNext, onThrow, onReturn) {
+      if (onThrow === void 0) {
+        onThrow = null;
+      }
+      if (onReturn === void 0) {
+        onReturn = null;
+      }
+      return async_1.ObservableWrapper.subscribe(this._subject, onNext, onThrow, onReturn);
+    };
+    Location = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [location_strategy_1.LocationStrategy])], Location);
+    return Location;
+  }());
+  exports.Location = Location;
+  function _stripBaseHref(baseHref, url) {
+    if (baseHref.length > 0 && url.startsWith(baseHref)) {
+      return url.substring(baseHref.length);
+    }
+    return url;
+  }
+  function stripIndexHtml(url) {
+    if (/\/index.html$/g.test(url)) {
+      return url.substring(0, url.length - 11);
+    }
+    return url;
+  }
+  function stripTrailingSlash(url) {
+    if (/\/$/g.test(url)) {
+      url = url.substring(0, url.length - 1);
+    }
+    return url;
+  }
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("angular2/src/router/lifecycle/route_lifecycle_reflector", ["angular2/src/facade/lang", "angular2/src/router/lifecycle/lifecycle_annotations_impl", "angular2/src/core/reflection/reflection"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -2267,7 +2286,7 @@ System.register("angular2/src/router/directives/router_outlet", ["angular2/src/f
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/location/browser_platform_location", ["angular2/src/core/di/decorators", "angular2/src/platform/browser/location/platform_location", "angular2/src/platform/dom/dom_adapter"], true, function(require, exports, module) {
+System.register("angular2/src/router/location/browser_platform_location", ["angular2/core", "angular2/src/router/location/platform_location", "angular2/src/platform/dom/dom_adapter"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -2297,8 +2316,8 @@ System.register("angular2/src/platform/browser/location/browser_platform_locatio
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
       return Reflect.metadata(k, v);
   };
-  var decorators_1 = require("angular2/src/core/di/decorators");
-  var platform_location_1 = require("angular2/src/platform/browser/location/platform_location");
+  var core_1 = require("angular2/core");
+  var platform_location_1 = require("angular2/src/router/location/platform_location");
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
   var BrowserPlatformLocation = (function(_super) {
     __extends(BrowserPlatformLocation, _super);
@@ -2362,7 +2381,7 @@ System.register("angular2/src/platform/browser/location/browser_platform_locatio
     BrowserPlatformLocation.prototype.back = function() {
       this._history.back();
     };
-    BrowserPlatformLocation = __decorate([decorators_1.Injectable(), __metadata('design:paramtypes', [])], BrowserPlatformLocation);
+    BrowserPlatformLocation = __decorate([core_1.Injectable(), __metadata('design:paramtypes', [])], BrowserPlatformLocation);
     return BrowserPlatformLocation;
   }(platform_location_1.PlatformLocation));
   exports.BrowserPlatformLocation = BrowserPlatformLocation;
@@ -2510,17 +2529,17 @@ System.register("angular2/src/router/rules/rule_set", ["angular2/src/facade/lang
   return module.exports;
 });
 
-System.register("angular2/src/router/router_providers", ["angular2/src/router/router_providers_common", "angular2/core", "angular2/src/platform/browser/location/browser_platform_location", "angular2/platform/common", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/router/router_providers", ["angular2/src/router/router_providers_common", "angular2/core", "angular2/src/facade/lang", "angular2/src/router/location/browser_platform_location", "angular2/src/router/location/platform_location"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var router_providers_common_1 = require("angular2/src/router/router_providers_common");
   var core_1 = require("angular2/core");
-  var browser_platform_location_1 = require("angular2/src/platform/browser/location/browser_platform_location");
-  var common_1 = require("angular2/platform/common");
   var lang_1 = require("angular2/src/facade/lang");
-  exports.ROUTER_PROVIDERS = lang_1.CONST_EXPR([router_providers_common_1.ROUTER_PROVIDERS_COMMON, lang_1.CONST_EXPR(new core_1.Provider(common_1.PlatformLocation, {useClass: browser_platform_location_1.BrowserPlatformLocation}))]);
+  var browser_platform_location_1 = require("angular2/src/router/location/browser_platform_location");
+  var platform_location_1 = require("angular2/src/router/location/platform_location");
+  exports.ROUTER_PROVIDERS = lang_1.CONST_EXPR([router_providers_common_1.ROUTER_PROVIDERS_COMMON, lang_1.CONST_EXPR(new core_1.Provider(platform_location_1.PlatformLocation, {useClass: browser_platform_location_1.BrowserPlatformLocation}))]);
   exports.ROUTER_BINDINGS = exports.ROUTER_PROVIDERS;
   global.define = __define;
   return module.exports;
@@ -2908,58 +2927,7 @@ System.register("angular2/src/router/route_registry", ["angular2/src/facade/coll
   return module.exports;
 });
 
-System.register("angular2/src/platform/browser/location/location_strategy", ["angular2/src/facade/lang", "angular2/core"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var lang_1 = require("angular2/src/facade/lang");
-  var core_1 = require("angular2/core");
-  var LocationStrategy = (function() {
-    function LocationStrategy() {}
-    return LocationStrategy;
-  }());
-  exports.LocationStrategy = LocationStrategy;
-  exports.APP_BASE_HREF = lang_1.CONST_EXPR(new core_1.OpaqueToken('appBaseHref'));
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/location", ["angular2/src/platform/browser/location/platform_location", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/hash_location_strategy", "angular2/src/platform/browser/location/path_location_strategy", "angular2/src/platform/browser/location/location"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  function __export(m) {
-    for (var p in m)
-      if (!exports.hasOwnProperty(p))
-        exports[p] = m[p];
-  }
-  __export(require("angular2/src/platform/browser/location/platform_location"));
-  __export(require("angular2/src/platform/browser/location/location_strategy"));
-  __export(require("angular2/src/platform/browser/location/hash_location_strategy"));
-  __export(require("angular2/src/platform/browser/location/path_location_strategy"));
-  __export(require("angular2/src/platform/browser/location/location"));
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/platform/common", ["angular2/src/platform/location"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  function __export(m) {
-    for (var p in m)
-      if (!exports.hasOwnProperty(p))
-        exports[p] = m[p];
-  }
-  __export(require("angular2/src/platform/location"));
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/router/router", ["angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/platform/common", "angular2/core", "angular2/src/router/route_registry", "angular2/src/router/lifecycle/route_lifecycle_reflector"], true, function(require, exports, module) {
+System.register("angular2/src/router/router", ["angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/core", "angular2/src/router/route_registry", "angular2/src/router/location/location", "angular2/src/router/lifecycle/route_lifecycle_reflector"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -2998,9 +2966,9 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
   var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
-  var common_1 = require("angular2/platform/common");
   var core_1 = require("angular2/core");
   var route_registry_1 = require("angular2/src/router/route_registry");
+  var location_1 = require("angular2/src/router/location/location");
   var route_lifecycle_reflector_1 = require("angular2/src/router/lifecycle/route_lifecycle_reflector");
   var _resolveToTrue = async_1.PromiseWrapper.resolve(true);
   var _resolveToFalse = async_1.PromiseWrapper.resolve(false);
@@ -3364,7 +3332,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
         this._locationSub = null;
       }
     };
-    RootRouter = __decorate([core_1.Injectable(), __param(2, core_1.Inject(route_registry_1.ROUTER_PRIMARY_COMPONENT)), __metadata('design:paramtypes', [route_registry_1.RouteRegistry, common_1.Location, lang_1.Type])], RootRouter);
+    RootRouter = __decorate([core_1.Injectable(), __param(2, core_1.Inject(route_registry_1.ROUTER_PRIMARY_COMPONENT)), __metadata('design:paramtypes', [route_registry_1.RouteRegistry, location_1.Location, lang_1.Type])], RootRouter);
     return RootRouter;
   }(Router));
   exports.RootRouter = RootRouter;
@@ -3414,7 +3382,7 @@ System.register("angular2/src/router/router", ["angular2/src/facade/async", "ang
   return module.exports;
 });
 
-System.register("angular2/router", ["angular2/src/router/router", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/router/instruction", "angular2/src/router/route_registry", "angular2/src/router/route_config/route_config_decorator", "angular2/src/router/lifecycle/lifecycle_annotations", "angular2/src/router/instruction", "angular2/core", "angular2/src/router/router_providers_common", "angular2/src/router/router_providers", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/router", ["angular2/src/router/router", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/router/instruction", "angular2/src/router/location/platform_location", "angular2/src/router/route_registry", "angular2/src/router/location/location_strategy", "angular2/src/router/location/hash_location_strategy", "angular2/src/router/location/path_location_strategy", "angular2/src/router/location/location", "angular2/src/router/route_config/route_config_decorator", "angular2/src/router/lifecycle/lifecycle_annotations", "angular2/src/router/instruction", "angular2/core", "angular2/src/router/router_providers_common", "angular2/src/router/router_providers", "angular2/src/router/directives/router_outlet", "angular2/src/router/directives/router_link", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -3433,9 +3401,20 @@ System.register("angular2/router", ["angular2/src/router/router", "angular2/src/
   var instruction_1 = require("angular2/src/router/instruction");
   exports.RouteParams = instruction_1.RouteParams;
   exports.RouteData = instruction_1.RouteData;
+  var platform_location_1 = require("angular2/src/router/location/platform_location");
+  exports.PlatformLocation = platform_location_1.PlatformLocation;
   var route_registry_1 = require("angular2/src/router/route_registry");
   exports.RouteRegistry = route_registry_1.RouteRegistry;
   exports.ROUTER_PRIMARY_COMPONENT = route_registry_1.ROUTER_PRIMARY_COMPONENT;
+  var location_strategy_1 = require("angular2/src/router/location/location_strategy");
+  exports.LocationStrategy = location_strategy_1.LocationStrategy;
+  exports.APP_BASE_HREF = location_strategy_1.APP_BASE_HREF;
+  var hash_location_strategy_1 = require("angular2/src/router/location/hash_location_strategy");
+  exports.HashLocationStrategy = hash_location_strategy_1.HashLocationStrategy;
+  var path_location_strategy_1 = require("angular2/src/router/location/path_location_strategy");
+  exports.PathLocationStrategy = path_location_strategy_1.PathLocationStrategy;
+  var location_1 = require("angular2/src/router/location/location");
+  exports.Location = location_1.Location;
   __export(require("angular2/src/router/route_config/route_config_decorator"));
   var lifecycle_annotations_1 = require("angular2/src/router/lifecycle/lifecycle_annotations");
   exports.CanActivate = lifecycle_annotations_1.CanActivate;
