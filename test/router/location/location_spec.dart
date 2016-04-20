@@ -14,9 +14,8 @@ import "package:angular2/testing_internal.dart"
         beforeEachProviders,
         SpyObject;
 import "package:angular2/core.dart" show Injector, provide;
-import "package:angular2/src/router/location/location.dart" show Location;
-import "package:angular2/src/router/location/location_strategy.dart"
-    show LocationStrategy, APP_BASE_HREF;
+import "package:angular2/platform/common.dart"
+    show Location, LocationStrategy, APP_BASE_HREF;
 import "package:angular2/src/mock/mock_location_strategy.dart"
     show MockLocationStrategy;
 

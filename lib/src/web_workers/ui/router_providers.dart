@@ -1,7 +1,7 @@
 library angular2.src.web_workers.ui.router_providers;
 
 import "platform_location.dart" show MessageBasedPlatformLocation;
-import "package:angular2/src/router/location/browser_platform_location.dart"
+import "package:angular2/src/platform/browser/location/browser_platform_location.dart"
     show BrowserPlatformLocation;
 import "package:angular2/core.dart"
     show APP_INITIALIZER, Provider, Injector, NgZone;

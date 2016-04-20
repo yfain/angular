@@ -22,7 +22,7 @@
  * class
  * they are all platform independent.
  */
-library angular2.src.router.location.platform_location;
+library angular2.src.platform.browser.location.platform_location;
 
 abstract class PlatformLocation {
   String getBaseHrefFromDOM();
