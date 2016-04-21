@@ -158,8 +158,7 @@ class NgFor implements DoCheck {
       var tuple = tuples[i];
       // separate moved views from removed views.
       if (isPresent(tuple.record.currentIndex)) {
-        tuple.view = (this._viewContainer.detach(tuple.record.previousIndex)
-            as EmbeddedViewRef);
+        tuple.view = this._viewContainer.detach(tuple.record.previousIndex);
         movedTuples.add(tuple);
       } else {
         this._viewContainer.remove(tuple.record.previousIndex);

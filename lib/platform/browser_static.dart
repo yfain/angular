@@ -14,21 +14,10 @@ export "package:angular2/src/platform/browser_common.dart"
         Title,
         enableDebugTools,
         disableDebugTools;
-import "package:angular2/src/facade/lang.dart" show Type, isPresent, isBlank;
+import "package:angular2/src/facade/lang.dart" show Type, isPresent;
 import "package:angular2/src/platform/browser_common.dart"
-    show
-        BROWSER_PROVIDERS,
-        BROWSER_APP_COMMON_PROVIDERS,
-        BROWSER_PLATFORM_MARKER;
-import "package:angular2/core.dart"
-    show
-        ComponentRef,
-        coreLoadAndBootstrap,
-        ReflectiveInjector,
-        PlatformRef,
-        getPlatform,
-        createPlatform,
-        assertPlatform;
+    show BROWSER_PROVIDERS, BROWSER_APP_COMMON_PROVIDERS;
+import "package:angular2/core.dart" show ComponentRef, platform;
 
 /**
  * An array of providers that should be passed into `application()` when bootstrapping a component
@@ -36,13 +25,6 @@ import "package:angular2/core.dart"
  * have been precompiled offline.
  */
 const List<dynamic> BROWSER_APP_PROVIDERS = BROWSER_APP_COMMON_PROVIDERS;
-PlatformRef browserStaticPlatform() {
-  if (isBlank(getPlatform())) {
-    createPlatform(ReflectiveInjector.resolveAndCreate(BROWSER_PROVIDERS));
-  }
-  return assertPlatform(BROWSER_PLATFORM_MARKER);
-}
-
 /**
  * See [bootstrap] for more information.
  */
@@ -54,7 +36,7 @@ Future<ComponentRef> bootstrapStatic(Type appComponentType,
   var appProviders = isPresent(customProviders)
       ? [BROWSER_APP_PROVIDERS, customProviders]
       : BROWSER_APP_PROVIDERS;
-  var appInjector = ReflectiveInjector.resolveAndCreate(
-      appProviders, browserStaticPlatform().injector);
-  return coreLoadAndBootstrap(appInjector, appComponentType);
+  return platform(BROWSER_PROVIDERS)
+      .application(appProviders)
+      .bootstrap(appComponentType);
 }
