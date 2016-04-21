@@ -26,3 +26,7 @@ List<String> splitAtColon(String input, List<String> defaultValues) {
     return defaultValues;
   }
 }
+
+String sanitizeIdentifier(String name) {
+  return StringWrapper.replaceAll(name, new RegExp(r'\W'), "_");
+}

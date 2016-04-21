@@ -81,7 +81,7 @@ bindRenderText(
   view.bindings.add(new CompileBinding(compileNode, boundText));
   var currValExpr = createCurrValueExpr(bindingIndex);
   var valueField = createBindFieldExpr(bindingIndex);
-  view.detectChangesInInputsMethod
+  view.detectChangesRenderPropertiesMethod
       .resetDebugInfo(compileNode.nodeIndex, boundText);
   bind(
       view,
@@ -93,7 +93,7 @@ bindRenderText(
         o.THIS_EXPR.prop("renderer").callMethod(
             "setText", [compileNode.renderNode, currValExpr]).toStmt()
       ],
-      view.detectChangesInInputsMethod);
+      view.detectChangesRenderPropertiesMethod);
 }
 
 bindAndWriteToRenderer(List<BoundElementPropertyAst> boundProps,
@@ -103,7 +103,7 @@ bindAndWriteToRenderer(List<BoundElementPropertyAst> boundProps,
   boundProps.forEach((boundProp) {
     var bindingIndex = view.bindings.length;
     view.bindings.add(new CompileBinding(compileElement, boundProp));
-    view.detectChangesHostPropertiesMethod
+    view.detectChangesRenderPropertiesMethod
         .resetDebugInfo(compileElement.nodeIndex, boundProp);
     var fieldExpr = createBindFieldExpr(bindingIndex);
     var currValExpr = createCurrValueExpr(bindingIndex);
@@ -139,7 +139,7 @@ bindAndWriteToRenderer(List<BoundElementPropertyAst> boundProps,
     updateStmts.add(o.THIS_EXPR.prop("renderer").callMethod(renderMethod,
         [renderNode, o.literal(boundProp.name), renderValue]).toStmt());
     bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts,
-        view.detectChangesHostPropertiesMethod);
+        view.detectChangesRenderPropertiesMethod);
   });
 }
 

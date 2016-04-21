@@ -11,6 +11,7 @@ import "package:angular2/src/facade/lang.dart"
 import "output_ast.dart" as o;
 import "abstract_emitter.dart" show EmitterVisitorContext;
 import "abstract_js_emitter.dart" show AbstractJsEmitterVisitor;
+import "../util.dart" show sanitizeIdentifier;
 
 dynamic jitStatements(
     String sourceUrl, List<o.Statement> statements, String resultVar) {
@@ -38,15 +39,12 @@ class JitEmitterVisitor extends AbstractJsEmitterVisitor {
     if (identical(id, -1)) {
       id = this._evalArgValues.length;
       this._evalArgValues.add(value);
-      this
-          ._evalArgNames
-          .add(sanitizeJitArgName('''jit_${ ast . value . name}${ id}'''));
+      var name = isPresent(ast.value.name)
+          ? sanitizeIdentifier(ast.value.name)
+          : "val";
+      this._evalArgNames.add(sanitizeIdentifier('''jit_${ name}${ id}'''));
     }
     ctx.print(this._evalArgNames[id]);
     return null;
   }
-}
-
-String sanitizeJitArgName(String name) {
-  return StringWrapper.replaceAll(name, new RegExp(r'[\.\/]'), "_");
 }

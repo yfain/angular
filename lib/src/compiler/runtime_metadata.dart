@@ -29,7 +29,7 @@ import "package:angular2/src/core/reflection/reflection.dart" show reflector;
 import "package:angular2/src/core/di.dart" show Injectable, Inject, Optional;
 import "package:angular2/src/core/platform_directives_and_pipes.dart"
     show PLATFORM_DIRECTIVES, PLATFORM_PIPES;
-import "util.dart" show MODULE_SUFFIX;
+import "util.dart" show MODULE_SUFFIX, sanitizeIdentifier;
 import "assertions.dart" show assertArrayOfStrings;
 import "package:angular2/src/compiler/url_resolver.dart" show getUrlScheme;
 import "package:angular2/src/core/di/provider.dart" show Provider;
@@ -56,21 +56,18 @@ class RuntimeMetadataResolver {
       this._viewResolver,
       @Optional() @Inject(PLATFORM_DIRECTIVES) this._platformDirectives,
       @Optional() @Inject(PLATFORM_PIPES) this._platformPipes) {}
-  /**
-   * Wrap the stringify method to avoid naming things `function (arg1...) {`
-   */
-  String sanitizeName(dynamic obj) {
-    var result =
-        StringWrapper.replaceAll(stringify(obj), new RegExp(r'[\s-]'), "_");
-    if (result.indexOf("(") < 0) {
-      return result;
+  String sanitizeTokenName(dynamic token) {
+    var identifier = stringify(token);
+    if (identifier.indexOf("(") >= 0) {
+      // case: anonymous functions!
+      var found = this._anonymousTypes[token];
+      if (isBlank(found)) {
+        this._anonymousTypes[token] = this._anonymousTypeIndex++;
+        found = this._anonymousTypes[token];
+      }
+      identifier = '''anonymous_token_${ found}_''';
     }
-    var found = this._anonymousTypes[obj];
-    if (isBlank(found)) {
-      this._anonymousTypes[obj] = this._anonymousTypeIndex++;
-      found = this._anonymousTypes[obj];
-    }
-    return '''anonymous_type_${ found}_''';
+    return sanitizeIdentifier(identifier);
   }
 
   cpl.CompileDirectiveMetadata getDirectiveMetadata(Type directiveType) {
@@ -132,7 +129,7 @@ class RuntimeMetadataResolver {
 
   cpl.CompileTypeMetadata getTypeMetadata(Type type, String moduleUrl) {
     return new cpl.CompileTypeMetadata(
-        name: this.sanitizeName(type),
+        name: this.sanitizeTokenName(type),
         moduleUrl: moduleUrl,
         runtime: type,
         diDeps: this.getDependenciesMetadata(type, null));
@@ -141,7 +138,7 @@ class RuntimeMetadataResolver {
   cpl.CompileFactoryMetadata getFactoryMetadata(
       Function factory, String moduleUrl) {
     return new cpl.CompileFactoryMetadata(
-        name: this.sanitizeName(factory),
+        name: this.sanitizeTokenName(factory),
         moduleUrl: moduleUrl,
         runtime: factory,
         diDeps: this.getDependenciesMetadata(factory, null));
@@ -229,11 +226,6 @@ class RuntimeMetadataResolver {
     }).toList();
   }
 
-  cpl.CompileIdentifierMetadata getRuntimeIdentifier(dynamic value) {
-    return new cpl.CompileIdentifierMetadata(
-        runtime: value, name: this.sanitizeName(value));
-  }
-
   cpl.CompileTokenMetadata getTokenMetadata(dynamic token) {
     token = resolveForwardRef(token);
     var compileToken;
@@ -241,7 +233,8 @@ class RuntimeMetadataResolver {
       compileToken = new cpl.CompileTokenMetadata(value: token);
     } else {
       compileToken = new cpl.CompileTokenMetadata(
-          identifier: this.getRuntimeIdentifier(token));
+          identifier: new cpl.CompileIdentifierMetadata(
+              runtime: token, name: this.sanitizeTokenName(token)));
     }
     return compileToken;
   }
@@ -275,7 +268,7 @@ class RuntimeMetadataResolver {
             ? this.getTypeMetadata(provider.useClass, null)
             : null,
         useValue: isPresent(provider.useValue)
-            ? this.getRuntimeIdentifier(provider.useValue)
+            ? new cpl.CompileIdentifierMetadata(runtime: provider.useValue)
             : null,
         useFactory: isPresent(provider.useFactory)
             ? this.getFactoryMetadata(provider.useFactory, null)

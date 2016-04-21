@@ -49,6 +49,7 @@ class _View_CompA0 extends import3.AppView<import4.CompA> {
   }
 
   void detectChangesInternal(bool throwOnChange) {
+    this.detectContentChildrenChanges(throwOnChange);
     this.debug(0, 0, 0);
     final currVal_0 =
         import5.interpolate(1, 'Hello World ', this.context.user, '!');
@@ -56,7 +57,6 @@ class _View_CompA0 extends import3.AppView<import4.CompA> {
       this.renderer.setText(this._text_0, currVal_0);
       this._expr_0 = currVal_0;
     }
-    this.detectContentChildrenChanges(throwOnChange);
     this.detectViewChildrenChanges(throwOnChange);
   }
 }

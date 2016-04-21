@@ -635,7 +635,7 @@ List<o.Statement> generateDetectChangesMethod(CompileView view) {
   if (view.detectChangesInInputsMethod.isEmpty() &&
       view.updateContentQueriesMethod.isEmpty() &&
       view.afterContentLifecycleCallbacksMethod.isEmpty() &&
-      view.detectChangesHostPropertiesMethod.isEmpty() &&
+      view.detectChangesRenderPropertiesMethod.isEmpty() &&
       view.updateViewQueriesMethod.isEmpty() &&
       view.afterViewLifecycleCallbacksMethod.isEmpty()) {
     return stmts;
@@ -650,7 +650,7 @@ List<o.Statement> generateDetectChangesMethod(CompileView view) {
     stmts.add(new o.IfStmt(
         o.not(DetectChangesVars.throwOnChange), afterContentStmts));
   }
-  ListWrapper.addAll(stmts, view.detectChangesHostPropertiesMethod.finish());
+  ListWrapper.addAll(stmts, view.detectChangesRenderPropertiesMethod.finish());
   stmts.add(o.THIS_EXPR.callMethod(
       "detectViewChildrenChanges", [DetectChangesVars.throwOnChange]).toStmt());
   var afterViewStmts = (new List.from(view.updateViewQueriesMethod.finish())

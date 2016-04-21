@@ -88,7 +88,9 @@ const ALL_PIPES = const [
   PipeNeedsChangeDetectorRef,
   PipeNeedsService,
   PurePipe,
-  ImpurePipe
+  ImpurePipe,
+  DuplicatePipe1,
+  DuplicatePipe2
 ];
 
 @Directive(selector: "[simpleDirective]")
@@ -295,6 +297,20 @@ class PipeNeedsService implements PipeTransform {
   PipeNeedsService(@Inject("service") service) {
     this.service = service;
   }
+  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+    return this;
+  }
+}
+
+@Pipe(name: "duplicatePipe")
+class DuplicatePipe1 implements PipeTransform {
+  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+    return this;
+  }
+}
+
+@Pipe(name: "duplicatePipe")
+class DuplicatePipe2 implements PipeTransform {
   dynamic transform(dynamic value, [List<dynamic> args = null]) {
     return this;
   }
@@ -667,6 +683,13 @@ No provider for SimpleDirective ("[ERROR ->]<div needsDirectiveFromHost></div>")
                 TestComp, [provide("service", useValue: "pipeService")]));
         expect(el.children[0].inject(SimpleDirective).value.service)
             .toEqual("pipeService");
+      }));
+      it("should overwrite pipes with later entry in the pipes array",
+          fakeAsync(() {
+        var el = createComp(
+            "<div [simpleDirective]=\"true | duplicatePipe\"></div>", tcb);
+        expect(el.children[0].inject(SimpleDirective).value)
+            .toBeAnInstanceOf(DuplicatePipe2);
       }));
       it("should inject ChangeDetectorRef into pipes", fakeAsync(() {
         var el = createComp(

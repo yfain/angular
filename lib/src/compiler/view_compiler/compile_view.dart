@@ -3,6 +3,7 @@ library angular2.src.compiler.view_compiler.compile_view;
 import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper;
+import "package:angular2/src/facade/exceptions.dart" show BaseException;
 import "../output/output_ast.dart" as o;
 import "../identifiers.dart" show Identifiers, identifierToken;
 import "constants.dart" show EventHandlerVars;
@@ -53,7 +54,7 @@ class CompileView implements NameResolver {
   CompileMethod dirtyParentQueriesMethod;
   CompileMethod updateViewQueriesMethod;
   CompileMethod detectChangesInInputsMethod;
-  CompileMethod detectChangesHostPropertiesMethod;
+  CompileMethod detectChangesRenderPropertiesMethod;
   CompileMethod afterContentLifecycleCallbacksMethod;
   CompileMethod afterViewLifecycleCallbacksMethod;
   CompileMethod destroyMethod;
@@ -78,7 +79,7 @@ class CompileView implements NameResolver {
     this.dirtyParentQueriesMethod = new CompileMethod(this);
     this.updateViewQueriesMethod = new CompileMethod(this);
     this.detectChangesInInputsMethod = new CompileMethod(this);
-    this.detectChangesHostPropertiesMethod = new CompileMethod(this);
+    this.detectChangesRenderPropertiesMethod = new CompileMethod(this);
     this.afterContentLifecycleCallbacksMethod = new CompileMethod(this);
     this.afterViewLifecycleCallbacksMethod = new CompileMethod(this);
     this.destroyMethod = new CompileMethod(this);
@@ -128,9 +129,18 @@ class CompileView implements NameResolver {
     }
   }
   o.Expression createPipe(String name) {
-    CompilePipeMetadata pipeMeta = this
-        .pipeMetas
-        .firstWhere((pipeMeta) => pipeMeta.name == name, orElse: () => null);
+    CompilePipeMetadata pipeMeta = null;
+    for (var i = this.pipeMetas.length - 1; i >= 0; i--) {
+      var localPipeMeta = this.pipeMetas[i];
+      if (localPipeMeta.name == name) {
+        pipeMeta = localPipeMeta;
+        break;
+      }
+    }
+    if (isBlank(pipeMeta)) {
+      throw new BaseException(
+          '''Illegal state: Could not find pipe ${ name} although the parser should have detected this error!''');
+    }
     var pipeFieldName = pipeMeta.pure
         ? '''_pipe_${ name}'''
         : '''_pipe_${ name}_${ this . pipes . length}''';
