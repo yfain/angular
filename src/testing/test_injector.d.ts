@@ -1,4 +1,4 @@
-import { Injector, Provider } from 'angular2/core';
+import { ReflectiveInjector, Provider } from 'angular2/core';
 import { Type } from 'angular2/src/facade/lang';
 export declare class TestInjector {
     private _instantiated;
@@ -8,7 +8,7 @@ export declare class TestInjector {
     platformProviders: Array<Type | Provider | any[]>;
     applicationProviders: Array<Type | Provider | any[]>;
     addProviders(providers: Array<Type | Provider | any[]>): void;
-    createInjector(): Injector;
+    createInjector(): ReflectiveInjector;
     execute(fn: FunctionWithParamTokens): any;
 }
 export declare function getTestInjector(): TestInjector;
@@ -102,13 +102,13 @@ export declare function injectAsync(tokens: any[], fn: Function): FunctionWithPa
 export declare function async(fn: Function | FunctionWithParamTokens): FunctionWithParamTokens;
 export declare class FunctionWithParamTokens {
     private _tokens;
-    fn: Function;
+    private _fn;
     isAsync: boolean;
     additionalProviders: () => any;
-    constructor(_tokens: any[], fn: Function, isAsync: boolean, additionalProviders?: () => any);
+    constructor(_tokens: any[], _fn: Function, isAsync: boolean, additionalProviders?: () => any);
     /**
      * Returns the value of the executed function.
      */
-    execute(injector: Injector): any;
+    execute(injector: ReflectiveInjector): any;
     hasToken(token: any): boolean;
 }
