@@ -1,5 +1,5 @@
 import { ApplicationRef } from 'angular2/src/core/application_ref';
-import { ComponentRef } from 'angular2/src/core/linker/component_factory';
+import { ComponentRef } from 'angular2/src/core/linker/dynamic_component_loader';
 export declare class ChangeDetectionPerfRecord {
     msPerTick: number;
     numTicks: number;
