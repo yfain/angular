@@ -102,6 +102,18 @@ declareTests(bool isJit) {
             });
           }));
       it(
+          "should support providers with string token with a `.` in it",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var token = "a.b";
+            var tokenValue = 1;
+            createInjector(tcb, [provide(token, useValue: tokenValue)])
+                .then((Injector injector) {
+              expect(injector.get(token)).toEqual(tokenValue);
+              async.done();
+            });
+          }));
+      it(
           "should support providers with an anonymous function",
           inject([TestComponentBuilder, AsyncTestCompleter],
               (TestComponentBuilder tcb, async) {

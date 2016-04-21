@@ -22,7 +22,7 @@ import "package:angular2/src/core/change_detection/change_detection.dart"
 import "package:angular2/src/core/metadata/view.dart"
     show ViewEncapsulation, VIEW_ENCAPSULATION_VALUES;
 import "package:angular2/src/compiler/selector.dart" show CssSelector;
-import "util.dart" show splitAtColon;
+import "util.dart" show splitAtColon, sanitizeIdentifier;
 import "package:angular2/src/core/metadata/lifecycle_hooks.dart"
     show LifecycleHooks, LIFECYCLE_HOOKS_VALUES;
 import "url_resolver.dart" show getUrlScheme;
@@ -298,7 +298,9 @@ class CompileTokenMetadata implements CompileMetadataWithIdentifier {
   }
 
   String get name {
-    return isPresent(this.value) ? this.value : this.identifier.name;
+    return isPresent(this.value)
+        ? sanitizeIdentifier(this.value)
+        : this.identifier.name;
   }
 }
 
