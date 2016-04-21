@@ -38,7 +38,7 @@ main() {
     });
     it(
         "should work with inject()",
-        inject([Parser], fakeAsync((parser) {
+        fakeAsync(inject([Parser], (parser) {
           expect(parser).toBeAnInstanceOf(Parser);
         })));
     it("should throw on nested calls", () {

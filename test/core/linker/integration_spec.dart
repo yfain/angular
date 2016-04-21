@@ -809,8 +809,8 @@ declareTests(bool isJit) {
         if (DOM.supportsDOMEvents()) {
           it(
               "should allow to destroy a component from within a host event handler",
-              inject([TestComponentBuilder],
-                  fakeAsync((TestComponentBuilder tcb) {
+              fakeAsync(
+                  inject([TestComponentBuilder], (TestComponentBuilder tcb) {
                 ComponentFixture fixture;
                 tcb
                     .overrideView(
@@ -895,8 +895,8 @@ declareTests(bool isJit) {
         if (DOM.supportsDOMEvents()) {
           it(
               "should be checked when an async pipe requests a check",
-              inject([TestComponentBuilder],
-                  fakeAsync((TestComponentBuilder tcb) {
+              fakeAsync(
+                  inject([TestComponentBuilder], (TestComponentBuilder tcb) {
                 tcb = tcb.overrideView(
                     MyComp,
                     new ViewMetadata(
@@ -1557,8 +1557,8 @@ declareTests(bool isJit) {
       if (DOM.supportsDOMEvents()) {
         it(
             "should provide an error context when an error happens in an event handler",
-            inject([TestComponentBuilder],
-                fakeAsync((TestComponentBuilder tcb) {
+            fakeAsync(
+                inject([TestComponentBuilder], (TestComponentBuilder tcb) {
               tcb = tcb.overrideView(
                   MyComp,
                   new ViewMetadata(
@@ -1916,8 +1916,8 @@ Can\'t bind to \'unknown\' since it isn\'t a known native property ("<div [ERROR
       if (DOM.supportsDOMEvents()) {
         it(
             "should support event decorators",
-            inject([TestComponentBuilder],
-                fakeAsync((TestComponentBuilder tcb) {
+            fakeAsync(
+                inject([TestComponentBuilder], (TestComponentBuilder tcb) {
               tcb = tcb.overrideView(
                   MyComp,
                   new ViewMetadata(

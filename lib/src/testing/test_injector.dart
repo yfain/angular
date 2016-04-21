@@ -206,17 +206,17 @@ List<dynamic> emptyArray() {
 
 class FunctionWithParamTokens {
   List<dynamic> _tokens;
-  Function _fn;
+  Function fn;
   bool isAsync;
   dynamic /* () => any */ additionalProviders;
-  FunctionWithParamTokens(this._tokens, this._fn, this.isAsync,
+  FunctionWithParamTokens(this._tokens, this.fn, this.isAsync,
       [this.additionalProviders = emptyArray]) {}
   /**
    * Returns the value of the executed function.
    */
   dynamic execute(ReflectiveInjector injector) {
     var params = this._tokens.map((t) => injector.get(t)).toList();
-    return FunctionWrapper.apply(this._fn, params);
+    return FunctionWrapper.apply(this.fn, params);
   }
 
   bool hasToken(dynamic token) {
