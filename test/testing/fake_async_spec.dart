@@ -18,7 +18,7 @@ import "package:angular2/testing_internal.dart"
 import "package:angular2/src/facade/async.dart"
     show TimerWrapper, PromiseWrapper;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
-import "package:angular2/src/core/change_detection/change_detection.dart"
+import "package:angular2/src/compiler/expression_parser/parser.dart"
     show Parser;
 
 main() {
@@ -38,7 +38,7 @@ main() {
     });
     it(
         "should work with inject()",
-        fakeAsync(inject([Parser], (parser) {
+        inject([Parser], fakeAsync((parser) {
           expect(parser).toBeAnInstanceOf(Parser);
         })));
     it("should throw on nested calls", () {

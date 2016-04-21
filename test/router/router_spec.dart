@@ -26,8 +26,6 @@ import "package:angular2/src/router/route_registry.dart"
     show RouteRegistry, ROUTER_PRIMARY_COMPONENT;
 import "package:angular2/src/router/route_config/route_config_decorator.dart"
     show RouteConfig, AsyncRoute, Route, Redirect;
-import "package:angular2/src/core/linker/directive_resolver.dart"
-    show DirectiveResolver;
 import "package:angular2/core.dart" show provide;
 import "package:angular2/src/router/directives/router_outlet.dart"
     show RouterOutlet;
@@ -38,7 +36,6 @@ main() {
     Location location;
     beforeEachProviders(() => [
           RouteRegistry,
-          DirectiveResolver,
           provide(Location, useClass: SpyLocation),
           provide(ROUTER_PRIMARY_COMPONENT, useValue: AppCmp),
           provide(Router, useClass: RootRouter)

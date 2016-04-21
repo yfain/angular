@@ -115,7 +115,7 @@ main() {
         }));
     it(
         "should emit ngSubmit event on submit",
-        fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+        inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
           var t = '''<div>
                       <form [ngFormModel]="form" (ngSubmit)="name=\'updated\'"></form>
                       <span>{{name}}</span>
@@ -457,8 +457,8 @@ main() {
             }));
         it(
             "with a dynamic list of options",
-            fakeAsync(
-                inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+            inject([TestComponentBuilder],
+                fakeAsync((TestComponentBuilder tcb) {
               var t = '''<div [ngFormModel]="form">
                       <select ngControl="city">
                         <option *ngFor="#c of data" [value]="c"></option>
@@ -753,7 +753,7 @@ main() {
           }));
       it(
           "should use async validators defined in the html",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var form = new ControlGroup({"login": new Control("")});
             var t = '''<div [ngFormModel]="form">
                     <input type="text" ngControl="login" uniq-login-validator="expected">
@@ -797,7 +797,7 @@ main() {
           }));
       it(
           "should use async validators defined in the model",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var control = new Control(
                 "", Validators.required, uniqLoginAsyncValidator("expected"));
             var form = new ControlGroup({"login": control});
@@ -873,7 +873,7 @@ main() {
     });
     it(
         "should support ngModel for complex forms",
-        fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+        inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
           var form = new ControlGroup({"name": new Control("")});
           var t =
               '''<div [ngFormModel]="form"><input type="text" ngControl="name" [(ngModel)]="name"></div>''';
@@ -895,7 +895,7 @@ main() {
         })));
     it(
         "should support ngModel for single fields",
-        fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+        inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
           var form = new Control("");
           var t =
               '''<div><input type="text" [ngFormControl]="form" [(ngModel)]="name"></div>''';
@@ -918,7 +918,7 @@ main() {
     describe("template-driven forms", () {
       it(
           "should add new controls and control groups",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<form>
                      <div ngControlGroup="user">
                       <input type="text" ngControl="login">
@@ -939,7 +939,7 @@ main() {
           })));
       it(
           "should emit ngSubmit event on submit",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t =
                 '''<div><form (ngSubmit)="name=\'updated\'"></form></div>''';
             ComponentFixture fixture;
@@ -970,7 +970,7 @@ main() {
           }));
       it(
           "should remove controls",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<form>
                     <div *ngIf="name == \'show\'">
                       <input type="text" ngControl="login">
@@ -993,7 +993,7 @@ main() {
           })));
       it(
           "should remove control groups",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<form>
                      <div *ngIf="name==\'show\'" ngControlGroup="user">
                       <input type="text" ngControl="login">
@@ -1016,7 +1016,7 @@ main() {
           })));
       it(
           "should support ngModel for complex forms",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<form>
                       <input type="text" ngControl="name" [(ngModel)]="name">
                </form>''';
@@ -1039,7 +1039,7 @@ main() {
           })));
       it(
           "should support ngModel for single fields",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<div><input type="text" [(ngModel)]="name"></div>''';
             ComponentFixture fixture;
             tcb.overrideTemplate(MyComp, t).createAsync(MyComp).then((root) {
@@ -1059,7 +1059,7 @@ main() {
           })));
       it(
           "should support <type=radio>",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<form>
                   <input type="radio" name="food" ngControl="chicken" [(ngModel)]="data[\'chicken1\']">
                   <input type="radio" name="food" ngControl="fish" [(ngModel)]="data[\'fish1\']">
@@ -1175,7 +1175,7 @@ main() {
     describe("ngModel corner cases", () {
       it(
           "should not update the view when the value initially came from the view",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var form = new Control("");
             var t =
                 '''<div><input type="text" [ngFormControl]="form" [(ngModel)]="name"></div>''';
@@ -1205,7 +1205,7 @@ main() {
           })));
       it(
           "should update the view when the model is set back to what used to be in the view",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             var t = '''<input type="text" [(ngModel)]="name">''';
             ComponentFixture fixture;
             tcb.overrideTemplate(MyComp, t).createAsync(MyComp).then((root) {
@@ -1236,7 +1236,7 @@ main() {
           })));
       it(
           "should not crash when validity is checked from a binding",
-          fakeAsync(inject([TestComponentBuilder], (TestComponentBuilder tcb) {
+          inject([TestComponentBuilder], fakeAsync((TestComponentBuilder tcb) {
             // {{x.valid}} used to crash because valid() tried to read a property
 
             // from form.control before it was set. This test verifies this bug is
