@@ -149,18 +149,12 @@ export class QueryMetadata extends DependencyMetadata {
    */
   descendants: boolean;
   first: boolean;
-  /**
-   * The DI token to read from an element that matches the selector.
-   */
-  read: any;
 
   constructor(private _selector: Type | string,
-              {descendants = false, first = false,
-               read = null}: {descendants?: boolean, first?: boolean, read?: any} = {}) {
+              {descendants = false, first = false}: {descendants?: boolean, first?: boolean} = {}) {
     super();
     this.descendants = descendants;
     this.first = first;
-    this.read = read;
   }
 
   /**
@@ -210,9 +204,8 @@ export class QueryMetadata extends DependencyMetadata {
  */
 @CONST()
 export class ContentChildrenMetadata extends QueryMetadata {
-  constructor(_selector: Type | string,
-              {descendants = false, read = null}: {descendants?: boolean, read?: any} = {}) {
-    super(_selector, {descendants: descendants, read: read});
+  constructor(_selector: Type | string, {descendants = false}: {descendants?: boolean} = {}) {
+    super(_selector, {descendants: descendants});
   }
 }
 
@@ -239,9 +232,7 @@ export class ContentChildrenMetadata extends QueryMetadata {
  */
 @CONST()
 export class ContentChildMetadata extends QueryMetadata {
-  constructor(_selector: Type | string, {read = null}: {read?: any} = {}) {
-    super(_selector, {descendants: true, first: true, read: read});
-  }
+  constructor(_selector: Type | string) { super(_selector, {descendants: true, first: true}); }
 }
 
 /**
@@ -282,9 +273,8 @@ export class ContentChildMetadata extends QueryMetadata {
 @CONST()
 export class ViewQueryMetadata extends QueryMetadata {
   constructor(_selector: Type | string,
-              {descendants = false, first = false,
-               read = null}: {descendants?: boolean, first?: boolean, read?: any} = {}) {
-    super(_selector, {descendants: descendants, first: first, read: read});
+              {descendants = false, first = false}: {descendants?: boolean, first?: boolean} = {}) {
+    super(_selector, {descendants: descendants, first: first});
   }
 
   /**
@@ -373,9 +363,7 @@ export class ViewQueryMetadata extends QueryMetadata {
  */
 @CONST()
 export class ViewChildrenMetadata extends ViewQueryMetadata {
-  constructor(_selector: Type | string, {read = null}: {read?: any} = {}) {
-    super(_selector, {descendants: true, read: read});
-  }
+  constructor(_selector: Type | string) { super(_selector, {descendants: true}); }
 }
 
 /**
@@ -450,7 +438,5 @@ export class ViewChildrenMetadata extends ViewQueryMetadata {
  */
 @CONST()
 export class ViewChildMetadata extends ViewQueryMetadata {
-  constructor(_selector: Type | string, {read = null}: {read?: any} = {}) {
-    super(_selector, {descendants: true, first: true, read: read});
-  }
+  constructor(_selector: Type | string) { super(_selector, {descendants: true, first: true}); }
 }

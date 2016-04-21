@@ -138,14 +138,9 @@ export declare class QueryMetadata extends DependencyMetadata {
      */
     descendants: boolean;
     first: boolean;
-    /**
-     * The DI token to read from an element that matches the selector.
-     */
-    read: any;
-    constructor(_selector: Type | string, {descendants, first, read}?: {
+    constructor(_selector: Type | string, {descendants, first}?: {
         descendants?: boolean;
         first?: boolean;
-        read?: any;
     });
     /**
      * always `false` to differentiate it with {@link ViewQueryMetadata}.
@@ -187,9 +182,8 @@ export declare class QueryMetadata extends DependencyMetadata {
  * ```
  */
 export declare class ContentChildrenMetadata extends QueryMetadata {
-    constructor(_selector: Type | string, {descendants, read}?: {
+    constructor(_selector: Type | string, {descendants}?: {
         descendants?: boolean;
-        read?: any;
     });
 }
 /**
@@ -213,9 +207,7 @@ export declare class ContentChildrenMetadata extends QueryMetadata {
  * ```
  */
 export declare class ContentChildMetadata extends QueryMetadata {
-    constructor(_selector: Type | string, {read}?: {
-        read?: any;
-    });
+    constructor(_selector: Type | string);
 }
 /**
  * Similar to {@link QueryMetadata}, but querying the component view, instead of
@@ -253,10 +245,9 @@ export declare class ContentChildMetadata extends QueryMetadata {
  * See {@link QueryList} for more details.
  */
 export declare class ViewQueryMetadata extends QueryMetadata {
-    constructor(_selector: Type | string, {descendants, first, read}?: {
+    constructor(_selector: Type | string, {descendants, first}?: {
         descendants?: boolean;
         first?: boolean;
-        read?: any;
     });
     /**
      * always `true` to differentiate it with {@link QueryMetadata}.
@@ -342,9 +333,7 @@ export declare class ViewQueryMetadata extends QueryMetadata {
  * ```
  */
 export declare class ViewChildrenMetadata extends ViewQueryMetadata {
-    constructor(_selector: Type | string, {read}?: {
-        read?: any;
-    });
+    constructor(_selector: Type | string);
 }
 /**
  *
@@ -417,7 +406,5 @@ export declare class ViewChildrenMetadata extends ViewQueryMetadata {
  * ```
  */
 export declare class ViewChildMetadata extends ViewQueryMetadata {
-    constructor(_selector: Type | string, {read}?: {
-        read?: any;
-    });
+    constructor(_selector: Type | string);
 }
