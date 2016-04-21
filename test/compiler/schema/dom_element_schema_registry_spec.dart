@@ -11,11 +11,15 @@ import "package:angular2/testing_internal.dart"
         inject,
         it,
         xit;
+import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/compiler/schema/dom_element_schema_registry.dart"
     show DomElementSchemaRegistry;
-import "schema_extractor.dart" show extractSchema;
 
 main() {
+  // DOMElementSchema can only be used on the JS side where we can safely
+
+  // use reflection for DOM elements
+  if (IS_DART) return;
   DomElementSchemaRegistry registry;
   beforeEach(() {
     registry = new DomElementSchemaRegistry();
@@ -40,10 +44,6 @@ main() {
     });
     it("should detect properties on namespaced elements", () {
       expect(registry.hasProperty("@svg:g", "id")).toBeTruthy();
-    });
-    it("generate a new schema", () {
-      // console.log(JSON.stringify(registry.properties));
-      var descriptors = extractSchema();
     });
   });
 }
