@@ -16032,7 +16032,7 @@ System.register("angular2/src/compiler/compile_metadata", ["angular2/src/facade/
     };
     Object.defineProperty(CompileTokenMetadata.prototype, "name", {
       get: function() {
-        return lang_1.isPresent(this.value) ? this.value : this.identifier.name;
+        return lang_1.isPresent(this.value) ? util_1.sanitizeIdentifier(this.value) : this.identifier.name;
       },
       enumerable: true,
       configurable: true

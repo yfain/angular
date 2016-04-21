@@ -22713,7 +22713,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            (lang_1.isPresent(ak) && ak == token2.assetCacheKey);
 	    };
 	    Object.defineProperty(CompileTokenMetadata.prototype, "name", {
-	        get: function () { return lang_1.isPresent(this.value) ? this.value : this.identifier.name; },
+	        get: function () {
+	            return lang_1.isPresent(this.value) ? util_1.sanitizeIdentifier(this.value) : this.identifier.name;
+	        },
 	        enumerable: true,
 	        configurable: true
 	    });
