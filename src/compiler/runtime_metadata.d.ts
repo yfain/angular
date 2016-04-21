@@ -16,10 +16,7 @@ export declare class RuntimeMetadataResolver {
     private _anonymousTypes;
     private _anonymousTypeIndex;
     constructor(_directiveResolver: DirectiveResolver, _pipeResolver: PipeResolver, _viewResolver: ViewResolver, _platformDirectives: Type[], _platformPipes: Type[]);
-    /**
-     * Wrap the stringify method to avoid naming things `function (arg1...) {`
-     */
-    private sanitizeName(obj);
+    private sanitizeTokenName(token);
     getDirectiveMetadata(directiveType: Type): cpl.CompileDirectiveMetadata;
     getTypeMetadata(type: Type, moduleUrl: string): cpl.CompileTypeMetadata;
     getFactoryMetadata(factory: Function, moduleUrl: string): cpl.CompileFactoryMetadata;
@@ -27,7 +24,6 @@ export declare class RuntimeMetadataResolver {
     getViewDirectivesMetadata(component: Type): cpl.CompileDirectiveMetadata[];
     getViewPipesMetadata(component: Type): cpl.CompilePipeMetadata[];
     getDependenciesMetadata(typeOrFunc: Type | Function, dependencies: any[]): cpl.CompileDiDependencyMetadata[];
-    getRuntimeIdentifier(value: any): cpl.CompileIdentifierMetadata;
     getTokenMetadata(token: any): cpl.CompileTokenMetadata;
     getProvidersMetadata(providers: any[]): Array<cpl.CompileProviderMetadata | cpl.CompileTypeMetadata | any[]>;
     getProviderMetadata(provider: Provider): cpl.CompileProviderMetadata;

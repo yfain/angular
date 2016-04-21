@@ -22061,6 +22061,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}
 	exports.splitAtColon = splitAtColon;
+	function sanitizeIdentifier(name) {
+	    return lang_1.StringWrapper.replaceAll(name, /\W/g, '_');
+	}
+	exports.sanitizeIdentifier = sanitizeIdentifier;
 
 
 /***/ },
@@ -26957,6 +26961,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(15);
+	var exceptions_1 = __webpack_require__(12);
 	var o = __webpack_require__(164);
 	var identifiers_1 = __webpack_require__(158);
 	var constants_1 = __webpack_require__(170);
@@ -27002,7 +27007,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.dirtyParentQueriesMethod = new compile_method_1.CompileMethod(this);
 	        this.updateViewQueriesMethod = new compile_method_1.CompileMethod(this);
 	        this.detectChangesInInputsMethod = new compile_method_1.CompileMethod(this);
-	        this.detectChangesHostPropertiesMethod = new compile_method_1.CompileMethod(this);
+	        this.detectChangesRenderPropertiesMethod = new compile_method_1.CompileMethod(this);
 	        this.afterContentLifecycleCallbacksMethod = new compile_method_1.CompileMethod(this);
 	        this.afterViewLifecycleCallbacksMethod = new compile_method_1.CompileMethod(this);
 	        this.destroyMethod = new compile_method_1.CompileMethod(this);
@@ -27045,7 +27050,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	    CompileView.prototype.createPipe = function (name) {
-	        var pipeMeta = this.pipeMetas.find(function (pipeMeta) { return pipeMeta.name == name; });
+	        var pipeMeta = null;
+	        for (var i = this.pipeMetas.length - 1; i >= 0; i--) {
+	            var localPipeMeta = this.pipeMetas[i];
+	            if (localPipeMeta.name == name) {
+	                pipeMeta = localPipeMeta;
+	                break;
+	            }
+	        }
+	        if (lang_1.isBlank(pipeMeta)) {
+	            throw new exceptions_1.BaseException("Illegal state: Could not find pipe " + name + " although the parser should have detected this error!");
+	        }
 	        var pipeFieldName = pipeMeta.pure ? "_pipe_" + name : "_pipe_" + name + "_" + this.pipes.size;
 	        var pipeExpr = this.pipes.get(pipeFieldName);
 	        if (lang_1.isBlank(pipeExpr)) {
@@ -27596,8 +27611,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var stmts = [];
 	    if (view.detectChangesInInputsMethod.isEmpty() && view.updateContentQueriesMethod.isEmpty() &&
 	        view.afterContentLifecycleCallbacksMethod.isEmpty() &&
-	        view.detectChangesHostPropertiesMethod.isEmpty() && view.updateViewQueriesMethod.isEmpty() &&
-	        view.afterViewLifecycleCallbacksMethod.isEmpty()) {
+	        view.detectChangesRenderPropertiesMethod.isEmpty() &&
+	        view.updateViewQueriesMethod.isEmpty() && view.afterViewLifecycleCallbacksMethod.isEmpty()) {
 	        return stmts;
 	    }
 	    collection_1.ListWrapper.addAll(stmts, view.detectChangesInInputsMethod.finish());
@@ -27607,7 +27622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (afterContentStmts.length > 0) {
 	        stmts.push(new o.IfStmt(o.not(constants_1.DetectChangesVars.throwOnChange), afterContentStmts));
 	    }
-	    collection_1.ListWrapper.addAll(stmts, view.detectChangesHostPropertiesMethod.finish());
+	    collection_1.ListWrapper.addAll(stmts, view.detectChangesRenderPropertiesMethod.finish());
 	    stmts.push(o.THIS_EXPR.callMethod('detectViewChildrenChanges', [constants_1.DetectChangesVars.throwOnChange])
 	        .toStmt());
 	    var afterViewStmts = view.updateViewQueriesMethod.finish().concat(view.afterViewLifecycleCallbacksMethod.finish());
@@ -27780,12 +27795,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    view.bindings.push(new compile_binding_1.CompileBinding(compileNode, boundText));
 	    var currValExpr = createCurrValueExpr(bindingIndex);
 	    var valueField = createBindFieldExpr(bindingIndex);
-	    view.detectChangesInInputsMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
+	    view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
 	    bind(view, currValExpr, valueField, boundText.value, o.THIS_EXPR.prop('context'), [
 	        o.THIS_EXPR.prop('renderer')
 	            .callMethod('setText', [compileNode.renderNode, currValExpr])
 	            .toStmt()
-	    ], view.detectChangesInInputsMethod);
+	    ], view.detectChangesRenderPropertiesMethod);
 	}
 	exports.bindRenderText = bindRenderText;
 	function bindAndWriteToRenderer(boundProps, context, compileElement) {
@@ -27794,7 +27809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    boundProps.forEach(function (boundProp) {
 	        var bindingIndex = view.bindings.length;
 	        view.bindings.push(new compile_binding_1.CompileBinding(compileElement, boundProp));
-	        view.detectChangesHostPropertiesMethod.resetDebugInfo(compileElement.nodeIndex, boundProp);
+	        view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileElement.nodeIndex, boundProp);
 	        var fieldExpr = createBindFieldExpr(bindingIndex);
 	        var currValExpr = createCurrValueExpr(bindingIndex);
 	        var renderMethod;
@@ -27827,7 +27842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        updateStmts.push(o.THIS_EXPR.prop('renderer')
 	            .callMethod(renderMethod, [renderNode, o.literal(boundProp.name), renderValue])
 	            .toStmt());
-	        bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, view.detectChangesHostPropertiesMethod);
+	        bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, view.detectChangesRenderPropertiesMethod);
 	    });
 	}
 	function bindRenderInputs(boundProps, compileElement) {
@@ -28531,20 +28546,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._anonymousTypes = new Map();
 	        this._anonymousTypeIndex = 0;
 	    }
-	    /**
-	     * Wrap the stringify method to avoid naming things `function (arg1...) {`
-	     */
-	    RuntimeMetadataResolver.prototype.sanitizeName = function (obj) {
-	        var result = lang_1.StringWrapper.replaceAll(lang_1.stringify(obj), /[\s-]/g, '_');
-	        if (result.indexOf('(') < 0) {
-	            return result;
+	    RuntimeMetadataResolver.prototype.sanitizeTokenName = function (token) {
+	        var identifier = lang_1.stringify(token);
+	        if (identifier.indexOf('(') >= 0) {
+	            // case: anonymous functions!
+	            var found = this._anonymousTypes.get(token);
+	            if (lang_1.isBlank(found)) {
+	                this._anonymousTypes.set(token, this._anonymousTypeIndex++);
+	                found = this._anonymousTypes.get(token);
+	            }
+	            identifier = "anonymous_token_" + found + "_";
 	        }
-	        var found = this._anonymousTypes.get(obj);
-	        if (lang_1.isBlank(found)) {
-	            this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
-	            found = this._anonymousTypes.get(obj);
-	        }
-	        return "anonymous_type_" + found + "_";
+	        return util_1.sanitizeIdentifier(identifier);
 	    };
 	    RuntimeMetadataResolver.prototype.getDirectiveMetadata = function (directiveType) {
 	        var meta = this._directiveCache.get(directiveType);
@@ -28604,7 +28617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    RuntimeMetadataResolver.prototype.getTypeMetadata = function (type, moduleUrl) {
 	        return new cpl.CompileTypeMetadata({
-	            name: this.sanitizeName(type),
+	            name: this.sanitizeTokenName(type),
 	            moduleUrl: moduleUrl,
 	            runtime: type,
 	            diDeps: this.getDependenciesMetadata(type, null)
@@ -28612,7 +28625,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    RuntimeMetadataResolver.prototype.getFactoryMetadata = function (factory, moduleUrl) {
 	        return new cpl.CompileFactoryMetadata({
-	            name: this.sanitizeName(factory),
+	            name: this.sanitizeTokenName(factory),
 	            moduleUrl: moduleUrl,
 	            runtime: factory,
 	            diDeps: this.getDependenciesMetadata(factory, null)
@@ -28697,9 +28710,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getRuntimeIdentifier = function (value) {
-	        return new cpl.CompileIdentifierMetadata({ runtime: value, name: this.sanitizeName(value) });
-	    };
 	    RuntimeMetadataResolver.prototype.getTokenMetadata = function (token) {
 	        token = di_1.resolveForwardRef(token);
 	        var compileToken;
@@ -28707,7 +28717,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            compileToken = new cpl.CompileTokenMetadata({ value: token });
 	        }
 	        else {
-	            compileToken = new cpl.CompileTokenMetadata({ identifier: this.getRuntimeIdentifier(token) });
+	            compileToken = new cpl.CompileTokenMetadata({
+	                identifier: new cpl.CompileIdentifierMetadata({ runtime: token, name: this.sanitizeTokenName(token) })
+	            });
 	        }
 	        return compileToken;
 	    };
@@ -28737,7 +28749,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return new cpl.CompileProviderMetadata({
 	            token: this.getTokenMetadata(provider.token),
 	            useClass: lang_1.isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, null) : null,
-	            useValue: lang_1.isPresent(provider.useValue) ? this.getRuntimeIdentifier(provider.useValue) : null,
+	            useValue: lang_1.isPresent(provider.useValue) ?
+	                new cpl.CompileIdentifierMetadata({ runtime: provider.useValue }) :
+	                null,
 	            useFactory: lang_1.isPresent(provider.useFactory) ?
 	                this.getFactoryMetadata(provider.useFactory, null) :
 	                null,
@@ -29241,6 +29255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var abstract_emitter_1 = __webpack_require__(191);
 	var abstract_js_emitter_1 = __webpack_require__(192);
+	var util_1 = __webpack_require__(153);
 	function jitStatements(sourceUrl, statements, resultVar) {
 	    var converter = new JitEmitterVisitor();
 	    var ctx = abstract_emitter_1.EmitterVisitorContext.createRoot([resultVar]);
@@ -29268,16 +29283,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (id === -1) {
 	            id = this._evalArgValues.length;
 	            this._evalArgValues.push(value);
-	            this._evalArgNames.push(sanitizeJitArgName("jit_" + ast.value.name + id));
+	            var name = lang_1.isPresent(ast.value.name) ? util_1.sanitizeIdentifier(ast.value.name) : 'val';
+	            this._evalArgNames.push(util_1.sanitizeIdentifier("jit_" + name + id));
 	        }
 	        ctx.print(this._evalArgNames[id]);
 	        return null;
 	    };
 	    return JitEmitterVisitor;
 	}(abstract_js_emitter_1.AbstractJsEmitterVisitor));
-	function sanitizeJitArgName(name) {
-	    return lang_1.StringWrapper.replaceAll(name, /[\.\/]/g, '_');
-	}
 
 
 /***/ },

@@ -17,3 +17,6 @@ export function splitAtColon(input, defaultValues) {
         return defaultValues;
     }
 }
+export function sanitizeIdentifier(name) {
+    return StringWrapper.replaceAll(name, /\W/g, '_');
+}

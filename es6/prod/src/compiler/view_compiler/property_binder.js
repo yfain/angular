@@ -39,12 +39,12 @@ export function bindRenderText(boundText, compileNode, view) {
     view.bindings.push(new CompileBinding(compileNode, boundText));
     var currValExpr = createCurrValueExpr(bindingIndex);
     var valueField = createBindFieldExpr(bindingIndex);
-    view.detectChangesInInputsMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
+    view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
     bind(view, currValExpr, valueField, boundText.value, o.THIS_EXPR.prop('context'), [
         o.THIS_EXPR.prop('renderer')
             .callMethod('setText', [compileNode.renderNode, currValExpr])
             .toStmt()
-    ], view.detectChangesInInputsMethod);
+    ], view.detectChangesRenderPropertiesMethod);
 }
 function bindAndWriteToRenderer(boundProps, context, compileElement) {
     var view = compileElement.view;
@@ -52,7 +52,7 @@ function bindAndWriteToRenderer(boundProps, context, compileElement) {
     boundProps.forEach((boundProp) => {
         var bindingIndex = view.bindings.length;
         view.bindings.push(new CompileBinding(compileElement, boundProp));
-        view.detectChangesHostPropertiesMethod.resetDebugInfo(compileElement.nodeIndex, boundProp);
+        view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileElement.nodeIndex, boundProp);
         var fieldExpr = createBindFieldExpr(bindingIndex);
         var currValExpr = createCurrValueExpr(bindingIndex);
         var renderMethod;
@@ -85,7 +85,7 @@ function bindAndWriteToRenderer(boundProps, context, compileElement) {
         updateStmts.push(o.THIS_EXPR.prop('renderer')
             .callMethod(renderMethod, [renderNode, o.literal(boundProp.name), renderValue])
             .toStmt());
-        bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, view.detectChangesHostPropertiesMethod);
+        bind(view, currValExpr, fieldExpr, boundProp.value, context, updateStmts, view.detectChangesRenderPropertiesMethod);
     });
 }
 export function bindRenderInputs(boundProps, compileElement) {

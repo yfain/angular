@@ -30,7 +30,7 @@ export declare class CompileView implements NameResolver {
     dirtyParentQueriesMethod: CompileMethod;
     updateViewQueriesMethod: CompileMethod;
     detectChangesInInputsMethod: CompileMethod;
-    detectChangesHostPropertiesMethod: CompileMethod;
+    detectChangesRenderPropertiesMethod: CompileMethod;
     afterContentLifecycleCallbacksMethod: CompileMethod;
     afterViewLifecycleCallbacksMethod: CompileMethod;
     destroyMethod: CompileMethod;

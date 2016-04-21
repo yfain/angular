@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { resolveForwardRef } from 'angular2/src/core/di';
-import { Type, isBlank, isPresent, isArray, stringify, isString, StringWrapper } from 'angular2/src/facade/lang';
+import { Type, isBlank, isPresent, isArray, stringify, isString } from 'angular2/src/facade/lang';
 import { StringMapWrapper } from 'angular2/src/facade/collection';
 import { BaseException } from 'angular2/src/facade/exceptions';
 import { NoAnnotationError } from 'angular2/src/core/di/reflective_exceptions';
@@ -26,7 +26,7 @@ import { LIFECYCLE_HOOKS_VALUES } from 'angular2/src/core/metadata/lifecycle_hoo
 import { reflector } from 'angular2/src/core/reflection/reflection';
 import { Injectable, Inject, Optional } from 'angular2/src/core/di';
 import { PLATFORM_DIRECTIVES, PLATFORM_PIPES } from 'angular2/src/core/platform_directives_and_pipes';
-import { MODULE_SUFFIX } from './util';
+import { MODULE_SUFFIX, sanitizeIdentifier } from './util';
 import { assertArrayOfStrings } from './assertions';
 import { getUrlScheme } from 'angular2/src/compiler/url_resolver';
 import { Provider } from 'angular2/src/core/di/provider';
@@ -45,20 +45,18 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
         this._anonymousTypes = new Map();
         this._anonymousTypeIndex = 0;
     }
-    /**
-     * Wrap the stringify method to avoid naming things `function (arg1...) {`
-     */
-    sanitizeName(obj) {
-        let result = StringWrapper.replaceAll(stringify(obj), /[\s-]/g, '_');
-        if (result.indexOf('(') < 0) {
-            return result;
+    sanitizeTokenName(token) {
+        let identifier = stringify(token);
+        if (identifier.indexOf('(') >= 0) {
+            // case: anonymous functions!
+            let found = this._anonymousTypes.get(token);
+            if (isBlank(found)) {
+                this._anonymousTypes.set(token, this._anonymousTypeIndex++);
+                found = this._anonymousTypes.get(token);
+            }
+            identifier = `anonymous_token_${found}_`;
         }
-        let found = this._anonymousTypes.get(obj);
-        if (isBlank(found)) {
-            this._anonymousTypes.set(obj, this._anonymousTypeIndex++);
-            found = this._anonymousTypes.get(obj);
-        }
-        return `anonymous_type_${found}_`;
+        return sanitizeIdentifier(identifier);
     }
     getDirectiveMetadata(directiveType) {
         var meta = this._directiveCache.get(directiveType);
@@ -118,7 +116,7 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
     }
     getTypeMetadata(type, moduleUrl) {
         return new cpl.CompileTypeMetadata({
-            name: this.sanitizeName(type),
+            name: this.sanitizeTokenName(type),
             moduleUrl: moduleUrl,
             runtime: type,
             diDeps: this.getDependenciesMetadata(type, null)
@@ -126,7 +124,7 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
     }
     getFactoryMetadata(factory, moduleUrl) {
         return new cpl.CompileFactoryMetadata({
-            name: this.sanitizeName(factory),
+            name: this.sanitizeTokenName(factory),
             moduleUrl: moduleUrl,
             runtime: factory,
             diDeps: this.getDependenciesMetadata(factory, null)
@@ -208,9 +206,6 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             });
         });
     }
-    getRuntimeIdentifier(value) {
-        return new cpl.CompileIdentifierMetadata({ runtime: value, name: this.sanitizeName(value) });
-    }
     getTokenMetadata(token) {
         token = resolveForwardRef(token);
         var compileToken;
@@ -218,7 +213,9 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             compileToken = new cpl.CompileTokenMetadata({ value: token });
         }
         else {
-            compileToken = new cpl.CompileTokenMetadata({ identifier: this.getRuntimeIdentifier(token) });
+            compileToken = new cpl.CompileTokenMetadata({
+                identifier: new cpl.CompileIdentifierMetadata({ runtime: token, name: this.sanitizeTokenName(token) })
+            });
         }
         return compileToken;
     }
@@ -247,7 +244,9 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
         return new cpl.CompileProviderMetadata({
             token: this.getTokenMetadata(provider.token),
             useClass: isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, null) : null,
-            useValue: isPresent(provider.useValue) ? this.getRuntimeIdentifier(provider.useValue) : null,
+            useValue: isPresent(provider.useValue) ?
+                new cpl.CompileIdentifierMetadata({ runtime: provider.useValue }) :
+                null,
             useFactory: isPresent(provider.useFactory) ?
                 this.getFactoryMetadata(provider.useFactory, null) :
                 null,

@@ -1,5 +1,6 @@
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { ListWrapper } from 'angular2/src/facade/collection';
+import { BaseException } from 'angular2/src/facade/exceptions';
 import * as o from '../output/output_ast';
 import { Identifiers, identifierToken } from '../identifiers';
 import { EventHandlerVars } from './constants';
@@ -42,7 +43,7 @@ export class CompileView {
         this.dirtyParentQueriesMethod = new CompileMethod(this);
         this.updateViewQueriesMethod = new CompileMethod(this);
         this.detectChangesInInputsMethod = new CompileMethod(this);
-        this.detectChangesHostPropertiesMethod = new CompileMethod(this);
+        this.detectChangesRenderPropertiesMethod = new CompileMethod(this);
         this.afterContentLifecycleCallbacksMethod = new CompileMethod(this);
         this.afterViewLifecycleCallbacksMethod = new CompileMethod(this);
         this.destroyMethod = new CompileMethod(this);
@@ -85,7 +86,17 @@ export class CompileView {
         }
     }
     createPipe(name) {
-        var pipeMeta = this.pipeMetas.find((pipeMeta) => pipeMeta.name == name);
+        var pipeMeta = null;
+        for (var i = this.pipeMetas.length - 1; i >= 0; i--) {
+            var localPipeMeta = this.pipeMetas[i];
+            if (localPipeMeta.name == name) {
+                pipeMeta = localPipeMeta;
+                break;
+            }
+        }
+        if (isBlank(pipeMeta)) {
+            throw new BaseException(`Illegal state: Could not find pipe ${name} although the parser should have detected this error!`);
+        }
         var pipeFieldName = pipeMeta.pure ? `_pipe_${name}` : `_pipe_${name}_${this.pipes.size}`;
         var pipeExpr = this.pipes.get(pipeFieldName);
         if (isBlank(pipeExpr)) {
