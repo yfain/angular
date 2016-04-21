@@ -835,155 +835,146 @@ System.register("angular2/src/testing/utils", ["angular2/core", "angular2/src/fa
   return module.exports;
 });
 
-System.register("angular2/src/testing/fake_async", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection"], true, function(require, exports, module) {
+System.register("angular2/src/testing/test_injector", ["angular2/core", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
-  var lang_1 = require("angular2/src/facade/lang");
+  var core_1 = require("angular2/core");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var collection_1 = require("angular2/src/facade/collection");
-  var _scheduler;
-  var _microtasks = [];
-  var _pendingPeriodicTimers = [];
-  var _pendingTimers = [];
-  var FakeAsyncZoneSpec = (function() {
-    function FakeAsyncZoneSpec() {
-      this.name = 'fakeAsync';
-      this.properties = {'inFakeAsyncZone': true};
+  var lang_1 = require("angular2/src/facade/lang");
+  var TestInjector = (function() {
+    function TestInjector() {
+      this._instantiated = false;
+      this._injector = null;
+      this._providers = [];
+      this.platformProviders = [];
+      this.applicationProviders = [];
     }
-    FakeAsyncZoneSpec.assertInZone = function() {
-      if (!Zone.current.get('inFakeAsyncZone')) {
-        throw new Error('The code should be running in the fakeAsync zone to call this function');
-      }
+    TestInjector.prototype.reset = function() {
+      this._injector = null;
+      this._providers = [];
+      this._instantiated = false;
     };
-    FakeAsyncZoneSpec.prototype.onScheduleTask = function(delegate, current, target, task) {
-      switch (task.type) {
-        case 'microTask':
-          _microtasks.push(task.invoke);
-          break;
-        case 'macroTask':
-          switch (task.source) {
-            case 'setTimeout':
-              task.data['handleId'] = _setTimeout(task.invoke, task.data['delay'], task.data['args']);
-              break;
-            case 'setInterval':
-              task.data['handleId'] = _setInterval(task.invoke, task.data['delay'], task.data['args']);
-              break;
-            default:
-              task = delegate.scheduleTask(target, task);
-          }
-          break;
-        case 'eventTask':
-          task = delegate.scheduleTask(target, task);
-          break;
+    TestInjector.prototype.addProviders = function(providers) {
+      if (this._instantiated) {
+        throw new exceptions_1.BaseException('Cannot add providers after test injector is instantiated');
       }
-      return task;
+      this._providers = collection_1.ListWrapper.concat(this._providers, providers);
     };
-    FakeAsyncZoneSpec.prototype.onCancelTask = function(delegate, current, target, task) {
-      switch (task.source) {
-        case 'setTimeout':
-          return _clearTimeout(task.data['handleId']);
-        case 'setInterval':
-          return _clearInterval(task.data['handleId']);
-        default:
-          return delegate.scheduleTask(target, task);
+    TestInjector.prototype.createInjector = function() {
+      var rootInjector = core_1.ReflectiveInjector.resolveAndCreate(this.platformProviders);
+      this._injector = rootInjector.resolveAndCreateChild(collection_1.ListWrapper.concat(this.applicationProviders, this._providers));
+      this._instantiated = true;
+      return this._injector;
+    };
+    TestInjector.prototype.execute = function(fn) {
+      var additionalProviders = fn.additionalProviders();
+      if (additionalProviders.length > 0) {
+        this.addProviders(additionalProviders);
       }
+      if (!this._instantiated) {
+        this.createInjector();
+      }
+      return fn.execute(this._injector);
     };
-    return FakeAsyncZoneSpec;
+    return TestInjector;
   }());
-  function fakeAsync(fn) {
-    if (Zone.current.get('inFakeAsyncZone')) {
-      throw new Error('fakeAsync() calls can not be nested');
+  exports.TestInjector = TestInjector;
+  var _testInjector = null;
+  function getTestInjector() {
+    if (_testInjector == null) {
+      _testInjector = new TestInjector();
     }
-    var fakeAsyncZone = Zone.current.fork(new FakeAsyncZoneSpec());
-    return function() {
-      var args = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
-      }
-      _scheduler = new jasmine.DelayedFunctionScheduler();
-      clearPendingTimers();
-      var res = fakeAsyncZone.run(function() {
-        var res = fn.apply(void 0, args);
-        flushMicrotasks();
-        return res;
+    return _testInjector;
+  }
+  exports.getTestInjector = getTestInjector;
+  function setBaseTestProviders(platformProviders, applicationProviders) {
+    var testInjector = getTestInjector();
+    if (testInjector.platformProviders.length > 0 || testInjector.applicationProviders.length > 0) {
+      throw new exceptions_1.BaseException('Cannot set base providers because it has already been called');
+    }
+    testInjector.platformProviders = platformProviders;
+    testInjector.applicationProviders = applicationProviders;
+    var injector = testInjector.createInjector();
+    var inits = injector.get(core_1.PLATFORM_INITIALIZER, null);
+    if (lang_1.isPresent(inits)) {
+      inits.forEach(function(init) {
+        return init();
       });
-      if (_pendingPeriodicTimers.length > 0) {
-        throw new exceptions_1.BaseException(_pendingPeriodicTimers.length + " periodic timer(s) still in the queue.");
-      }
-      if (_pendingTimers.length > 0) {
-        throw new exceptions_1.BaseException(_pendingTimers.length + " timer(s) still in the queue.");
-      }
-      _scheduler = null;
-      collection_1.ListWrapper.clear(_microtasks);
-      return res;
-    };
-  }
-  exports.fakeAsync = fakeAsync;
-  function clearPendingTimers() {
-    collection_1.ListWrapper.clear(_microtasks);
-    collection_1.ListWrapper.clear(_pendingPeriodicTimers);
-    collection_1.ListWrapper.clear(_pendingTimers);
-  }
-  exports.clearPendingTimers = clearPendingTimers;
-  function tick(millis) {
-    if (millis === void 0) {
-      millis = 0;
     }
-    FakeAsyncZoneSpec.assertInZone();
-    flushMicrotasks();
-    _scheduler.tick(millis);
+    testInjector.reset();
   }
-  exports.tick = tick;
-  function flushMicrotasks() {
-    FakeAsyncZoneSpec.assertInZone();
-    while (_microtasks.length > 0) {
-      var microtask = collection_1.ListWrapper.removeAt(_microtasks, 0);
-      microtask();
+  exports.setBaseTestProviders = setBaseTestProviders;
+  function resetBaseTestProviders() {
+    var testInjector = getTestInjector();
+    testInjector.platformProviders = [];
+    testInjector.applicationProviders = [];
+    testInjector.reset();
+  }
+  exports.resetBaseTestProviders = resetBaseTestProviders;
+  function inject(tokens, fn) {
+    return new FunctionWithParamTokens(tokens, fn, false);
+  }
+  exports.inject = inject;
+  var InjectSetupWrapper = (function() {
+    function InjectSetupWrapper(_providers) {
+      this._providers = _providers;
+    }
+    InjectSetupWrapper.prototype.inject = function(tokens, fn) {
+      return new FunctionWithParamTokens(tokens, fn, false, this._providers);
+    };
+    InjectSetupWrapper.prototype.injectAsync = function(tokens, fn) {
+      return new FunctionWithParamTokens(tokens, fn, true, this._providers);
+    };
+    return InjectSetupWrapper;
+  }());
+  exports.InjectSetupWrapper = InjectSetupWrapper;
+  function withProviders(providers) {
+    return new InjectSetupWrapper(providers);
+  }
+  exports.withProviders = withProviders;
+  function injectAsync(tokens, fn) {
+    return new FunctionWithParamTokens(tokens, fn, true);
+  }
+  exports.injectAsync = injectAsync;
+  function async(fn) {
+    if (fn instanceof FunctionWithParamTokens) {
+      fn.isAsync = true;
+      return fn;
+    } else if (fn instanceof Function) {
+      return new FunctionWithParamTokens([], fn, true);
+    } else {
+      throw new exceptions_1.BaseException('argument to async must be a function or inject(<Function>)');
     }
   }
-  exports.flushMicrotasks = flushMicrotasks;
-  function _setTimeout(fn, delay, args) {
-    var cb = _fnAndFlush(fn);
-    var id = _scheduler.scheduleFunction(cb, delay, args);
-    _pendingTimers.push(id);
-    _scheduler.scheduleFunction(_dequeueTimer(id), delay);
-    return id;
+  exports.async = async;
+  function emptyArray() {
+    return [];
   }
-  function _clearTimeout(id) {
-    _dequeueTimer(id);
-    return _scheduler.removeFunctionWithId(id);
-  }
-  function _setInterval(fn, interval) {
-    var args = [];
-    for (var _i = 2; _i < arguments.length; _i++) {
-      args[_i - 2] = arguments[_i];
-    }
-    var cb = _fnAndFlush(fn);
-    var id = _scheduler.scheduleFunction(cb, interval, args, true);
-    _pendingPeriodicTimers.push(id);
-    return id;
-  }
-  function _clearInterval(id) {
-    collection_1.ListWrapper.remove(_pendingPeriodicTimers, id);
-    return _scheduler.removeFunctionWithId(id);
-  }
-  function _fnAndFlush(fn) {
-    return function() {
-      var args = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
+  var FunctionWithParamTokens = (function() {
+    function FunctionWithParamTokens(_tokens, fn, isAsync, additionalProviders) {
+      if (additionalProviders === void 0) {
+        additionalProviders = emptyArray;
       }
-      fn.apply(lang_1.global, args);
-      flushMicrotasks();
+      this._tokens = _tokens;
+      this.fn = fn;
+      this.isAsync = isAsync;
+      this.additionalProviders = additionalProviders;
+    }
+    FunctionWithParamTokens.prototype.execute = function(injector) {
+      var params = this._tokens.map(function(t) {
+        return injector.get(t);
+      });
+      return lang_1.FunctionWrapper.apply(this.fn, params);
     };
-  }
-  function _dequeueTimer(id) {
-    return function() {
-      collection_1.ListWrapper.remove(_pendingTimers, id);
+    FunctionWithParamTokens.prototype.hasToken = function(token) {
+      return this._tokens.indexOf(token) > -1;
     };
-  }
+    return FunctionWithParamTokens;
+  }());
+  exports.FunctionWithParamTokens = FunctionWithParamTokens;
   global.define = __define;
   return module.exports;
 });
@@ -1079,6 +1070,94 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
     return HashLocationStrategy;
   }(location_strategy_1.LocationStrategy));
   exports.HashLocationStrategy = HashLocationStrategy;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/testing/fake_async", ["angular2/src/facade/exceptions", "angular2/src/testing/test_injector"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var exceptions_1 = require("angular2/src/facade/exceptions");
+  var test_injector_1 = require("angular2/src/testing/test_injector");
+  var _FakeAsyncTestZoneSpecType = Zone['FakeAsyncTestZoneSpec'];
+  function fakeAsync(fn) {
+    if (Zone.current.get('FakeAsyncTestZoneSpec') != null) {
+      throw new exceptions_1.BaseException('fakeAsync() calls can not be nested');
+    }
+    var fakeAsyncTestZoneSpec = new _FakeAsyncTestZoneSpecType();
+    var fakeAsyncZone = Zone.current.fork(fakeAsyncTestZoneSpec);
+    var innerTestFn = null;
+    if (fn instanceof test_injector_1.FunctionWithParamTokens) {
+      if (fn.isAsync) {
+        throw new exceptions_1.BaseException('Cannot wrap async test with fakeAsync');
+      }
+      innerTestFn = function() {
+        test_injector_1.getTestInjector().execute(fn);
+      };
+    } else {
+      innerTestFn = fn;
+    }
+    return function() {
+      var args = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i - 0] = arguments[_i];
+      }
+      var res = fakeAsyncZone.run(function() {
+        var res = innerTestFn.apply(void 0, args);
+        flushMicrotasks();
+        return res;
+      });
+      if (fakeAsyncTestZoneSpec.pendingPeriodicTimers.length > 0) {
+        throw new exceptions_1.BaseException((fakeAsyncTestZoneSpec.pendingPeriodicTimers.length + " ") + "periodic timer(s) still in the queue.");
+      }
+      if (fakeAsyncTestZoneSpec.pendingTimers.length > 0) {
+        throw new exceptions_1.BaseException(fakeAsyncTestZoneSpec.pendingTimers.length + " timer(s) still in the queue.");
+      }
+      return res;
+    };
+  }
+  exports.fakeAsync = fakeAsync;
+  function _getFakeAsyncZoneSpec() {
+    var zoneSpec = Zone.current.get('FakeAsyncTestZoneSpec');
+    if (zoneSpec == null) {
+      throw new Error('The code should be running in the fakeAsync zone to call this function');
+    }
+    return zoneSpec;
+  }
+  function clearPendingTimers() {}
+  exports.clearPendingTimers = clearPendingTimers;
+  function tick(millis) {
+    if (millis === void 0) {
+      millis = 0;
+    }
+    _getFakeAsyncZoneSpec().tick(millis);
+  }
+  exports.tick = tick;
+  function flushMicrotasks() {
+    _getFakeAsyncZoneSpec().flushMicrotasks();
+  }
+  exports.flushMicrotasks = flushMicrotasks;
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/platform/location", ["angular2/src/platform/browser/location/platform_location", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/hash_location_strategy", "angular2/src/platform/browser/location/path_location_strategy", "angular2/src/platform/browser/location/location"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  function __export(m) {
+    for (var p in m)
+      if (!exports.hasOwnProperty(p))
+        exports[p] = m[p];
+  }
+  __export(require("angular2/src/platform/browser/location/platform_location"));
+  __export(require("angular2/src/platform/browser/location/location_strategy"));
+  __export(require("angular2/src/platform/browser/location/hash_location_strategy"));
+  __export(require("angular2/src/platform/browser/location/path_location_strategy"));
+  __export(require("angular2/src/platform/browser/location/location"));
   global.define = __define;
   return module.exports;
 });
@@ -1247,25 +1326,6 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
     return TestComponentBuilder;
   }());
   exports.TestComponentBuilder = TestComponentBuilder;
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/platform/location", ["angular2/src/platform/browser/location/platform_location", "angular2/src/platform/browser/location/location_strategy", "angular2/src/platform/browser/location/hash_location_strategy", "angular2/src/platform/browser/location/path_location_strategy", "angular2/src/platform/browser/location/location"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  function __export(m) {
-    for (var p in m)
-      if (!exports.hasOwnProperty(p))
-        exports[p] = m[p];
-  }
-  __export(require("angular2/src/platform/browser/location/platform_location"));
-  __export(require("angular2/src/platform/browser/location/location_strategy"));
-  __export(require("angular2/src/platform/browser/location/hash_location_strategy"));
-  __export(require("angular2/src/platform/browser/location/path_location_strategy"));
-  __export(require("angular2/src/platform/browser/location/location"));
   global.define = __define;
   return module.exports;
 });
@@ -2262,150 +2322,6 @@ System.register("angular2/src/testing/matchers", ["angular2/src/platform/dom/dom
     }
     return dom_adapter_1.DOM.getText(n);
   }
-  global.define = __define;
-  return module.exports;
-});
-
-System.register("angular2/src/testing/test_injector", ["angular2/core", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/lang"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var core_1 = require("angular2/core");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
-  var collection_1 = require("angular2/src/facade/collection");
-  var lang_1 = require("angular2/src/facade/lang");
-  var TestInjector = (function() {
-    function TestInjector() {
-      this._instantiated = false;
-      this._injector = null;
-      this._providers = [];
-      this.platformProviders = [];
-      this.applicationProviders = [];
-    }
-    TestInjector.prototype.reset = function() {
-      this._injector = null;
-      this._providers = [];
-      this._instantiated = false;
-    };
-    TestInjector.prototype.addProviders = function(providers) {
-      if (this._instantiated) {
-        throw new exceptions_1.BaseException('Cannot add providers after test injector is instantiated');
-      }
-      this._providers = collection_1.ListWrapper.concat(this._providers, providers);
-    };
-    TestInjector.prototype.createInjector = function() {
-      var rootInjector = core_1.ReflectiveInjector.resolveAndCreate(this.platformProviders);
-      this._injector = rootInjector.resolveAndCreateChild(collection_1.ListWrapper.concat(this.applicationProviders, this._providers));
-      this._instantiated = true;
-      return this._injector;
-    };
-    TestInjector.prototype.execute = function(fn) {
-      var additionalProviders = fn.additionalProviders();
-      if (additionalProviders.length > 0) {
-        this.addProviders(additionalProviders);
-      }
-      if (!this._instantiated) {
-        this.createInjector();
-      }
-      return fn.execute(this._injector);
-    };
-    return TestInjector;
-  }());
-  exports.TestInjector = TestInjector;
-  var _testInjector = null;
-  function getTestInjector() {
-    if (_testInjector == null) {
-      _testInjector = new TestInjector();
-    }
-    return _testInjector;
-  }
-  exports.getTestInjector = getTestInjector;
-  function setBaseTestProviders(platformProviders, applicationProviders) {
-    var testInjector = getTestInjector();
-    if (testInjector.platformProviders.length > 0 || testInjector.applicationProviders.length > 0) {
-      throw new exceptions_1.BaseException('Cannot set base providers because it has already been called');
-    }
-    testInjector.platformProviders = platformProviders;
-    testInjector.applicationProviders = applicationProviders;
-    var injector = testInjector.createInjector();
-    var inits = injector.get(core_1.PLATFORM_INITIALIZER, null);
-    if (lang_1.isPresent(inits)) {
-      inits.forEach(function(init) {
-        return init();
-      });
-    }
-    testInjector.reset();
-  }
-  exports.setBaseTestProviders = setBaseTestProviders;
-  function resetBaseTestProviders() {
-    var testInjector = getTestInjector();
-    testInjector.platformProviders = [];
-    testInjector.applicationProviders = [];
-    testInjector.reset();
-  }
-  exports.resetBaseTestProviders = resetBaseTestProviders;
-  function inject(tokens, fn) {
-    return new FunctionWithParamTokens(tokens, fn, false);
-  }
-  exports.inject = inject;
-  var InjectSetupWrapper = (function() {
-    function InjectSetupWrapper(_providers) {
-      this._providers = _providers;
-    }
-    InjectSetupWrapper.prototype.inject = function(tokens, fn) {
-      return new FunctionWithParamTokens(tokens, fn, false, this._providers);
-    };
-    InjectSetupWrapper.prototype.injectAsync = function(tokens, fn) {
-      return new FunctionWithParamTokens(tokens, fn, true, this._providers);
-    };
-    return InjectSetupWrapper;
-  }());
-  exports.InjectSetupWrapper = InjectSetupWrapper;
-  function withProviders(providers) {
-    return new InjectSetupWrapper(providers);
-  }
-  exports.withProviders = withProviders;
-  function injectAsync(tokens, fn) {
-    return new FunctionWithParamTokens(tokens, fn, true);
-  }
-  exports.injectAsync = injectAsync;
-  function async(fn) {
-    if (fn instanceof FunctionWithParamTokens) {
-      fn.isAsync = true;
-      return fn;
-    } else if (fn instanceof Function) {
-      return new FunctionWithParamTokens([], fn, true);
-    } else {
-      throw new exceptions_1.BaseException('argument to async must be a function or inject(<Function>)');
-    }
-  }
-  exports.async = async;
-  function emptyArray() {
-    return [];
-  }
-  var FunctionWithParamTokens = (function() {
-    function FunctionWithParamTokens(_tokens, _fn, isAsync, additionalProviders) {
-      if (additionalProviders === void 0) {
-        additionalProviders = emptyArray;
-      }
-      this._tokens = _tokens;
-      this._fn = _fn;
-      this.isAsync = isAsync;
-      this.additionalProviders = additionalProviders;
-    }
-    FunctionWithParamTokens.prototype.execute = function(injector) {
-      var params = this._tokens.map(function(t) {
-        return injector.get(t);
-      });
-      return lang_1.FunctionWrapper.apply(this._fn, params);
-    };
-    FunctionWithParamTokens.prototype.hasToken = function(token) {
-      return this._tokens.indexOf(token) > -1;
-    };
-    return FunctionWithParamTokens;
-  }());
-  exports.FunctionWithParamTokens = FunctionWithParamTokens;
   global.define = __define;
   return module.exports;
 });

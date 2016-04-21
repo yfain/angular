@@ -177,9 +177,9 @@ function emptyArray() {
     return [];
 }
 export class FunctionWithParamTokens {
-    constructor(_tokens, _fn, isAsync, additionalProviders = emptyArray) {
+    constructor(_tokens, fn, isAsync, additionalProviders = emptyArray) {
         this._tokens = _tokens;
-        this._fn = _fn;
+        this.fn = fn;
         this.isAsync = isAsync;
         this.additionalProviders = additionalProviders;
     }
@@ -188,7 +188,7 @@ export class FunctionWithParamTokens {
      */
     execute(injector) {
         var params = this._tokens.map(t => injector.get(t));
-        return FunctionWrapper.apply(this._fn, params);
+        return FunctionWrapper.apply(this.fn, params);
     }
     hasToken(token) { return this._tokens.indexOf(token) > -1; }
 }

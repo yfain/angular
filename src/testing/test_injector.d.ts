@@ -102,10 +102,10 @@ export declare function injectAsync(tokens: any[], fn: Function): FunctionWithPa
 export declare function async(fn: Function | FunctionWithParamTokens): FunctionWithParamTokens;
 export declare class FunctionWithParamTokens {
     private _tokens;
-    private _fn;
+    fn: Function;
     isAsync: boolean;
     additionalProviders: () => any;
-    constructor(_tokens: any[], _fn: Function, isAsync: boolean, additionalProviders?: () => any);
+    constructor(_tokens: any[], fn: Function, isAsync: boolean, additionalProviders?: () => any);
     /**
      * Returns the value of the executed function.
      */

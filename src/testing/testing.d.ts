@@ -60,7 +60,7 @@ export declare type AsyncTestFn = (done: () => void) => void;
 /**
  * Signature for any simple testing function.
  */
-export declare type AnyTestFn = SyncTestFn | AsyncTestFn;
+export declare type AnyTestFn = SyncTestFn | AsyncTestFn | Function;
 /**
  * Allows overriding default providers of the test injector,
  * which are defined in test_injector.js.
