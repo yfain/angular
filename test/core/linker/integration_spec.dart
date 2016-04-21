@@ -1555,11 +1555,12 @@ declareTests() {
               } catch (e, e_stack) {
                 clearPendingTimers();
                 var c = e.context;
-                expect(DOM.nodeName(c.element).toUpperCase()).toEqual("INPUT");
+                expect(DOM.nodeName(c.element).toUpperCase()).toEqual("SPAN");
                 expect(DOM.nodeName(c.componentElement).toUpperCase())
                     .toEqual("DIV");
                 expect(c.injector).toBeAnInstanceOf(Injector);
-                expect(c.expression).toContain("one.two.three");
+                expect(c.context).toBe(fixture.debugElement.componentInstance);
+                expect(c.locals["local"]).toBeDefined();
               }
             })));
       }
