@@ -11230,7 +11230,7 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
     SelectControlValueAccessor = __decorate([core_1.Directive({
       selector: 'select[ngControl],select[ngFormControl],select[ngModel]',
       host: {
-        '(input)': 'onChange($event.target.value)',
+        '(change)': 'onChange($event.target.value)',
         '(blur)': 'onTouched()'
       },
       providers: [SELECT_VALUE_ACCESSOR]
