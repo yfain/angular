@@ -30,11 +30,17 @@ String _extractId(String valueString) {
 
 /**
  * The accessor for writing a value and listening to changes on a select element.
+ *
+ * Note: We have to listen to the 'change' event because 'input' events aren't fired
+ * for selects in Firefox and IE:
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=1024350
+ * https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4660045/
+ *
  */
 @Directive(
     selector: "select[ngControl],select[ngFormControl],select[ngModel]",
     host: const {
-      "(input)": "onChange(\$event.target.value)",
+      "(change)": "onChange(\$event.target.value)",
       "(blur)": "onTouched()"
     },
     providers: const [

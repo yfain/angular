@@ -448,7 +448,7 @@ main() {
                 expect(select.nativeElement.value).toEqual("SF");
                 expect(sfOption.nativeElement.selected).toBe(true);
                 select.nativeElement.value = "NYC";
-                dispatchEvent(select.nativeElement, "input");
+                dispatchEvent(select.nativeElement, "change");
                 expect(fixture.debugElement.componentInstance.form.value)
                     .toEqual({"city": "NYC"});
                 expect(sfOption.nativeElement.selected).toBe(false);
@@ -505,7 +505,7 @@ main() {
                 expect(select.nativeElement.value).toEqual("1: Object");
                 expect(nycOption.nativeElement.selected).toBe(true);
                 select.nativeElement.value = "2: Object";
-                dispatchEvent(select.nativeElement, "input");
+                dispatchEvent(select.nativeElement, "change");
                 fixture.detectChanges();
                 TimerWrapper.setTimeout(() {
                   expect(testComp.selectedCity["name"]).toEqual("Buffalo");
