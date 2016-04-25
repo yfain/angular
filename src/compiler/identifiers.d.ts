@@ -25,5 +25,7 @@ export declare class Identifiers {
     static flattenNestedViewRenderNodes: CompileIdentifierMetadata;
     static devModeEqual: CompileIdentifierMetadata;
     static interpolate: CompileIdentifierMetadata;
+    static castByValue: CompileIdentifierMetadata;
+    static pureProxies: CompileIdentifierMetadata[];
 }
 export declare function identifierToken(identifier: CompileIdentifierMetadata): CompileTokenMetadata;

@@ -265,7 +265,6 @@ export class CompileElement extends CompileNode {
     }
     _getDependency(requestingProviderType, dep) {
         var currElement = this;
-        var currView = currElement.view;
         var result = null;
         if (dep.isValue) {
             result = o.literal(dep.value);
@@ -273,14 +272,9 @@ export class CompileElement extends CompileNode {
         if (isBlank(result) && !dep.isSkipSelf) {
             result = this._getLocalDependency(requestingProviderType, dep);
         }
-        var resultViewPath = [];
         // check parent elements
         while (isBlank(result) && !currElement.parent.isNull()) {
             currElement = currElement.parent;
-            while (currElement.view !== currView && currView != null) {
-                currView = currView.declarationElement.view;
-                resultViewPath.push(currView);
-            }
             result = currElement._getLocalDependency(ProviderAstType.PublicService, new CompileDiDependencyMetadata({ token: dep.token }));
         }
         if (isBlank(result)) {
@@ -289,7 +283,7 @@ export class CompileElement extends CompileNode {
         if (isBlank(result)) {
             result = o.NULL_EXPR;
         }
-        return getPropertyInView(result, resultViewPath);
+        return getPropertyInView(result, this.view, currElement.view);
     }
 }
 function createInjectInternalCondition(nodeIndex, childNodeCount, provider, providerExpr) {

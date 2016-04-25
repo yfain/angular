@@ -7218,6 +7218,230 @@ System.register("angular2/src/core/linker/view_utils", ["angular2/src/facade/lan
     return true;
   }
   exports.mapLooseIdentical = mapLooseIdentical;
+  function castByValue(input, value) {
+    return input;
+  }
+  exports.castByValue = castByValue;
+  function pureProxy1(fn) {
+    var result;
+    var v0;
+    v0 = change_detection_1.uninitialized;
+    return function(p0) {
+      if (!lang_1.looseIdentical(v0, p0)) {
+        v0 = p0;
+        result = fn(p0);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy1 = pureProxy1;
+  function pureProxy2(fn) {
+    var result;
+    var v0,
+        v1;
+    v0 = v1 = change_detection_1.uninitialized;
+    return function(p0, p1) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1)) {
+        v0 = p0;
+        v1 = p1;
+        result = fn(p0, p1);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy2 = pureProxy2;
+  function pureProxy3(fn) {
+    var result;
+    var v0,
+        v1,
+        v2;
+    v0 = v1 = v2 = change_detection_1.uninitialized;
+    return function(p0, p1, p2) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        result = fn(p0, p1, p2);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy3 = pureProxy3;
+  function pureProxy4(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3;
+    v0 = v1 = v2 = v3 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        result = fn(p0, p1, p2, p3);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy4 = pureProxy4;
+  function pureProxy5(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4;
+    v0 = v1 = v2 = v3 = v4 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        result = fn(p0, p1, p2, p3, p4);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy5 = pureProxy5;
+  function pureProxy6(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5;
+    v0 = v1 = v2 = v3 = v4 = v5 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4, p5) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4) || !lang_1.looseIdentical(v5, p5)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        v5 = p5;
+        result = fn(p0, p1, p2, p3, p4, p5);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy6 = pureProxy6;
+  function pureProxy7(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4, p5, p6) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4) || !lang_1.looseIdentical(v5, p5) || !lang_1.looseIdentical(v6, p6)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        v5 = p5;
+        v6 = p6;
+        result = fn(p0, p1, p2, p3, p4, p5, p6);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy7 = pureProxy7;
+  function pureProxy8(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4, p5, p6, p7) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4) || !lang_1.looseIdentical(v5, p5) || !lang_1.looseIdentical(v6, p6) || !lang_1.looseIdentical(v7, p7)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        v5 = p5;
+        v6 = p6;
+        v7 = p7;
+        result = fn(p0, p1, p2, p3, p4, p5, p6, p7);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy8 = pureProxy8;
+  function pureProxy9(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4, p5, p6, p7, p8) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4) || !lang_1.looseIdentical(v5, p5) || !lang_1.looseIdentical(v6, p6) || !lang_1.looseIdentical(v7, p7) || !lang_1.looseIdentical(v8, p8)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        v5 = p5;
+        v6 = p6;
+        v7 = p7;
+        v8 = p8;
+        result = fn(p0, p1, p2, p3, p4, p5, p6, p7, p8);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy9 = pureProxy9;
+  function pureProxy10(fn) {
+    var result;
+    var v0,
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9;
+    v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = v8 = v9 = change_detection_1.uninitialized;
+    return function(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) {
+      if (!lang_1.looseIdentical(v0, p0) || !lang_1.looseIdentical(v1, p1) || !lang_1.looseIdentical(v2, p2) || !lang_1.looseIdentical(v3, p3) || !lang_1.looseIdentical(v4, p4) || !lang_1.looseIdentical(v5, p5) || !lang_1.looseIdentical(v6, p6) || !lang_1.looseIdentical(v7, p7) || !lang_1.looseIdentical(v8, p8) || !lang_1.looseIdentical(v9, p9)) {
+        v0 = p0;
+        v1 = p1;
+        v2 = p2;
+        v3 = p3;
+        v4 = p4;
+        v5 = p5;
+        v6 = p6;
+        v7 = p7;
+        v8 = p8;
+        v9 = p9;
+        result = fn(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+      }
+      return result;
+    };
+  }
+  exports.pureProxy10 = pureProxy10;
   global.define = __define;
   return module.exports;
 });
@@ -8969,10 +9193,7 @@ System.register("angular2/src/common/pipes/json_pipe", ["angular2/src/facade/lan
   var core_1 = require("angular2/core");
   var JsonPipe = (function() {
     function JsonPipe() {}
-    JsonPipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
+    JsonPipe.prototype.transform = function(value) {
       return lang_1.Json.stringify(value);
     };
     JsonPipe = __decorate([lang_1.CONST(), core_1.Pipe({
@@ -8986,7 +9207,7 @@ System.register("angular2/src/common/pipes/json_pipe", ["angular2/src/facade/lan
   return module.exports;
 });
 
-System.register("angular2/src/common/pipes/slice_pipe", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/core", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
+System.register("angular2/src/common/pipes/slice_pipe", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/core", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -9008,26 +9229,20 @@ System.register("angular2/src/common/pipes/slice_pipe", ["angular2/src/facade/la
       return Reflect.metadata(k, v);
   };
   var lang_1 = require("angular2/src/facade/lang");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
   var collection_1 = require("angular2/src/facade/collection");
   var core_1 = require("angular2/core");
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var SlicePipe = (function() {
     function SlicePipe() {}
-    SlicePipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
-      if (lang_1.isBlank(args) || args.length == 0) {
-        throw new exceptions_1.BaseException('Slice pipe requires one argument');
+    SlicePipe.prototype.transform = function(value, start, end) {
+      if (end === void 0) {
+        end = null;
       }
       if (!this.supports(value)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(SlicePipe, value);
       }
       if (lang_1.isBlank(value))
         return value;
-      var start = args[0];
-      var end = args.length > 1 ? args[1] : null;
       if (lang_1.isString(value)) {
         return lang_1.StringWrapper.slice(value, start, end);
       }
@@ -9073,10 +9288,7 @@ System.register("angular2/src/common/pipes/lowercase_pipe", ["angular2/src/facad
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var LowerCasePipe = (function() {
     function LowerCasePipe() {}
-    LowerCasePipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
+    LowerCasePipe.prototype.transform = function(value) {
       if (lang_1.isBlank(value))
         return value;
       if (!lang_1.isString(value)) {
@@ -9092,7 +9304,7 @@ System.register("angular2/src/common/pipes/lowercase_pipe", ["angular2/src/facad
   return module.exports;
 });
 
-System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/intl", "angular2/core", "angular2/src/facade/collection", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
+System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/intl", "angular2/core", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -9126,7 +9338,6 @@ System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/l
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var intl_1 = require("angular2/src/facade/intl");
   var core_1 = require("angular2/core");
-  var collection_1 = require("angular2/src/facade/collection");
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var defaultLocale = 'en-US';
   var _re = lang_1.RegExpWrapper.create('^(\\d+)?\\.((\\d+)(\\-(\\d+))?)?$');
@@ -9179,8 +9390,10 @@ System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/l
     function DecimalPipe() {
       _super.apply(this, arguments);
     }
-    DecimalPipe.prototype.transform = function(value, args) {
-      var digits = collection_1.ListWrapper.first(args);
+    DecimalPipe.prototype.transform = function(value, digits) {
+      if (digits === void 0) {
+        digits = null;
+      }
       return NumberPipe._format(value, intl_1.NumberFormatStyle.Decimal, digits);
     };
     DecimalPipe = __decorate([lang_1.CONST(), core_1.Pipe({name: 'number'}), core_1.Injectable(), __metadata('design:paramtypes', [])], DecimalPipe);
@@ -9192,8 +9405,10 @@ System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/l
     function PercentPipe() {
       _super.apply(this, arguments);
     }
-    PercentPipe.prototype.transform = function(value, args) {
-      var digits = collection_1.ListWrapper.first(args);
+    PercentPipe.prototype.transform = function(value, digits) {
+      if (digits === void 0) {
+        digits = null;
+      }
       return NumberPipe._format(value, intl_1.NumberFormatStyle.Percent, digits);
     };
     PercentPipe = __decorate([lang_1.CONST(), core_1.Pipe({name: 'percent'}), core_1.Injectable(), __metadata('design:paramtypes', [])], PercentPipe);
@@ -9205,10 +9420,16 @@ System.register("angular2/src/common/pipes/number_pipe", ["angular2/src/facade/l
     function CurrencyPipe() {
       _super.apply(this, arguments);
     }
-    CurrencyPipe.prototype.transform = function(value, args) {
-      var currencyCode = lang_1.isPresent(args) && args.length > 0 ? args[0] : 'USD';
-      var symbolDisplay = lang_1.isPresent(args) && args.length > 1 ? args[1] : false;
-      var digits = lang_1.isPresent(args) && args.length > 2 ? args[2] : null;
+    CurrencyPipe.prototype.transform = function(value, currencyCode, symbolDisplay, digits) {
+      if (currencyCode === void 0) {
+        currencyCode = 'USD';
+      }
+      if (symbolDisplay === void 0) {
+        symbolDisplay = false;
+      }
+      if (digits === void 0) {
+        digits = null;
+      }
       return NumberPipe._format(value, intl_1.NumberFormatStyle.Currency, digits, currencyCode, symbolDisplay);
     };
     CurrencyPipe = __decorate([lang_1.CONST(), core_1.Pipe({name: 'currency'}), core_1.Injectable(), __metadata('design:paramtypes', [])], CurrencyPipe);
@@ -9245,10 +9466,7 @@ System.register("angular2/src/common/pipes/uppercase_pipe", ["angular2/src/facad
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var UpperCasePipe = (function() {
     function UpperCasePipe() {}
-    UpperCasePipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
+    UpperCasePipe.prototype.transform = function(value) {
       if (lang_1.isBlank(value))
         return value;
       if (!lang_1.isString(value)) {
@@ -9264,7 +9482,7 @@ System.register("angular2/src/common/pipes/uppercase_pipe", ["angular2/src/facad
   return module.exports;
 });
 
-System.register("angular2/src/common/pipes/replace_pipe", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/core", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
+System.register("angular2/src/common/pipes/replace_pipe", ["angular2/src/facade/lang", "angular2/core", "angular2/src/common/pipes/invalid_pipe_argument_exception"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -9286,15 +9504,11 @@ System.register("angular2/src/common/pipes/replace_pipe", ["angular2/src/facade/
       return Reflect.metadata(k, v);
   };
   var lang_1 = require("angular2/src/facade/lang");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
   var core_1 = require("angular2/core");
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var ReplacePipe = (function() {
     function ReplacePipe() {}
-    ReplacePipe.prototype.transform = function(value, args) {
-      if (lang_1.isBlank(args) || args.length !== 2) {
-        throw new exceptions_1.BaseException('ReplacePipe requires two arguments');
-      }
+    ReplacePipe.prototype.transform = function(value, pattern, replacement) {
       if (lang_1.isBlank(value)) {
         return value;
       }
@@ -9302,8 +9516,6 @@ System.register("angular2/src/common/pipes/replace_pipe", ["angular2/src/facade/
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(ReplacePipe, value);
       }
       var input = value.toString();
-      var pattern = args[0];
-      var replacement = args[1];
       if (!this._supportedPattern(pattern)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(ReplacePipe, pattern);
       }
@@ -9363,13 +9575,9 @@ System.register("angular2/src/common/pipes/i18n_plural_pipe", ["angular2/src/fac
   var interpolationExp = lang_1.RegExpWrapper.create('#');
   var I18nPluralPipe = (function() {
     function I18nPluralPipe() {}
-    I18nPluralPipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
+    I18nPluralPipe.prototype.transform = function(value, pluralMap) {
       var key;
       var valueStr;
-      var pluralMap = (args[0]);
       if (!lang_1.isStringMap(pluralMap)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nPluralPipe, pluralMap);
       }
@@ -9415,11 +9623,7 @@ System.register("angular2/src/common/pipes/i18n_select_pipe", ["angular2/src/fac
   var invalid_pipe_argument_exception_1 = require("angular2/src/common/pipes/invalid_pipe_argument_exception");
   var I18nSelectPipe = (function() {
     function I18nSelectPipe() {}
-    I18nSelectPipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
-      var mapping = (args[0]);
+    I18nSelectPipe.prototype.transform = function(value, mapping) {
       if (!lang_1.isStringMap(mapping)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(I18nSelectPipe, mapping);
       }
@@ -12924,7 +13128,13 @@ System.register("angular2/src/compiler/template_ast", ["angular2/src/facade/lang
       return (this.inputs.length > 0 || this.outputs.length > 0 || this.exportAsVars.length > 0 || this.directives.length > 0);
     };
     ElementAst.prototype.getComponent = function() {
-      return this.directives.length > 0 && this.directives[0].directive.isComponent ? this.directives[0].directive : null;
+      for (var i = 0; i < this.directives.length; i++) {
+        var dirAst = this.directives[i];
+        if (dirAst.directive.isComponent) {
+          return dirAst.directive;
+        }
+      }
+      return null;
     };
     return ElementAst;
   }());
@@ -15929,6 +16139,7 @@ System.register("angular2/src/compiler/output/output_ast", ["angular2/src/facade
   (function(BuiltinMethod) {
     BuiltinMethod[BuiltinMethod["ConcatArray"] = 0] = "ConcatArray";
     BuiltinMethod[BuiltinMethod["SubscribeObservable"] = 1] = "SubscribeObservable";
+    BuiltinMethod[BuiltinMethod["bind"] = 2] = "bind";
   })(exports.BuiltinMethod || (exports.BuiltinMethod = {}));
   var BuiltinMethod = exports.BuiltinMethod;
   var InvokeMethodExpr = (function(_super) {
@@ -17134,30 +17345,36 @@ System.register("angular2/src/compiler/view_compiler/constants", ["angular2/src/
   return module.exports;
 });
 
-System.register("angular2/src/compiler/view_compiler/util", ["angular2/src/facade/lang", "angular2/src/compiler/output/output_ast"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/view_compiler/util", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/identifiers"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var lang_1 = require("angular2/src/facade/lang");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
   var o = require("angular2/src/compiler/output/output_ast");
-  function getPropertyInView(property, viewPath) {
-    if (viewPath.length === 0) {
+  var identifiers_1 = require("angular2/src/compiler/identifiers");
+  function getPropertyInView(property, callingView, definedView) {
+    if (callingView === definedView) {
       return property;
     } else {
       var viewProp = o.THIS_EXPR;
-      for (var i = 0; i < viewPath.length; i++) {
-        viewProp = viewProp.prop('declarationAppElement').prop('parentView');
+      var currView = callingView;
+      while (currView !== definedView && lang_1.isPresent(currView.declarationElement.view)) {
+        currView = currView.declarationElement.view;
+        viewProp = viewProp.prop('parent');
+      }
+      if (currView !== definedView) {
+        throw new exceptions_1.BaseException("Internal error: Could not calculate a property in a parent view: " + property);
       }
       if (property instanceof o.ReadPropExpr) {
-        var lastView = viewPath[viewPath.length - 1];
         var readPropExpr_1 = property;
-        if (lastView.fields.some(function(field) {
+        if (definedView.fields.some(function(field) {
           return field.name == readPropExpr_1.name;
-        }) || lastView.getters.some(function(field) {
+        }) || definedView.getters.some(function(field) {
           return field.name == readPropExpr_1.name;
         })) {
-          viewProp = viewProp.cast(lastView.classType);
+          viewProp = viewProp.cast(definedView.classType);
         }
       }
       return o.replaceVarInExpression(o.THIS_EXPR.name, viewProp, property);
@@ -17207,6 +17424,15 @@ System.register("angular2/src/compiler/view_compiler/util", ["angular2/src/facad
     return result;
   }
   exports.createFlatArray = createFlatArray;
+  function createPureProxy(fn, argCount, pureProxyProp, view) {
+    view.fields.push(new o.ClassField(pureProxyProp.name, null, [o.StmtModifier.Private]));
+    var pureProxyId = argCount < identifiers_1.Identifiers.pureProxies.length ? identifiers_1.Identifiers.pureProxies[argCount] : null;
+    if (lang_1.isBlank(pureProxyId)) {
+      throw new exceptions_1.BaseException("Unsupported number of argument for pure functions: " + argCount);
+    }
+    view.createMethod.addStmt(o.THIS_EXPR.prop(pureProxyProp.name).set(o.importExpr(pureProxyId).callFn([fn])).toStmt());
+  }
+  exports.createPureProxy = createPureProxy;
   global.define = __define;
   return module.exports;
 });
@@ -17239,14 +17465,12 @@ System.register("angular2/src/compiler/view_compiler/compile_query", ["angular2/
     CompileQuery.prototype.addValue = function(value, view) {
       var currentView = view;
       var elPath = [];
-      var viewPath = [];
       while (lang_1.isPresent(currentView) && currentView !== this.view) {
         var parentEl = currentView.declarationElement;
         elPath.unshift(parentEl);
         currentView = parentEl.view;
-        viewPath.push(currentView);
       }
-      var queryListForDirtyExpr = util_1.getPropertyInView(this.queryList, viewPath);
+      var queryListForDirtyExpr = util_1.getPropertyInView(this.queryList, view, this.view);
       var viewValues = this._values;
       elPath.forEach(function(el) {
         var last = viewValues.values.length > 0 ? viewValues.values[viewValues.values.length - 1] : null;
@@ -17384,72 +17608,78 @@ System.register("angular2/src/compiler/view_compiler/compile_method", ["angular2
   return module.exports;
 });
 
-System.register("angular2/src/compiler/view_compiler/lifecycle_binder", ["angular2/src/compiler/output/output_ast", "angular2/src/compiler/view_compiler/constants", "angular2/src/core/metadata/lifecycle_hooks"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/view_compiler/compile_pipe", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/identifiers", "angular2/src/compiler/view_compiler/util"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
+  var lang_1 = require("angular2/src/facade/lang");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
   var o = require("angular2/src/compiler/output/output_ast");
-  var constants_1 = require("angular2/src/compiler/view_compiler/constants");
-  var lifecycle_hooks_1 = require("angular2/src/core/metadata/lifecycle_hooks");
-  var STATE_IS_NEVER_CHECKED = o.THIS_EXPR.prop('cdState').identical(constants_1.ChangeDetectorStateEnum.NeverChecked);
-  var NOT_THROW_ON_CHANGES = o.not(constants_1.DetectChangesVars.throwOnChange);
-  function bindDirectiveDetectChangesLifecycleCallbacks(directiveAst, directiveInstance, compileElement) {
-    var view = compileElement.view;
-    var detectChangesInInputsMethod = view.detectChangesInInputsMethod;
-    var lifecycleHooks = directiveAst.directive.lifecycleHooks;
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnChanges) !== -1 && directiveAst.inputs.length > 0) {
-      detectChangesInInputsMethod.addStmt(new o.IfStmt(constants_1.DetectChangesVars.changes.notIdentical(o.NULL_EXPR), [directiveInstance.callMethod('ngOnChanges', [constants_1.DetectChangesVars.changes]).toStmt()]));
+  var identifiers_1 = require("angular2/src/compiler/identifiers");
+  var util_1 = require("angular2/src/compiler/view_compiler/util");
+  var _PurePipeProxy = (function() {
+    function _PurePipeProxy(instance, argCount) {
+      this.instance = instance;
+      this.argCount = argCount;
     }
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnInit) !== -1) {
-      detectChangesInInputsMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED.and(NOT_THROW_ON_CHANGES), [directiveInstance.callMethod('ngOnInit', []).toStmt()]));
+    return _PurePipeProxy;
+  }());
+  var CompilePipe = (function() {
+    function CompilePipe(view, name) {
+      this.view = view;
+      this._purePipeProxies = [];
+      this.meta = _findPipeMeta(view, name);
+      this.instance = o.THIS_EXPR.prop("_pipe_" + name + "_" + view.pipeCount++);
     }
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.DoCheck) !== -1) {
-      detectChangesInInputsMethod.addStmt(new o.IfStmt(NOT_THROW_ON_CHANGES, [directiveInstance.callMethod('ngDoCheck', []).toStmt()]));
+    Object.defineProperty(CompilePipe.prototype, "pure", {
+      get: function() {
+        return this.meta.pure;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    CompilePipe.prototype.create = function() {
+      var _this = this;
+      var deps = this.meta.type.diDeps.map(function(diDep) {
+        if (diDep.token.equalsTo(identifiers_1.identifierToken(identifiers_1.Identifiers.ChangeDetectorRef))) {
+          return o.THIS_EXPR.prop('ref');
+        }
+        return util_1.injectFromViewParentInjector(diDep.token, false);
+      });
+      this.view.fields.push(new o.ClassField(this.instance.name, o.importType(this.meta.type), [o.StmtModifier.Private]));
+      this.view.createMethod.resetDebugInfo(null, null);
+      this.view.createMethod.addStmt(o.THIS_EXPR.prop(this.instance.name).set(o.importExpr(this.meta.type).instantiate(deps)).toStmt());
+      this._purePipeProxies.forEach(function(purePipeProxy) {
+        util_1.createPureProxy(_this.instance.prop('transform').callMethod(o.BuiltinMethod.bind, [_this.instance]), purePipeProxy.argCount, purePipeProxy.instance, _this.view);
+      });
+    };
+    CompilePipe.prototype.call = function(callingView, args) {
+      if (this.meta.pure) {
+        var purePipeProxy = new _PurePipeProxy(o.THIS_EXPR.prop(this.instance.name + "_" + this._purePipeProxies.length), args.length);
+        this._purePipeProxies.push(purePipeProxy);
+        return util_1.getPropertyInView(o.importExpr(identifiers_1.Identifiers.castByValue).callFn([purePipeProxy.instance, this.instance.prop('transform')]), callingView, this.view).callFn(args);
+      } else {
+        return util_1.getPropertyInView(this.instance, callingView, this.view).callMethod('transform', args);
+      }
+    };
+    return CompilePipe;
+  }());
+  exports.CompilePipe = CompilePipe;
+  function _findPipeMeta(view, name) {
+    var pipeMeta = null;
+    for (var i = view.pipeMetas.length - 1; i >= 0; i--) {
+      var localPipeMeta = view.pipeMetas[i];
+      if (localPipeMeta.name == name) {
+        pipeMeta = localPipeMeta;
+        break;
+      }
     }
+    if (lang_1.isBlank(pipeMeta)) {
+      throw new exceptions_1.BaseException("Illegal state: Could not find pipe " + name + " although the parser should have detected this error!");
+    }
+    return pipeMeta;
   }
-  exports.bindDirectiveDetectChangesLifecycleCallbacks = bindDirectiveDetectChangesLifecycleCallbacks;
-  function bindDirectiveAfterContentLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
-    var view = compileElement.view;
-    var lifecycleHooks = directiveMeta.lifecycleHooks;
-    var afterContentLifecycleCallbacksMethod = view.afterContentLifecycleCallbacksMethod;
-    afterContentLifecycleCallbacksMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterContentInit) !== -1) {
-      afterContentLifecycleCallbacksMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED, [directiveInstance.callMethod('ngAfterContentInit', []).toStmt()]));
-    }
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterContentChecked) !== -1) {
-      afterContentLifecycleCallbacksMethod.addStmt(directiveInstance.callMethod('ngAfterContentChecked', []).toStmt());
-    }
-  }
-  exports.bindDirectiveAfterContentLifecycleCallbacks = bindDirectiveAfterContentLifecycleCallbacks;
-  function bindDirectiveAfterViewLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
-    var view = compileElement.view;
-    var lifecycleHooks = directiveMeta.lifecycleHooks;
-    var afterViewLifecycleCallbacksMethod = view.afterViewLifecycleCallbacksMethod;
-    afterViewLifecycleCallbacksMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterViewInit) !== -1) {
-      afterViewLifecycleCallbacksMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED, [directiveInstance.callMethod('ngAfterViewInit', []).toStmt()]));
-    }
-    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterViewChecked) !== -1) {
-      afterViewLifecycleCallbacksMethod.addStmt(directiveInstance.callMethod('ngAfterViewChecked', []).toStmt());
-    }
-  }
-  exports.bindDirectiveAfterViewLifecycleCallbacks = bindDirectiveAfterViewLifecycleCallbacks;
-  function bindDirectiveDestroyLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
-    var onDestroyMethod = compileElement.view.destroyMethod;
-    onDestroyMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
-    if (directiveMeta.lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnDestroy) !== -1) {
-      onDestroyMethod.addStmt(directiveInstance.callMethod('ngOnDestroy', []).toStmt());
-    }
-  }
-  exports.bindDirectiveDestroyLifecycleCallbacks = bindDirectiveDestroyLifecycleCallbacks;
-  function bindPipeDestroyLifecycleCallbacks(pipeMeta, directiveInstance, view) {
-    var onDestroyMethod = view.destroyMethod;
-    if (pipeMeta.lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnDestroy) !== -1) {
-      onDestroyMethod.addStmt(directiveInstance.callMethod('ngOnDestroy', []).toStmt());
-    }
-  }
-  exports.bindPipeDestroyLifecycleCallbacks = bindPipeDestroyLifecycleCallbacks;
   global.define = __define;
   return module.exports;
 });
@@ -17578,9 +17808,9 @@ System.register("angular2/src/compiler/view_compiler/expression_converter", ["an
     _AstToIrVisitor.prototype.visitPipe = function(ast, mode) {
       var input = ast.exp.visit(this, _Mode.Expression);
       var args = this.visitAll(ast.args, _Mode.Expression);
-      var pipeResult = this._nameResolver.callPipe(ast.name, input, args);
+      var value = this._nameResolver.callPipe(ast.name, input, args);
       this.needsValueUnwrapper = true;
-      return convertToStatementIfNeeded(mode, this._valueUnwrapper.callMethod('unwrap', [pipeResult]));
+      return convertToStatementIfNeeded(mode, this._valueUnwrapper.callMethod('unwrap', [value]));
     };
     _AstToIrVisitor.prototype.visitFunctionCall = function(ast, mode) {
       return convertToStatementIfNeeded(mode, ast.target.visit(this, _Mode.Expression).callFn(this.visitAll(ast.args, _Mode.Expression)));
@@ -17846,6 +18076,76 @@ System.register("angular2/src/compiler/view_compiler/event_binder", ["angular2/s
   function santitizeEventName(name) {
     return lang_1.StringWrapper.replaceAll(name, /[^a-zA-Z_]/g, '_');
   }
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("angular2/src/compiler/view_compiler/lifecycle_binder", ["angular2/src/compiler/output/output_ast", "angular2/src/compiler/view_compiler/constants", "angular2/src/core/metadata/lifecycle_hooks"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  "use strict";
+  var o = require("angular2/src/compiler/output/output_ast");
+  var constants_1 = require("angular2/src/compiler/view_compiler/constants");
+  var lifecycle_hooks_1 = require("angular2/src/core/metadata/lifecycle_hooks");
+  var STATE_IS_NEVER_CHECKED = o.THIS_EXPR.prop('cdState').identical(constants_1.ChangeDetectorStateEnum.NeverChecked);
+  var NOT_THROW_ON_CHANGES = o.not(constants_1.DetectChangesVars.throwOnChange);
+  function bindDirectiveDetectChangesLifecycleCallbacks(directiveAst, directiveInstance, compileElement) {
+    var view = compileElement.view;
+    var detectChangesInInputsMethod = view.detectChangesInInputsMethod;
+    var lifecycleHooks = directiveAst.directive.lifecycleHooks;
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnChanges) !== -1 && directiveAst.inputs.length > 0) {
+      detectChangesInInputsMethod.addStmt(new o.IfStmt(constants_1.DetectChangesVars.changes.notIdentical(o.NULL_EXPR), [directiveInstance.callMethod('ngOnChanges', [constants_1.DetectChangesVars.changes]).toStmt()]));
+    }
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnInit) !== -1) {
+      detectChangesInInputsMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED.and(NOT_THROW_ON_CHANGES), [directiveInstance.callMethod('ngOnInit', []).toStmt()]));
+    }
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.DoCheck) !== -1) {
+      detectChangesInInputsMethod.addStmt(new o.IfStmt(NOT_THROW_ON_CHANGES, [directiveInstance.callMethod('ngDoCheck', []).toStmt()]));
+    }
+  }
+  exports.bindDirectiveDetectChangesLifecycleCallbacks = bindDirectiveDetectChangesLifecycleCallbacks;
+  function bindDirectiveAfterContentLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
+    var view = compileElement.view;
+    var lifecycleHooks = directiveMeta.lifecycleHooks;
+    var afterContentLifecycleCallbacksMethod = view.afterContentLifecycleCallbacksMethod;
+    afterContentLifecycleCallbacksMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterContentInit) !== -1) {
+      afterContentLifecycleCallbacksMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED, [directiveInstance.callMethod('ngAfterContentInit', []).toStmt()]));
+    }
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterContentChecked) !== -1) {
+      afterContentLifecycleCallbacksMethod.addStmt(directiveInstance.callMethod('ngAfterContentChecked', []).toStmt());
+    }
+  }
+  exports.bindDirectiveAfterContentLifecycleCallbacks = bindDirectiveAfterContentLifecycleCallbacks;
+  function bindDirectiveAfterViewLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
+    var view = compileElement.view;
+    var lifecycleHooks = directiveMeta.lifecycleHooks;
+    var afterViewLifecycleCallbacksMethod = view.afterViewLifecycleCallbacksMethod;
+    afterViewLifecycleCallbacksMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterViewInit) !== -1) {
+      afterViewLifecycleCallbacksMethod.addStmt(new o.IfStmt(STATE_IS_NEVER_CHECKED, [directiveInstance.callMethod('ngAfterViewInit', []).toStmt()]));
+    }
+    if (lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.AfterViewChecked) !== -1) {
+      afterViewLifecycleCallbacksMethod.addStmt(directiveInstance.callMethod('ngAfterViewChecked', []).toStmt());
+    }
+  }
+  exports.bindDirectiveAfterViewLifecycleCallbacks = bindDirectiveAfterViewLifecycleCallbacks;
+  function bindDirectiveDestroyLifecycleCallbacks(directiveMeta, directiveInstance, compileElement) {
+    var onDestroyMethod = compileElement.view.destroyMethod;
+    onDestroyMethod.resetDebugInfo(compileElement.nodeIndex, compileElement.sourceAst);
+    if (directiveMeta.lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnDestroy) !== -1) {
+      onDestroyMethod.addStmt(directiveInstance.callMethod('ngOnDestroy', []).toStmt());
+    }
+  }
+  exports.bindDirectiveDestroyLifecycleCallbacks = bindDirectiveDestroyLifecycleCallbacks;
+  function bindPipeDestroyLifecycleCallbacks(pipeMeta, pipeInstance, view) {
+    var onDestroyMethod = view.destroyMethod;
+    if (pipeMeta.lifecycleHooks.indexOf(lifecycle_hooks_1.LifecycleHooks.OnDestroy) !== -1) {
+      onDestroyMethod.addStmt(pipeInstance.callMethod('ngOnDestroy', []).toStmt());
+    }
+  }
+  exports.bindPipeDestroyLifecycleCallbacks = bindPipeDestroyLifecycleCallbacks;
   global.define = __define;
   return module.exports;
 });
@@ -18602,6 +18902,9 @@ System.register("angular2/src/compiler/output/abstract_emitter", ["angular2/src/
       var name = expr.name;
       if (lang_1.isPresent(expr.builtin)) {
         name = this.getBuiltinMethodName(expr.builtin);
+        if (lang_1.isBlank(name)) {
+          return null;
+        }
       }
       ctx.print("." + name + "(");
       this.visitAllExpressions(expr.args, ctx, ",");
@@ -18985,6 +19288,9 @@ System.register("angular2/src/compiler/output/abstract_js_emitter", ["angular2/s
         case o.BuiltinMethod.SubscribeObservable:
           name = 'subscribe';
           break;
+        case o.BuiltinMethod.bind:
+          name = 'bind';
+          break;
         default:
           throw new exceptions_1.BaseException("Unknown builtin method: " + method);
       }
@@ -19363,6 +19669,9 @@ System.register("angular2/src/compiler/output/ts_emitter", ["angular2/src/compil
         case o.BuiltinMethod.SubscribeObservable:
           name = 'subscribe';
           break;
+        case o.BuiltinMethod.bind:
+          name = 'bind';
+          break;
         default:
           throw new exceptions_1.BaseException("Unknown builtin method: " + method);
       }
@@ -19434,7 +19743,7 @@ System.register("angular2/src/compiler/output/interpretive_view", ["angular2/src
   var _InterpretiveAppView = (function(_super) {
     __extends(_InterpretiveAppView, _super);
     function _InterpretiveAppView(args, props, getters, methods) {
-      _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
+      _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
       this.props = props;
       this.getters = getters;
       this.methods = methods;
@@ -19660,7 +19969,7 @@ System.register("angular2/src/common/pipes/async_pipe", ["angular2/src/facade/la
         this._dispose();
       }
     };
-    AsyncPipe.prototype.transform = function(obj, args) {
+    AsyncPipe.prototype.transform = function(obj) {
       if (lang_1.isBlank(this._obj)) {
         if (lang_1.isPresent(obj)) {
           this._subscribe(obj);
@@ -19749,13 +20058,15 @@ System.register("angular2/src/common/pipes/date_pipe", ["angular2/src/facade/lan
   var defaultLocale = 'en-US';
   var DatePipe = (function() {
     function DatePipe() {}
-    DatePipe.prototype.transform = function(value, args) {
+    DatePipe.prototype.transform = function(value, pattern) {
+      if (pattern === void 0) {
+        pattern = 'mediumDate';
+      }
       if (lang_1.isBlank(value))
         return null;
       if (!this.supports(value)) {
         throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(DatePipe, value);
       }
-      var pattern = lang_1.isPresent(args) && args.length > 0 ? args[0] : 'mediumDate';
       if (lang_1.isNumber(value)) {
         value = lang_1.DateWrapper.fromMillis(value);
       }
@@ -22312,7 +22623,7 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
   var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
   var _scope_check = profile_1.wtfCreateScope("AppView#check(ascii id)");
   var AppView = (function() {
-    function AppView(clazz, componentType, type, locals, viewUtils, parentInjector, declarationAppElement, cdMode, literalArrayCacheSize, literalMapCacheSize, staticNodeDebugInfos) {
+    function AppView(clazz, componentType, type, locals, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
       this.clazz = clazz;
       this.componentType = componentType;
       this.type = type;
@@ -22335,8 +22646,6 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
       } else {
         this.renderer = declarationAppElement.parentView.renderer;
       }
-      this._literalArrayCache = collection_1.ListWrapper.createFixedSize(literalArrayCacheSize);
-      this._literalMapCache = collection_1.ListWrapper.createFixedSize(literalMapCacheSize);
     }
     AppView.prototype.create = function(givenProjectableNodes, rootSelectorOrNode) {
       var context;
@@ -22482,6 +22791,13 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
       enumerable: true,
       configurable: true
     });
+    Object.defineProperty(AppView.prototype, "parent", {
+      get: function() {
+        return lang_1.isPresent(this.declarationAppElement) ? this.declarationAppElement.parentView : null;
+      },
+      enumerable: true,
+      configurable: true
+    });
     Object.defineProperty(AppView.prototype, "flatRootNodes", {
       get: function() {
         return view_utils_1.flattenNestedViewRenderNodes(this.rootNodesOrAppElements);
@@ -22560,37 +22876,6 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
       collection_1.ListWrapper.remove(renderAppElement.parentView.contentChildren, this);
       this.dirtyParentQueriesInternal();
       this.viewContainerElement = null;
-    };
-    AppView.prototype.checkPurePipe = function(id, newArgs) {
-      var prevArgs = this._literalArrayCache[id];
-      var newPresent = lang_1.isPresent(newArgs);
-      var prevPresent = lang_1.isPresent(prevArgs);
-      if (newPresent !== prevPresent || (newPresent && !view_utils_1.arrayLooseIdentical(prevArgs, newArgs))) {
-        this._literalArrayCache[id] = newArgs;
-        return true;
-      } else {
-        return false;
-      }
-    };
-    AppView.prototype.literalArray = function(id, value) {
-      if (lang_1.isBlank(value)) {
-        return value;
-      }
-      var prevValue = this._literalArrayCache[id];
-      if (lang_1.isBlank(prevValue) || !view_utils_1.arrayLooseIdentical(prevValue, value)) {
-        prevValue = this._literalArrayCache[id] = value;
-      }
-      return prevValue;
-    };
-    AppView.prototype.literalMap = function(id, value) {
-      if (lang_1.isBlank(value)) {
-        return value;
-      }
-      var prevValue = this._literalMapCache[id];
-      if (lang_1.isBlank(prevValue) || !view_utils_1.mapLooseIdentical(prevValue, value)) {
-        prevValue = this._literalMapCache[id] = value;
-      }
-      return prevValue;
     };
     AppView.prototype.markAsCheckOnce = function() {
       this.cdMode = change_detection_1.ChangeDetectionStrategy.CheckOnce;
@@ -23148,7 +23433,6 @@ System.register("angular2/src/compiler/view_compiler/compile_element", ["angular
     };
     CompileElement.prototype._getDependency = function(requestingProviderType, dep) {
       var currElement = this;
-      var currView = currElement.view;
       var result = null;
       if (dep.isValue) {
         result = o.literal(dep.value);
@@ -23156,13 +23440,8 @@ System.register("angular2/src/compiler/view_compiler/compile_element", ["angular
       if (lang_1.isBlank(result) && !dep.isSkipSelf) {
         result = this._getLocalDependency(requestingProviderType, dep);
       }
-      var resultViewPath = [];
       while (lang_1.isBlank(result) && !currElement.parent.isNull()) {
         currElement = currElement.parent;
-        while (currElement.view !== currView && currView != null) {
-          currView = currView.declarationElement.view;
-          resultViewPath.push(currView);
-        }
         result = currElement._getLocalDependency(template_ast_1.ProviderAstType.PublicService, new compile_metadata_1.CompileDiDependencyMetadata({token: dep.token}));
       }
       if (lang_1.isBlank(result)) {
@@ -23171,7 +23450,7 @@ System.register("angular2/src/compiler/view_compiler/compile_element", ["angular
       if (lang_1.isBlank(result)) {
         result = o.NULL_EXPR;
       }
-      return util_1.getPropertyInView(result, resultViewPath);
+      return util_1.getPropertyInView(result, this.view, currElement.view);
     };
     return CompileElement;
   }(CompileNode));
@@ -23224,28 +23503,21 @@ System.register("angular2/src/compiler/view_compiler/compile_element", ["angular
   return module.exports;
 });
 
-System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/identifiers", "angular2/src/compiler/view_compiler/constants", "angular2/src/compiler/view_compiler/compile_query", "angular2/src/compiler/view_compiler/compile_method", "angular2/src/core/linker/view_type", "angular2/src/compiler/compile_metadata", "angular2/src/compiler/view_compiler/util", "angular2/src/compiler/view_compiler/lifecycle_binder"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/view_compiler/constants", "angular2/src/compiler/view_compiler/compile_query", "angular2/src/compiler/view_compiler/compile_method", "angular2/src/compiler/view_compiler/compile_pipe", "angular2/src/core/linker/view_type", "angular2/src/compiler/compile_metadata", "angular2/src/compiler/view_compiler/util"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
   "use strict";
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
-  var exceptions_1 = require("angular2/src/facade/exceptions");
   var o = require("angular2/src/compiler/output/output_ast");
-  var identifiers_1 = require("angular2/src/compiler/identifiers");
   var constants_1 = require("angular2/src/compiler/view_compiler/constants");
   var compile_query_1 = require("angular2/src/compiler/view_compiler/compile_query");
   var compile_method_1 = require("angular2/src/compiler/view_compiler/compile_method");
+  var compile_pipe_1 = require("angular2/src/compiler/view_compiler/compile_pipe");
   var view_type_1 = require("angular2/src/core/linker/view_type");
   var compile_metadata_1 = require("angular2/src/compiler/compile_metadata");
   var util_1 = require("angular2/src/compiler/view_compiler/util");
-  var lifecycle_binder_1 = require("angular2/src/compiler/view_compiler/lifecycle_binder");
-  var CompilePipe = (function() {
-    function CompilePipe() {}
-    return CompilePipe;
-  }());
-  exports.CompilePipe = CompilePipe;
   var CompileView = (function() {
     function CompileView(component, genConfig, pipeMetas, styles, viewIndex, declarationElement, templateVariableBindings) {
       var _this = this;
@@ -23265,10 +23537,12 @@ System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/s
       this.getters = [];
       this.disposables = [];
       this.subscriptions = [];
-      this.pipes = new Map();
+      this.purePipes = new Map();
+      this.pipes = [];
       this.variables = new Map();
       this.literalArrayCount = 0;
       this.literalMapCount = 0;
+      this.pipeCount = 0;
       this.createMethod = new compile_method_1.CompileMethod(this);
       this.injectorGetMethod = new compile_method_1.CompileMethod(this);
       this.updateContentQueriesMethod = new compile_method_1.CompileMethod(this);
@@ -23315,43 +23589,16 @@ System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/s
       }
     }
     CompileView.prototype.callPipe = function(name, input, args) {
-      var pipeMeta = null;
-      for (var i = this.pipeMetas.length - 1; i >= 0; i--) {
-        var localPipeMeta = this.pipeMetas[i];
-        if (localPipeMeta.name == name) {
-          pipeMeta = localPipeMeta;
-          break;
+      var compView = this.componentView;
+      var pipe = compView.purePipes.get(name);
+      if (lang_1.isBlank(pipe)) {
+        pipe = new compile_pipe_1.CompilePipe(compView, name);
+        if (pipe.pure) {
+          compView.purePipes.set(name, pipe);
         }
+        compView.pipes.push(pipe);
       }
-      if (lang_1.isBlank(pipeMeta)) {
-        throw new exceptions_1.BaseException("Illegal state: Could not find pipe " + name + " although the parser should have detected this error!");
-      }
-      var pipeFieldName = pipeMeta.pure ? "_pipe_" + name : "_pipe_" + name + "_" + this.pipes.size;
-      var pipeExpr = this.pipes.get(pipeFieldName);
-      var pipeFieldCacheProp = o.THIS_EXPR.prop(pipeFieldName + "_cache");
-      if (lang_1.isBlank(pipeExpr)) {
-        var deps = pipeMeta.type.diDeps.map(function(diDep) {
-          if (diDep.token.equalsTo(identifiers_1.identifierToken(identifiers_1.Identifiers.ChangeDetectorRef))) {
-            return o.THIS_EXPR.prop('ref');
-          }
-          return util_1.injectFromViewParentInjector(diDep.token, false);
-        });
-        this.fields.push(new o.ClassField(pipeFieldName, o.importType(pipeMeta.type), [o.StmtModifier.Private]));
-        if (pipeMeta.pure) {
-          this.fields.push(new o.ClassField(pipeFieldCacheProp.name, null, [o.StmtModifier.Private]));
-          this.createMethod.addStmt(o.THIS_EXPR.prop(pipeFieldCacheProp.name).set(o.importExpr(identifiers_1.Identifiers.uninitialized)).toStmt());
-        }
-        this.createMethod.resetDebugInfo(null, null);
-        this.createMethod.addStmt(o.THIS_EXPR.prop(pipeFieldName).set(o.importExpr(pipeMeta.type).instantiate(deps)).toStmt());
-        pipeExpr = o.THIS_EXPR.prop(pipeFieldName);
-        this.pipes.set(pipeFieldName, pipeExpr);
-        lifecycle_binder_1.bindPipeDestroyLifecycleCallbacks(pipeMeta, pipeExpr, this);
-      }
-      var callPipeExpr = pipeExpr.callMethod('transform', [input, o.literalArr(args)]);
-      if (pipeMeta.pure) {
-        callPipeExpr = o.THIS_EXPR.callMethod('checkPurePipe', [o.literal(this.literalArrayCount++), o.literalArr([input].concat(args))]).conditional(pipeFieldCacheProp.set(callPipeExpr), pipeFieldCacheProp);
-      }
-      return callPipeExpr;
+      return pipe.call(this, [input].concat(args));
     };
     CompileView.prototype.getVariable = function(name) {
       if (name == constants_1.EventHandlerVars.event.name) {
@@ -23359,26 +23606,47 @@ System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/s
       }
       var currView = this;
       var result = currView.variables.get(name);
-      var viewPath = [];
       while (lang_1.isBlank(result) && lang_1.isPresent(currView.declarationElement.view)) {
         currView = currView.declarationElement.view;
         result = currView.variables.get(name);
-        viewPath.push(currView);
       }
       if (lang_1.isPresent(result)) {
-        return util_1.getPropertyInView(result, viewPath);
+        return util_1.getPropertyInView(result, this, currView);
       } else {
         return null;
       }
     };
     CompileView.prototype.createLiteralArray = function(values) {
-      return o.THIS_EXPR.callMethod('literalArray', [o.literal(this.literalArrayCount++), o.literalArr(values)]);
+      var proxyExpr = o.THIS_EXPR.prop("_arr_" + this.literalArrayCount++);
+      var proxyParams = [];
+      var proxyReturnEntries = [];
+      for (var i = 0; i < values.length; i++) {
+        var paramName = "p" + i;
+        proxyParams.push(new o.FnParam(paramName));
+        proxyReturnEntries.push(o.variable(paramName));
+      }
+      util_1.createPureProxy(o.fn(proxyParams, [new o.ReturnStatement(o.literalArr(proxyReturnEntries))]), values.length, proxyExpr, this);
+      return proxyExpr.callFn(values);
     };
-    CompileView.prototype.createLiteralMap = function(values) {
-      return o.THIS_EXPR.callMethod('literalMap', [o.literal(this.literalMapCount++), o.literalMap(values)]);
+    CompileView.prototype.createLiteralMap = function(entries) {
+      var proxyExpr = o.THIS_EXPR.prop("_map_" + this.literalMapCount++);
+      var proxyParams = [];
+      var proxyReturnEntries = [];
+      var values = [];
+      for (var i = 0; i < entries.length; i++) {
+        var paramName = "p" + i;
+        proxyParams.push(new o.FnParam(paramName));
+        proxyReturnEntries.push([entries[i][0], o.variable(paramName)]);
+        values.push(entries[i][1]);
+      }
+      util_1.createPureProxy(o.fn(proxyParams, [new o.ReturnStatement(o.literalMap(proxyReturnEntries))]), entries.length, proxyExpr, this);
+      return proxyExpr.callFn(values);
     };
     CompileView.prototype.afterNodes = function() {
       var _this = this;
+      this.pipes.forEach(function(pipe) {
+        return pipe.create();
+      });
       this.viewQueries.values().forEach(function(queries) {
         return queries.forEach(function(query) {
           return query.afterChildren(_this.updateViewQueriesMethod);
@@ -24165,6 +24433,9 @@ System.register("angular2/src/compiler/output/dart_emitter", ["angular2/src/faca
           break;
         case o.BuiltinMethod.SubscribeObservable:
           name = 'listen';
+          break;
+        case o.BuiltinMethod.bind:
+          name = null;
           break;
         default:
           throw new exceptions_1.BaseException("Unknown builtin method: " + method);
@@ -25422,6 +25693,7 @@ System.register("angular2/src/compiler/identifiers", ["angular2/src/compiler/com
   var impDevModeEqual = change_detection_1.devModeEqual;
   var impInterpolate = view_utils_1.interpolate;
   var impCheckBinding = view_utils_1.checkBinding;
+  var impCastByValue = view_utils_1.castByValue;
   var Identifiers = (function() {
     function Identifiers() {}
     Identifiers.ViewUtils = new compile_metadata_1.CompileIdentifierMetadata({
@@ -25549,6 +25821,52 @@ System.register("angular2/src/compiler/identifiers", ["angular2/src/compiler/com
       moduleUrl: VIEW_UTILS_MODULE_URL,
       runtime: impInterpolate
     });
+    Identifiers.castByValue = new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'castByValue',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: impCastByValue
+    });
+    Identifiers.pureProxies = [null, new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy1',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy1
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy2',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy2
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy3',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy3
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy4',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy4
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy5',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy5
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy6',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy6
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy7',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy7
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy8',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy8
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy9',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy9
+    }), new compile_metadata_1.CompileIdentifierMetadata({
+      name: 'pureProxy10',
+      moduleUrl: VIEW_UTILS_MODULE_URL,
+      runtime: view_utils_1.pureProxy10
+    })];
     return Identifiers;
   }());
   exports.Identifiers = Identifiers;
@@ -25573,6 +25891,9 @@ System.register("angular2/src/compiler/view_compiler/view_binder", ["angular2/sr
   function bindView(view, parsedTemplate) {
     var visitor = new ViewBinderVisitor(view);
     template_ast_1.templateVisitAll(visitor, parsedTemplate);
+    view.pipes.forEach(function(pipe) {
+      lifecycle_binder_1.bindPipeDestroyLifecycleCallbacks(pipe.meta, pipe.instance, pipe.view);
+    });
   }
   exports.bindView = bindView;
   var ViewBinderVisitor = (function() {
@@ -25862,6 +26183,13 @@ System.register("angular2/src/compiler/output/output_interpreter", ["angular2/sr
           case o.BuiltinMethod.SubscribeObservable:
             result = async_1.ObservableWrapper.subscribe(receiver, args[0]);
             break;
+          case o.BuiltinMethod.bind:
+            if (lang_1.IS_DART) {
+              result = receiver;
+            } else {
+              result = receiver.bind(args[0]);
+            }
+            break;
           default:
             throw new exceptions_1.BaseException("Unknown builtin method " + expr.builtin);
         }
@@ -26019,6 +26347,8 @@ System.register("angular2/src/compiler/output/output_interpreter", ["angular2/sr
           result = di.props.get(ast.name);
         } else if (di.getters.has(ast.name)) {
           result = di.getters.get(ast.name)();
+        } else if (di.methods.has(ast.name)) {
+          result = di.methods.get(ast.name);
         } else {
           result = reflection_1.reflector.getter(ast.name)(receiver);
         }
@@ -26281,7 +26611,7 @@ System.register("angular2/src/compiler/provider_parser", ["angular2/src/facade/l
           return provider.token.identifier;
         });
         var sortedDirectives = collection_1.ListWrapper.clone(this._directiveAsts);
-        collection_1.ListWrapper.sort(this._directiveAsts, function(dir1, dir2) {
+        collection_1.ListWrapper.sort(sortedDirectives, function(dir1, dir2) {
           return sortedProviderTypes.indexOf(dir1.directive.type) - sortedProviderTypes.indexOf(dir2.directive.type);
         });
         return sortedDirectives;
@@ -26878,7 +27208,7 @@ System.register("angular2/src/compiler/view_compiler/view_builder", ["angular2/s
       return [entry[0], o.NULL_EXPR];
     });
     var viewConstructorArgs = [new o.FnParam(constants_1.ViewConstructorVars.viewUtils.name, o.importType(identifiers_1.Identifiers.ViewUtils)), new o.FnParam(constants_1.ViewConstructorVars.parentInjector.name, o.importType(identifiers_1.Identifiers.Injector)), new o.FnParam(constants_1.ViewConstructorVars.declarationEl.name, o.importType(identifiers_1.Identifiers.AppElement))];
-    var viewConstructor = new o.ClassMethod(null, viewConstructorArgs, [o.SUPER_EXPR.callFn([o.variable(view.className), renderCompTypeVar, constants_1.ViewTypeEnum.fromValue(view.viewType), o.literalMap(emptyTemplateVariableBindings), constants_1.ViewConstructorVars.viewUtils, constants_1.ViewConstructorVars.parentInjector, constants_1.ViewConstructorVars.declarationEl, constants_1.ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)), o.literal(view.literalArrayCount), o.literal(view.literalMapCount), nodeDebugInfosVar]).toStmt()]);
+    var viewConstructor = new o.ClassMethod(null, viewConstructorArgs, [o.SUPER_EXPR.callFn([o.variable(view.className), renderCompTypeVar, constants_1.ViewTypeEnum.fromValue(view.viewType), o.literalMap(emptyTemplateVariableBindings), constants_1.ViewConstructorVars.viewUtils, constants_1.ViewConstructorVars.parentInjector, constants_1.ViewConstructorVars.declarationEl, constants_1.ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)), nodeDebugInfosVar]).toStmt()]);
     var viewMethods = [new o.ClassMethod('createInternal', [new o.FnParam(rootSelectorVar.name, o.STRING_TYPE)], generateCreateMethod(view), o.importType(identifiers_1.Identifiers.AppElement)), new o.ClassMethod('injectorGetInternal', [new o.FnParam(constants_1.InjectMethodVars.token.name, o.DYNAMIC_TYPE), new o.FnParam(constants_1.InjectMethodVars.requestNodeIndex.name, o.NUMBER_TYPE), new o.FnParam(constants_1.InjectMethodVars.notFoundResult.name, o.DYNAMIC_TYPE)], addReturnValuefNotEmpty(view.injectorGetMethod.finish(), constants_1.InjectMethodVars.notFoundResult), o.DYNAMIC_TYPE), new o.ClassMethod('detectChangesInternal', [new o.FnParam(constants_1.DetectChangesVars.throwOnChange.name, o.BOOL_TYPE)], generateDetectChangesMethod(view)), new o.ClassMethod('dirtyParentQueriesInternal', [], view.dirtyParentQueriesMethod.finish()), new o.ClassMethod('destroyInternal', [], view.destroyMethod.finish())].concat(view.eventHandlerMethods);
     var viewClass = new o.ClassStmt(view.className, o.importExpr(identifiers_1.Identifiers.AppView, [getContextType(view)]), view.fields, view.getters, viewConstructor, viewMethods.filter(function(method) {
       return method.body.length > 0;

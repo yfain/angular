@@ -315,8 +315,6 @@ function createViewClass(view, renderCompTypeVar, nodeDebugInfosVar) {
             ViewConstructorVars.parentInjector,
             ViewConstructorVars.declarationEl,
             ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)),
-            o.literal(view.literalArrayCount),
-            o.literal(view.literalMapCount),
             nodeDebugInfosVar
         ])
             .toStmt()

@@ -1,7 +1,7 @@
 import { CompileIdentifierMetadata, CompileTokenMetadata } from './compile_metadata';
 import { AppView } from 'angular2/src/core/linker/view';
 import { StaticNodeDebugInfo, DebugContext } from 'angular2/src/core/linker/debug_context';
-import { ViewUtils, flattenNestedViewRenderNodes, interpolate, checkBinding } from 'angular2/src/core/linker/view_utils';
+import { ViewUtils, flattenNestedViewRenderNodes, interpolate, checkBinding, castByValue, pureProxy1, pureProxy2, pureProxy3, pureProxy4, pureProxy5, pureProxy6, pureProxy7, pureProxy8, pureProxy9, pureProxy10 } from 'angular2/src/core/linker/view_utils';
 import { uninitialized, devModeEqual, SimpleChange, ValueUnwrapper, ChangeDetectorRef, ChangeDetectorState, ChangeDetectionStrategy } from 'angular2/src/core/change_detection/change_detection';
 import { AppElement } from 'angular2/src/core/linker/element';
 import { ElementRef } from 'angular2/src/core/linker/element_ref';
@@ -44,6 +44,7 @@ var impFlattenNestedViewRenderNodes = flattenNestedViewRenderNodes;
 var impDevModeEqual = devModeEqual;
 var impInterpolate = interpolate;
 var impCheckBinding = checkBinding;
+var impCastByValue = castByValue;
 export class Identifiers {
 }
 Identifiers.ViewUtils = new CompileIdentifierMetadata({
@@ -139,6 +140,20 @@ Identifiers.flattenNestedViewRenderNodes = new CompileIdentifierMetadata({
 });
 Identifiers.devModeEqual = new CompileIdentifierMetadata({ name: 'devModeEqual', moduleUrl: CD_MODULE_URL, runtime: impDevModeEqual });
 Identifiers.interpolate = new CompileIdentifierMetadata({ name: 'interpolate', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: impInterpolate });
+Identifiers.castByValue = new CompileIdentifierMetadata({ name: 'castByValue', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: impCastByValue });
+Identifiers.pureProxies = [
+    null,
+    new CompileIdentifierMetadata({ name: 'pureProxy1', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy1 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy2', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy2 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy3', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy3 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy4', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy4 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy5', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy5 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy6', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy6 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy7', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy7 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy8', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy8 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy9', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy9 }),
+    new CompileIdentifierMetadata({ name: 'pureProxy10', moduleUrl: VIEW_UTILS_MODULE_URL, runtime: pureProxy10 }),
+];
 export function identifierToken(identifier) {
     return new CompileTokenMetadata({ identifier: identifier });
 }

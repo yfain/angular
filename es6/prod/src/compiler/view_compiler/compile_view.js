@@ -1,19 +1,13 @@
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { ListWrapper } from 'angular2/src/facade/collection';
-import { BaseException } from 'angular2/src/facade/exceptions';
 import * as o from '../output/output_ast';
-import { Identifiers, identifierToken } from '../identifiers';
 import { EventHandlerVars } from './constants';
 import { CompileQuery, createQueryList, addQueryToTokenMap } from './compile_query';
 import { CompileMethod } from './compile_method';
+import { CompilePipe } from './compile_pipe';
 import { ViewType } from 'angular2/src/core/linker/view_type';
 import { CompileIdentifierMetadata, CompileTokenMap } from '../compile_metadata';
-import { getViewFactoryName, injectFromViewParentInjector, getPropertyInView } from './util';
-import { bindPipeDestroyLifecycleCallbacks } from './lifecycle_binder';
-export class CompilePipe {
-    constructor() {
-    }
-}
+import { getViewFactoryName, getPropertyInView, createPureProxy } from './util';
 export class CompileView {
     constructor(component, genConfig, pipeMetas, styles, viewIndex, declarationElement, templateVariableBindings) {
         this.component = component;
@@ -33,10 +27,12 @@ export class CompileView {
         this.getters = [];
         this.disposables = [];
         this.subscriptions = [];
-        this.pipes = new Map();
+        this.purePipes = new Map();
+        this.pipes = [];
         this.variables = new Map();
         this.literalArrayCount = 0;
         this.literalMapCount = 0;
+        this.pipeCount = 0;
         this.createMethod = new CompileMethod(this);
         this.injectorGetMethod = new CompileMethod(this);
         this.updateContentQueriesMethod = new CompileMethod(this);
@@ -86,49 +82,16 @@ export class CompileView {
         }
     }
     callPipe(name, input, args) {
-        var pipeMeta = null;
-        for (var i = this.pipeMetas.length - 1; i >= 0; i--) {
-            var localPipeMeta = this.pipeMetas[i];
-            if (localPipeMeta.name == name) {
-                pipeMeta = localPipeMeta;
-                break;
+        var compView = this.componentView;
+        var pipe = compView.purePipes.get(name);
+        if (isBlank(pipe)) {
+            pipe = new CompilePipe(compView, name);
+            if (pipe.pure) {
+                compView.purePipes.set(name, pipe);
             }
+            compView.pipes.push(pipe);
         }
-        if (isBlank(pipeMeta)) {
-            throw new BaseException(`Illegal state: Could not find pipe ${name} although the parser should have detected this error!`);
-        }
-        var pipeFieldName = pipeMeta.pure ? `_pipe_${name}` : `_pipe_${name}_${this.pipes.size}`;
-        var pipeExpr = this.pipes.get(pipeFieldName);
-        var pipeFieldCacheProp = o.THIS_EXPR.prop(`${pipeFieldName}_cache`);
-        if (isBlank(pipeExpr)) {
-            var deps = pipeMeta.type.diDeps.map((diDep) => {
-                if (diDep.token.equalsTo(identifierToken(Identifiers.ChangeDetectorRef))) {
-                    return o.THIS_EXPR.prop('ref');
-                }
-                return injectFromViewParentInjector(diDep.token, false);
-            });
-            this.fields.push(new o.ClassField(pipeFieldName, o.importType(pipeMeta.type), [o.StmtModifier.Private]));
-            if (pipeMeta.pure) {
-                this.fields.push(new o.ClassField(pipeFieldCacheProp.name, null, [o.StmtModifier.Private]));
-                this.createMethod.addStmt(o.THIS_EXPR.prop(pipeFieldCacheProp.name)
-                    .set(o.importExpr(Identifiers.uninitialized))
-                    .toStmt());
-            }
-            this.createMethod.resetDebugInfo(null, null);
-            this.createMethod.addStmt(o.THIS_EXPR.prop(pipeFieldName)
-                .set(o.importExpr(pipeMeta.type).instantiate(deps))
-                .toStmt());
-            pipeExpr = o.THIS_EXPR.prop(pipeFieldName);
-            this.pipes.set(pipeFieldName, pipeExpr);
-            bindPipeDestroyLifecycleCallbacks(pipeMeta, pipeExpr, this);
-        }
-        var callPipeExpr = pipeExpr.callMethod('transform', [input, o.literalArr(args)]);
-        if (pipeMeta.pure) {
-            callPipeExpr =
-                o.THIS_EXPR.callMethod('checkPurePipe', [o.literal(this.literalArrayCount++), o.literalArr([input].concat(args))])
-                    .conditional(pipeFieldCacheProp.set(callPipeExpr), pipeFieldCacheProp);
-        }
-        return callPipeExpr;
+        return pipe.call(this, [input].concat(args));
     }
     getVariable(name) {
         if (name == EventHandlerVars.event.name) {
@@ -136,26 +99,45 @@ export class CompileView {
         }
         var currView = this;
         var result = currView.variables.get(name);
-        var viewPath = [];
         while (isBlank(result) && isPresent(currView.declarationElement.view)) {
             currView = currView.declarationElement.view;
             result = currView.variables.get(name);
-            viewPath.push(currView);
         }
         if (isPresent(result)) {
-            return getPropertyInView(result, viewPath);
+            return getPropertyInView(result, this, currView);
         }
         else {
             return null;
         }
     }
     createLiteralArray(values) {
-        return o.THIS_EXPR.callMethod('literalArray', [o.literal(this.literalArrayCount++), o.literalArr(values)]);
+        var proxyExpr = o.THIS_EXPR.prop(`_arr_${this.literalArrayCount++}`);
+        var proxyParams = [];
+        var proxyReturnEntries = [];
+        for (var i = 0; i < values.length; i++) {
+            var paramName = `p${i}`;
+            proxyParams.push(new o.FnParam(paramName));
+            proxyReturnEntries.push(o.variable(paramName));
+        }
+        createPureProxy(o.fn(proxyParams, [new o.ReturnStatement(o.literalArr(proxyReturnEntries))]), values.length, proxyExpr, this);
+        return proxyExpr.callFn(values);
     }
-    createLiteralMap(values) {
-        return o.THIS_EXPR.callMethod('literalMap', [o.literal(this.literalMapCount++), o.literalMap(values)]);
+    createLiteralMap(entries) {
+        var proxyExpr = o.THIS_EXPR.prop(`_map_${this.literalMapCount++}`);
+        var proxyParams = [];
+        var proxyReturnEntries = [];
+        var values = [];
+        for (var i = 0; i < entries.length; i++) {
+            var paramName = `p${i}`;
+            proxyParams.push(new o.FnParam(paramName));
+            proxyReturnEntries.push([entries[i][0], o.variable(paramName)]);
+            values.push(entries[i][1]);
+        }
+        createPureProxy(o.fn(proxyParams, [new o.ReturnStatement(o.literalMap(proxyReturnEntries))]), entries.length, proxyExpr, this);
+        return proxyExpr.callFn(values);
     }
     afterNodes() {
+        this.pipes.forEach((pipe) => pipe.create());
         this.viewQueries.values().forEach((queries) => queries.forEach((query) => query.afterChildren(this.updateViewQueriesMethod)));
     }
 }

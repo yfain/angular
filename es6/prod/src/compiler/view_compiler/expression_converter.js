@@ -114,9 +114,9 @@ class _AstToIrVisitor {
     visitPipe(ast, mode) {
         var input = ast.exp.visit(this, _Mode.Expression);
         var args = this.visitAll(ast.args, _Mode.Expression);
-        var pipeResult = this._nameResolver.callPipe(ast.name, input, args);
+        var value = this._nameResolver.callPipe(ast.name, input, args);
         this.needsValueUnwrapper = true;
-        return convertToStatementIfNeeded(mode, this._valueUnwrapper.callMethod('unwrap', [pipeResult]));
+        return convertToStatementIfNeeded(mode, this._valueUnwrapper.callMethod('unwrap', [value]));
     }
     visitFunctionCall(ast, mode) {
         return convertToStatementIfNeeded(mode, ast.target.visit(this, _Mode.Expression)
