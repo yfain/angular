@@ -21,6 +21,8 @@ import "package:angular2/src/core/metadata.dart"
         ViewChildrenMetadata,
         ViewQueryMetadata,
         QueryMetadata;
+import "package:angular2/src/core/reflection/reflector_reader.dart"
+    show ReflectorReader;
 
 /**
  * The host of the static resolver is expected to be able to provide module metadata in the form of
@@ -54,7 +56,7 @@ class StaticType {
  * A static reflector implements enough of the Reflector API that is necessary to compile
  * templates statically.
  */
-class StaticReflector {
+class StaticReflector implements ReflectorReader {
   StaticReflectorHost host;
   var typeCache = new Map<String, StaticType>();
   var annotationCache = new Map<StaticType, List<dynamic>>();
@@ -64,6 +66,10 @@ class StaticReflector {
   StaticReflector(this.host) {
     this.initializeConversionMap();
   }
+  String importUri(dynamic typeOrFunc) {
+    return ((typeOrFunc as StaticType)).moduleId;
+  }
+
   /**
    * getStatictype produces a Type whose metadata is known but whose implementation is not loaded.
    * All types passed to the StaticResolver should be pseudo-types returned by this method.
