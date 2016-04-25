@@ -27,6 +27,7 @@ export class StaticReflector {
         this.conversionMap = new Map();
         this.initializeConversionMap();
     }
+    importUri(typeOrFunc) { return typeOrFunc.moduleId; }
     /**
      * getStatictype produces a Type whose metadata is known but whose implementation is not loaded.
      * All types passed to the StaticResolver should be pseudo-types returned by this method.

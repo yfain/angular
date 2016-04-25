@@ -33,8 +33,9 @@ import { Provider } from 'angular2/src/core/di/provider';
 import { constructDependencies } from 'angular2/src/core/di/reflective_provider';
 import { SelfMetadata, HostMetadata, SkipSelfMetadata } from 'angular2/src/core/di/metadata';
 import { AttributeMetadata } from 'angular2/src/core/metadata/di';
+import { ReflectorReader } from 'angular2/src/core/reflection/reflector_reader';
 export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
-    constructor(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes) {
+    constructor(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
         this._directiveResolver = _directiveResolver;
         this._pipeResolver = _pipeResolver;
         this._viewResolver = _viewResolver;
@@ -44,6 +45,12 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
         this._pipeCache = new Map();
         this._anonymousTypes = new Map();
         this._anonymousTypeIndex = 0;
+        if (isPresent(_reflector)) {
+            this._reflector = _reflector;
+        }
+        else {
+            this._reflector = reflector;
+        }
     }
     sanitizeTokenName(token) {
         let identifier = stringify(token);
@@ -69,7 +76,7 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
             if (dirMeta instanceof md.ComponentMetadata) {
                 assertArrayOfStrings('styles', dirMeta.styles);
                 var cmpMeta = dirMeta;
-                moduleUrl = calcModuleUrl(directiveType, cmpMeta);
+                moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
                 var viewMeta = this._viewResolver.resolve(directiveType);
                 assertArrayOfStrings('styles', viewMeta.styles);
                 templateMeta = new cpl.CompileTemplateMetadata({
@@ -134,7 +141,7 @@ export let RuntimeMetadataResolver = class RuntimeMetadataResolver {
         var meta = this._pipeCache.get(pipeType);
         if (isBlank(meta)) {
             var pipeMeta = this._pipeResolver.resolve(pipeType);
-            var moduleUrl = reflector.importUri(pipeType);
+            var moduleUrl = this._reflector.importUri(pipeType);
             meta = new cpl.CompilePipeMetadata({
                 type: this.getTypeMetadata(pipeType, moduleUrl),
                 name: pipeMeta.name,
@@ -288,7 +295,7 @@ RuntimeMetadataResolver = __decorate([
     __param(3, Inject(PLATFORM_DIRECTIVES)),
     __param(4, Optional()),
     __param(4, Inject(PLATFORM_PIPES)), 
-    __metadata('design:paramtypes', [DirectiveResolver, PipeResolver, ViewResolver, Array, Array])
+    __metadata('design:paramtypes', [DirectiveResolver, PipeResolver, ViewResolver, Array, Array, ReflectorReader])
 ], RuntimeMetadataResolver);
 function flattenDirectives(view, platformDirectives) {
     let directives = [];
@@ -324,7 +331,7 @@ function flattenArray(tree, out) {
 function isValidType(value) {
     return isPresent(value) && (value instanceof Type);
 }
-function calcModuleUrl(type, cmpMetadata) {
+function calcModuleUrl(reflector, type, cmpMetadata) {
     var moduleId = cmpMetadata.moduleId;
     if (isPresent(moduleId)) {
         var scheme = getUrlScheme(moduleId);
