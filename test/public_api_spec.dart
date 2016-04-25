@@ -295,7 +295,7 @@ var NG_INSTRUMENTATION = [
   "wtfStartTimeRange"
 ];
 var NG_PLATFORM_BROWSER = [
-  "AngularEntrypoint",
+  "AngularEntrypoint:dart",
   "BROWSER_APP_PROVIDERS",
   "BROWSER_PROVIDERS",
   "BrowserDomAdapter",

@@ -1,8 +1,7 @@
 library angular2.platform.browser_static;
 
 import "dart:async";
-export "package:angular2/src/core/angular_entrypoint.dart"
-    show AngularEntrypoint;
+export "package:angular2/src/core/angular_entrypoint.dart";
 export "package:angular2/src/platform/browser_common.dart"
     show
         BROWSER_PROVIDERS,
