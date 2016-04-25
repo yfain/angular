@@ -38,8 +38,6 @@ import "package:angular2/src/core/di/reflective_provider.dart"
 import "package:angular2/src/core/di/metadata.dart"
     show OptionalMetadata, SelfMetadata, HostMetadata, SkipSelfMetadata;
 import "package:angular2/src/core/metadata/di.dart" show AttributeMetadata;
-import "package:angular2/src/core/reflection/reflector_reader.dart"
-    show ReflectorReader;
 
 @Injectable()
 class RuntimeMetadataResolver {
@@ -52,20 +50,12 @@ class RuntimeMetadataResolver {
   var _pipeCache = new Map<Type, cpl.CompilePipeMetadata>();
   var _anonymousTypes = new Map<Object, num>();
   var _anonymousTypeIndex = 0;
-  ReflectorReader _reflector;
   RuntimeMetadataResolver(
       this._directiveResolver,
       this._pipeResolver,
       this._viewResolver,
       @Optional() @Inject(PLATFORM_DIRECTIVES) this._platformDirectives,
-      @Optional() @Inject(PLATFORM_PIPES) this._platformPipes,
-      [ReflectorReader _reflector]) {
-    if (isPresent(_reflector)) {
-      this._reflector = _reflector;
-    } else {
-      this._reflector = reflector;
-    }
-  }
+      @Optional() @Inject(PLATFORM_PIPES) this._platformPipes) {}
   String sanitizeTokenName(dynamic token) {
     var identifier = stringify(token);
     if (identifier.indexOf("(") >= 0) {
@@ -91,7 +81,7 @@ class RuntimeMetadataResolver {
       if (dirMeta is md.ComponentMetadata) {
         assertArrayOfStrings("styles", dirMeta.styles);
         var cmpMeta = (dirMeta as md.ComponentMetadata);
-        moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
+        moduleUrl = calcModuleUrl(directiveType, cmpMeta);
         var viewMeta = this._viewResolver.resolve(directiveType);
         assertArrayOfStrings("styles", viewMeta.styles);
         templateMeta = new cpl.CompileTemplateMetadata(
@@ -158,7 +148,7 @@ class RuntimeMetadataResolver {
     var meta = this._pipeCache[pipeType];
     if (isBlank(meta)) {
       var pipeMeta = this._pipeResolver.resolve(pipeType);
-      var moduleUrl = this._reflector.importUri(pipeType);
+      var moduleUrl = reflector.importUri(pipeType);
       meta = new cpl.CompilePipeMetadata(
           type: this.getTypeMetadata(pipeType, moduleUrl),
           name: pipeMeta.name,
@@ -359,8 +349,7 @@ bool isValidType(Type value) {
   return isPresent(value) && (value is Type);
 }
 
-String calcModuleUrl(
-    ReflectorReader reflector, Type type, md.ComponentMetadata cmpMetadata) {
+String calcModuleUrl(Type type, md.ComponentMetadata cmpMetadata) {
   var moduleId = cmpMetadata.moduleId;
   if (isPresent(moduleId)) {
     var scheme = getUrlScheme(moduleId);

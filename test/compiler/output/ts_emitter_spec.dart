@@ -268,7 +268,8 @@ main() {
       it("should support declaring fields", () {
         expect(emitStmt(new o.ClassStmt("SomeClass", null,
                 [new o.ClassField("someField")], [], null, [])))
-            .toEqual(["class SomeClass {", "  someField;", "}"].join("\n"));
+            .toEqual(
+                ["class SomeClass {", "  someField: any;", "}"].join("\n"));
         expect(emitStmt(new o.ClassStmt("SomeClass", null,
                 [new o.ClassField("someField", o.INT_TYPE)], [], null, [])))
             .toEqual(
