@@ -145,10 +145,10 @@ class _AstToIrVisitor implements cdAst.AstVisitor {
   dynamic visitPipe(cdAst.BindingPipe ast, _Mode mode) {
     var input = ast.exp.visit(this, _Mode.Expression);
     var args = this.visitAll(ast.args, _Mode.Expression);
-    var pipeResult = this._nameResolver.callPipe(ast.name, input, args);
+    var value = this._nameResolver.callPipe(ast.name, input, args);
     this.needsValueUnwrapper = true;
     return convertToStatementIfNeeded(
-        mode, this._valueUnwrapper.callMethod("unwrap", [pipeResult]));
+        mode, this._valueUnwrapper.callMethod("unwrap", [value]));
   }
 
   dynamic visitFunctionCall(cdAst.FunctionCall ast, _Mode mode) {

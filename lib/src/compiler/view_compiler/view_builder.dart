@@ -1,6 +1,7 @@
 library angular2.src.compiler.view_compiler.view_builder;
 
-import "package:angular2/src/facade/lang.dart" show isPresent, StringWrapper;
+import "package:angular2/src/facade/lang.dart"
+    show isPresent, isBlank, StringWrapper;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper, SetWrapper;
 import "../output/output_ast.dart" as o;
@@ -510,8 +511,6 @@ o.ClassStmt createViewClass(CompileView view, o.ReadVarExpr renderCompTypeVar,
       ViewConstructorVars.parentInjector,
       ViewConstructorVars.declarationEl,
       ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)),
-      o.literal(view.literalArrayCount),
-      o.literal(view.literalMapCount),
       nodeDebugInfosVar
     ]).toStmt()
   ]);

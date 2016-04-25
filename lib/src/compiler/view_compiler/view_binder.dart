@@ -40,6 +40,9 @@ import "compile_element.dart" show CompileElement, CompileNode;
 void bindView(CompileView view, List<TemplateAst> parsedTemplate) {
   var visitor = new ViewBinderVisitor(view);
   templateVisitAll(visitor, parsedTemplate);
+  view.pipes.forEach((pipe) {
+    bindPipeDestroyLifecycleCallbacks(pipe.meta, pipe.instance, pipe.view);
+  });
 }
 
 class ViewBinderVisitor implements TemplateAstVisitor {

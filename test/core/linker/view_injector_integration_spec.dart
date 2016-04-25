@@ -267,17 +267,17 @@ class PushComponentNeedsChangeDetectorRef {
 }
 
 @Pipe(name: "purePipe", pure: true)
-class PurePipe {
+class PurePipe implements PipeTransform {
   PurePipe() {}
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
 
 @Pipe(name: "impurePipe", pure: false)
-class ImpurePipe {
+class ImpurePipe implements PipeTransform {
   ImpurePipe() {}
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
@@ -286,7 +286,7 @@ class ImpurePipe {
 class PipeNeedsChangeDetectorRef {
   ChangeDetectorRef changeDetectorRef;
   PipeNeedsChangeDetectorRef(this.changeDetectorRef) {}
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
@@ -297,21 +297,21 @@ class PipeNeedsService implements PipeTransform {
   PipeNeedsService(@Inject("service") service) {
     this.service = service;
   }
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
 
 @Pipe(name: "duplicatePipe")
 class DuplicatePipe1 implements PipeTransform {
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
 
 @Pipe(name: "duplicatePipe")
 class DuplicatePipe2 implements PipeTransform {
-  dynamic transform(dynamic value, [List<dynamic> args = null]) {
+  dynamic transform(dynamic value) {
     return this;
   }
 }
@@ -703,7 +703,7 @@ No provider for SimpleDirective ("[ERROR ->]<div needsDirectiveFromHost></div>")
       }));
       it("should cache pure pipes", fakeAsync(() {
         var el = createComp(
-            "<div [simpleDirective]=\"true | purePipe\"></div><div [simpleDirective]=\"true | purePipe\"></div>",
+            "<div [simpleDirective]=\"true | purePipe\"></div><div *ngIf=\"true\" [simpleDirective]=\"true | purePipe\"></div>",
             tcb);
         var purePipe1 = el.children[0].inject(SimpleDirective).value;
         var purePipe2 = el.children[1].inject(SimpleDirective).value;

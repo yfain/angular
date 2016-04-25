@@ -75,8 +75,6 @@ abstract class AppView<T> {
   List<AppView<dynamic>> viewChildren = [];
   AppView<dynamic> renderParent;
   AppElement viewContainerElement = null;
-  List<List<dynamic>> _literalArrayCache;
-  List<Map<String, dynamic>> _literalMapCache;
   // The names of the below fields must be kept in sync with codegen_name_util.ts or
 
   // change detection will fail.
@@ -100,8 +98,6 @@ abstract class AppView<T> {
       this.parentInjector,
       this.declarationAppElement,
       this.cdMode,
-      num literalArrayCacheSize,
-      num literalMapCacheSize,
       this.staticNodeDebugInfos) {
     this.ref = new ViewRef_(this);
     if (identical(type, ViewType.COMPONENT) || identical(type, ViewType.HOST)) {
@@ -109,9 +105,6 @@ abstract class AppView<T> {
     } else {
       this.renderer = declarationAppElement.parentView.renderer;
     }
-    this._literalArrayCache =
-        ListWrapper.createFixedSize(literalArrayCacheSize);
-    this._literalMapCache = ListWrapper.createFixedSize(literalMapCacheSize);
   }
   AppElement create(
       List<dynamic /* dynamic | List < dynamic > */ > givenProjectableNodes,
@@ -293,6 +286,12 @@ abstract class AppView<T> {
     return this.ref;
   }
 
+  AppView<dynamic> get parent {
+    return isPresent(this.declarationAppElement)
+        ? this.declarationAppElement.parentView
+        : null;
+  }
+
   List<dynamic> get flatRootNodes {
     return flattenNestedViewRenderNodes(this.rootNodesOrAppElements);
   }
@@ -383,41 +382,6 @@ abstract class AppView<T> {
     ListWrapper.remove(renderAppElement.parentView.contentChildren, this);
     this.dirtyParentQueriesInternal();
     this.viewContainerElement = null;
-  }
-
-  bool checkPurePipe(num id, List<dynamic> newArgs) {
-    var prevArgs = this._literalArrayCache[id];
-    var newPresent = isPresent(newArgs);
-    var prevPresent = isPresent(prevArgs);
-    if (!identical(newPresent, prevPresent) ||
-        (newPresent && !arrayLooseIdentical(prevArgs, newArgs))) {
-      this._literalArrayCache[id] = newArgs;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  List<dynamic> literalArray(num id, List<dynamic> value) {
-    if (isBlank(value)) {
-      return value;
-    }
-    var prevValue = this._literalArrayCache[id];
-    if (isBlank(prevValue) || !arrayLooseIdentical(prevValue, value)) {
-      prevValue = this._literalArrayCache[id] = value;
-    }
-    return prevValue;
-  }
-
-  Map<String, dynamic> literalMap(num id, Map<String, dynamic> value) {
-    if (isBlank(value)) {
-      return value;
-    }
-    var prevValue = this._literalMapCache[id];
-    if (isBlank(prevValue) || !mapLooseIdentical(prevValue, value)) {
-      prevValue = this._literalMapCache[id] = value;
-    }
-    return prevValue;
   }
 
   void markAsCheckOnce() {

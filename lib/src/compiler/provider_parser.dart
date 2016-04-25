@@ -132,7 +132,7 @@ class ProviderElementContext {
         .toList();
     var sortedDirectives = ListWrapper.clone(this._directiveAsts);
     ListWrapper.sort(
-        this._directiveAsts,
+        sortedDirectives,
         (dir1, dir2) =>
             sortedProviderTypes.indexOf(dir1.directive.type) -
             sortedProviderTypes.indexOf(dir2.directive.type));

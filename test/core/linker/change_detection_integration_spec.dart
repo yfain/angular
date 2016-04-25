@@ -420,6 +420,15 @@ main() {
         }));
         it("should associate pipes right-to-left", fakeAsync(() {
           var ctx = _bindSimpleValue(
+              "name | multiArgPipe:\"a\":\"b\" | multiArgPipe:0:1", Person);
+          ctx.componentInstance.name = "value";
+          ctx.detectChanges(false);
+          expect(renderLog.loggedValues)
+              .toEqual(["value a b default 0 1 default"]);
+        }));
+        it("should support calling pure pipes with different number of arguments",
+            fakeAsync(() {
+          var ctx = _bindSimpleValue(
               "name | multiArgPipe:\"a\":\"b\" | multiArgPipe:0:1:2", Person);
           ctx.componentInstance.name = "value";
           ctx.detectChanges(false);
@@ -465,6 +474,22 @@ main() {
           ctx.detectChanges(false);
           expect(renderLog.loggedValues)
               .toEqual(["null state:0", "bob state:1", "bart state:2"]);
+        }));
+        it("should call pure pipes that are used multiple times only when the arguments change",
+            fakeAsync(() {
+          var ctx = createCompFixture(
+              '''<div [someProp]="name | countingPipe"></div><div [someProp]="age | countingPipe"></div>''',
+              Person);
+          ctx.componentInstance.name = "a";
+          ctx.componentInstance.age = 10;
+          ctx.detectChanges(false);
+          expect(renderLog.loggedValues).toEqual(["a state:0", "10 state:1"]);
+          ctx.detectChanges(false);
+          expect(renderLog.loggedValues).toEqual(["a state:0", "10 state:1"]);
+          ctx.componentInstance.age = 11;
+          ctx.detectChanges(false);
+          expect(renderLog.loggedValues)
+              .toEqual(["a state:0", "10 state:1", "11 state:2"]);
         }));
         it("should call impure pipes on each change detection run",
             fakeAsync(() {
@@ -881,6 +906,16 @@ main() {
         expect(renderLog.log).toEqual([]);
       }));
     });
+    describe("multi directive order", () {
+      it("should follow the DI order for the same element", fakeAsync(() {
+        var ctx = createCompFixture(
+            "<div orderCheck2=\"2\" orderCheck0=\"0\" orderCheck1=\"1\"></div>");
+        ctx.detectChanges(false);
+        ctx.destroy();
+        expect(directiveLog.filter(["set"]))
+            .toEqual(["0.set", "1.set", "2.set"]);
+      }));
+    });
   });
 }
 
@@ -891,7 +926,10 @@ const ALL_DIRECTIVES = const [
   TestLocals,
   CompWithRef,
   EmitterDirective,
-  PushComp
+  PushComp,
+  OrderCheckDirective2,
+  OrderCheckDirective0,
+  OrderCheckDirective1
 ];
 const ALL_PIPES = const [
   CountingPipe,
@@ -980,7 +1018,7 @@ class DirectiveLog {
 @Pipe(name: "countingPipe")
 class CountingPipe implements PipeTransform {
   num state = 0;
-  transform(value, [args = null]) {
+  transform(value) {
     return '''${ value} state:${ this . state ++}''';
   }
 }
@@ -988,7 +1026,7 @@ class CountingPipe implements PipeTransform {
 @Pipe(name: "countingImpurePipe", pure: false)
 class CountingImpurePipe implements PipeTransform {
   num state = 0;
-  transform(value, [args = null]) {
+  transform(value) {
     return '''${ value} state:${ this . state ++}''';
   }
 }
@@ -1001,31 +1039,28 @@ class PipeWithOnDestroy implements PipeTransform, OnDestroy {
     this.directiveLog.add("pipeWithOnDestroy", "ngOnDestroy");
   }
 
-  transform(value, [args = null]) {
+  transform(value) {
     return null;
   }
 }
 
 @Pipe(name: "identityPipe")
 class IdentityPipe implements PipeTransform {
-  transform(value, [args = null]) {
+  transform(value) {
     return value;
   }
 }
 
 @Pipe(name: "wrappedPipe")
 class WrappedPipe implements PipeTransform {
-  transform(value, [args = null]) {
+  transform(value) {
     return WrappedValue.wrap(value);
   }
 }
 
 @Pipe(name: "multiArgPipe")
 class MultiArgPipe implements PipeTransform {
-  transform(value, [args = null]) {
-    var arg1 = args[0];
-    var arg2 = args[1];
-    var arg3 = args.length > 2 ? args[2] : "default";
+  transform(value, arg1, arg2, [arg3 = "default"]) {
     return '''${ value} ${ arg1} ${ arg2} ${ arg3}''';
   }
 }
@@ -1166,6 +1201,45 @@ class TestDirective
       throw new BaseException("Boom!");
     }
   }
+}
+
+@Directive(selector: "[orderCheck0]")
+class OrderCheckDirective0 {
+  DirectiveLog log;
+  String _name;
+  @Input("orderCheck0")
+  set name(String value) {
+    this._name = value;
+    this.log.add(this._name, "set");
+  }
+
+  OrderCheckDirective0(this.log) {}
+}
+
+@Directive(selector: "[orderCheck1]")
+class OrderCheckDirective1 {
+  DirectiveLog log;
+  String _name;
+  @Input("orderCheck1")
+  set name(String value) {
+    this._name = value;
+    this.log.add(this._name, "set");
+  }
+
+  OrderCheckDirective1(this.log, OrderCheckDirective0 _check0) {}
+}
+
+@Directive(selector: "[orderCheck2]")
+class OrderCheckDirective2 {
+  DirectiveLog log;
+  String _name;
+  @Input("orderCheck2")
+  set name(String value) {
+    this._name = value;
+    this.log.add(this._name, "set");
+  }
+
+  OrderCheckDirective2(this.log, OrderCheckDirective1 _check1) {}
 }
 
 @Directive(selector: "[testLocals]")
