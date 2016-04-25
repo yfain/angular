@@ -139,8 +139,6 @@ class _TsEmitterVisitor extends AbstractEmitterVisitor
     if (isPresent(field.type)) {
       ctx.print(''':''');
       field.type.visitType(this, ctx);
-    } else {
-      ctx.print(''': any''');
     }
     ctx.println(''';''');
   }

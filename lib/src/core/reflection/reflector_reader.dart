@@ -8,4 +8,5 @@ abstract class ReflectorReader {
   List<List<dynamic>> parameters(dynamic typeOrFunc);
   List<dynamic> annotations(dynamic typeOrFunc);
   Map<String, List<dynamic>> propMetadata(dynamic typeOrFunc);
+  String importUri(dynamic typeOrFunc);
 }
