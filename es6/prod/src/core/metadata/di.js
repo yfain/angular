@@ -154,12 +154,11 @@ AttributeMetadata = __decorate([
  * See {@link QueryList} for more details.
  */
 export let QueryMetadata = class QueryMetadata extends DependencyMetadata {
-    constructor(_selector, { descendants = false, first = false, read = null } = {}) {
+    constructor(_selector, { descendants = false, first = false } = {}) {
         super();
         this._selector = _selector;
         this.descendants = descendants;
         this.first = first;
-        this.read = read;
     }
     /**
      * always `false` to differentiate it with {@link ViewQueryMetadata}.
@@ -206,8 +205,8 @@ QueryMetadata = __decorate([
  * ```
  */
 export let ContentChildrenMetadata = class ContentChildrenMetadata extends QueryMetadata {
-    constructor(_selector, { descendants = false, read = null } = {}) {
-        super(_selector, { descendants: descendants, read: read });
+    constructor(_selector, { descendants = false } = {}) {
+        super(_selector, { descendants: descendants });
     }
 };
 ContentChildrenMetadata = __decorate([
@@ -236,13 +235,13 @@ ContentChildrenMetadata = __decorate([
  * ```
  */
 export let ContentChildMetadata = class ContentChildMetadata extends QueryMetadata {
-    constructor(_selector, { read = null } = {}) {
-        super(_selector, { descendants: true, first: true, read: read });
+    constructor(_selector) {
+        super(_selector, { descendants: true, first: true });
     }
 };
 ContentChildMetadata = __decorate([
     CONST(), 
-    __metadata('design:paramtypes', [Object, Object])
+    __metadata('design:paramtypes', [Object])
 ], ContentChildMetadata);
 /**
  * Similar to {@link QueryMetadata}, but querying the component view, instead of
@@ -280,8 +279,8 @@ ContentChildMetadata = __decorate([
  * See {@link QueryList} for more details.
  */
 export let ViewQueryMetadata = class ViewQueryMetadata extends QueryMetadata {
-    constructor(_selector, { descendants = false, first = false, read = null } = {}) {
-        super(_selector, { descendants: descendants, first: first, read: read });
+    constructor(_selector, { descendants = false, first = false } = {}) {
+        super(_selector, { descendants: descendants, first: first });
     }
     /**
      * always `true` to differentiate it with {@link QueryMetadata}.
@@ -371,13 +370,13 @@ ViewQueryMetadata = __decorate([
  * ```
  */
 export let ViewChildrenMetadata = class ViewChildrenMetadata extends ViewQueryMetadata {
-    constructor(_selector, { read = null } = {}) {
-        super(_selector, { descendants: true, read: read });
+    constructor(_selector) {
+        super(_selector, { descendants: true });
     }
 };
 ViewChildrenMetadata = __decorate([
     CONST(), 
-    __metadata('design:paramtypes', [Object, Object])
+    __metadata('design:paramtypes', [Object])
 ], ViewChildrenMetadata);
 /**
  *
@@ -450,11 +449,11 @@ ViewChildrenMetadata = __decorate([
  * ```
  */
 export let ViewChildMetadata = class ViewChildMetadata extends ViewQueryMetadata {
-    constructor(_selector, { read = null } = {}) {
-        super(_selector, { descendants: true, first: true, read: read });
+    constructor(_selector) {
+        super(_selector, { descendants: true, first: true });
     }
 };
 ViewChildMetadata = __decorate([
     CONST(), 
-    __metadata('design:paramtypes', [Object, Object])
+    __metadata('design:paramtypes', [Object])
 ], ViewChildMetadata);

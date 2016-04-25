@@ -5,6 +5,7 @@ import {
   PLATFORM_DIRECTIVES,
   PLATFORM_PIPES,
   ComponentRef,
+  platform,
   ExceptionHandler,
   Reflector,
   reflector,
@@ -57,12 +58,8 @@ export const WORKER_SCRIPT: OpaqueToken = CONST_EXPR(new OpaqueToken("WebWorkerS
 export const WORKER_RENDER_MESSAGING_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
     CONST_EXPR([MessageBasedRenderer, MessageBasedXHRImpl]);
 
-export const WORKER_RENDER_PLATFORM_MARKER =
-    CONST_EXPR(new OpaqueToken('WorkerRenderPlatformMarker'));
-
 export const WORKER_RENDER_PLATFORM: Array<any /*Type | Provider | any[]*/> = CONST_EXPR([
   PLATFORM_COMMON_PROVIDERS,
-  CONST_EXPR(new Provider(WORKER_RENDER_PLATFORM_MARKER, {useValue: true})),
   new Provider(PLATFORM_INITIALIZER, {useValue: initWebWorkerRenderPlatform, multi: true})
 ]);
 
@@ -106,7 +103,7 @@ export function initializeGenericWorkerRenderer(injector: Injector) {
   let zone = injector.get(NgZone);
   bus.attachToZone(zone);
 
-  zone.runGuarded(() => {
+  zone.run(() => {
     WORKER_RENDER_MESSAGING_PROVIDERS.forEach((token) => { injector.get(token).start(); });
   });
 }
