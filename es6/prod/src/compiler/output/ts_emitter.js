@@ -117,6 +117,9 @@ class _TsEmitterVisitor extends AbstractEmitterVisitor {
             ctx.print(`:`);
             field.type.visitType(this, ctx);
         }
+        else {
+            ctx.print(`: any`);
+        }
         ctx.println(`;`);
     }
     _visitClassGetter(getter, ctx) {

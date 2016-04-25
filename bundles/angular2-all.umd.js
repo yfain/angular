@@ -28792,9 +28792,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var reflective_provider_1 = __webpack_require__(17);
 	var metadata_1 = __webpack_require__(7);
 	var di_3 = __webpack_require__(4);
-	var reflector_reader_1 = __webpack_require__(20);
 	var RuntimeMetadataResolver = (function () {
-	    function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
+	    function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes) {
 	        this._directiveResolver = _directiveResolver;
 	        this._pipeResolver = _pipeResolver;
 	        this._viewResolver = _viewResolver;
@@ -28804,12 +28803,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._pipeCache = new Map();
 	        this._anonymousTypes = new Map();
 	        this._anonymousTypeIndex = 0;
-	        if (lang_1.isPresent(_reflector)) {
-	            this._reflector = _reflector;
-	        }
-	        else {
-	            this._reflector = reflection_1.reflector;
-	        }
 	    }
 	    RuntimeMetadataResolver.prototype.sanitizeTokenName = function (token) {
 	        var identifier = lang_1.stringify(token);
@@ -28835,7 +28828,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (dirMeta instanceof md.ComponentMetadata) {
 	                assertions_1.assertArrayOfStrings('styles', dirMeta.styles);
 	                var cmpMeta = dirMeta;
-	                moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
+	                moduleUrl = calcModuleUrl(directiveType, cmpMeta);
 	                var viewMeta = this._viewResolver.resolve(directiveType);
 	                assertions_1.assertArrayOfStrings('styles', viewMeta.styles);
 	                templateMeta = new cpl.CompileTemplateMetadata({
@@ -28900,7 +28893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var meta = this._pipeCache.get(pipeType);
 	        if (lang_1.isBlank(meta)) {
 	            var pipeMeta = this._pipeResolver.resolve(pipeType);
-	            var moduleUrl = this._reflector.importUri(pipeType);
+	            var moduleUrl = reflection_1.reflector.importUri(pipeType);
 	            meta = new cpl.CompilePipeMetadata({
 	                type: this.getTypeMetadata(pipeType, moduleUrl),
 	                name: pipeMeta.name,
@@ -29059,7 +29052,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        __param(3, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_DIRECTIVES)),
 	        __param(4, di_2.Optional()),
 	        __param(4, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_PIPES)), 
-	        __metadata('design:paramtypes', [directive_resolver_1.DirectiveResolver, pipe_resolver_1.PipeResolver, view_resolver_1.ViewResolver, Array, Array, reflector_reader_1.ReflectorReader])
+	        __metadata('design:paramtypes', [directive_resolver_1.DirectiveResolver, pipe_resolver_1.PipeResolver, view_resolver_1.ViewResolver, Array, Array])
 	    ], RuntimeMetadataResolver);
 	    return RuntimeMetadataResolver;
 	}());
@@ -29098,7 +29091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function isValidType(value) {
 	    return lang_1.isPresent(value) && (value instanceof lang_1.Type);
 	}
-	function calcModuleUrl(reflector, type, cmpMetadata) {
+	function calcModuleUrl(type, cmpMetadata) {
 	    var moduleId = cmpMetadata.moduleId;
 	    if (lang_1.isPresent(moduleId)) {
 	        var scheme = url_resolver_1.getUrlScheme(moduleId);
@@ -29106,7 +29099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            "package:" + moduleId + util_1.MODULE_SUFFIX;
 	    }
 	    else {
-	        return reflector.importUri(type);
+	        return reflection_1.reflector.importUri(type);
 	    }
 	}
 
@@ -31179,6 +31172,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (lang_1.isPresent(field.type)) {
 	            ctx.print(":");
 	            field.type.visitType(this, ctx);
+	        }
+	        else {
+	            ctx.print(": any");
 	        }
 	        ctx.println(";");
 	    };

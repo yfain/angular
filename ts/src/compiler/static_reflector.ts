@@ -25,7 +25,6 @@ import {
   ViewQueryMetadata,
   QueryMetadata,
 } from 'angular2/src/core/metadata';
-import {ReflectorReader} from 'angular2/src/core/reflection/reflector_reader';
 
 /**
  * The host of the static resolver is expected to be able to provide module metadata in the form of
@@ -57,15 +56,14 @@ export class StaticType {
  * A static reflector implements enough of the Reflector API that is necessary to compile
  * templates statically.
  */
-export class StaticReflector implements ReflectorReader {
+export class StaticReflector {
   private typeCache = new Map<string, StaticType>();
   private annotationCache = new Map<StaticType, any[]>();
   private propertyCache = new Map<StaticType, {[key: string]: any}>();
   private parameterCache = new Map<StaticType, any[]>();
   private metadataCache = new Map<string, {[key: string]: any}>();
-  constructor(private host: StaticReflectorHost) { this.initializeConversionMap(); }
 
-  importUri(typeOrFunc: any): string { return (<StaticType>typeOrFunc).moduleId; }
+  constructor(private host: StaticReflectorHost) { this.initializeConversionMap(); }
 
   /**
    * getStatictype produces a Type whose metadata is known but whose implementation is not loaded.
@@ -440,7 +438,7 @@ export class StaticReflector implements ReflectorReader {
     return simplify(value);
   }
 
-  public getModuleMetadata(module: string): {[key: string]: any} {
+  private getModuleMetadata(module: string): {[key: string]: any} {
     let moduleMetadata = this.metadataCache.get(module);
     if (!isPresent(moduleMetadata)) {
       moduleMetadata = this.host.getMetadataFor(module);
