@@ -1,7 +1,8 @@
 library angular2.src.router.directives.router_outlet;
 
 import "dart:async";
-import "package:angular2/src/facade/async.dart" show PromiseWrapper;
+import "package:angular2/src/facade/async.dart"
+    show PromiseWrapper, EventEmitter;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/facade/lang.dart" show isBlank, isPresent;
 import "package:angular2/core.dart"
@@ -10,11 +11,11 @@ import "package:angular2/core.dart"
         Attribute,
         DynamicComponentLoader,
         ComponentRef,
-        ElementRef,
-        Injector,
+        ViewContainerRef,
         provide,
-        Dependency,
-        OnDestroy;
+        ReflectiveInjector,
+        OnDestroy,
+        Output;
 import "../router.dart" as routerMod;
 import "../instruction.dart" show ComponentInstruction, RouteParams, RouteData;
 import "../lifecycle/lifecycle_annotations.dart" as hookMod;
@@ -35,13 +36,15 @@ var _resolveToTrue = PromiseWrapper.resolve(true);
  */
 @Directive(selector: "router-outlet")
 class RouterOutlet implements OnDestroy {
-  ElementRef _elementRef;
+  ViewContainerRef _viewContainerRef;
   DynamicComponentLoader _loader;
   routerMod.Router _parentRouter;
   String name = null;
   Future<ComponentRef> _componentRef = null;
   ComponentInstruction _currentInstruction = null;
-  RouterOutlet(this._elementRef, this._loader, this._parentRouter,
+  @Output("activate")
+  var activateEvents = new EventEmitter<dynamic>();
+  RouterOutlet(this._viewContainerRef, this._loader, this._parentRouter,
       @Attribute("name") String nameAttr) {
     if (isPresent(nameAttr)) {
       this.name = nameAttr;
@@ -59,15 +62,16 @@ class RouterOutlet implements OnDestroy {
     this._currentInstruction = nextInstruction;
     var componentType = nextInstruction.componentType;
     var childRouter = this._parentRouter.childRouter(componentType);
-    var providers = Injector.resolve([
+    var providers = ReflectiveInjector.resolve([
       provide(RouteData, useValue: nextInstruction.routeData),
       provide(RouteParams, useValue: new RouteParams(nextInstruction.params)),
       provide(routerMod.Router, useValue: childRouter)
     ]);
     this._componentRef = this
         ._loader
-        .loadNextToLocation(componentType, this._elementRef, providers);
+        .loadNextToLocation(componentType, this._viewContainerRef, providers);
     return this._componentRef.then((componentRef) {
+      this.activateEvents.emit(componentRef.instance);
       if (hasLifecycleHook(hookMod.routerOnActivate, componentType)) {
         return this._componentRef.then((ComponentRef ref) =>
             ((ref.instance as OnActivate))
@@ -120,7 +124,7 @@ class RouterOutlet implements OnDestroy {
     return next.then((_) {
       if (isPresent(this._componentRef)) {
         var onDispose =
-            this._componentRef.then((ComponentRef ref) => ref.dispose());
+            this._componentRef.then((ComponentRef ref) => ref.destroy());
         this._componentRef = null;
         return onDispose;
       }

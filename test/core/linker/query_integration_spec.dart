@@ -96,9 +96,6 @@ main() {
               ]);
               view.debugElement.componentInstance.shouldShow = false;
               view.detectChanges();
-              // TODO: this fails right now!
-
-              // -> queries are not dirtied!
               expect(q.log).toEqual([
                 ["setter", "foo"],
                 ["init", "foo"],
@@ -145,7 +142,7 @@ main() {
             tcb
                 .overrideTemplate(MyComp, template)
                 .overrideTemplate(NeedsViewChild,
-                    "<div *ngIf=\"true\"><div *ngIf=\"shouldShow\" text=\"foo\"></div></div>")
+                    "<div *ngIf=\"true\"><div *ngIf=\"shouldShow\" text=\"foo\"></div></div><div *ngIf=\"shouldShow2\" text=\"bar\"></div>")
                 .createAsync(MyComp)
                 .then((view) {
               view.detectChanges();
@@ -156,11 +153,18 @@ main() {
                 ["check", "foo"]
               ]);
               q.shouldShow = false;
+              q.shouldShow2 = true;
+              q.log = [];
               view.detectChanges();
               expect(q.log).toEqual([
-                ["setter", "foo"],
-                ["init", "foo"],
-                ["check", "foo"],
+                ["setter", "bar"],
+                ["check", "bar"]
+              ]);
+              q.shouldShow = false;
+              q.shouldShow2 = false;
+              q.log = [];
+              view.detectChanges();
+              expect(q.log).toEqual([
                 ["setter", null],
                 ["check", null]
               ]);
@@ -289,6 +293,98 @@ main() {
             });
           }));
     });
+    describe("read a different token", () {
+      it(
+          "should contain all content children",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var template =
+                "<needs-content-children-read #q text=\"ca\"><div #q text=\"cb\"></div></needs-content-children-read>";
+            tcb
+                .overrideTemplate(MyComp, template)
+                .createAsync(MyComp)
+                .then((view) {
+              view.detectChanges();
+              NeedsContentChildrenWithRead comp = view.debugElement.children[0]
+                  .inject(NeedsContentChildrenWithRead);
+              expect(comp.textDirChildren
+                      .map((textDirective) => textDirective.text))
+                  .toEqual(["ca", "cb"]);
+              async.done();
+            });
+          }));
+      it(
+          "should contain the first content child",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var template =
+                "<needs-content-child-read><div #q text=\"ca\"></div></needs-content-child-read>";
+            tcb
+                .overrideTemplate(MyComp, template)
+                .createAsync(MyComp)
+                .then((view) {
+              view.detectChanges();
+              NeedsContentChildWithRead comp = view.debugElement.children[0]
+                  .inject(NeedsContentChildWithRead);
+              expect(comp.textDirChild.text).toEqual("ca");
+              async.done();
+            });
+          }));
+      it(
+          "should contain the first view child",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var template = "<needs-view-child-read></needs-view-child-read>";
+            tcb
+                .overrideTemplate(MyComp, template)
+                .createAsync(MyComp)
+                .then((view) {
+              view.detectChanges();
+              NeedsViewChildWithRead comp =
+                  view.debugElement.children[0].inject(NeedsViewChildWithRead);
+              expect(comp.textDirChild.text).toEqual("va");
+              async.done();
+            });
+          }));
+      it(
+          "should contain all child directives in the view",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var template =
+                "<needs-view-children-read></needs-view-children-read>";
+            tcb
+                .overrideTemplate(MyComp, template)
+                .createAsync(MyComp)
+                .then((view) {
+              view.detectChanges();
+              NeedsViewChildrenWithRead comp = view.debugElement.children[0]
+                  .inject(NeedsViewChildrenWithRead);
+              expect(comp.textDirChildren
+                      .map((textDirective) => textDirective.text))
+                  .toEqual(["va", "vb"]);
+              async.done();
+            });
+          }));
+      it(
+          "should support reading a ViewContainer",
+          inject([TestComponentBuilder, AsyncTestCompleter],
+              (TestComponentBuilder tcb, async) {
+            var template =
+                "<needs-viewcontainer-read><template>hello</template></needs-viewcontainer-read>";
+            tcb
+                .overrideTemplate(MyComp, template)
+                .createAsync(MyComp)
+                .then((view) {
+              view.detectChanges();
+              NeedsViewContainerWithRead comp = view.debugElement.children[0]
+                  .inject(NeedsViewContainerWithRead);
+              comp.createView();
+              expect(view.debugElement.children[0].nativeElement)
+                  .toHaveText("hello");
+              async.done();
+            });
+          }));
+    });
     describe("changes", () {
       it(
           "should notify query on change",
@@ -403,7 +499,7 @@ main() {
             });
           }));
       it(
-          "should reflect dynamically inserted directives",
+          "should support dynamically inserted directives",
           inject([TestComponentBuilder, AsyncTestCompleter],
               (TestComponentBuilder tcb, async) {
             var template = "<needs-query-by-var-binding #q>" +
@@ -722,6 +818,7 @@ class NeedsContentChild implements AfterContentInit, AfterContentChecked {
     directives: const [NgIf, TextDirective])
 class NeedsViewChild implements AfterViewInit, AfterViewChecked {
   bool shouldShow = true;
+  bool shouldShow2 = false;
   TextDirective _child;
   @ViewChild(TextDirective)
   set child(value) {
@@ -928,6 +1025,57 @@ class NeedsTpl {
   }
 }
 
+@Component(selector: "needs-content-children-read", template: "")
+class NeedsContentChildrenWithRead {
+  @ContentChildren("q", read: TextDirective)
+  QueryList<TextDirective> textDirChildren;
+  @ContentChildren("nonExisting", read: TextDirective)
+  QueryList<TextDirective> nonExistingVar;
+}
+
+@Component(selector: "needs-content-child-read", template: "")
+class NeedsContentChildWithRead {
+  @ContentChild("q", read: TextDirective)
+  TextDirective textDirChild;
+  @ContentChild("nonExisting", read: TextDirective)
+  TextDirective nonExistingVar;
+}
+
+@Component(
+    selector: "needs-view-children-read",
+    template: "<div #q text=\"va\"></div><div #q text=\"vb\"></div>",
+    directives: const [TextDirective])
+class NeedsViewChildrenWithRead {
+  @ViewChildren("q", read: TextDirective)
+  QueryList<TextDirective> textDirChildren;
+  @ViewChildren("nonExisting", read: TextDirective)
+  QueryList<TextDirective> nonExistingVar;
+}
+
+@Component(
+    selector: "needs-view-child-read",
+    template: "<div #q text=\"va\"></div>",
+    directives: const [TextDirective])
+class NeedsViewChildWithRead {
+  @ViewChild("q", read: TextDirective)
+  TextDirective textDirChild;
+  @ViewChild("nonExisting", read: TextDirective)
+  TextDirective nonExistingVar;
+}
+
+@Component(selector: "needs-viewcontainer-read", template: "<div #q></div>")
+class NeedsViewContainerWithRead {
+  @ViewChild("q", read: ViewContainerRef)
+  ViewContainerRef vc;
+  @ViewChild("nonExisting", read: ViewContainerRef)
+  ViewContainerRef nonExistingVar;
+  @ContentChild(TemplateRef)
+  TemplateRef template;
+  createView() {
+    this.vc.createEmbeddedView(this.template);
+  }
+}
+
 @Component(
     selector: "my-comp",
     directives: const [
@@ -951,7 +1099,12 @@ class NeedsTpl {
       InertDirective,
       NgIf,
       NgFor,
-      NeedsFourQueries
+      NeedsFourQueries,
+      NeedsContentChildrenWithRead,
+      NeedsContentChildWithRead,
+      NeedsViewChildrenWithRead,
+      NeedsViewChildWithRead,
+      NeedsViewContainerWithRead
     ],
     template: "")
 @Injectable()

@@ -24,7 +24,8 @@ import "package:angular2/core.dart"
         ViewMetadata,
         Component,
         Injectable,
-        ElementRef;
+        ElementRef,
+        ComponentRef;
 import "package:angular2/common.dart" show NgIf;
 import "package:angular2/src/web_workers/worker/renderer.dart"
     show WebWorkerRootRenderer;
@@ -49,9 +50,7 @@ import "../shared/web_worker_test_util.dart"
     show createPairedMessageBuses, PairedMessageBuses;
 import "package:angular2/src/web_workers/shared/service_message_broker.dart"
     show ServiceMessageBrokerFactory, ServiceMessageBrokerFactory_;
-import "package:angular2/src/core/change_detection/change_detection.dart"
-    show ChangeDetectorGenConfig;
-import "package:angular2/src/core/linker/element_ref.dart" show ElementRef_;
+import "package:angular2/compiler.dart" show CompilerConfig;
 import "package:angular2/platform/testing/browser.dart"
     show TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS;
 
@@ -109,8 +108,8 @@ main() {
       workerRenderStore = new RenderStore();
       return [
         Serializer,
-        provide(ChangeDetectorGenConfig,
-            useValue: new ChangeDetectorGenConfig(true, true, false)),
+        provide(CompilerConfig,
+            useValue: new CompilerConfig(true, true, false)),
         provide(RenderStore, useValue: workerRenderStore),
         provide(RootRenderer, useFactory: (workerSerializer) {
           return createWorkerRenderer(workerSerializer, uiSerializer,
@@ -118,12 +117,12 @@ main() {
         }, deps: [Serializer])
       ];
     });
-    getRenderElement(ElementRef elementRef) {
-      var id = workerRenderStore.serialize(elementRef.nativeElement);
+    getRenderElement(dynamic workerEl) {
+      var id = workerRenderStore.serialize(workerEl);
       return uiRenderStore.deserialize(id);
     }
-    getRenderer(ElementRef elementRef) {
-      return ((elementRef as dynamic)).internalElement.parentView.renderer;
+    getRenderer(ComponentRef componentRef) {
+      return ((componentRef.hostView as dynamic)).internalView.renderer;
     }
     it(
         "should update text nodes",
@@ -134,7 +133,7 @@ main() {
                   MyComp, new ViewMetadata(template: "<div>{{ctxProp}}</div>"))
               .createAsync(MyComp)
               .then((fixture) {
-            var renderEl = getRenderElement(fixture.elementRef);
+            var renderEl = getRenderElement(fixture.debugElement.nativeElement);
             expect(renderEl).toHaveText("");
             fixture.debugElement.componentInstance.ctxProp = "Hello World!";
             fixture.detectChanges();
@@ -154,31 +153,28 @@ main() {
                           "<input [title]=\"y\" style=\"position:absolute\">"))
               .createAsync(MyComp)
               .then((fixture) {
-            var checkSetters = (elr) {
-              var renderer = getRenderer(elr);
-              var el = getRenderElement(elr);
-              renderer.setElementProperty(elr.nativeElement, "tabIndex", 1);
+            var checkSetters = (componentRef, workerEl) {
+              var renderer = getRenderer(componentRef);
+              var el = getRenderElement(workerEl);
+              renderer.setElementProperty(workerEl, "tabIndex", 1);
               expect(((el as dynamic)).tabIndex).toEqual(1);
-              renderer.setElementClass(elr.nativeElement, "a", true);
+              renderer.setElementClass(workerEl, "a", true);
               expect(DOM.hasClass(el, "a")).toBe(true);
-              renderer.setElementClass(elr.nativeElement, "a", false);
+              renderer.setElementClass(workerEl, "a", false);
               expect(DOM.hasClass(el, "a")).toBe(false);
-              renderer.setElementStyle(elr.nativeElement, "width", "10px");
+              renderer.setElementStyle(workerEl, "width", "10px");
               expect(DOM.getStyle(el, "width")).toEqual("10px");
-              renderer.setElementStyle(elr.nativeElement, "width", null);
+              renderer.setElementStyle(workerEl, "width", null);
               expect(DOM.getStyle(el, "width")).toEqual("");
-              renderer.setElementAttribute(
-                  elr.nativeElement, "someattr", "someValue");
+              renderer.setElementAttribute(workerEl, "someattr", "someValue");
               expect(DOM.getAttribute(el, "someattr")).toEqual("someValue");
             };
             // root element
-            checkSetters(fixture.elementRef);
+            checkSetters(
+                fixture.componentRef, fixture.debugElement.nativeElement);
             // nested elements
-            checkSetters(((fixture.elementRef as ElementRef_))
-                .internalElement
-                .componentView
-                .appElements[0]
-                .ref);
+            checkSetters(fixture.componentRef,
+                fixture.debugElement.children[0].nativeElement);
             async.done();
           });
         }));
@@ -195,7 +191,7 @@ main() {
             ((fixture.debugElement.componentInstance as MyComp)).ctxBoolProp =
                 true;
             fixture.detectChanges();
-            var el = getRenderElement(fixture.elementRef);
+            var el = getRenderElement(fixture.debugElement.nativeElement);
             expect(DOM.getInnerHTML(el))
                 .toContain("\"ng-reflect-ng-if\": \"true\"");
             async.done();
@@ -214,7 +210,7 @@ main() {
                       directives: [NgIf]))
               .createAsync(MyComp)
               .then((fixture) {
-            var rootEl = getRenderElement(fixture.elementRef);
+            var rootEl = getRenderElement(fixture.debugElement.nativeElement);
             expect(rootEl).toHaveText("");
             fixture.debugElement.componentInstance.ctxBoolProp = true;
             fixture.detectChanges();
@@ -235,14 +231,10 @@ main() {
                     MyComp, new ViewMetadata(template: "<input [title]=\"y\">"))
                 .createAsync(MyComp)
                 .then((fixture) {
-              var elRef = ((fixture.elementRef as ElementRef_))
-                  .internalElement
-                  .componentView
-                  .appElements[0]
-                  .ref;
-              getRenderer(elRef).invokeElementMethod(
-                  elRef.nativeElement, "setAttribute", ["a", "b"]);
-              expect(DOM.getAttribute(getRenderElement(elRef), "a"))
+              var el = fixture.debugElement.children[0];
+              getRenderer(fixture.componentRef).invokeElementMethod(
+                  el.nativeElement, "setAttribute", ["a", "b"]);
+              expect(DOM.getAttribute(getRenderElement(el.nativeElement), "a"))
                   .toEqual("b");
               async.done();
             });
@@ -258,12 +250,8 @@ main() {
                         template: "<input (change)=\"ctxNumProp = 1\">"))
                 .createAsync(MyComp)
                 .then((fixture) {
-              var elRef = ((fixture.elementRef as ElementRef_))
-                  .internalElement
-                  .componentView
-                  .appElements[0]
-                  .ref;
-              dispatchEvent(getRenderElement(elRef), "change");
+              var el = fixture.debugElement.children[0];
+              dispatchEvent(getRenderElement(el.nativeElement), "change");
               expect(fixture.componentInstance.ctxNumProp).toBe(1);
               fixture.destroy();
               async.done();
