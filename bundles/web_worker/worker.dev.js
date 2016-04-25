@@ -21546,40 +21546,6 @@ System.register("angular2/src/compiler/schema/dom_element_schema_registry", ["an
   return module.exports;
 });
 
-System.register("angular2/src/core/angular_entrypoint", ["angular2/src/facade/lang"], true, function(require, exports, module) {
-  var global = System.global,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("angular2/src/facade/lang");
-  var AngularEntrypoint = (function() {
-    function AngularEntrypoint(name) {
-      this.name = name;
-    }
-    AngularEntrypoint = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [String])], AngularEntrypoint);
-    return AngularEntrypoint;
-  }());
-  exports.AngularEntrypoint = AngularEntrypoint;
-  global.define = __define;
-  return module.exports;
-});
-
 System.register("angular2/src/platform/browser/location/platform_location", [], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -42427,7 +42393,7 @@ System.register("angular2/core", ["angular2/src/core/metadata", "angular2/src/co
   return module.exports;
 });
 
-System.register("angular2/platform/worker_app", ["angular2/src/facade/lang", "angular2/src/platform/worker_app_common", "angular2/src/platform/worker_app", "angular2/core", "angular2/src/platform/worker_app_common", "angular2/src/platform/worker_app", "angular2/src/web_workers/shared/client_message_broker", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/shared/message_bus", "angular2/src/core/angular_entrypoint", "angular2/src/web_workers/worker/router_providers"], true, function(require, exports, module) {
+System.register("angular2/platform/worker_app", ["angular2/src/facade/lang", "angular2/src/platform/worker_app_common", "angular2/src/platform/worker_app", "angular2/core", "angular2/src/platform/worker_app_common", "angular2/src/platform/worker_app", "angular2/src/web_workers/shared/client_message_broker", "angular2/src/web_workers/shared/service_message_broker", "angular2/src/web_workers/shared/serializer", "angular2/src/web_workers/shared/message_bus", "angular2/src/web_workers/worker/router_providers"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -42458,8 +42424,6 @@ System.register("angular2/platform/worker_app", ["angular2/src/facade/lang", "an
   var serializer_1 = require("angular2/src/web_workers/shared/serializer");
   exports.PRIMITIVE = serializer_1.PRIMITIVE;
   __export(require("angular2/src/web_workers/shared/message_bus"));
-  var angular_entrypoint_1 = require("angular2/src/core/angular_entrypoint");
-  exports.AngularEntrypoint = angular_entrypoint_1.AngularEntrypoint;
   var router_providers_1 = require("angular2/src/web_workers/worker/router_providers");
   exports.WORKER_APP_ROUTER = router_providers_1.WORKER_APP_ROUTER;
   function workerAppPlatform() {

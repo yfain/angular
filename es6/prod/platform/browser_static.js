@@ -1,4 +1,4 @@
-export { AngularEntrypoint } from 'angular2/src/core/angular_entrypoint';
+export * from 'angular2/src/core/angular_entrypoint';
 export { BROWSER_PROVIDERS, ELEMENT_PROBE_PROVIDERS, ELEMENT_PROBE_PROVIDERS_PROD_MODE, inspectNativeElement, BrowserDomAdapter, By, Title, enableDebugTools, disableDebugTools } from 'angular2/src/platform/browser_common';
 import { isPresent, isBlank } from 'angular2/src/facade/lang';
 import { BROWSER_PROVIDERS, BROWSER_APP_COMMON_PROVIDERS, BROWSER_PLATFORM_MARKER } from 'angular2/src/platform/browser_common';
