@@ -31173,6 +31173,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ctx.print(":");
 	            field.type.visitType(this, ctx);
 	        }
+	        else {
+	            ctx.print(": any");
+	        }
 	        ctx.println(";");
 	    };
 	    _TsEmitterVisitor.prototype._visitClassGetter = function (getter, ctx) {

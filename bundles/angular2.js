@@ -19517,6 +19517,8 @@ System.register("angular2/src/compiler/output/ts_emitter", ["angular2/src/compil
       if (lang_1.isPresent(field.type)) {
         ctx.print(":");
         field.type.visitType(this, ctx);
+      } else {
+        ctx.print(": any");
       }
       ctx.println(";");
     };
