@@ -1830,7 +1830,7 @@ System.register("angular2/src/http/static_request", ["angular2/src/http/headers"
   return module.exports;
 });
 
-System.register("angular2/src/http/backends/mock_backend", ["angular2/core", "angular2/src/http/static_request", "angular2/src/http/enums", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "rxjs/Subject", "rxjs/subject/ReplaySubject", "rxjs/operator/take"], true, function(require, exports, module) {
+System.register("angular2/src/http/backends/mock_backend", ["angular2/core", "angular2/src/http/static_request", "angular2/src/http/enums", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "rxjs/Subject", "rxjs/ReplaySubject", "rxjs/operator/take"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -1857,7 +1857,7 @@ System.register("angular2/src/http/backends/mock_backend", ["angular2/core", "an
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var Subject_1 = require("rxjs/Subject");
-  var ReplaySubject_1 = require("rxjs/subject/ReplaySubject");
+  var ReplaySubject_1 = require("rxjs/ReplaySubject");
   var take_1 = require("rxjs/operator/take");
   var MockConnection = (function() {
     function MockConnection(req) {

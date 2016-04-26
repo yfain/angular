@@ -456,7 +456,7 @@ System.register("angular2/src/facade/lang", [], true, function(require, exports,
   var _symbolIterator = null;
   function getSymbolIterator() {
     if (isBlank(_symbolIterator)) {
-      if (isPresent(Symbol) && isPresent(Symbol.iterator)) {
+      if (isPresent(globalScope.Symbol) && isPresent(Symbol.iterator)) {
         _symbolIterator = Symbol.iterator;
       } else {
         var keys = Object.getOwnPropertyNames(Map.prototype);

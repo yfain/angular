@@ -341,7 +341,7 @@ export function setValueOnPath(global, path, value) {
 var _symbolIterator = null;
 export function getSymbolIterator() {
     if (isBlank(_symbolIterator)) {
-        if (isPresent(Symbol) && isPresent(Symbol.iterator)) {
+        if (isPresent(globalScope.Symbol) && isPresent(Symbol.iterator)) {
             _symbolIterator = Symbol.iterator;
         }
         else {
